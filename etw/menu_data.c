@@ -477,7 +477,8 @@ struct Bottone keycfg_bottoni[]=
 	{10,210,154,222,0,7,9,msg_96},
 	{170,210,311,222,1,8,15,msg_96},
 	
-	{90,229,230,241,MENU_SYSTEM_PREFS,11,12,msg_6},
+	//{90,229,230,241,MENU_SYSTEM_PREFS,14,13,msg_6},
+	{72,229,246,241,MENU_SYSTEM_PREFS,14,13,msg_108},
 };
 
 struct Bottone joycfg_bottoni[]=
@@ -667,6 +668,7 @@ struct GfxMenu menu[]=
 	{msg_168,gprefs_bottoni,NULL,27,0,-1,190,38,0,3,0,(APTR)GamePrefs},
 	{msg_169,vprefs_bottoni,NULL,27,0,-1,190,38,0,3,0,(APTR)VideoPrefs},
 	{msg_170,aprefs_bottoni,NULL,11,0,-1,190,38,0,3,0,(APTR)AudioPrefs},
+	{"SYSTEM",sprefs_bottoni,NULL,13,0,-1,190,38,0,3,0,(APTR)SystemPrefs},
 	{msg_171,wcb,wcp,3,5*40,-1,0,0,-1,7,9,NULL},
 	{NULL,mb,mp,3,16*4,-1,0,0,-1,7,9,NULL},
 	{msg_172,lb,league,3,8*21,-1,0,0,-1,7,9,NULL},
@@ -677,7 +679,6 @@ struct GfxMenu menu[]=
 	{msg_176,mrb,mr,1,4,-1,0,0,-1,7,9,(APTR)ReturnFalse},
 	{msg_177,scorelist_bottoni,scores,1,40,-1,0,0,-1,8,15,NULL},
 	{NULL,hl,NULL,64+1,0,-1,0,0,-1,11,12,(APTR)HighSelection},
-	{"SYSTEM",sprefs_bottoni,NULL,13,0,-1,190,38,0,3,0,(APTR)SystemPrefs},
 	{"KEYBOARD CONFIGURATION",keycfg_bottoni,NULL,43,0,-1,200 /*190*/,77 /*38*/,0,3,0,(APTR)KeyCfg},
 	{"JOYSTICK CONFIGURATION",joycfg_bottoni,NULL,15,0,-1,190,38,0,3,0,(APTR)JoyCfg},
 };
