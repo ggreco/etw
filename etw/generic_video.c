@@ -113,22 +113,18 @@ struct myfont *openfont(char *filename)
 	struct myfont *t=NULL;
 	char c;
 
-	if(f=fopen(filename,"rb"))
-	{
-		if(t=malloc(sizeof(struct myfont)))
-		{
+	if ((f=fopen(filename,"rb"))) {
+		if ((t=malloc(sizeof(struct myfont))))	{
 			fread(&c,sizeof(char),1,f);
 			t->width=(int)c;
 			fread(&c,sizeof(char),1,f);
 			t->height=(int)c;
 
-			if(t->bm=malloc(t->width*t->height*CHAR_ARRAY_LEN))
-			{
+			if ((t->bm=malloc(t->width*t->height*CHAR_ARRAY_LEN))) {
 				fread(t->bm,t->width*t->height*CHAR_ARRAY_LEN,1,f);
 				D(bug("Carico font <%s, %ldx%ld>...\n",filename,t->width,t->height));
 			}
-			else
-			{
+			else {
 				free(t);
 				t=NULL;
 			}

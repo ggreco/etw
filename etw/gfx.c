@@ -324,8 +324,8 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 
 	D(bug("Carico %s...", name));
 
-	if (obj = calloc(1, sizeof(struct GfxObject))) {
-		if (fh = fopen(name, "rb")) {
+	if ((obj = calloc(1, sizeof(struct GfxObject)))) {
+		if ((fh = fopen(name, "rb"))) {
 			char buffer[4];
 
 			fread(buffer, 4, 1, fh);
@@ -348,12 +348,12 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 			obj->realdepth = temp;
 
 			if (use_remapping && !pens) {
-				if (obj->Palette = malloc((1 << obj->realdepth) * 3)) {
+				if ((obj->Palette = malloc((1 << obj->realdepth) * 3))) {
 					fread(obj->Palette, sizeof(char) * 3,
 						  (1 << obj->realdepth), fh);
 
-					if (obj->Pens =
-						malloc((1 << obj->realdepth) * sizeof(long))) {
+					if ((obj->Pens =
+						malloc((1 << obj->realdepth) * sizeof(long)))) {
 						for (i = 0; i < (1 << obj->realdepth); i++) {
 							obj->Pens[i] = obtain_pen(obj->Palette[i * 3],
 													  obj->Palette[i * 3 +
@@ -379,7 +379,7 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 			if (dest) {
 				obj->bmap = dest;
 			} else {
-				if (obj->bmap = malloc(obj->width * obj->height)) {
+				if ((obj->bmap = malloc(obj->width * obj->height))) {
 					for (i = 0; i < obj->realdepth; i++) {
 						if (!
 							(planes[i] =
@@ -435,7 +435,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 	FILE *fh, *fo = NULL;
 	BOOL convert = FALSE;
 
-	if (obj = calloc(1, sizeof(struct AnimObject))) {
+	if ((obj = calloc(1, sizeof(struct AnimObject)))) {
 // Routine che cambia dir/nome.obj in newgfx/nome.objc e vede se esiste gia'
 // l'oggetto convertito.
 
@@ -454,7 +454,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 			if (!(fh = fopen(bb, "rb"))) {
 				D(bug("Non trovo l'animobj chunky...\n"));
 
-				if (fh = fopen(name, "rb")) {
+				if ((fh = fopen(name, "rb"))) {
 					convert = TRUE;
 
 					if (!(fo = fopen(bb, "wb")))
@@ -527,15 +527,15 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 			}
 
 			if (use_remapping && !pens) {
-				if (obj->Palette = malloc((1 << obj->RealDepth) * 3)) {
+				if ((obj->Palette = malloc((1 << obj->RealDepth) * 3))) {
 					fread(obj->Palette, sizeof(char) * 3,
 						  (1 << obj->RealDepth), fh);
 					if (fo)
 						fwrite(obj->Palette, sizeof(char) * 3,
 							   (1 << obj->RealDepth), fo);
 
-					if (obj->Pens =
-						malloc((1 << obj->RealDepth) * sizeof(LONG))) {
+					if ((obj->Pens =
+						malloc((1 << obj->RealDepth) * sizeof(LONG)))) {
 						for (i = 0; i < (1 << obj->RealDepth); i++) {
 							obj->Pens[i] =
 								obtain_pen(obj->Palette[i * 3],
@@ -574,10 +574,10 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 				obj->Pens = pens;
 			}
 
-			if (obj->Frames = calloc(obj->num_frames, sizeof(APTR))) {
-				if (obj->Widths = malloc(obj->num_frames * sizeof(LONG))) {
-					if (obj->Heights =
-						malloc(obj->num_frames * sizeof(LONG))) {
+			if ((obj->Frames = calloc(obj->num_frames, sizeof(APTR)))) {
+				if ((obj->Widths = malloc(obj->num_frames * sizeof(LONG)))) {
+					if ((obj->Heights =
+						malloc(obj->num_frames * sizeof(LONG)))) {
 						BOOL ok = TRUE;
 						unsigned short tempw;
 
@@ -678,7 +678,7 @@ void FreeGfxObj(GfxObj * obj)
 
 	D(bug("FreeGfxObj - width: %ld\n", obj->width));
 
-	if (n = InAList(&GfxList, obj)) {
+	if ((n = InAList(&GfxList, obj))) {
 		MyRemove(n);
 		free(n);
 	}
@@ -713,7 +713,7 @@ void FreeAnimObj(AnimObj * obj)
 	if (InList(&DrawList, obj))
 		MyRemove((struct MyNode *) obj);
 
-	if (n = InAList(&GfxList, obj)) {
+	if ((n = InAList(&GfxList, obj))) {
 		MyRemove(n);
 		free(n);
 	}
@@ -834,7 +834,7 @@ void AddNode(struct MyList *l, APTR ptr, BYTE type)
 {
 	struct MyNode *n;
 
-	if (n = malloc(sizeof(struct MyNode))) {
+	if ((n = malloc(sizeof(struct MyNode)))) {
 		n->ln_Type = type;
 		n->ln_Name = ptr;
 		MyAddHead(l, n);
@@ -848,7 +848,7 @@ BOOL LoadIFFPalette(char *filename)
 	char buffer[8];
 	BOOL rc = FALSE;
 
-	if (fh = fopen(filename, "rb")) {
+	if ((fh = fopen(filename, "rb"))) {
 		long cmap_len;
 		int i, j, c, colors = 256;
 		long l;
@@ -920,7 +920,7 @@ AnimObj *CloneAnimObj(AnimObj * obj)
 {
 	AnimObj *o;
 
-	if (o = malloc(sizeof(struct AnimObject))) {
+	if ((o = malloc(sizeof(struct AnimObject)))) {
 		memcpy(o, obj, sizeof(struct AnimObject));
 		o->Flags |= AOBJ_CLONED;
 		o->node.mln_Succ = o->node.mln_Pred = NULL;
@@ -943,7 +943,7 @@ AnimObj *CopyAnimObj(AnimObj * obj)
 {
 	AnimObj *o;
 
-	if (o = malloc(sizeof(struct AnimObject))) {
+	if ((o = malloc(sizeof(struct AnimObject)))) {
 		BOOL ok = TRUE;
 		register int i;
 
@@ -1004,7 +1004,7 @@ LONG RemapIFFPalette(char *filename, LONG * Pens)
 	unsigned char r, g, b;
 	LONG cmap_len = 0;
 
-	if (fh = fopen(filename, "rb")) {
+	if ((fh = fopen(filename, "rb"))) {
 		long i, j, colors = 256;
 		long l;
 
@@ -1070,7 +1070,7 @@ void LoadGfxObjPalette(char *name)
 	ULONG palette[256 * 3 + 2];
 	unsigned short temp, depth;
 
-	if (fh = fopen(name, "rb")) {
+	if ((fh = fopen(name, "rb"))) {
 		fread(&i, sizeof(LONG), 1, fh);
 		fread(&temp, sizeof(WORD), 1, fh);
 		fread(&temp, sizeof(WORD), 1, fh);

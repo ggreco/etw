@@ -539,8 +539,7 @@ void SaveReplay(void)
 	if(real_counter<=match[StartReplaySet].ReplayCounter)
 		return;
 
-	while(f=fopen(buffer,"r"))
-	{
+	while ((f=fopen(buffer,"r"))) {
 		fclose(f);
 		buffer[11]++;
 
@@ -557,8 +556,7 @@ void SaveReplay(void)
 		}
 	}
 
-	if(f=fopen(buffer,"wb"))
-	{
+	if ((f=fopen(buffer,"wb"))) {
 		int i;
 		FILE *f2;
 		APTR a;
@@ -570,8 +568,7 @@ void SaveReplay(void)
 
 // la prima parte del file viene letta da "etw
 
-		if(!(f2=fopen(CONFIG_FILE,"rb")))
-		{
+		if(!(f2=fopen(CONFIG_FILE,"rb"))) {
 			fclose(f);
 			return;
 		}
@@ -580,8 +577,7 @@ void SaveReplay(void)
 		lf=ftell(f2);
 		fseek(f2,0,SEEK_SET);
 		
-		if(!(a=malloc(lf)))
-		{
+		if(!(a=malloc(lf)))	{
 			fclose(f);
 			fclose(f2);
 			return;
@@ -598,10 +594,8 @@ void SaveReplay(void)
 	
 		fclose(f2);
 
-		for(i=0;i<2;i++)
-		{
-			if(!(f2=OpenTeam(team_name[i])))
-			{
+		for(i=0;i<2;i++) {
+			if(!(f2=OpenTeam(team_name[i]))) {
 				fclose(f);
 				return;
 			}
@@ -621,8 +615,7 @@ void SaveReplay(void)
 
 // Da qui viene letto da "game"
 
-		if(m=malloc(sizeof(struct MatchStatus)))
-		{
+		if ((m=malloc(sizeof(struct MatchStatus)))) {
 			SWAP_WORD(swaps);
 			fwrite(&swaps,sizeof(WORD),1,f);
 			SWAP_WORD(swaps);
@@ -637,8 +630,7 @@ void SaveReplay(void)
 			if(m->partita.palla.sq_palla)
 				m->partita.palla.sq_palla=(Squadra *)(m->partita.palla.sq_palla==p->squadra[0] ? 1 : 2);
 
-			for(i=0;i<2;i++)
-			{
+			for(i=0;i<2;i++) {
 				char *c=m->squadra[i].tattica->Name;
 
 				m->squadra[i].attivo=(Giocatore *)((int)m->squadra[i].attivo->GNum);
@@ -678,8 +670,7 @@ BOOL AllocReplayBuffers(void)
 	else if(fast>4000000)
 		size=256;
 
-	if(highlight)
-	{
+	if(highlight) {
 		D(bug("Setto i buffer del replay per l'highlight...\n"));
 		size=(highsize/256)+3; //per sicurezza
 	}
@@ -689,23 +680,19 @@ BOOL AllocReplayBuffers(void)
 
 	for(i=0;i<MAX_PLAYERS;i++)
 	{
-		if(!(r_controls[i]=malloc(size*256*sizeof(LONG))))
-		{
+		if(!(r_controls[i]=malloc(size*256*sizeof(LONG))))	{
 			D(bug("Non ho memoria per allocare i r_controls buffers!\n"));
 			return FALSE;
 		}
 	}
 
-	if(!(match=malloc(size*sizeof(struct MatchStatus))))
-	{
+	if(!(match=malloc(size*sizeof(struct MatchStatus)))) {
 		D(bug("Non ho memoria per allocare i match buffer!\n"));
 		return FALSE;
 	}
 
-	if(arcade)
-	{
-		if(!(arcade_buf=malloc(size*sizeof(struct Pos)*MAX_ARCADE_ON_FIELD)))
-		{
+	if(arcade) {
+		if(!(arcade_buf=malloc(size*sizeof(struct Pos)*MAX_ARCADE_ON_FIELD))) {
 			D(bug("Non ho memoria per allocare gli arcade buffer!\n"));
 			return FALSE;
 		}
@@ -734,8 +721,7 @@ void LoadHighlight(void)
 {
 	FILE *fh;
 
-	if(fh=fopen(HIGH_FILE,"rb"))
-	{
+	if ((fh=fopen(HIGH_FILE,"rb")))	{
 		WORD temp;
 		int i;
 
@@ -760,8 +746,7 @@ void LoadHighlight(void)
 
 		start_replay=TRUE;
 	}
-	else
-	{
+	else {
 		D(bug("Unable to open the highlight file!\n"));
 		quit_game=TRUE;
 	}

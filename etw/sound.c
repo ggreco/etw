@@ -234,12 +234,7 @@ void convert_sound(struct SoundInfo *s)
 
 	length = (long)((((double)samplerate)/ ((double)s->Rate)) * ((double)s->Length));
 
-	if (!(destsnd = malloc(length + 512))) {
-		D(bug("Non c'e' memoria!\n"));
-		return;
-	}
-
-	{
+	if ((destsnd = malloc(length + 2048))) { // be sure about possible overflows
 		register int l = s->Length, k = 0, t;
 		register unsigned char *src = s->SoundData, *dst = destsnd;
 
@@ -259,8 +254,11 @@ void convert_sound(struct SoundInfo *s)
                 s->Length, length, dst - destsnd));
 
         length = dst - destsnd;
-	}
-
+	} else {
+		D(bug("There is not enough free memory!\n"));
+		return;
+    }
+    
 	free(buffer);
 	free(s->SoundData);
 
@@ -268,7 +266,7 @@ void convert_sound(struct SoundInfo *s)
 	s->Rate = samplerate;
 	s->SoundData = s->LeftData = destsnd;
 
-// converto i campioni da signed ad unsigned e viceversa
+// conver samples from signed to unsigned and in the opposite way
     if(signed_samples) {
         while(length--)
             *destsnd++ ^= 0x80;
