@@ -296,7 +296,6 @@ BOOL LoadMenuStuff(void)
 		if ((b = fopen("newgfx/hurricane" /*-*/ , "r"))) {
 			fclose(b);
 			LoadPLogo("newgfx/hurricane" /*-*/ );
-			SDL_SaveBMP(screen, "hurricane.bmp");
 		} else
 			LoadPLogo("gfx/hurricane" /*-*/ );
 
@@ -322,7 +321,6 @@ BOOL LoadMenuStuff(void)
 		ScreenSwap();
 
 		LoadMenuLogo("gfx/etwlogo" /*-*/ );
-		SDL_SaveBMP(screen, "etw.bmp");
 
 		D(bug("Updating scores...\n"));
 		LoadScores();
