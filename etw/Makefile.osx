@@ -48,6 +48,7 @@ install: etw
 	mkdir -p $(BUNDLE_CONTENTS)/Resources/dtd
 	echo "APPL????" > $(BUNDLE_CONTENTS)/PkgInfo
 	cp Info.plist $(BUNDLE_CONTENTS)
+	cp ETW.icns $(BUNDLE_CONTENTS)/Resources
 	$(INSTALL) $< $(BUNDLE_CONTENTS)/MacOS
 	strip $(BUNDLE_CONTENTS)/MacOS/etw
 
