@@ -55,9 +55,18 @@ void write_char(bitmap bm,char c,UBYTE color)
 			if(ch[j])
 				bm[j]=color;
 		}
-    
-        ch+=font_span;
-		bm+=bitmap_width;
+
+#ifdef __CODEGUARD__
+		if(i < (font_height -1))
+		{
+#endif
+
+			ch+=font_span;
+			bm+=bitmap_width;
+
+#ifdef __CODEGUARD__
+		}
+#endif
 	}
 }
 
@@ -153,7 +162,11 @@ void rectfill(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,int width
 	while(y2>=0)
 	{
 		memset(b,color,x2);
-		b+=width;
+      /* AC: For debug */
+#ifdef __CODEGUARD__
+		if(y2 != 0)
+#endif      
+			b+=width;
 		y2--;
 	}
 }

@@ -2204,6 +2204,7 @@ void UpdatePrefs(BYTE set)
 	else
 		m->Bottone[9].Testo=disabled;
 
+   /* AC: I had an access overrun here. */
 	if(!use_ahi)
 		m->Bottone[11].Testo=disabled;
 	else
