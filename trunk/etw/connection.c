@@ -48,6 +48,15 @@ BOOL CheckMaglie(UBYTE a,UBYTE b)
 
 extern void game_main(void);
 
+void WriteGameConfig(FILE *f)
+{
+}
+
+void ReadGameConfig(FILE *f)
+{
+    // TODO
+}
+
 BOOL StartGame(void)
 {
 	extern void *screen;
@@ -109,8 +118,9 @@ extern UBYTE team_a,team_b;
 extern BYTE player_type[4],role[4],current_field;
 extern char shirt[2][24],palette[24],fieldname[24];
 extern LONG time_length;
-extern BOOL use_offside;
+extern BOOL use_offside, highlight;
 BYTE field;
+extern int highsize, matchstatus_size;
 
 WORD StartMatch(BYTE team1,BYTE team2)
 {
@@ -636,99 +646,32 @@ WORD StartMatch(BYTE team1,BYTE team2)
 
 void LoadHigh(char *file)
 {
-	FILE *f,*f2,*f3;
+	FILE *f,*f2;
 
-    request("LoadHigh not yet implemented in portable version");
+    request("LoadHigh not yet safe in portable version.");
 
-    return;
+//    return;
 
-// XXX this needs to be reworked...
 	if((f=fopen(file,"rb")))
 	{
-// XXX sizeof(struct MatchStatus)= 2056, occhio, se modifichiamo MatchStatus va modificato!
-		UWORD len,highsize;
-		int i,matchstatus_size= 2056; // era sizeof(struct MatchStatus)
+		UWORD len, tempuw;
+		int i;
 		char *a;
-		struct Squadra_Disk s;
 
-// Gestione di t:thismatch
+        ReadGameConfig(f);
 
-		if(!(f2=fopen(TEMP_DIR "thismatch"/*-*/,"w")))
-		{
-			fclose(f);
-			return;
-		}
+// team handling...
 
-		fread(&len,1,sizeof(WORD),f);
+		ReadTeam(f, &leftteam_dk);
+		ReadTeam(f, &rightteam_dk);
 
-		SWAP_WORD(len);
+		fread(&tempuw,sizeof(WORD),1,f);
 
-		if(!(a=malloc(len)))
-		{
-			fclose(f);
-			fclose(f2);
-			return;
-		}
+        SWAP_WORD(tempuw);
 
-		fread(a,len,1,f);
-
-		for(i=0;i<len-10;i++)
-		{
-			if(	!strncmp(a+i,"width="/*-*/,6)	||
-				!strncmp(a+i,"height="/*-*/,7)	||
-				!strncmp(a+i,"workbench"/*-*/,9)||
-				!strncmp(a+i,"screen="/*-*/,7)	||
-				!strncmp(a+i,"window="/*-*/,7)	)
-			{
-				a[i]=';';
-			}
-		}
-
-		fwrite(a,len,1,f2);
-
-		free(a);
-
-// Gestione delle squadre...
-
-		if(!(f3=fopen(TEMP_DIR "leftteam"/*-*/,"wb")))
-		{
-			fclose(f);
-			fclose(f2);
-			return;
-		}
-
-		ReadTeam(f,&s);
-		WriteTeam(f3,&s);
-
-		fclose(f3);
-
-		if(!(f3=fopen(TEMP_DIR "rightteam"/*-*/,"wb")))
-		{
-			fclose(f);
-			fclose(f2);
-			return;
-		}
-
-		ReadTeam(f,&s);
-		WriteTeam(f3,&s);
-
-		fclose(f3);
-
-		fread(&highsize,sizeof(WORD),1,f);
-
-		fprintf(f2,"highsize=%ld\n"/*-*/,(LONG)highsize);
-
-		if(wb_game)
-			fprintf(f2,"workbench\n"/*-*/);
-		else if(display_id)
-			fprintf(f2,"displayid=%ld\noverscan=%ld\n"/*-*/,display_id,overscan );
-
-		if( (wb_game&&public_screen) || !public_screen)
-			fprintf(f2,"width=%ld\nheight=%ld\n"/*-*/,WINDOW_WIDTH,WINDOW_HEIGHT);
-
-		fclose(f2);
-
-// Gestione del file di highlight vero e proprio...
+        highsize = tempuw;
+        
+// Here we handle the REAL highlight...
 
 		if(!(f2=fopen(TEMP_DIR "high"/*-*/,"wb")))
 		{
@@ -736,24 +679,19 @@ void LoadHigh(char *file)
 			return;
 		}
 
-		len=highsize*MAX_PLAYERS*sizeof(ULONG)+matchstatus_size+sizeof(WORD);
-
-		if(!(a=malloc(len)))
-		{
-			fclose(f);
-			fclose(f2);
-			return;
-		}
-
-		fread(a,len,1,f);
-		fwrite(a,len,1,f2);
-		fclose(f2);
-
-		free(a);
-
+        while(!feof(f)) {
+            unsigned char c = fgetc(f);
+            fputc(c, f2);
+        }
+        
+        fclose(f2);
 		fclose(f);
+        
+        highlight = TRUE;
 
-		StartGame();
+        StartGame();
+
+        highlight = FALSE;
 
 		ChangeMenu(current_menu);
 	}
