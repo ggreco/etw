@@ -675,10 +675,10 @@ int query[]=
 	/* Blu */
 // Query1
 	/* AC: There was an overlap with the keys used by the game.
-	 * At the moment the new definitions have been chosen "a casaccio"
+	 * At the moment the new definitions have been chosen "randomly"
 	 */
-	SDLK_g,SDLK_n,SDLK_b,SDLK_v, // dir: up->clockwise (s->c->x->z)
-	SDLK_e,SDLK_r,
+	SDLK_s,SDLK_c,SDLK_x,SDLK_z, // dir: up->clockwise (s->c->x->z)
+	SDLK_v,SDLK_b,
 	SDLK_j,SDLK_m,SDLK_LSHIFT,SDLK_TAB
 };
 
