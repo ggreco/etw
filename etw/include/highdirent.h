@@ -1,8 +1,17 @@
 #if !defined(HIGHDIRENT_H)
 
 #define HIGHDIRENT_H
-
-#if defined(WIN) && !defined(WIN32)
+/*
+ * 19/07/04 AC: With the old preprocessor command:
+ *
+ *  #if defined(WIN) && !defined(WIN32)
+ *
+ * doesn't compile with MSDev and also BorlandC++...
+ * In the project was defined both values, and I think that
+ * WIN32 is defined from some Windows default header used by
+ * this compilers.
+ */
+#if defined(WIN) || defined(WIN32)
 
 #include <io.h>
 
