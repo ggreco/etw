@@ -1,6 +1,6 @@
 CC = gcc
 DEBUG = 
-CFLAGS = -Wall -Wno-char-subscripts `sdl-config --cflags;gtk-config --cflags` -fwritable-strings -Iinclude -g
+CFLAGS = -Wall -Wno-char-subscripts `sdl-config --cflags;gtk-config --cflags` -fwritable-strings -Iinclude -O2
 LFLAGS = `sdl-config --libs;gtk-config --libs`
 DEFINES = -DLINUX -DCD_VERSION
 
