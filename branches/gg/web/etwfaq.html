@@ -1,0 +1,209 @@
+<HTML>
+<head>
+<title>Eat The Whistle F.A.Q.</title>
+</head>
+<body background=images/background.gif
+BGCOLOR="#cccccc" TEXT="#000000" LINK="#ff0000" ALINK="#000000" VLINK="#990000">
+<br><br>
+<center><img src=images/line.gif></center>
+<center><h1>Eat The Whistle FAQ</h1></center>
+<center><img src=images/line.gif></center>
+<p>
+These are the Eat The Whistle Frequently Asked Questions, this document
+is mantained by <a href="mailto:gabriele.greco@aruba.it">Gabriele Greco</a>, please mail him new
+FAQ entry and, if possible, the correct answer :)
+<p>
+
+<h3>Index</h3>
+<ul>
+<li><a href="#q1">Where can I get the ETW 1.2 patch?</a>
+<li><a href="#q2">There will be future version of ETW?</a>
+<li><a href="#q3">Penalties has strange problems...</a>
+<li><a href="#q4">I'm unable to load a league I saved!</a>
+<li><a href="#q5">It's possible to use Sensible teams with Eat The Whistle?</a>
+<li><a href="#q6">Highlights sometimes crash my computer.</a>
+<li><a href="#q7">Why ETW is shipped without printed manual?</a>
+<li><a href="#q8">It's possible to install ETW-CD to the hard disk?</a>
+<li><a href="#q9">Why is ETW so slow during the match loading?</a>
+<li><a href="#q10">The game freezes for some time while it is loading the crowd samples from the CD...</a>
+<li><a href="#q11">Eat The Whistle doesn't work in my 16/24bit workbench.</a>
+<li><a href="#q12">Where I can find more info about ETW?</a>
+<li><a href="#q13">I'm unable to play more than one match with each team in a league!</a>
+</ul>
+<p>
+<center><img src=images/line.gif></center>
+<p>
+<ul>
+<li><a name="q1"></a><b>Where can I get the ETW 1.2 patch?</b>
+<p>
+The ETW 1.2 patch is available in aminet in the directory game/patch,
+the archive name is <b>ETW-CD12p.lha</b> and the file length is about 60k. You can
+download the patch clicking <a href="bin/ETW-CD12p.lha">here</a>.
+You can find it also in the <a href="http://www.aspide.it/freeweb/hurricane/">Hurricane Studios web site</a>.
+<p>
+Here are some of the 1.2 news:
+<p>
+ <ul>
+ <li>Improved leagues support, now you can play national leagues!
+ <li>AHI support.
+ <li>New menu option: Reset current.
+ <li>Linesmen are now on the field.
+ <li>Optimized audio code.
+ <li>Collision with peoples outside the pitch.
+ </ul>
+</li><p>
+Here are some of the 1.1 news:
+<p>
+ <ul>
+ <li>New menu option: Golden Goal
+ <li>New option to play again a match without reloading.
+ <li>Added keyboard control (two different types, see manual)!
+ <li>Now ETW works correctly also in 16/24/32bit Workbenches!
+ <li>Now option Audio2Fast to speed up spoken comment/crowd loading.
+ <li>ASCII manual.
+ <li>Resolved problems in the "load league/cup" option.
+ <li>Resolved problems with penalty shoot-out.
+ <li>New menu option: Force SBuffer
+ </ul>
+</li><p>
+
+<li><a name="q2"></a><b>There will be future version of ETW?</b>
+<p>
+There will be at least another patch, since there are a few things that
+don't work yet as we want, maybe if the game sells enough copies that
+we'll release a 98/99 version with a lot of new features. Anyway check
+always Aminet for news about ETW.
+<p>
+</li><p>
+
+<li><a name="q3"></a><b>Penalties has strange problems...</b>
+<p>
+Get ETW 1.2 patch.
+</li><p>
+
+
+<li><a name="q4"></a><b>I'm unable to load a league I saved!</b>
+<p>
+Get ETW 1.2 patch, the bug was in the load routine, so your saved league
+is not lost.
+</li><p>
+
+
+<li><a name="q5"></a><b>It's possible to use Sensible teams with Eat The Whistle?<p></b>
+
+YES, the conversion tool is available <a href=bin/SWOS2ETW.lha>HERE</a> and
+in aminet, it's distributed with source code!
+</li><p>
+
+
+<li><a name="q6"></a><b>Highlights sometimes crash my computer.<p></b>
+
+The highlight viewing code is not yet totally bug free, since ETW has a
+LOT of options it's quite difficult for the viewing code to recreate
+exactly the original situation so it may fail, if you have an highlight
+that crashes your machine send it to <a href="mailto:gabriele.greco@aruba.it">me</a>, it will be
+useful to make finally the highlight code totally bug free!
+
+</li><p>
+
+<li><a name="q7"></a><b>Why ETW is shipped without printed manual?<p></b>
+
+We gave the ASCII manual to the distributor months before the CD print, but
+for some technical delays the printed manual hasn't be placed in the CDs,
+maybe if ETW will be reprinted the new CDs will have it :)
+Anyway the 1.2 patch is distributed with the ASCII version of the manual, you
+can find it also <a href="bin/ETW-Manual.lha">here</a>.
+</li><p>
+
+<li><a name="q8"></a><b>It's possible to install ETW-CD to the hard disk?<p></b>
+
+<b>YES</b>, simply make a drawer and copy the whole contents of the CD-ROM to the
+drawer, then you can delete the files that you don't need, for instance
+the intro/#?.anim if you don't want to see the game intros and the spoken
+comment languages that you don't need (in the speak directory).
+You can also delete the developer directory if you are not intrested in
+the developer tools!
+
+The <b>1.2</b> update script allows also to do a complete installation manually.
+</li><p>
+
+<li><a name="q9"></a><b>Why is ETW so slow during the match loading?<p></b>
+
+Because to work in a system friendly way it has to convert every player image
+to the native screen display format (550*4 for the players, black and whites, 200
+for the refree, 300 for the goalkeepers...), this process can be speeded up
+a lot if you own a graphics card or <b>CGX-AGA</b> with <b>PLANES2FAST</b> enabled.
+ETW 1.1+ has an option to play the same friendly match more times without
+having to reload everything.
+
+</li><p>
+
+<li><a name="q10"></a><b>The game freezes for some time while it is loading the crowd samples from the CD...<p></b>
+
+Probably you have an ATAPI CD-Rom that does CPU transfer instead of DMA ones,
+to solve this install the game to the HD, if you have upgraded ETW to 1.1+
+you can also try the <b>AUDIO TO FAST</b> option that copies the crowd samples /
+spoken comment to RAM before the start of the game.
+
+</li><p>
+
+<li><a name="q11"></a><b>Eat The Whistle doesn't work in my 16/24bit workbench.<p></b>
+
+ETW 1.0 was incompatible with the 16/24bit CGX modes (but works correctly with
+P96 ones), the 1.1+ solves this, provided you have cgxsystem.library <b>41.20</b> or 
+newer (the older ones had a bug on the chunky->true color blitting routine.
+
+</li><p>
+
+<li><a name="q12"></a><b>Where I can find more info about ETW?<p></b>
+
+If you don't own ETW you can get a demo of it in Aminet, the demo is placed
+in the directory game/demo and it's called ETW_DEMO.lha (600k), click 
+<a href="bin/ETW_Demo.lha">here</a> to download it from this page!.
+<p>
+You can buy ETW through <a href="http://www.epicmarketing.ltd.net">Epic Marketing web site</a> or
+at the follwing addresses (maybe also from your nearest amiga store):
+<p>
+<b>Germany</b>:<br>
+Epic Marketing<br>
+Hirschauer Str. 9<br>
+72070 Tuebingen<br>
+07071/400492<br>
+<p>
+<b>UK</b>:<br>
+Epic Marketing<br>
+BSS House-Area 50<br>
+Cheney Manor<br>
+Swindon, Wilts<br>
+01793/432176<br>
+<p>
+
+You can find the latest official patches to ETW in Aminet in the directory 
+game/patch (latest is V1.2) or get it <a href="bin/ETW-CD12p.lha">here</a>!
+<p>
+<b>ETW related sites</b>:
+<ul>
+<li><a href="http://www.aspide.it/freeweb/hurricane/">Hurricane Studios WEB site</a> 
+<li><a href="http://members.tripod.com/~GabrieleGreco/">Gabriele Greco WEB site</a>
+</ul>
+<p>
+<b>ETW E-Mail</b>:
+<ul>
+<li><a href="mailto:gabriele.greco@aruba.it">Gabriele Greco (code)</a>
+<li><a href="mailto:danic@floating.com">Daniele Caramaschi (graphics)</a>
+<li><a href="mailto:epic@swol.de">Thomas Steiding (marketing)</a>
+</ul>
+</li><p>
+<li><a name="q13"></a><b>I'm unable to play more than one match with each team in a league!</b>
+<p>
+Get ETW 1.2 patch.
+</li><p>
+
+</ul>
+<center><img src=images/line.gif></center>
+<center><address>
+<img align=middle src=images/mail.gif>gabriele.greco@aruba.it, <A HREF="mailto:gabriele.greco@aruba.it"> Gabriele Greco</A>,
+Last updated: Fr Jan 8th 1999 </address></center>
+<br>
+</body>
+</html>
