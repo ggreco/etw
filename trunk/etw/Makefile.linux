@@ -1,8 +1,9 @@
 CC = gcc
-DEBUG = 
-CFLAGS = -Wall -Wno-char-subscripts `sdl-config --cflags;gtk-config --cflags` -fwritable-strings -Iinclude -g
+
+CFLAGS = -Wall -Wno-char-subscripts -g `sdl-config --cflags;gtk-config --cflags` -fwritable-strings -fsigned-char -Iinclude
+
 LFLAGS = `sdl-config --libs;gtk-config --libs`
-DEFINES = -DLINUX -DCD_VERSION
+DEFINES = -DLINUX -DCD_VERSION -D_DEBUG
 
 OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
 	anim.o crowd.o intro.o os_control.o squadre.o \
