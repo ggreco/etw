@@ -43,7 +43,10 @@ void init_crowd(void)
 	}
 
 	busy[AUDIO_CROWD] = sound[FONDO];
-	busy[AUDIO_CROWD]->Offset = 0;
+
+    if (busy[AUDIO_CROWD])
+    	busy[AUDIO_CROWD]->Offset = 0;
+    D(else bug("*** busy[CROWD] NULL in init_crowd()!"));
 }
 
 struct SoundInfo *handle_crowd(void)
