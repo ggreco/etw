@@ -8,20 +8,20 @@
 
 typedef void	       *APTR;	    /* 32-bit untyped pointer */
 #if !defined(_WINNT_H) && !defined(_WINNT_)
-typedef long		LONG;	    /* signed 32-bit quantity */
+typedef signed long	LONG;	    /* signed 32-bit quantity */
 typedef unsigned long	ULONG;	    /* unsigned 32-bit quantity */
 #endif
 
 #if !defined( _WINDEF_H) && !defined(_WINDEF_)
 #ifndef WORD
-typedef short		WORD;	    /* signed 16-bit quantity */
+typedef signed short	WORD;	    /* signed 16-bit quantity */
 #endif
 #ifndef BYTE
-typedef char		BYTE;
+typedef signed char	BYTE;
 #endif
 typedef unsigned short	RPTR;	    /* signed relative pointer */
 #ifndef BOOL
-typedef int		BOOL;
+typedef unsigned int	BOOL;
 #endif
 #endif /* _WINDEF */
 
