@@ -71,7 +71,7 @@ void HandleGol(void)
 		if(!replay_mode)
 			UrgentSpeaker(S_PALO_COLPITO);
 
-		D(bug("Palo!\n"));
+		D(bug("Pole!\n"));
 
 		if(pl->Stage<(SHOT_LENGTH/2))
 			pl->Stage=(SHOT_LENGTH-1)-pl->Stage;
@@ -104,7 +104,7 @@ void HandleGol(void)
 		p->arbitro.Comando=FISCHIA_GOL;
 		p->arbitro.Tick=0;
 		pl->InGioco=FALSE;
-		D(bug("Rete!\n"));
+		D(bug("Goal!!!\n"));
 		p->goal=TRUE;
 
 		if(arcade)
@@ -574,7 +574,6 @@ void HandleBall(void)
 				if(pl->world_y>=GOAL_Y_S&& 
 					(pl->world_x<(35*8) || pl->world_x>(1239*8) ) )
 				{
-					D(bug("Rimbalzo in porta...\n"));
 					pl->world_y=GOAL_Y_S-1;
 					SmorzaPalla();
 					RimbalzoOrizzontale();
@@ -582,7 +581,6 @@ void HandleBall(void)
 				else if(pl->world_y<=GOAL_Y_N &&
 					(pl->world_x<(41*8) || pl->world_x>(1233*8) ) )
 				{
-					D(bug("Rimbalzo in porta...\n"));
 					pl->world_y=GOAL_Y_N+1;
 					SmorzaPalla();
 					RimbalzoOrizzontale();
@@ -590,14 +588,12 @@ void HandleBall(void)
 
 				if(pl->world_x<(21*8))
 				{
-					D(bug("Rimbalzo in porta...\n"));
 					pl->world_x=(21*8);
 					SmorzaPalla();
 					RimbalzoVerticale();
 				}
 				else if(pl->world_x>(1258*8))
 				{
-					D(bug("Rimbalzo in porta...\n"));
 					pl->world_x=(1258*8);
 					SmorzaPalla();
 					RimbalzoVerticale();
@@ -621,13 +617,13 @@ void HandleBall(void)
 						{
 							pl->world_y=(GOAL_Y_N-16);
 							SmorzaPalla();
-							D(bug("Ribalto la palla (rimbalzo sulla rete)\n"));
+							D(bug("Rebound on the goal\n"));
 							RimbalzoOrizzontale();
 						}
 						else
 						{
 							p->sopra_rete=TRUE;
-							D(bug("palla sopra rete!\n"));
+							D(bug("Ball over the goal!\n"));
 
 							if(pl->world_x>(12*8)&&pl->world_x<(1261*8)&&pl->quota<9)
 								pl->quota=9;				
@@ -646,15 +642,15 @@ void HandleBall(void)
 						if(pl->quota<10&&!p->sopra_rete)
 						{
 							pl->world_y=GOAL_Y_S+16+(5*8);
+							D(bug("Rebound on the goal\n"));
 
 							SmorzaPalla();
-							D(bug("Ribalto la palla (rimbalzo sulla rete)\n"));
 							RimbalzoOrizzontale();
 						}
 						else
 						{
 							p->sopra_rete=TRUE;
-							D(bug("palla sopra rete!\n"));
+							D(bug("Ball over the goal!\n"));
 
 							if(pl->world_x>(12*8)&&pl->world_x<(1261*8)&&pl->quota<9)
 								pl->quota=9;
