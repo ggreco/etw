@@ -29,6 +29,61 @@ struct MatchStatus
 
 struct MatchStatus *match,InitialStatus;
 mytimer StartReplayTime,StopTimeVal;
+int matchstatus_size = sizeof(struct MatchStatus);
+
+void ReadMatch(FILE *f, struct MatchStatus *m)
+{
+    WORD tempw;
+    UWORD tempuw;
+
+    fread(&m->partita, sizeof(m->partita), 1, f);
+    fread(m->squadra, sizeof(m->squadra), 2, f);
+    
+    // ReplayCounter
+    fread(&tempuw, sizeof(tempuw), 1, f);
+    SWAP_WORD(tempuw);
+    m->ReplayCounter = tempuw;
+    
+    // field_y
+    fread(&tempw, sizeof(tempw), 1, f);
+    SWAP_WORD(tempw);
+    m->field_x = tempw;
+
+    // field_x;
+    fread(&tempw, sizeof(tempw), 1, f);
+    SWAP_WORD(tempw);
+    m->field_y = tempw;
+
+    // need_release
+    fread(m->need_release, sizeof(UBYTE), MAX_PLAYERS, f);
+}
+
+void WriteMatch(FILE *f, struct MatchStatus *m)
+{
+    WORD tempw;
+    UWORD tempuw;
+    
+    fread(&m->partita, sizeof(m->partita), 1, f);
+    fread(m->squadra, sizeof(m->squadra), 2, f);
+
+    // ReplayCounter
+    tempuw = m->ReplayCounter;
+    SWAP_WORD(tempuw);
+    fwrite(&tempuw, sizeof(tempuw), 1, f);
+    
+    // field_y
+    tempw = m->field_x;
+    SWAP_WORD(tempw);
+    fwrite(&tempw, sizeof(tempw), 1, f);
+
+    // field_x;
+    tempw = m->field_y;
+    SWAP_WORD(tempw);
+    fwrite(&tempw, sizeof(tempw), 1, f);
+
+    // need_release
+    fwrite(m->need_release, sizeof(UBYTE), MAX_PLAYERS, f);
+}
 
 void StopTime(void)
 {
@@ -536,6 +591,7 @@ void SaveReplay(void)
 {
 	FILE *f;
 	char buffer[16]="t/replay.001";
+    extern struct Squadra_Disk leftteam_dk,rightteam_dk;
 
 	if(real_counter<=match[StartReplaySet].ReplayCounter)
 		return;
@@ -558,54 +614,16 @@ void SaveReplay(void)
 	}
 
 	if ((f=fopen(buffer,"wb"))) {
-		int i;
+		int i, j;
 		FILE *f2;
-		APTR a;
 		WORD temp;
 		long lf;
 		struct MatchStatus *m;
-		struct Squadra_Disk s;
 
+        WriteGameConfig(f);        
 
-// la prima parte del file viene letta da "etw
-
-		if(!(f2=fopen(CONFIG_FILE,"rb"))) {
-			fclose(f);
-			return;
-		}
-
-		fseek(f2,0,SEEK_END);
-		lf=ftell(f2);
-		fseek(f2,0,SEEK_SET);
-		
-		if(!(a=malloc(lf)))	{
-			fclose(f);
-			fclose(f2);
-			return;
-		}
-// da rivedere la endianness!
-
-		fread(a,lf,1,f2);
-		temp=lf;
-		SWAP_WORD(temp);
-		fwrite(&temp,sizeof(WORD),1,f);
-		fwrite(a,lf,1,f);
-
-		free(a);
-	
-		fclose(f2);
-
-		for(i=0;i<2;i++) {
-			if(!(f2=OpenTeam(team_name[i]))) {
-				fclose(f);
-				return;
-			}
-
-			fread(&s,sizeof(struct Squadra_Disk),1,f2);
-			fwrite(&s,sizeof(struct Squadra_Disk),1,f);
-
-			fclose(f2);
-		}
+		WriteTeam(f, &leftteam_dk);
+		WriteTeam(f, &rightteam_dk);
 
 		temp=real_counter-match[StartReplaySet].ReplayCounter+1;
 		SWAP_WORD(temp);
@@ -616,7 +634,7 @@ void SaveReplay(void)
 
 // Da qui viene letto da "game"
 
-		if ((m=malloc(sizeof(struct MatchStatus)))) {
+		if ((m = malloc(sizeof(struct MatchStatus)))) {
 			SWAP_WORD(swaps);
 			fwrite(&swaps,sizeof(WORD),1,f);
 			SWAP_WORD(swaps);
@@ -642,10 +660,17 @@ void SaveReplay(void)
 			if(m->partita.palla.gioc_palla)
 				m->partita.palla.gioc_palla=(Giocatore *)(m->partita.palla.gioc_palla->SNum*11+m->partita.palla.gioc_palla->GNum+1);
 
-			fwrite(m,sizeof(struct MatchStatus),1,f);
+			WriteMatch(f, m);
 
-			for(i=0;i<MAX_PLAYERS;i++)
-				fwrite(&r_controls[i][m->ReplayCounter],sizeof(ULONG),temp,f);
+			for(i=0;i<MAX_PLAYERS;i++) {
+                for (j = 0; j < temp; j++) {
+                    ULONG var = r_controls[i][m->ReplayCounter + j];
+
+                    SWAP_LONG(var);
+                    
+    				fwrite(&var,sizeof(ULONG),1,f);
+                }
+            }
 
 // Qui devo aggiungere il salvataggio delle formazioni.
 
@@ -724,21 +749,26 @@ void LoadHighlight(void)
 
 	if ((fh=fopen(HIGH_FILE,"rb")))	{
 		WORD temp;
-		int i;
+		int i, j;
 
 		D(bug("Loading an highlight...\n"));
 
 		fread(&temp,sizeof(WORD),1,fh);
 		SWAP_WORD(temp);
 
-		fread(&match[0],sizeof(struct MatchStatus),1,fh);
+        ReadMatch(fh, &match[0]);
 
-// Da mettere apposto l'endianness...
+		for(i=0;i<MAX_PLAYERS;i++) {
+            for (j = 0; j < highsize; j++) {
+                ULONG var;
+                
+    			fread(&var,sizeof(ULONG),1,fh);
 
-		for(i=0;i<MAX_PLAYERS;i++)
-			fread(r_controls[i],highsize*sizeof(ULONG),1,fh);
-
-// Idem...
+                SWAP_LONG(var);
+                
+                r_controls[i][j] = var;
+            }
+        }
 
 		fclose(fh);
 
