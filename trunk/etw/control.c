@@ -1162,7 +1162,7 @@ Commentato finche' non aggiungo la fisica del pallone...
 
 		i=0;
 
-		while(g=c_list[i])
+		while ((g=c_list[i]))
 		{
 // Range viene usato per sapere il tipo d'oggetto!
 			r=&ingombri[g->Range];

@@ -1,4 +1,6 @@
 #include "eat.h"
+#include "SDL.h"
+#include "network.h"
 
 BOOL soft_scroll = TRUE, pause_mode = FALSE, use_sound = TRUE;
 BYTE scroll_type = 0;
@@ -107,7 +109,10 @@ void HandleScrolling(void)
 				  world_x >> 3) - field_x + 5;
 			ys = (p->squadra[1]->giocatore[scroll_type - 13].
 				  world_y >> 3) - field_y + 16;
-		}
+		} else {
+            D(bug("WARNING, undefined scrolltype!"));
+            xs = ys = 0; // scrolltype undefined
+        }
 	}
 
 	if (pl->gioc_palla)

@@ -37,7 +37,7 @@ void init_crowd(void)
 
 		corobuffer[14] = MyRangeRand(9) + '1';	// Carico da coro 1 a coro 9
 
-		if (Coro[coro_attuale] = LoadSound(corobuffer)) {
+		if ((Coro[coro_attuale] = LoadSound(corobuffer))) {
 			convert_sound(Coro[coro_attuale]);
 
 			if(sound[FONDO])
