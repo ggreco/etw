@@ -355,11 +355,8 @@ void EraseBox(WORD button)
 		draw(Pens[P_ROSSO1], b->X2 + 1, b->Y2 + 1, b->X1 - 1, b->Y2 + 1);
 		draw(Pens[P_ROSSO1], b->X1 - 1, b->Y2 + 1, b->X1 - 1, b->Y1);
 	} else if (current_menu < MENU_GAME_PREFS
-			   || current_menu > MENU_SYSTEM_PREFS
-			   || button == actual_menu->NumeroBottoni - 1
-		// AC: Patch for Keyboard and Joystick Configuration buttons
-		|| (current_menu == MENU_SYSTEM_PREFS &&
-			button >= actual_menu->NumeroBottoni -3)) {
+			   || current_menu > MENU_AUDIO_PREFS
+			   || button == actual_menu->NumeroBottoni - 1) {
 		struct Bottone *b = &actual_menu->Bottone[button];
 
 		bltchunkybitmap(back, b->X1 - 1, b->Y1 - 1, main_bitmap,
@@ -396,11 +393,8 @@ void EraseBox(WORD button)
 
 void DrawBox(WORD button)
 {
-	if (current_menu < MENU_GAME_PREFS || current_menu > MENU_SYSTEM_PREFS
-		|| button == actual_menu->NumeroBottoni - 1
-		// AC: Patch for Keyboard and Joystick Configuration buttons
-		|| (current_menu == MENU_SYSTEM_PREFS &&
-			button >= actual_menu->NumeroBottoni -3)) {
+	if (current_menu < MENU_GAME_PREFS || current_menu > MENU_AUDIO_PREFS
+		|| button == actual_menu->NumeroBottoni - 1) {
 		struct Bottone *b = &actual_menu->Bottone[button];
 
 		draw(Pens[P_GIALLO], b->X1 - 1, b->Y1 - 1, b->X2 + 1, b->Y1 - 1);
@@ -1410,6 +1404,11 @@ BOOL HandleJoy(ULONG joystatus)
 			MoveMark(+2);
 		}
 		break;
+#if 0	
+	/* At the moment is too complex reordering the menu in order
+	 * to have EraseBox/DrawBox and HandleJoy working same way for
+	 * all the options menu.
+	 */
 	case MENU_SYSTEM_PREFS:
 		/* There is an erratic behavior, when the button for
 		 * Joy configuration is hidden.
@@ -1426,6 +1425,7 @@ BOOL HandleJoy(ULONG joystatus)
 				MoveMark(+2);
 		}
 	break;
+#endif
 	case MENU_TEAM_SELECTION:
 		if (actual_button < 64) {
 			if (joystatus & JPF_JOY_UP) {

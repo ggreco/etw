@@ -132,6 +132,10 @@ SYSTEM
 	saved game but introduces remarkable problems (played games to replay and a
 	strange day with Argentine against all!).
 
+7) Loading a wrong Teams file, even if the game seems to manage the eventuality,
+   provokes a crash subsequently, when a valid file is loaded and then it is
+   tried to begin a league.
+
 
 NETWORK
 -------
