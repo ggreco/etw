@@ -424,9 +424,9 @@ void FreeStuff(void)
 
 BOOL LoadStuff(void)
 {
+    int i;
     save_back = FALSE;			/* Non mi interessa conservare gli sfondi */
     use_clipping = TRUE;		/* Voglio vedere gli omini parzialmente fuori dallo schermo */
-    int i;
 
     //	srand((int) time(NULL));
 
