@@ -1,3 +1,6 @@
+// this is a fix for OSX
+#define MoveTo MyMoveTo
+
 extern struct Giocatore_Disk Riserve[2][12];
 extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,team_b,TotaleRiserve[2],NumeroTattiche;
 extern char team_name[2][16],fieldname[24],palette[24],shirt[2][24];
