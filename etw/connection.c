@@ -394,8 +394,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 	use_scaling=FALSE;
 
 	/* AC: Stranamente non veniva usata la define. */ 
-	if((f=fopen(RESULT_FILE,"r")))
-	{
+	if((f=fopen(RESULT_FILE, "r")))	{
 		char buffer[20];
 		int i,l;
 
@@ -422,13 +421,10 @@ WORD StartMatch(BYTE team1,BYTE team2)
 		{
 			int gol_a=0,gol_b=0;
 
-			if(sscanf(buffer,"%d-%d",&gol_a,&gol_b)==2)
-			{
-/* AC: Il problema deve essere in teams_swapped. Qualche volta dovrebbe
- * essere a TRUE e non lo è.
- */
-				if(team_swap)
-				{
+			if(sscanf(buffer,"%d-%d",&gol_a,&gol_b)==2)	{
+                D(bug("Result before swap %d-%d\n", gol_a, gol_b));
+                
+				if(team_swap != arcade) { // this is the fix for the arcade match bug
 					int s;
 
 					s=gol_a;
@@ -436,11 +432,12 @@ WORD StartMatch(BYTE team1,BYTE team2)
 					gol_b=s;
 				}
 
+                D(bug("Result after swap %d-%d\n", gol_a, gol_b));
+                
 				risultato=gol_a | (gol_b<<8); 
 			}
 
-			if(!arcade_teams&&!training)
-			{
+			if(!arcade_teams&&!training) {
 				int yl=FixedScaledY(125);
 				int yr;
 				char *c=buffer,*d;
@@ -632,7 +629,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 		ChangeMenu(parent_menu);
 	else 
 	{
-		D(bug("Non cambio! Parent menu: %ld\n"/*-*/,parent_menu));
+		D(bug("No menu change! Parent menu: %ld\n"/*-*/,parent_menu));
 	}
 
 	return risultato;

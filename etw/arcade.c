@@ -51,7 +51,7 @@ void AddArcadeEffect(Giocatore *g,UBYTE effect)
 	switch(effect)
 	{
 		case ARCADE_GLUE:
-			g->ArcadeCounter=300; // 6 secondi di durata;
+			g->ArcadeCounter=400; // 8 secondi di durata;
 			g->ArcadeEffect=effect;	
 			break;
 		case ARCADE_SPEED:
@@ -60,11 +60,11 @@ void AddArcadeEffect(Giocatore *g,UBYTE effect)
 				g->OldStat+=3;
 
 			g->Velocita=9;
-			g->ArcadeCounter=400; // 8 secondi di durata;
+			g->ArcadeCounter=500; // 10 secondi di durata;
 			g->ArcadeEffect=effect;				
 			break;
 		case ARCADE_CANNON:
-			g->ArcadeCounter=400; // 8 secondi di durata;
+			g->ArcadeCounter=500; // 10 secondi di durata;
 			g->ArcadeEffect=effect;
 			break;
 		case ARCADE_FREEZE:
@@ -73,7 +73,7 @@ void AddArcadeEffect(Giocatore *g,UBYTE effect)
 				Squadra *s=p->squadra[g->SNum^1];
 
 				s->ArcadeEffect=ARCADE_FREEZE;
-				s->ArcadeCounter=300; // 6 secondi di durata.
+				s->ArcadeCounter=400; // 8 secondi di durata.
 
 				for(i=0;i<10;i++)
 				{

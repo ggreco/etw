@@ -400,7 +400,7 @@ void load_config(FILE *f)
 void read_menu_config(void)
 {
 	FILE *f;
-	D(bug("Leggo la configurazione...\n"/*-*/));
+	D(bug("Reading configuration...\n"/*-*/));
 
 	f=fopen("etw.cfg"/*-*/,"r");
 
@@ -415,7 +415,7 @@ void write_config(char *dest)
 {
 	FILE *f;
 
-	D(bug("Scrivo la configurazione...\n"/*-*/));
+	D(bug("Writing configuration...\n"/*-*/));
 
 	if ((f = fopen(dest,"w"))) {
 // Obsoleto		fprintf(f,"players=%ld\n"/*-*/,players);
