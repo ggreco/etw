@@ -74,9 +74,9 @@ ULONG MyReadJoyPort(ULONG l)
 				mask|=JPF_BUTTON_YELLOW;
 			if(SDL_JoystickGetButton(joy[l],joycfg_buttons[l][3]))
 				mask|=JPF_BUTTON_GREEN;
-			if(SDL_JoystickGetButton(joy[l],joycfg_buttons[l][4]))
-				mask|=JPF_BUTTON_FORWARD;
 			if(SDL_JoystickGetButton(joy[l],joycfg_buttons[l][5]))
+				mask|=JPF_BUTTON_FORWARD;
+			if(SDL_JoystickGetButton(joy[l],joycfg_buttons[l][4]))
 				mask|=JPF_BUTTON_REVERSE;
 
 			if(joybuttons[l]>6)

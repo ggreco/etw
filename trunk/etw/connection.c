@@ -109,6 +109,7 @@ extern UBYTE team_a,team_b;
 extern BYTE player_type[4],role[4],current_field;
 extern char shirt[2][24],palette[24],fieldname[24];
 extern LONG time_length;
+extern BOOL use_offside;
 BYTE field;
 
 WORD StartMatch(BYTE team1,BYTE team2)
@@ -214,9 +215,15 @@ WORD StartMatch(BYTE team1,BYTE team2)
 			rightteam_dk.maglie[0]=rightteam_dk.maglie[1];
 	}
 
-	if(training)
+	if(training) {
 		rightteam_dk.maglie[0]=rightteam_dk.maglie[1];
-
+    }
+    else if (offside) {
+        use_offside = TRUE;
+    }
+    else
+        use_offside = FALSE;
+    
 	sprintf(shirt[0],"gfx/play%lc%lc%lc.obj"/*-*/,
 			( (nightgame||arcade) ? 'n' : 'e'),
 			( (field==8&&!arcade) ? 's' : 'r'),
