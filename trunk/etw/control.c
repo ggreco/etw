@@ -132,39 +132,30 @@ void MoveNonControlled(void)
               )
             {
 
-                if(pl->gioc_palla)
-                {
-                    if(pl->gioc_palla->ArcadeEffect==ARCADE_GLUE)
+                if (pl->gioc_palla) {
+                    if (pl->gioc_palla->ArcadeEffect == ARCADE_GLUE)
                         goto skipchange;
 
-                    if(g->AnimType!=GIOCATORE_SCIVOLATA)
-                    {
-                        if(pl->gioc_palla->Tecnica>(g->Contrasto+2+GetTable()))
-                        {
+                    if (g->AnimType != GIOCATORE_SCIVOLATA) {
+                        if (pl->gioc_palla->Tecnica > (g->Contrasto+2+GetTable())) {
                             g->ActualSpeed=0;
                             DoSpecialAnim(g,GIOCATORE_CONTRASTO);
                             goto skipchange;
                         }
 
-                        if(GetTable()>2)
-                        {
+                        if (GetTable()>2) {
                             DoSpecialAnim(pl->gioc_palla,GIOCATORE_CONTRASTO);
                         }
-                        else
-                        {
+                        else {
                             DoSpecialAnim(pl->gioc_palla,GIOCATORE_CADUTA);
                         }
 
                         pl->gioc_palla->ActualSpeed=0;
-
                     }
-                    else
-                    {
-                        if(GetTable()>1)
-                        {
+                    else {
+                        if (GetTable() > 1) {
 
-                            switch(GetTable())
-                            {
+                            switch (GetTable()) {
                                 case 4:
                                 case 5:
                                     //								PlayIfNotPlaying(BOOU);
@@ -178,22 +169,18 @@ void MoveNonControlled(void)
                                     break;
                             }
 
-                            if(pl->gioc_palla->ActualSpeed>0)
-                            {
+                            if (pl->gioc_palla->ActualSpeed > 0) {
                                 DoSpecialAnim(pl->gioc_palla,GIOCATORE_CADUTA);
                                 pl->gioc_palla->ActualSpeed=1;
                                 CheckInfortuni(pl->gioc_palla);
                             }
-                            else
-                            {
-                                if(GetTable()>2)
-                                {
+                            else {
+                                if(GetTable() > 2) {
                                     DoSpecialAnim(pl->gioc_palla,GIOCATORE_CADUTA_FERMO);
                                     CheckInfortuni(pl->gioc_palla);
                                     // Qui il codice di gestione dell'infortunio
                                 }
-                                else
-                                {
+                                else {
                                     DoSpecialAnim(pl->gioc_palla,GIOCATORE_CADUTA_CARPONI);
                                 }
                             }
@@ -289,78 +276,62 @@ void MoveNonControlled(void)
                     g->WaitForControl=0;
 
                     if(s->Joystick<0)
-                    {
                         while((s->Schema=GetTable())>3);
-                    }
 
-                    ChangeControlled(s,i);
+                    ChangeControlled(s, i);
 
-                    pl->world_x=avanzamento_x[g->Direzione]+g->world_x;
-                    pl->world_y=avanzamento_y[g->Direzione]+g->world_y;
+                    pl->world_x = avanzamento_x[g->Direzione]+g->world_x;
+                    pl->world_y = avanzamento_y[g->Direzione]+g->world_y;
 
 skipchange:
                     PlayIfNotPlaying(CONTRASTO);
                 }
-                else
-                {
-                    if(pl->velocita<(g->Tecnica+11-g->ActualSpeed))
-                    {
-                        if(!g->ActualSpeed&&g->AnimType!=GIOCATORE_SCIVOLATA)
-                        {
-                            if(pl->quota<3)
-                            {
-                                DoSpecialAnim(g,GIOCATORE_STOP_PIEDE);
+                else { // if the ball is not owned by a player
+                    if (pl->velocita < (g->Tecnica + 12 - g->ActualSpeed - pl->quota)) { // changed to be more difficult with the quota
+                        if (!g->ActualSpeed && 
+                             g->AnimType != GIOCATORE_SCIVOLATA) {
+                            if (pl->quota < 3) {
+                                DoSpecialAnim(g, GIOCATORE_STOP_PIEDE);
                             }
-                            else
-                            {
-                                DoSpecialAnim(g,GIOCATORE_STOP_PETTO);
+                            else {
+                                DoSpecialAnim(g, GIOCATORE_STOP_PETTO);
                             }
                         }
-
-                        //				TogliPalla(); Non serve, pl->gioc_palla=NULL!
-
 
                         pl->quota=0;
                         g->WaitForControl=0;
 
-                        if(g->AnimType==GIOCATORE_SCIVOLATA&&pl->velocita>4)
-                        {
-                            g->ActualSpeed=0;
-                            DoSpecialAnim(g,GIOCATORE_ALZATI);
-                            pl->MaxQuota=1+GetTable();
-                            pl->velocita+=(GetTable()-2);
-                            pl->Direzione=(g->SpecialData<<3);
+                        if(g->AnimType == GIOCATORE_SCIVOLATA &&
+                           pl->velocita > 4) {
+                            g->ActualSpeed = 0;
+                            DoSpecialAnim(g, GIOCATORE_ALZATI);
+                            pl->MaxQuota = 1+GetTable();
+                            pl->velocita += (GetTable()-2);
+                            pl->Direzione = (g->SpecialData<<3);
 
-                            pl->Direzione+=2;
+                            pl->Direzione += 2;
 
-                            s->Possesso=1;
-                            p->squadra[g->SNum^1]->Possesso=0;
+                            s->Possesso = 1;
+                            p->squadra[g->SNum^1]->Possesso = 0;
 
                             PlayIfNotPlaying(CONTRASTO);
 
-                            pl->TipoTiro=TIRO_RASOTERRA;
-                            pl->Stage=0;
+                            pl->TipoTiro = TIRO_RASOTERRA;
+                            pl->Stage = 0;
                             UpdateBallSpeed();
                             UpdateShotHeight();
                         }
-                        else
-                        {
+                        else {
                             DaiPalla(g);
-                            g->WaitForControl=0;
-                            pl->world_x=avanzamento_x[g->Direzione]+g->world_x;
-                            pl->world_y=avanzamento_y[g->Direzione]+g->world_y;
+                            g->WaitForControl = 0;
+                            pl->world_x = avanzamento_x[g->Direzione]+g->world_x;
+                            pl->world_y = avanzamento_y[g->Direzione]+g->world_y;
                         }
 
                         ChangeControlled(s,i);
-
                     }
-                    else
-                    {
-                        /* Questo codice viene eseguito quando la palla e' troppo potente per essere bloccata
-                           dal giocatore.
-                         */
-
-                        // Cambio il possesso di palla
+                    else {
+/* the ball is too fast for the player */
                         s->Possesso=1;
                         p->squadra[g->SNum^1]->Possesso=0;
 

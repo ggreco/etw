@@ -212,14 +212,13 @@ WORD StartMatch(BYTE team1,BYTE team2)
 			rightteam_dk.maglie[0]=rightteam_dk.maglie[1];
 	}
 
+    use_offside = FALSE;
+    
 	if(training) {
 		rightteam_dk.maglie[0]=rightteam_dk.maglie[1];
     }
-    else if (offside) {
+    else if (offside)
         use_offside = TRUE;
-    }
-    else
-        use_offside = FALSE;
     
 	sprintf(shirt[0],"gfx/play%lc%lc%lc.obj"/*-*/,
 			( (nightgame||arcade) ? 'n' : 'e'),
