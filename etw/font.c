@@ -63,7 +63,7 @@ BOOL InitFonts(void)
 
 	if ((gtf = openfont(GAME_FONT))) {
 		setfont(gtf);
-		D(bug("Font aperto correttamente.\n"));
+		D(bug("Font opened.\n"));
 	} else {
 		printf("Unable to open the ETW font!\n");
 		return FALSE;
@@ -829,7 +829,7 @@ void ShowFinal(void)
 	if (s->Joystick >= 0) {
 		bitmap mask;
 
-		D(bug("Mostro la sequenza finale...\n"));
+		D(bug("Showing final sequence...\n"));
 
 		if (pause_gfx) {
 			FreeGfxObj(pause_gfx);
@@ -908,6 +908,6 @@ void ShowFinal(void)
 			free(mask);
 		}
 	} else {
-		D(bug("Il vincente non e' un giocatore umano...\n"));
+		D(bug("Winner is not an human player...\n"));
 	}
 }

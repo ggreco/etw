@@ -384,7 +384,7 @@ void FreeStuff(void)
 
 	LiberaPartita(p);
 
-    D(bug("Libero lo scaling...\n"));
+    D(bug("Freeing scaling data...\n"));
     
     if(scaling) {
         free(scaling->Src);
@@ -394,10 +394,10 @@ void FreeStuff(void)
         scaling = NULL;
     }
     
-	D(bug("Libero i buffers del replay...\n"));
+	D(bug("Freeing replay buffers...\n"));
 	FreeReplayBuffers();
 
-	D(bug("Libero i fonts...\n"));
+	D(bug("Freeing fonts...\n"));
 	FreeFonts();
 
 #ifdef LOAD_ALL
@@ -418,7 +418,7 @@ void FreeStuff(void)
 
 	if (!no_sound || (replay_mode && !was_using_nosound)) {
 // non libero piu' il sound system, lo condivido tra menu' e game
-		D(bug("Dealloco/chiudo i suoni.\n"));
+		D(bug("Freeing sounds.\n"));
 		LiberaSuoni();
 	}
 
@@ -452,7 +452,7 @@ BOOL LoadStuff(void)
 #ifdef USE_TRIPLE
 		triple_buffering = TRUE;
 #endif
-		D(bug("Carico la palette dei menu...\n"));
+		D(bug("Loading menu palette...\n"));
 
 #ifndef DEMOVERSION
 		if (!LoadIFFPalette("gfx/eat16menu.col"))
@@ -467,7 +467,7 @@ BOOL LoadStuff(void)
 		use_remapping = TRUE;
 
 		if (!(Colors = RemapIFFPalette(palette, Pens))) {
-			D(bug("Non posso rimappare la palette.\n"));
+			D(bug("Unable to remap palette.\n"));
 			return FALSE;
 		}
 	}
@@ -481,7 +481,7 @@ BOOL LoadStuff(void)
 	}
 
 	if (scaling) {
-		D(bug("Inizializzo lo scaling...\n"));
+		D(bug("Initializing scaling...\n"));
 
 		scaling->Dest = main_bitmap;
 		scaling->DestWidth = WINDOW_WIDTH;
@@ -504,7 +504,7 @@ BOOL LoadStuff(void)
 						FIXED_SCALING_HEIGHT;
 					WINDOW_WIDTH = bitmap_width;
 					WINDOW_HEIGHT = bitmap_height;
-					D(bug("Scaling inizializzato correttamente!\n"));
+					D(bug("Scaling correctly initialized!\n"));
 				} else {
 					free(scaling->XRef);
 					free(scaling->Src);
@@ -787,7 +787,7 @@ BOOL LoadStuff(void)
 				MakeResult();
 			}
 
-			D(bug("Alloco i buffer per il replay...\n"));
+			D(bug("Allocating replay buffers...\n"));
 
 			if (!AllocReplayBuffers()) {
 				FreeStuff();
@@ -802,7 +802,7 @@ BOOL LoadStuff(void)
 				memset(main_bitmap, Pens[P_NERO],
 					   bitmap_width * bitmap_height);
 
-				D(bug("Ultimo swap prima del via...\n"));
+				D(bug("Last swap before match...\n"));
 
 				ScreenSwap();
 
@@ -865,7 +865,7 @@ int game_main(void)
 
 	remove(TEMP_DIR "lock");
 
-	D(bug("Fine!\n"));
+	D(bug("Match end!\n"));
 
 	return 0;
 }

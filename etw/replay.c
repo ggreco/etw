@@ -488,12 +488,12 @@ void EndReplay(void)
 	EndReplayTime=Timer();
 
 
-	D(bug("Fine replay (%ld) - TabCounter: %ld\n",counter,p->TabCounter));
+	D(bug("Replay end (%ld) - TabCounter: %ld\n",counter,p->TabCounter));
 
 
 	if(old_tc!=p->TabCounter)
 	{
-		D(bug("Errore nel replay, ne ripristino la coerenza...\n"));
+		D(bug("*** Error in replay sequence, forcing coherency...\n"));
 		LoadReplay(OriginalReplaySet);
 	}
 
@@ -535,7 +535,7 @@ void EndReplay(void)
 void SaveReplay(void)
 {
 	FILE *f;
-	char buffer[16]="t:replay.001";
+	char buffer[16]="t/replay.001";
 
 	if(real_counter<=match[StartReplaySet].ReplayCounter)
 		return;
@@ -611,7 +611,7 @@ void SaveReplay(void)
 		SWAP_WORD(temp);
 		fwrite(&temp,sizeof(WORD),1,f);
 
-		D(bug("Salvo da %ld a %ld (Set %ld), %ld frames\n",
+		D(bug("Saving from %ld to %ld (Set %ld), %ld frames\n",
 			match[StartReplaySet].ReplayCounter,real_counter,StartReplaySet,temp));
 
 // Da qui viene letto da "game"
@@ -672,7 +672,7 @@ BOOL AllocReplayBuffers(void)
 		size=256;
 
 	if(highlight) {
-		D(bug("Setto i buffer del replay per l'highlight...\n"));
+		D(bug("Setting replay buffers...\n"));
 		size=(highsize/256)+3; //per sicurezza
 	}
 
@@ -699,7 +699,7 @@ BOOL AllocReplayBuffers(void)
 		}
 	}
 
-	D(bug("Replay configurato: SetLimit:%ld CounterLimit:%ld\n",(LONG)SetLimit,(LONG)CounterLimit));
+	D(bug("Replay configured: SetLimit:%ld CounterLimit:%ld\n",(LONG)SetLimit,(LONG)CounterLimit));
 	return TRUE;
 }
 
@@ -726,7 +726,7 @@ void LoadHighlight(void)
 		WORD temp;
 		int i;
 
-		D(bug("Carico un highlight...\n"));
+		D(bug("Loading an highlight...\n"));
 
 		fread(&temp,sizeof(WORD),1,fh);
 		SWAP_WORD(temp);

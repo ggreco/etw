@@ -41,7 +41,7 @@ void init_system(void)
                 int i;
                 struct Squadra *s = p->squadra[1];
 
-                D(bug("***Eseguo settaggi specifici modalita' ALLENAMENTO"));
+                D(bug("*** TRAINING mode settings"));
                 s->Joystick = -1;
 
                 for (i = 0; i < 10; i++) {
@@ -58,32 +58,32 @@ void init_system(void)
             // questo e' indipendente dalle squadre, dipende solo da chi gioca...
 
            
-            D(if (network_game) bug("Gioco di rete, giocatore in rete: %d\n", network_player->num));
+            D(if (network_game) bug("Network play, net player: %d\n", network_player->num));
             
             if (network_game && player_type[network_player->num] == 1) {
                 MyReadPort0 = ReadNetworkPort;
-                D(bug("Assegno a MyReadPort0 la gestione via RETE.\n"));
+                D(bug("Assign MyReadPort0: NET\n"));
             }
             else if (use_key0) {
                 MyReadPort0 = ReadKeyPort;
-                D(bug("Assegno a MyReadPort0 la gestione via tastiera.\n"));
+                D(bug("Assign MyReadPort0: KEYBOARD\n"));
             }
             else {
                 MyReadPort0 = MyReadJoyPort;
-                D(bug("Assegno a MyReadPort0 la gestione via joystick.\n"));
+                D(bug("Assign MyReadPort0: JOYSTICK\n"));
             }
 
             if (network_game && player_type[network_player->num] == 0) {
                 MyReadPort1 = ReadNetworkPort;
-                D(bug("Assegno a MyReadPort1 la gestione via RETE.\n"));
+                D(bug("Assign MyReadPort1: NET\n"));
             }
             else if (use_key1) {
                 MyReadPort1 = ReadKeyPort;
-                D(bug("Assegno a MyReadPort1 la gestione via tastiera.\n"));
+                D(bug("Assign MyReadPort1: KEYBOARD\n"));
             }
             else {
                 MyReadPort1 = MyReadJoyPort;
-                D(bug("Assegno a MyReadPort1 la gestione via joystick.\n"));
+                D(bug("Assign MyReadPort1: JOYSTICK\n"));
             }
 
             MainLoop();
@@ -97,43 +97,19 @@ void init_system(void)
             situation_result[0] = p->squadra[0]->Reti;
             situation_result[1] = p->squadra[0]->Reti;
 
-#ifdef DEMOVERSION
-            D(bug("Inizio lo slideshow...\n"));
-
-            LoadPLogo("gfx/demoas.gfx");
-            WaitOrKey(8);
-            LoadPLogo("gfx/demobs.gfx");
-            WaitOrKey(8);
-            LoadPLogo("gfx/democs.gfx");
-            WaitOrKey(8);
-            LoadPLogo("gfx/demofs.gfx");
-            WaitOrKey(8);
-            LoadPLogo("gfx/demods.gfx");
-            WaitOrKey(8);
-            LoadPLogo("gfx/demoes.gfx");
-            WaitOrKey(8);
-            LoadPLogo("gfx/order.gfx");
-            WaitOrKey(40);
-            D(bug("Fine dello slideshow\n"));
-#endif
-            D(bug("Inizio FreeStuff...\n"));
+            D(bug("Start: FreeStuff...\n"));
             FreeStuff();
 
-            D(bug("Fine FreeStuff()...\n"));
+            D(bug("End: FreeStuff()...\n"));
         }
     }
-#if defined (DEMOVERSION) && defined(AMIGA)
-    AssignLock("ETW-DATA", NULL);
-    AssignLock("ETW-TCT", NULL);
-    AssignLock("ETW-TEAMS", NULL);
-#endif
 }
 
 void os_audio2fast(void)
 {
 	extern char *comment_file;
 
-	D(bug("Gestisco audio2fast!\n"));
+	D(bug("Handling audio2fast!\n"));
 
 	if (use_speaker) {
 		char buffer[100];
@@ -168,11 +144,11 @@ void os_audio2fast(void)
 		use_ahi = TRUE;
 
 		for (i = 0; i < NUMERO_CORI; i++) {
-			corobuffer[13] = ((i + 1) / 10) + '0';
-			corobuffer[14] = ((i + 1) % 10) + '0';
+			corobuffer[12] = ((i + 1) / 10) + '0';
+			corobuffer[13] = ((i + 1) % 10) + '0';
 
 			if (!(Cori[i] = LoadSound(corobuffer))) {
-				D(bug("Errore nel caricamento del coro %ld!\n", i + 1));
+				D(bug("Error loading crowd %ld!\n", i + 1));
 				ok = FALSE;
 				break;
 			}
@@ -190,7 +166,7 @@ void os_audio2fast(void)
 				free(comment_file);
 			audio2fast = FALSE;
 		} else {
-			D(bug("Cori precaricati correttamente!\n"));
+			D(bug("Crowd preload completed!\n"));
 			audio2fast = TRUE;
 		}
 	}
@@ -373,7 +349,7 @@ FILE *os_open(char *name, char *mode)
 				strcpy(dir, "./");
 
 			D(bug
-			  ("Fallito open classico su %s, provo case insensitive... (%s in %s)\n",
+			  ("open on %s failed, trying case insensitive... (%s in %s)\n",
 			   name, fn, dir));
 
 			if ((d = opendir(dir))) {
@@ -383,7 +359,7 @@ FILE *os_open(char *name, char *mode)
 					if (!stricmp(fn, e->d_name)) {
 						strcat(dir, e->d_name);
 
-						D(bug("Trovato, apro: %s\n", dir));
+						D(bug(" FOUND, opening: %s\n", dir));
 						closedir(d);
 
 						return fopen(dir, mode);
