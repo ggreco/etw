@@ -407,15 +407,19 @@ int disabled_main(int argc, char *argv[])
 	logfile = fopen("/tmp/etw.log", "w");
 #endif
 #endif
-//	srand(clock());
 
+#ifdef MACOSX
+    chdir("ETW.app/Contents/Resources/data");
+#endif
+//	srand(clock());
+    
 	InitStrings();
 
 #if defined(LINUX) || defined(SOLARIS_X86)
 	gtk_init(&argc, &argv);
 #endif
 
-/* Fix for catalog translation bugs... */
+/* Fix of an old language catalog bug... */
 
 	{
 		int i;
@@ -424,8 +428,8 @@ int disabled_main(int argc, char *argv[])
 			if (wcp[32 * 5 + 1 + i * 5].Testo == NULL)
 				wcp[32 * 5 + 1 + i * 5].Testo = "GC" /*-*/ ;
 		}
-	}
-
+	} 
+    
 	read_menu_config();
 
 	if (!(l = opendir(TEMP_DIR))) {

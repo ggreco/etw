@@ -49,11 +49,10 @@ extern struct dirent	*readdir_r(DIR *, struct dirent *);
 
 #include <sys/dir.h>
 
-#elif defined(SOLARIS_X86) || defined(WINCE)
+#elif defined(SOLARIS_X86) || defined(WINCE) || defined(CROSSCOMPILER)
 #include <sys/types.h>
 #include <dirent.h>
 #else
-
 #include <sys/types.h>
 #include <sys/dir.h>
 #endif

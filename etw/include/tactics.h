@@ -1,9 +1,5 @@
 #ifndef TACTICS_H
 
-#if defined(__PPC__) && defined(__SASC)
-#pragma options align=mac68k
-#endif
-
 #define TACTICS_H
 
 #define SECTORS 12
@@ -21,7 +17,7 @@
 struct Pos
 {
 	unsigned short x,y;
-	unsigned settore;
+	unsigned short settore;
 };
 
 struct Tactic
