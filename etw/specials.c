@@ -894,7 +894,7 @@ BOOL KeyCfg(WORD bottone)
 	else
 	{
 		char *temp;
-		int k;
+		int k = 0;
 		BOOL ok=FALSE;
 		SDL_Event e;
 
@@ -977,7 +977,7 @@ BOOL KeyCfg(WORD bottone)
 								{
 									/* Delete the old used association */
 									actual_menu->Bottone[s*2+1].Testo=NULL;
-									query[s] = NULL;
+									query[s] = 0;
 									CancellaBottone(&actual_menu->Bottone[s*2+1]);
 									break;
 								}

@@ -151,9 +151,17 @@ int MacGetLanguage(void)
   
     if (shouldChdir)
     {
-      assert ( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
-      assert ( chdir ("../../../") == 0 ); /* chdir to the .app's parent */
-    }
+		/* AC: Use this if you want normal directory tree */
+#ifndef PACKAGE
+		assert ( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
+		assert ( chdir ("../../../") == 0 ); /* chdir to the .app's parent */
+#else
+		/* AC: Use this to create a application with all the resources contained
+		 * inside */
+		assert ( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
+		assert ( chdir ("../Resources") == 0 ); /* chdir to the .app's parent */
+#endif
+	}
 }
 
 #if SDL_USE_NIB_FILE

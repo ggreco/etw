@@ -414,6 +414,12 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 				do_p2c(planes, obj->bmap, obj->width, obj->height,
 					   obj->realdepth, obj->Pens);
 
+				/* 15/06/04 - AC: After converting bitplanes in a bitmap, we should
+				 * free them.
+				 */
+				for (i = 0; i < obj->realdepth; i++)
+					free(planes[i]);
+
 				fclose(fh);
 
 				D(bug
