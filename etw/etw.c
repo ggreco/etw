@@ -5,6 +5,10 @@
 #include "highdirent.h"
 #include "sound.h"
 
+#ifdef LINUX
+#include <gtk/gtk.h>
+#endif
+
 // char versione[]="\0$VER: ETW-Menu " ETW_VERSION " " __AMIGADATE__ " by Gabriele Greco - Hurricane Studios";
 
 // char team_name[2][16]={"genoa","verona"};
@@ -113,7 +117,7 @@ void PlayMenuMusic(void)
 		return;
 
 
-	sprintf(buffer, "+.music/back%ld.iff" /*-*/ , RangeRand(NUMERO_LOOPS));
+	sprintf(buffer, "+.music/back%d.iff" /*-*/ , RangeRand(NUMERO_LOOPS));
 
 	D(bug("Carico %s per i menu...\n" /*-*/ , buffer));
 
@@ -153,7 +157,7 @@ BOOL LoadBack(void)
 	GfxObj *background;
 	char buffer[120];
 
-	sprintf(buffer, "menugfx/back%ld.gfx" /*-*/ ,
+	sprintf(buffer, "menugfx/back%d.gfx" /*-*/ ,
 			RangeRand(NUMERO_SFONDI));
 
 	if ((background = LoadGfxObject(buffer, Pens, NULL))) {

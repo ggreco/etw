@@ -191,7 +191,7 @@ void rectfill_pattern(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,i
 
 void rectfill_pattern(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,int width)
 {
-	register int i,k=1;
+	register int i; // ,k=1; non usata
 
 	b+=x1+y1*width;
 

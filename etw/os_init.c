@@ -374,10 +374,10 @@ FILE *os_open(char *name, char *mode)
 			  ("Fallito open classico su %s, provo case insensitive... (%s in %s)\n",
 			   name, fn, dir));
 
-			if (d = opendir(dir)) {
+			if ((d = opendir(dir))) {
 				struct dirent *e;
 
-				while (e = readdir(d)) {
+				while ((e = readdir(d))) {
 					if (!stricmp(fn, e->d_name)) {
 						strcat(dir, e->d_name);
 

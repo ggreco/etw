@@ -498,7 +498,7 @@ BOOL InizializzaOggetti(Partita *p)
 
 	if(ok==FALSE) {
 		for(i=0;i<totale_lista;i++) {
-			if(o=object_list[i]) {
+			if ((o=object_list[i])) {
 				if(o->ObjectType>TIPO_ARBITRO)
 				{
 					FreeAnimObj(o->immagine);
@@ -1158,39 +1158,34 @@ Partita *SetupSquadre(void)
 
 	if(detail_level&USA_GUARDALINEE)
 	{
-		if(!(guardalinee[0].immagine=LoadAnimObject( (current_field==7 ? NEWGFX_DIR "gls.obj" : NEWGFX_DIR "gl.obj") ,Pens)))
-		{
+		if(!(guardalinee[0].immagine=LoadAnimObject( 
+                        (current_field==7 ? NEWGFX_DIR "gls.obj" : 
+                         NEWGFX_DIR "gl.obj") ,Pens)))	{
 // Non riesco a caricare i guardalinee... Li disabilito.
 
 			detail_level&=~USA_GUARDALINEE;
 		}
-		else
-		{
-			if(guardalinee[1].immagine=CloneAnimObj(guardalinee[0].immagine))
-			{
+		else {
+			if ((guardalinee[1].immagine=CloneAnimObj(guardalinee[0].immagine))) {
 				int k;
 
-				for(k=0;k<2;k++)
-				{
+				for(k=0;k<2;k++) {
 					AggiungiLista((Oggetto *)&guardalinee[k]);
 					guardalinee[k].ObjectType=TIPO_GUARDALINEE;
 					guardalinee[k].OnScreen=FALSE;
 					guardalinee[k].world_x=CENTROCAMPO_X;
 
-					if(k)
-					{
+					if(k) {
 						guardalinee[k].world_y=(RIMESSA_Y_S-20);
 						guardalinee[k].Direzione=6;
 					}
-					else
-					{
+					else {
 						guardalinee[k].Direzione=2;
 						guardalinee[k].world_y=(RIMESSA_Y_N-140);
 					}
 				}
 			}
-			else
-			{
+			else {
 				FreeAnimObj(guardalinee[0].immagine);
 				detail_level&=~USA_GUARDALINEE;
 			}
@@ -1198,8 +1193,7 @@ Partita *SetupSquadre(void)
 		Progress();
 	}
 
-	if(detail_level&USA_RISULTATO)
-	{
+	if(detail_level&USA_RISULTATO) {
 		result_width=(strlen(p->squadra[0]->Nome)+strlen(p->squadra[1]->Nome)+9)*VS_CHAR_X;
 
 		if(!(p->result=malloc( result_width * (VS_CHAR_Y+1))))
