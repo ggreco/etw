@@ -55,13 +55,9 @@ void write_char(bitmap bm,char c,UBYTE color)
 			if(ch[j])
 				bm[j]=color;
 		}
-		/* AC: 15/06/04 - At the end of the writing, this increment
-		 * shouldn't be done */
-		if(i < (font_height -1))
-		{
-			ch+=font_span;
-			bm+=bitmap_width;
-		}
+    
+        ch+=font_span;
+		bm+=bitmap_width;
 	}
 }
 
