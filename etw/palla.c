@@ -225,12 +225,12 @@ void HandleBall(void)
 					switch(current_field)
 					{
 						case 1: // Dry
-							pl->MaxQuota*=3;
-							pl->MaxQuota/=5;
-							break;
-						case 2: // Hard
 							pl->MaxQuota*=2;
 							pl->MaxQuota/=3;
+							break;
+						case 2: // Hard
+							pl->MaxQuota*=4;
+							pl->MaxQuota/=5;
 							break;
 						case 3: // Soft
 							pl->MaxQuota*=3;
@@ -238,21 +238,22 @@ void HandleBall(void)
 							break;
 						case 4: // Frozen
 							pl->velocita+=2;
-							pl->MaxQuota/=3;
+							pl->MaxQuota/=2;
 							break;
 						case 5: // Muddy
-							pl->velocita-=3;
-							pl->MaxQuota/=4;	
+							pl->velocita-=2;
+							pl->MaxQuota/=3;	
 							break;
 						case 6: // Wet
 							pl->velocita+=1;
-							pl->MaxQuota/=4;	
+							pl->MaxQuota/=3;	
 							break;
 						case 7: // Snow
-							pl->MaxQuota/=3;
+							pl->MaxQuota/=2;
 							break;
 						default: // Normal
-							pl->MaxQuota/=2;
+                            pl->MaxQuota*=3;
+							pl->MaxQuota/=5;
 					}
 
 					pl->MaxQuota-=pl->Rimbalzi;
