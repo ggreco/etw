@@ -1,0 +1,31 @@
+CC = /usr/local/cross-tools/i386-mingw32msvc/bin/gcc
+DEBUG = 
+CFLAGS = -Iinclude -I/usr/local/cross-tools/i386-mingw32msvc/include/SDL \
+         -O2 -g -fwritable-strings
+LFLAGS = -lmingw32 -lSDLmain -lSDL -mwindows -lwsock32 -lcomdlg32 
+DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER
+
+OBJECTS = icon.o highdirent.o	  cpu.o		   human.o	  myiff.o	specials.o \
+	anim.o		  crowd.o	   intro.o	  os_control.o	squadre.o \
+	arbitro.o	  data.o	   league.o	  os_init.o	tables.o \
+	arcade.o	  dati_vel.o	   lists.o	  os_video.o	tactics.o \
+	chunkyblitting.o  display.o	   loops.o	  palla.o	teams.o \
+	commento.o	  etw.o		   main.o	  portiere.o	freq.o \
+	computer.o	  etw_locale.o	   menu.o	  radar.o	utility.o \
+	config.o	  font.o	   menu_config.o  replay.o	velocita_g.o \
+	connection.o	  generic_video.o  menu_data.o	  sound.o	wc.o \
+	control.o	  gfx.o		   menu_font.o	  special.o network.o \
+	highsocket.o
+
+.c.o: eat.h menu.h
+	$(CC) $(CFLAGS) $(DEFINES) -c $<
+
+
+etw.exe: $(OBJECTS)
+	$(CC) -o $@ /usr/local/cross-tools/i386-mingw32msvc/lib/libSDLmain.a $(OBJECTS) $(LFLAGS)
+
+icon.o: Script1.rc
+	i386-mingw32msvc-windres $< $@
+   
+clean:
+	rm -rf *.o

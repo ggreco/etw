@@ -1,0 +1,544 @@
+#include "eat.h"
+ 
+// BitMap principale
+
+bitmap main_bitmap=NULL;
+extern int bitmap_width,bitmap_height;
+
+// Font attuale...
+
+// Tabella di 96 caratteri per la rimappatura dei font
+bitmap char_map[CHAR_ARRAY_LEN];
+bitmap font_bm=NULL;
+int font_width,font_height;
+int font_span;
+
+/* Creo il file di riferimento per lo scaling */
+
+/* Uso matematica fixed point */
+
+void MakeRef(UBYTE *ref,int source_size, int dest_size)
+{
+
+	int i,t,r,m;
+/* 
+   x = x0/y0 * y 
+
+   retta che passa per l'origine
+
+   uso un simil codice di rothstein
+
+*/
+	m=(source_size<<8)/dest_size;
+
+	memset(ref,0,source_size);
+
+	for(i=0;i<dest_size;i++)
+	{
+		t=i+i+1;
+
+		r=(m*t)>>9;
+
+		ref[r]++;
+	}
+}
+
+void write_char(bitmap bm,char c,UBYTE color)
+{
+	UBYTE *ch=char_map[c-' '];
+	int i,j;
+
+	for(i=0;i<font_height;i++)
+	{
+		for(j=0;j<font_width;j++)
+		{
+			if(ch[j])
+				bm[j]=color;
+		}
+
+		ch+=font_span;
+		bm+=bitmap_width;
+	}
+}
+
+int drawtext(char *buffer,int length,int x,int y, int color)
+{
+	bitmap dest;
+	int t=0;
+
+// Calcolo correttamente la baseline.
+
+	y-=font_height;
+	y++;
+
+	dest=main_bitmap+x+y*bitmap_width;
+
+	while(length)
+	{
+#ifdef SUPER_DEBUG
+		if(*buffer<32||*buffer>=128)
+		{
+			D(bug("Errore nella stringa %s, contiene <32!\n",buffer-(t/font_width)));
+			return t;
+		}
+#endif
+		write_char(dest,*buffer,(UBYTE)color);
+
+		dest+=font_width;
+		t+=font_width;
+		length--;
+		buffer++;
+	}
+	
+	return t;
+}
+
+void setfont(struct myfont *f)
+{
+	int i;
+
+	font_width=f->width;
+	font_height=f->height;
+	font_span=f->width*CHAR_ARRAY_LEN;
+
+	font_bm=f->bm;
+
+	for(i=0;i<CHAR_ARRAY_LEN;i++)
+		char_map[i]=f->bm+(f->width*i);
+}
+
+struct myfont *openfont(char *filename)
+{
+	FILE *f;
+	struct myfont *t=NULL;
+	char c;
+
+	if(f=fopen(filename,"rb"))
+	{
+		if(t=malloc(sizeof(struct myfont)))
+		{
+			fread(&c,sizeof(char),1,f);
+			t->width=(int)c;
+			fread(&c,sizeof(char),1,f);
+			t->height=(int)c;
+
+			if(t->bm=malloc(t->width*t->height*CHAR_ARRAY_LEN))
+			{
+				fread(t->bm,t->width*t->height*CHAR_ARRAY_LEN,1,f);
+				D(bug("Carico font <%s, %ldx%ld>...\n",filename,t->width,t->height));
+			}
+			else
+			{
+				free(t);
+				t=NULL;
+			}
+		}
+		fclose(f);
+	}
+
+	return t;
+}
+
+void closefont(struct myfont *f)
+{	
+	free(f->bm);
+	free(f);
+}
+
+void rectfill(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,int width)
+{
+	b+=x1+y1*width;
+
+	x2-=x1;
+	x2++;
+
+	y2-=y1;
+
+	while(y2>=0)
+	{
+		memset(b,color,x2);
+		b+=width;
+		y2--;
+	}
+}
+
+#if 0
+
+void rectfill_pattern(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,int width)
+{
+	register int i,k=1;
+
+	b+=x1+y1*width;
+
+	x2-=x1;
+	y2-=y1;
+
+	while(y2>=0)
+	{
+		i=x2;
+
+		i-=k;
+
+		while(i>0)
+		{
+			b[i]=color;
+			i-=2;
+		}
+
+		k^=1;
+
+		b+=width;
+		y2--;
+	}
+}
+#else
+
+void rectfill_pattern(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,int width)
+{
+	register int i,k=1;
+
+	b+=x1+y1*width;
+
+	x2-=x1;
+	y2-=y1;
+
+	while(y2>=0) {
+		i=x2;
+
+		while(i>0) {
+			b[i]+=224;  // 224 e' la base dei colori a mezza luminosità
+			i--;
+		}
+
+		b+=width;
+		y2--;
+	}
+}
+
+#endif
+
+void bitmapScale(struct MyScaleArgs *s)
+{
+	UBYTE xref[640],yref[480],*src,*dest;
+
+	if(s->SrcWidth>sizeof(xref) || s->SrcHeight>sizeof(yref))
+	{
+		D(bug("Errore, src di bitmapScale troppo grosso!\n"));
+		return;
+	}
+
+	MakeRef(xref,s->SrcWidth,s->DestWidth);
+	MakeRef(yref,s->SrcHeight,s->DestHeight);
+
+	src=s->Src+s->SrcX+s->SrcY*s->SrcSpan;
+	dest=s->Dest+s->DestX+s->DestY*s->DestSpan;
+
+// Nota, in questo modo prendo gli xref e yref al contrario, ma non importa.
+
+	{
+		register int i,j,k;
+		register bitmap sline,dline;
+
+		i=0;
+
+		while(i<s->SrcHeight)
+		{
+			while(yref[i])
+			{
+
+				sline=src; dline=dest; j=0;
+
+				while(j<s->SrcWidth)
+				{
+					k=xref[j];
+
+					while(k)
+					{
+						*dline=*sline;
+						dline++; k--;
+					}
+					sline++; j++;
+				}
+				dest+=s->DestSpan; yref[i]--;
+			}
+			src+=s->SrcSpan; i++;
+		}
+	}
+}
+
+void draw(long pen, WORD x1,WORD y1,WORD x2,WORD y2)
+{
+	bitmap b;
+	WORD t;
+
+	if(x1>x2)
+	{
+		t=x1;
+		x1=x2;
+		x2=t;
+	}
+	
+	if(y1>y2)
+	{
+		t=y1;
+		y1=y2;
+		y2=t;
+	}
+
+	b=main_bitmap+x1+y1*bitmap_width;
+
+	if(x1==x2)
+	{
+		y2-=y1;
+
+		while(y2>=0)
+		{
+			*b=pen;
+			b+=bitmap_width;
+			y2--;
+		}
+	}
+	else
+		memset(b,pen,x2-x1+1);
+}
+
+// Il midpoint classico del foley, van dam
+
+void midpoint_1(long pen,WORD x0,WORD y0,WORD x1,WORD y1)
+{
+	bitmap b=main_bitmap+x0+y0*bitmap_width;
+	WORD dx=x1-x0;
+	WORD dy=y1-y0;
+	WORD d=2*dy-dx;
+	WORD incrE=2*dy;
+	WORD incrNE=2*(dy-dx);
+
+	*b=pen;
+
+	x1-=x0;
+	
+	while(x1)
+	{
+		x1--;
+
+		if(d<=0)
+		{
+			d+=incrE;
+			b++;
+		}
+		else
+		{
+			d+=incrNE;
+			b++;
+			b+=bitmap_width;
+		}
+		*b=pen;
+	}
+}
+
+// Uguale a quello classico ma decremento la y perche' ho invertito y1 e y0
+
+void midpoint_3(long pen,WORD x0,WORD y0,WORD x1,WORD y1)
+{
+	bitmap b=main_bitmap+x0+y0*bitmap_width;
+	WORD dx=x1-x0;
+	WORD dy=y1-y0;
+	WORD d=2*dy-dx;
+	WORD incrE=2*dy;
+	WORD incrNE=2*(dy-dx);
+
+	*b=pen;
+
+	x1-=x0;
+	
+	while(x1)
+	{
+		x1--;
+
+		if(d<=0)
+		{
+			d+=incrE;
+			b++;
+		}
+		else
+		{
+			d+=incrNE;
+			b++;
+			b-=bitmap_width;
+		}
+		*b=pen;
+	}
+}
+
+// Questo inverte x e y, quindi gli incrementi vanno invertiti
+
+void midpoint_2(long pen,WORD x0,WORD y0,WORD x1,WORD y1)
+{
+	bitmap b=main_bitmap+y0+x0*bitmap_width;
+	WORD dx=x1-x0;
+	WORD dy=y1-y0;
+	WORD d=2*dy-dx;
+	WORD incrE=2*dy;
+	WORD incrNE=2*(dy-dx);
+
+	*b=pen;
+
+	x1-=x0;
+	
+	while(x1)
+	{
+		x1--;
+
+		if(d<=0)
+		{
+			d+=incrE;
+			b+=bitmap_width;
+		}
+		else
+		{
+			d+=incrNE;
+			b++;
+			b+=bitmap_width;
+		}
+		*b=pen;
+	}
+}
+
+// Questo inverte x e y, quindi gli incrementi vanno invertiti, in piu' fa il giochetto del 3o
+
+void midpoint_4(long pen,WORD x0,WORD y0,WORD x1,WORD y1)
+{
+	bitmap b=main_bitmap+y0+x0*bitmap_width;
+	WORD dx=x1-x0;
+	WORD dy=y1-y0;
+	WORD d=2*dy-dx;
+	WORD incrE=2*dy;
+	WORD incrNE=2*(dy-dx);
+
+	*b=pen;
+
+	x1-=x0;
+	
+	while(x1)
+	{
+		x1--;
+
+		if(d<=0)
+		{
+			d+=incrE;
+			b-=bitmap_width;
+		}
+		else
+		{
+			d+=incrNE;
+			b++;
+			b-=bitmap_width;
+		}
+		*b=pen;
+	}
+}
+
+void freedraw(long pen, WORD x1,WORD y1,WORD x2,WORD y2)
+{
+	WORD t;
+
+// Gestisco i prolungamenti.
+
+	if(x1>x2)
+	{
+		t=x1;
+		x1=x2;
+		x2=t;
+		t=y1;
+		y1=y2;
+		y2=t;
+	}
+
+	if(y1>y2)	
+	{
+		if((x2-x1)>(y1-y2))
+			midpoint_3(pen,x1,y1,x2,2*y1-y2); // ok
+		else			
+			midpoint_4(pen,y1,x1,2*y1-y2,x2); // ok
+	}
+	else
+	{
+		if((x2-x1)>(y2-y1))
+			midpoint_1(pen,x1,y1,x2,y2); // ok
+		else
+			midpoint_2(pen,y1,x1,y2,x2); // ok
+	}
+}
+
+void freepolydraw(long pen,int points, WORD *index)
+{
+	while(points>0)
+	{
+		if(index[0]==index[2]||index[1]==index[3])
+			draw(pen,index[0],index[1],index[2],index[3]);
+		else		
+			freedraw(pen,index[0],index[1],index[2],index[3]);
+
+		index+=2;
+		points--;
+	}
+}
+
+void polydraw(long pen,WORD xs,WORD ys,int points, WORD *index)
+{
+	draw(pen,xs,ys,index[0],index[1]);
+
+	points--;
+
+	while(points>0)
+	{
+		draw(pen,index[0],index[1],index[2],index[3]);
+		index+=2;
+		points--;
+	}
+}
+
+
+void bitmapFastScale(struct MyFastScaleArgs *s)
+{
+	register UBYTE *xref=s->XRef,*yref=s->YRef;
+	register int i=0,j,k,t;
+	register bitmap sline,dline,src=s->Src,dest=s->Dest;
+
+	while(i<s->SrcHeight)
+	{
+		sline=src;
+
+		t=yref[i];
+
+		while(t)
+		{
+			dline=dest;
+
+			j=0;
+
+			while(j<s->SrcWidth)
+			{
+				k=xref[j];
+
+				while(k)
+				{
+					*dline=*sline;
+					dline++;
+
+					k--;
+				}
+
+				sline++;
+				j++;
+			}
+
+			dest+=s->DestSpan;
+			t--;
+		}
+
+		src+=s->SrcSpan;
+		i++;
+	}
+}
+

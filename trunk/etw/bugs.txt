@@ -1,0 +1,112 @@
+BUG rilevati in Eat The Whistle
+
+AUDIO
+=====
+
+1) Quando si seleziona il menu' Audio Si/No, il bottone delle squadre Arcade,
+   si trasforma in No.
+   
+1bis)   In alcune condizioni, quando si ritornano nelle opzioni dopo una partita,
+   l'Audio e' OFF e se si prova a riattivarlo il gioco va in crash. (FIXED)
+
+2) La versione per Mac ha problemi. (FIXED)
+
+3) Adesso anche la versione per Windows ha problemi.  (FIXED)
+
+4) Entrambe le versione hanno problemi con il commento sonoro.
+
+5) Nel menu' Arcade, ci sono problemi con la riproduzione delle musiche delle
+   squadre. A volte parte, a volte no. Inoltre, all'uscita di una partita 
+   Arcade, la musica dei menu' e' disattivata.  (FIXED)
+
+
+VIDEO
+=====
+
+1) Se nelle opzioni Video e' attivata l'opzione People, alla seconda partita 
+   il gioco si pianta nella LoadStuff durante il caricamento del 16/17 omino.
+
+2) Nelle opzioni Video, la risoluzione di scaling caricata non corrisponde
+   a quella precedentemente salvata su file. (FIXED)
+
+3) Se nella modalita' in finestra e' attivato lo scaling e si passa alla
+   modalita' su schermo, lo scaling rimane attivo. (FIXED)
+
+4) Se su Windows si carica una squadra con il requester in modalita' schermo, 
+   si rovinano i colori. Su Mac il requester rimane sullo schermo del Finder 
+   e quindi il gioco "si blocca".
+
+5) Nei menu' Arcade, ci sono problemi con il bottone Show selected, compare e 
+   scompare quando non dovrebbe.
+
+6) Alcune videate compaiono solo per pochi secondi (forse meno), problemi di 
+   buffering?
+
+7) Alcune volte, nel menu' di selezione delle squadre, rimane una squadra 
+    selezionata, ma non compare il bottone continua.
+
+
+GIOCO
+=====
+
+1) I difensori sembrano cominciare a muoversi quando la palla e' arrivata ad 
+   una determinata distanza.
+
+2) Se si seleziona il campionato France 98 (non so le altre stagioni), i 
+   risultati delle partite sono invertiti. Se si vince si perde. Il problema 
+   deve essere o nella SetResult o nella StartMatch una delle due, se c'e' da
+   swappare le squadre, o non lo fa o viene fatto una volta in piu'.
+
+3) Problemi nella gestione del fuorigioco. Spesso e volentieri, soprattutto 
+   quando si battono i calci di punizione, un omino si mette in fuorigioco 
+   ed il gioco giustamente lo rileva. A nulla vale, disattivare
+   l'opzione omonima del menu'. Il problema sembra molto piu' presente, se 
+   la squadra avversaria occupa la parte destra del campo.
+
+4) In allenamento e' comparso un omino fantasma e dopo pochi 
+   rimpalli -> crash!
+
+5) Durante le sostituzioni, se si premono diverse volte i tasti cursore, 
+   il gioco va in crash.
+
+6) A fine partita, il minuto dei gol e' sbagliato. Va avanti di 4min.
+   Ad esempio, 41 invece che 37.
+
+SISTEMA
+=======
+
+1) Tutte le manipolazioni a vettori di caratteri globali, si concludono in 
+   un accesso illegale se non si specifica l'apposita opzione 
+   -fwritable-strings.  Non e' stata ancora trovata un'opzione analoga per
+   il VisualC++ 6.
+
+2) Se su Windows si carica una squadra con il requester si perde il path
+   del programma. (FIXED)
+
+3) Per il punto 2, non venivano caricate le tattiche, il gioco se ne 
+   accorgeva e provava a visualizzare un requester, ma le font sono state
+   liberate e quindi si crashava per un puntatore
+   nullo. (WORKAROUND con il FIX del punto 2)
+
+4) Nella versione Mac, mancano i file requester (FIXED)
+
+5) Nella versione Mac manca la rilevazione delle impostazioni di localizzazione.
+
+6) Il caricamento (o il salvataggio, non mi e' chiaro), delle partite hai 
+   dei problemi. La variabile numero_squadre e' sempre zero e nel caricamento ci
+   sono due cicli (con turno e totale_giornate) che si basano su di essa. 
+   Con un workaround per i cicli, il gioco non va in loop e carica il
+   salvataggio che pero' presenta notevoli problemi (partite giocate da
+   rigiocare e una giornata stranissima con Argentina contro tutti!).
+
+
+RETE
+====
+
+1) Se si seleziona una squadra ma non si riesce a collegarsi al server, 
+   la squadra rimane selezionata.
+
+2) In una prova effettuata con un sistema WindowsNT e un sistema Windows2000, 
+   il gioco nel momento di visualizzare il campo, va in crash su entrambi gli
+   host.
+
