@@ -52,7 +52,7 @@ VIDEO
    Continue button does not appear.
    
 8) In some options pages (Game, Video, Audio), where the buttons are "grouped", if
-   the exit requester is visualized, it have both the button selected.
+   the exit requester is visualized, it have both the button selected. (FIXED)
    
 9) In France '98 first round page (but not first page, after made a match) the
    name of the header overlaps the name of the teams. (FIXED)

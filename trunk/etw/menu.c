@@ -180,7 +180,19 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
 
     D(bug("Creating requester with %d buttons\n", bottoni));
 
-    DrawBox(0);
+	/* AC: I think that this routine is too specific for menu selection.
+	 * In order to work correctly is also necessary to alter the correct
+	 * value of current_menu.
+	 * I think is better to put directly here the four needed instructions.
+    DrawBox(0);*/
+	draw(Pens[P_GIALLO], req_bottoni[0].X1 - 1, req_bottoni[0].Y1 - 1,
+		req_bottoni[0].X2 + 1, req_bottoni[0].Y1 - 1);
+	draw(Pens[P_GIALLO], req_bottoni[0].X2 + 1, req_bottoni[0].Y1 - 1,
+		req_bottoni[0].X2 + 1, req_bottoni[0].Y2 + 1);
+	draw(Pens[P_GIALLO], req_bottoni[0].X2 + 1, req_bottoni[0].Y2 + 1,
+		req_bottoni[0].X1 - 1, req_bottoni[0].Y2 + 1);
+	draw(Pens[P_GIALLO], req_bottoni[0].X1 - 1, req_bottoni[0].Y2 + 1,
+		req_bottoni[0].X1 - 1, req_bottoni[0].Y1);
 
 	ScreenSwap();
 
@@ -343,8 +355,11 @@ void EraseBox(WORD button)
 		draw(Pens[P_ROSSO1], b->X2 + 1, b->Y2 + 1, b->X1 - 1, b->Y2 + 1);
 		draw(Pens[P_ROSSO1], b->X1 - 1, b->Y2 + 1, b->X1 - 1, b->Y1);
 	} else if (current_menu < MENU_GAME_PREFS
-			   || current_menu > MENU_AUDIO_PREFS
-			   || button == actual_menu->NumeroBottoni - 1) {
+			   || current_menu > MENU_SYSTEM_PREFS
+			   || button == actual_menu->NumeroBottoni - 1
+		// AC: Patch for Keyboard and Joystick Configuration buttons
+		|| (current_menu == MENU_SYSTEM_PREFS &&
+			button >= actual_menu->NumeroBottoni -3)) {
 		struct Bottone *b = &actual_menu->Bottone[button];
 
 		bltchunkybitmap(back, b->X1 - 1, b->Y1 - 1, main_bitmap,
@@ -381,8 +396,11 @@ void EraseBox(WORD button)
 
 void DrawBox(WORD button)
 {
-	if (current_menu < MENU_GAME_PREFS || current_menu > MENU_AUDIO_PREFS
-		|| button == actual_menu->NumeroBottoni - 1) {
+	if (current_menu < MENU_GAME_PREFS || current_menu > MENU_SYSTEM_PREFS
+		|| button == actual_menu->NumeroBottoni - 1
+		// AC: Patch for Keyboard and Joystick Configuration buttons
+		|| (current_menu == MENU_SYSTEM_PREFS &&
+			button >= actual_menu->NumeroBottoni -3)) {
 		struct Bottone *b = &actual_menu->Bottone[button];
 
 		draw(Pens[P_GIALLO], b->X1 - 1, b->Y1 - 1, b->X2 + 1, b->Y1 - 1);
@@ -1392,6 +1410,22 @@ BOOL HandleJoy(ULONG joystatus)
 			MoveMark(+2);
 		}
 		break;
+	case MENU_SYSTEM_PREFS:
+		/* There is an erratic behavior, when the button for
+		 * Joy configuration is hidden.
+		 */
+		if (joystatus & (JPF_JOY_UP | JPF_JOY_LEFT)) {
+			if(actual_button > 10)
+				MoveMark(-1);
+			else
+				MoveMark(-2);
+		} else if (joystatus & (JPF_JOY_DOWN | JPF_JOY_RIGHT)) {
+			if(actual_button > 8 /*10*/)
+				MoveMark(+1);
+			else
+				MoveMark(+2);
+		}
+	break;
 	case MENU_TEAM_SELECTION:
 		if (actual_button < 64) {
 			if (joystatus & JPF_JOY_UP) {
