@@ -31,10 +31,188 @@ struct MatchStatus *match,InitialStatus;
 mytimer StartReplayTime,StopTimeVal;
 int matchstatus_size = sizeof(struct MatchStatus);
 
+static void ReadATeam(FILE *f, Squadra *s)
+{
+    int i;
+    
+    READ_DATA(s->TPossesso, f);
+    READ_DATA(s->Reti, f);
+    READ_DATA(s->Falli, f);
+    READ_DATA(s->Ammonizioni, f);
+    READ_DATA(s->Espulsioni, f);
+    READ_DATA(s->Tiri, f);
+    READ_DATA(s->Rigori, f);
+    READ_DATA(s->Corner, f);
+    READ_DATA(s->Sostituzioni, f);
+    READ_DATA(s->Possesso, f);
+    READ_DATA(s->Schema, f);
+    READ_DATA(s->Joystick, f);
+    
+    READ_LONG(((LONG)s->tattica), f);
+    READ_LONG(s->TempoPossesso, f);
+    READ_LONG(((LONG)s->attivo), f);
+
+// goalkeeper
+    READ_WORD(s->portiere.world_x, f); 
+    READ_WORD(s->portiere.world_y, f); 
+    READ_BOOL(s->portiere.OnScreen, f); 
+    READ_WORD(s->portiere.AnimType, f); 
+    READ_WORD(s->portiere.AnimFrame, f); 
+    READ_DATA(s->portiere.ObjectType, f); 
+    READ_DATA(s->portiere.Direzione, f); 
+    READ_DATA(s->portiere.ActualSpeed, f); 
+    READ_DATA(s->portiere.FrameLen, f); 
+    READ_WORD(s->portiere.Tick, f); 
+    READ_LONG(((LONG)s->portiere.squadra), f); 
+    READ_DATA(s->portiere.NameLen, f); 
+    READ_DATA(s->portiere.SNum, f); 
+    READ_BOOL(s->portiere.Ammonito, f); 
+    READ_BOOL(s->portiere.Special, f); 
+    READ_BOOL(s->portiere.FirePressed, f); 
+    READ_WORD(s->portiere.SpecialData, f); 
+    READ_WORD(s->portiere.TimePress, f); 
+    READ_DATA(s->portiere.Numero, f); 
+    READ_DATA(s->portiere.velocita, f); 
+    READ_DATA(s->portiere.Parata, f); 
+    READ_DATA(s->portiere.Attenzione, f); 
+
+// field players
+    for (i = 0; i < 10; i++) {
+        Giocatore *g = &s->giocatore[i];
+
+        READ_WORD(g->world_x, f);
+        READ_WORD(g->world_y, f);
+        READ_BOOL(g->OnScreen, f);
+        READ_WORD(g->AnimType, f);
+        READ_WORD(g->AnimFrame, f);
+        READ_DATA(g->ObjectType , f);
+        READ_DATA(g->Direzione , f);
+        READ_DATA(g->ActualSpeed , f);
+        READ_DATA(g->FrameLen , f);
+        READ_WORD(g->Tick, f);
+        READ_LONG(((LONG)g->squadra), f);
+        READ_DATA(g->NameLen , f);
+        READ_DATA(g->GNum , f);
+        READ_BOOL(g->Ammonito, f);
+        READ_BOOL(g->Special, f);
+        READ_BOOL(g->FirePressed, f);
+        READ_WORD(g->SpecialData, f);
+        READ_WORD(g->TimePress, f);
+        READ_DATA(g->Numero , f);
+        READ_DATA(g->Velocita , f);
+        READ_DATA(g->Contrasto , f);
+        READ_DATA(g->Tiro , f);
+        READ_DATA(g->Durata , f);
+        READ_DATA(g->Resistenza , f);
+        READ_DATA(g->Prontezza , f);
+        READ_DATA(g->settore , f);
+        READ_DATA(g->Creativita , f);
+        READ_DATA(g->Tecnica , f);
+        READ_DATA(g->Posizioni , f);
+        READ_DATA(g->SNum , f);
+        READ_BOOL(g->Controlled, f);
+        READ_BOOL(g->Marker, f);
+        READ_WORD(g->WaitForControl, f);
+        READ_DATA(g->Comando , f);
+        READ_DATA(g->Argomento , f);
+        READ_DATA(g->CA , f);
+        READ_DATA(g->OldStat , f);
+        READ_DATA(g->ArcadeEffect, f);
+        READ_WORD(g->ArcadeCounter, f);
+    }
+    
+// other generic team datas
+    READ_WORD(s->Marker_X, f);
+    READ_WORD(s->Marker_Y, f);
+    READ_WORD(s->MarkerFrame, f);
+
+    READ_BOOL(s->MarkerOnScreen, f);
+    READ_BOOL(s->gioco_ruolo, f);
+    READ_DATA(s->Nome, f);
+    READ_BOOL(s->MarkerRed, f);
+    READ_DATA(s->ArcadeEffect, f);
+    READ_DATA(s->NumeroRiserve, f);
+    READ_WORD(s->ArcadeCounter, f);
+}
+
 void ReadMatch(FILE *f, struct MatchStatus *m)
 {
-    fread(&m->partita, sizeof(m->partita), 1, f);
-    fread(m->squadra, sizeof(m->squadra), 2, f);
+    int i;
+// write ball related data 
+    READ_LONG(((LONG)m->partita.palla.gioc_palla), f);
+    READ_LONG(((LONG)m->partita.palla.sq_palla), f);
+    READ_WORD(m->partita.palla.world_x, f);
+    READ_WORD(m->partita.palla.world_y, f);
+    READ_WORD(m->partita.palla.delta_x, f);
+    READ_WORD(m->partita.palla.delta_y, f);
+    READ_BOOL(m->partita.palla.InGioco, f);
+    READ_BOOL(m->partita.palla.Hide, f);
+    READ_DATA(m->partita.palla.ToTheTop, f);
+    READ_DATA(m->partita.palla.ThisQuota, f);
+    READ_DATA(m->partita.palla.Stage, f);
+    READ_DATA(m->partita.palla.TipoTiro, f);
+    READ_DATA(m->partita.palla.ActualFrame, f);
+    READ_DATA(m->partita.palla.MaxQuota, f);
+    READ_DATA(m->partita.palla.SpeedUp, f);
+    READ_DATA(m->partita.palla.Rimbalzi, f);
+    READ_DATA(m->partita.palla.velocita, f);
+    READ_DATA(m->partita.palla.Direzione, f);
+    READ_DATA(m->partita.palla.quota, f);
+    READ_DATA(m->partita.palla.settore, f);
+
+// write refree related datas
+    READ_WORD(m->partita.arbitro.world_x, f);    
+    READ_WORD(m->partita.arbitro.world_y, f);    
+    READ_WORD(m->partita.arbitro.AnimType, f);    
+    READ_WORD(m->partita.arbitro.AnimFrame, f);    
+    READ_WORD(m->partita.arbitro.Tick, f);    
+    READ_WORD(m->partita.arbitro.Argomento, f);    
+    READ_BOOL(m->partita.arbitro.OnScreen, f);
+    READ_BOOL(m->partita.arbitro.Special, f);
+    READ_DATA(m->partita.arbitro.ObjectType, f);
+    READ_DATA(m->partita.arbitro.Direzione, f);
+    READ_DATA(m->partita.arbitro.ActualSpeed, f);
+    READ_DATA(m->partita.arbitro.FrameLen, f);
+    READ_DATA(m->partita.arbitro.NameLen, f);
+    READ_DATA(m->partita.arbitro.Comando, f);
+    READ_DATA(m->partita.arbitro.velocita, f);
+    READ_DATA(m->partita.arbitro.abilita, f);
+    READ_DATA(m->partita.arbitro.recupero, f);
+    READ_DATA(m->partita.arbitro.cattiveria, f);
+    
+// write generic datas
+    READ_LONG(m->partita.TempoPassato, f);
+    READ_LONG(m->partita.show_panel, f);
+    READ_LONG(m->partita.show_time, f);
+    READ_LONG(((LONG)m->partita.possesso), f);
+    READ_LONG(((LONG)m->partita.player_injuried), f);
+    READ_WORD(m->partita.check_sector, f);
+
+    for (i = 0; i < SHOT_LENGTH; i++)
+        READ_WORD(m->partita.shotheight[i], f);
+    
+    READ_WORD(m->partita.flash_pos, f);
+    READ_BOOL(m->partita.goal, f);
+    READ_BOOL(m->partita.sopra_rete, f);
+    READ_BOOL(m->partita.flash_mode, f);
+    READ_BOOL(m->partita.doing_shot, f);
+    READ_BOOL(m->partita.mantieni_distanza, f);
+    READ_BOOL(m->partita.penalty_onscreen, f);
+
+    READ_WORD(m->partita.arcade_counter, f);
+    READ_WORD(m->partita.marker_x, f);
+    READ_WORD(m->partita.marker_y, f);
+    READ_WORD(m->partita.penalty_counter, f);
+    READ_WORD(m->partita.adder, f);
+
+    READ_DATA(m->partita.TabCounter, f);
+    READ_DATA(m->partita.result_len, f);
+    READ_DATA(m->partita.last_touch, f);
+    READ_DATA(m->partita.arcade_on_field, f);
+    READ_DATA(m->partita.RiservaAttuale, f);
+    
+    ReadATeam(f,&m->squadra[0]);
+    ReadATeam(f,&m->squadra[1]);
     
     READ_WORD(m->ReplayCounter, f);
     
@@ -44,10 +222,188 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
     READ_DATA(m->need_release, f);
 }
 
+static void WriteATeam(FILE *f, Squadra *s)
+{
+    int i;
+    
+    WRITE_DATA(s->TPossesso, f);
+    WRITE_DATA(s->Reti, f);
+    WRITE_DATA(s->Falli, f);
+    WRITE_DATA(s->Ammonizioni, f);
+    WRITE_DATA(s->Espulsioni, f);
+    WRITE_DATA(s->Tiri, f);
+    WRITE_DATA(s->Rigori, f);
+    WRITE_DATA(s->Corner, f);
+    WRITE_DATA(s->Sostituzioni, f);
+    WRITE_DATA(s->Possesso, f);
+    WRITE_DATA(s->Schema, f);
+    WRITE_DATA(s->Joystick, f);
+    
+    WRITE_LONG(((LONG)s->tattica), f);
+    WRITE_LONG(s->TempoPossesso, f);
+    WRITE_LONG(((LONG)s->attivo), f);
+
+// goalkeeper
+    WRITE_WORD(s->portiere.world_x, f); 
+    WRITE_WORD(s->portiere.world_y, f); 
+    WRITE_BOOL(s->portiere.OnScreen, f); 
+    WRITE_WORD(s->portiere.AnimType, f); 
+    WRITE_WORD(s->portiere.AnimFrame, f); 
+    WRITE_DATA(s->portiere.ObjectType, f); 
+    WRITE_DATA(s->portiere.Direzione, f); 
+    WRITE_DATA(s->portiere.ActualSpeed, f); 
+    WRITE_DATA(s->portiere.FrameLen, f); 
+    WRITE_WORD(s->portiere.Tick, f); 
+    WRITE_LONG(((LONG)s->portiere.squadra), f); 
+    WRITE_DATA(s->portiere.NameLen, f); 
+    WRITE_DATA(s->portiere.SNum, f); 
+    WRITE_BOOL(s->portiere.Ammonito, f); 
+    WRITE_BOOL(s->portiere.Special, f); 
+    WRITE_BOOL(s->portiere.FirePressed, f); 
+    WRITE_WORD(s->portiere.SpecialData, f); 
+    WRITE_WORD(s->portiere.TimePress, f); 
+    WRITE_DATA(s->portiere.Numero, f); 
+    WRITE_DATA(s->portiere.velocita, f); 
+    WRITE_DATA(s->portiere.Parata, f); 
+    WRITE_DATA(s->portiere.Attenzione, f); 
+
+// field players
+    for (i = 0; i < 10; i++) {
+        Giocatore *g = &s->giocatore[i];
+
+        WRITE_WORD(g->world_x, f);
+        WRITE_WORD(g->world_y, f);
+        WRITE_BOOL(g->OnScreen, f);
+        WRITE_WORD(g->AnimType, f);
+        WRITE_WORD(g->AnimFrame, f);
+        WRITE_DATA(g->ObjectType , f);
+        WRITE_DATA(g->Direzione , f);
+        WRITE_DATA(g->ActualSpeed , f);
+        WRITE_DATA(g->FrameLen , f);
+        WRITE_WORD(g->Tick, f);
+        WRITE_LONG(((LONG)g->squadra), f);
+        WRITE_DATA(g->NameLen , f);
+        WRITE_DATA(g->GNum , f);
+        WRITE_BOOL(g->Ammonito, f);
+        WRITE_BOOL(g->Special, f);
+        WRITE_BOOL(g->FirePressed, f);
+        WRITE_WORD(g->SpecialData, f);
+        WRITE_WORD(g->TimePress, f);
+        WRITE_DATA(g->Numero , f);
+        WRITE_DATA(g->Velocita , f);
+        WRITE_DATA(g->Contrasto , f);
+        WRITE_DATA(g->Tiro , f);
+        WRITE_DATA(g->Durata , f);
+        WRITE_DATA(g->Resistenza , f);
+        WRITE_DATA(g->Prontezza , f);
+        WRITE_DATA(g->settore , f);
+        WRITE_DATA(g->Creativita , f);
+        WRITE_DATA(g->Tecnica , f);
+        WRITE_DATA(g->Posizioni , f);
+        WRITE_DATA(g->SNum , f);
+        WRITE_BOOL(g->Controlled, f);
+        WRITE_BOOL(g->Marker, f);
+        WRITE_WORD(g->WaitForControl, f);
+        WRITE_DATA(g->Comando , f);
+        WRITE_DATA(g->Argomento , f);
+        WRITE_DATA(g->CA , f);
+        WRITE_DATA(g->OldStat , f);
+        WRITE_DATA(g->ArcadeEffect, f);
+        WRITE_WORD(g->ArcadeCounter, f);
+    }
+    
+// other generic team datas
+    WRITE_WORD(s->Marker_X, f);
+    WRITE_WORD(s->Marker_Y, f);
+    WRITE_WORD(s->MarkerFrame, f);
+
+    WRITE_BOOL(s->MarkerOnScreen, f);
+    WRITE_BOOL(s->gioco_ruolo, f);
+    WRITE_DATA(s->Nome, f);
+    WRITE_BOOL(s->MarkerRed, f);
+    WRITE_DATA(s->ArcadeEffect, f);
+    WRITE_DATA(s->NumeroRiserve, f);
+    WRITE_WORD(s->ArcadeCounter, f);
+}
+
 void WriteMatch(FILE *f, struct MatchStatus *m)
 {
-    fwrite(&m->partita, sizeof(m->partita), 1, f);
-    fwrite(m->squadra, sizeof(m->squadra), 2, f);
+    int i;
+// write ball related data 
+    WRITE_LONG(((LONG)m->partita.palla.gioc_palla), f);
+    WRITE_LONG(((LONG)m->partita.palla.sq_palla), f);
+    WRITE_WORD(m->partita.palla.world_x, f);
+    WRITE_WORD(m->partita.palla.world_y, f);
+    WRITE_WORD(m->partita.palla.delta_x, f);
+    WRITE_WORD(m->partita.palla.delta_y, f);
+    WRITE_BOOL(m->partita.palla.InGioco, f);
+    WRITE_BOOL(m->partita.palla.Hide, f);
+    WRITE_DATA(m->partita.palla.ToTheTop, f);
+    WRITE_DATA(m->partita.palla.ThisQuota, f);
+    WRITE_DATA(m->partita.palla.Stage, f);
+    WRITE_DATA(m->partita.palla.TipoTiro, f);
+    WRITE_DATA(m->partita.palla.ActualFrame, f);
+    WRITE_DATA(m->partita.palla.MaxQuota, f);
+    WRITE_DATA(m->partita.palla.SpeedUp, f);
+    WRITE_DATA(m->partita.palla.Rimbalzi, f);
+    WRITE_DATA(m->partita.palla.velocita, f);
+    WRITE_DATA(m->partita.palla.Direzione, f);
+    WRITE_DATA(m->partita.palla.quota, f);
+    WRITE_DATA(m->partita.palla.settore, f);
+
+// write refree related datas
+    WRITE_WORD(m->partita.arbitro.world_x, f);    
+    WRITE_WORD(m->partita.arbitro.world_y, f);    
+    WRITE_WORD(m->partita.arbitro.AnimType, f);    
+    WRITE_WORD(m->partita.arbitro.AnimFrame, f);    
+    WRITE_WORD(m->partita.arbitro.Tick, f);    
+    WRITE_WORD(m->partita.arbitro.Argomento, f);    
+    WRITE_BOOL(m->partita.arbitro.OnScreen, f);
+    WRITE_BOOL(m->partita.arbitro.Special, f);
+    WRITE_DATA(m->partita.arbitro.ObjectType, f);
+    WRITE_DATA(m->partita.arbitro.Direzione, f);
+    WRITE_DATA(m->partita.arbitro.ActualSpeed, f);
+    WRITE_DATA(m->partita.arbitro.FrameLen, f);
+    WRITE_DATA(m->partita.arbitro.NameLen, f);
+    WRITE_DATA(m->partita.arbitro.Comando, f);
+    WRITE_DATA(m->partita.arbitro.velocita, f);
+    WRITE_DATA(m->partita.arbitro.abilita, f);
+    WRITE_DATA(m->partita.arbitro.recupero, f);
+    WRITE_DATA(m->partita.arbitro.cattiveria, f);
+    
+// write generic datas
+    WRITE_LONG(m->partita.TempoPassato, f);
+    WRITE_LONG(m->partita.show_panel, f);
+    WRITE_LONG(m->partita.show_time, f);
+    WRITE_LONG(((LONG)m->partita.possesso), f);
+    WRITE_LONG(((LONG)m->partita.player_injuried), f);
+    WRITE_WORD(m->partita.check_sector, f);
+
+    for (i = 0; i < SHOT_LENGTH; i++)
+        WRITE_WORD(m->partita.shotheight[i], f);
+    
+    WRITE_WORD(m->partita.flash_pos, f);
+    WRITE_BOOL(m->partita.goal, f);
+    WRITE_BOOL(m->partita.sopra_rete, f);
+    WRITE_BOOL(m->partita.flash_mode, f);
+    WRITE_BOOL(m->partita.doing_shot, f);
+    WRITE_BOOL(m->partita.mantieni_distanza, f);
+    WRITE_BOOL(m->partita.penalty_onscreen, f);
+
+    WRITE_WORD(m->partita.arcade_counter, f);
+    WRITE_WORD(m->partita.marker_x, f);
+    WRITE_WORD(m->partita.marker_y, f);
+    WRITE_WORD(m->partita.penalty_counter, f);
+    WRITE_WORD(m->partita.adder, f);
+
+    WRITE_DATA(m->partita.TabCounter, f);
+    WRITE_DATA(m->partita.result_len, f);
+    WRITE_DATA(m->partita.last_touch, f);
+    WRITE_DATA(m->partita.arcade_on_field, f);
+    WRITE_DATA(m->partita.RiservaAttuale, f);
+    
+    WriteATeam(f, &m->squadra[0]);
+    WriteATeam(f, &m->squadra[1]);
 
     WRITE_WORD(m->ReplayCounter, f);
     WRITE_WORD(m->field_x, f);
