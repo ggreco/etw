@@ -54,6 +54,9 @@ VIDEO
 8) In some options pages (Game, Video, Audio), where the buttons are "grouped", if
    the exit requester is visualized, it have both the button selected.
    
+9) In France '98 first round page (but not first page, after made a match) the
+   name of the header overlaps the name of the teams. (FIXED)
+   
 
 GAME
 ----
@@ -92,11 +95,19 @@ GAME
    for example loading a saved league, the first match played is in Arcade mode
    (but not the following)!
 
-9) Con alcune squadre, al calcio di inizio, la sequenza è sempre la stessa:
-   passaggio e un tiro senza senso che finisce in rimessa laterale.
+9) With some teams, to the kickoff, the computer sequence is always the same
+   one: passage and a shooting without sense that ends in lateral remittance.
    
-10) Con alcune squadre, la tattica praticamente gol sicuro è, passare molto
-    vicini alla linea di bordo campo, i difensori non si muovono nemmeno!
+10) With some teams, the tactics to obtain a practically sure goal is, to pass
+    very near the edge line field, the defenders does not move not even (works
+	only with the right bottom of the screen)!
+	
+11) Replays saved with a Mac doesn't work (currently testend only on Mac).
+
+12) Some times the game doesn't select the man nearest to the ball,
+    therefore happens that the man with the ball to the flank, remains
+    immovable like one statue...
+
 
 SYSTEM
 ------
