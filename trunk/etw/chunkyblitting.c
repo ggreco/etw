@@ -37,8 +37,17 @@ void bltchunkybitmap(bitmap src,int xs,int ys,bitmap dest,int xd,int yd,int w,in
 		while(i--)
 			*dest++ = *src++;
 
-		src+=srcmod;
-		dest+=destmod;
+#ifdef __CODEGUARD__
+		/* AC: 17/06/04 - Check if bottom reached */
+		if(h != 0)
+		{
+#endif
+			src+=srcmod;
+			dest+=destmod;
+
+#ifdef __CODEGUARD__
+		}
+#endif
 	}
 }
 

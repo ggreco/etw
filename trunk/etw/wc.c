@@ -340,6 +340,11 @@ void LoadScores(void)
 	char buffer[100];
 	FILE *f;
 
+#ifdef __CODEGUARD__
+	if(access("ETWScores"/*-*/,0) == -1)
+		return;
+#endif
+
 	if ((f=fopen("ETWScores"/*-*/,"r"))) {
 		if(fgets(buffer,99,f))
 		{

@@ -68,8 +68,8 @@ BOOL InAnyArea(WORD x,WORD y)
 {
 	if( y>AREA_RIGORE_Y_N &&
 	    y<AREA_RIGORE_Y_S &&
-          (
-	   (x<CENTROCAMPO_X &&
+	(
+	(x<CENTROCAMPO_X &&
 	   ((LONG)(y>>3))<(-((LONG)x>>3)*31+6197L)  ) ||
 	   (x>CENTROCAMPO_X &&
 	   ((LONG)(y>>3))<( ((LONG)x>>3)*31-32963L ) )
@@ -876,6 +876,10 @@ void CheckActive(void)
 		{
 			WORD Dir=GetJoyDirection(r_controls[i][counter]);
 
+			/**
+			 * AC: Codeguard signals here a memory access overrun of 2 bytes
+			 * in a memory block of 480 bytes.
+			 */
 			g2=TrovaPiuVicino(s,G2P_X(pl->world_x)+(velocita_x[3][9][Dir]<<3),G2P_Y(pl->world_y)+(velocita_y[3][9][Dir]<<3));
 		}
 		else

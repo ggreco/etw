@@ -437,6 +437,7 @@ void RestartTime(void)
 
 void StoreReplay(UBYTE Set)
 {			
+    register LONG i;
 
 // Arbitro e palla
 
@@ -450,18 +451,16 @@ void StoreReplay(UBYTE Set)
 	match[Set].field_x=field_x;
 	match[Set].field_y=field_y;
 
-	memcpy(match[Set].need_release, need_release, sizeof(need_release));
+    for (i = 0; i < MAX_PLAYERS; i++)
+    	match[Set].need_release[i] = need_release[i];
 
-	if(arcade)
-	{
-		register LONG i;
+	if(arcade) {
 
 // Moltiplico Set per il numero di bonus su schermo...
 
 		Set*=MAX_ARCADE_ON_FIELD;
 
-		for(i=0;i<MAX_ARCADE_ON_FIELD;i++)
-		{
+		for(i=0;i<MAX_ARCADE_ON_FIELD;i++) {
 			arcade_buf[Set+i].x=bonus[i]->world_x;
 			arcade_buf[Set+i].y=bonus[i]->world_y;
 		}
@@ -479,7 +478,7 @@ void LoadReplay(UBYTE Set)
 {
 	register LONG i,j;
 	APTR *a=NULL;
-    
+
 	i=0;
 
 	RestartTime();
@@ -675,9 +674,10 @@ void LoadReplay(UBYTE Set)
 	counter = match[Set].ReplayCounter;
 	field_x = match[Set].field_x;
 	field_y = match[Set].field_y;
-	memcpy(need_release, match[Set].need_release,
-           sizeof(need_release));
+   
 
+    for (i = 0; i < MAX_PLAYERS; i++)
+    	need_release[i] = match[Set].need_release[i];
 
 	D(bug("Replay: start %ld - end %ld (startset %ld) (TC: %ld->%ld)\n",counter,real_counter,Set,old_tc,p->TabCounter));
 

@@ -154,6 +154,9 @@ BOOL StartGame(void)
 
 	game_start = FALSE;
 
+#ifdef __CODEGUARD__
+	if(access(TEMP_DIR "thismatch",0) != -1)
+#endif
 	remove(TEMP_DIR "thismatch"/*-*/);
 
 	WINDOW_WIDTH=wanted_width;

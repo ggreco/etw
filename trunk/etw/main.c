@@ -856,7 +856,9 @@ int game_main(void)
     
 	quit_game = FALSE;
 
-
+#ifdef __CODEGUARD__
+	if(access(TEMP_DIR "lock",0) != -1)
+#endif
 	remove(TEMP_DIR "lock");
 
 	D(bug("Match end!\n"));

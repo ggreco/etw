@@ -949,6 +949,11 @@ skipchange:
                 g->FrameLen=Animation[g->AnimType].FrameLen;
 
                 if(g->OnScreen)
+                    /* I had an access underrun here. The conditions was:
+                     * g->AnimType = 18
+                     * g->AnimFrame = -1
+                     * g->Direzione = 2
+                     */
                     ChangeAnimObj(g->immagine,Animation[g->AnimType].Frame[g->AnimFrame]+g->Direzione);
             }
 
