@@ -42,7 +42,7 @@ extern struct DOggetto peoples[];
 extern GfxObj *last_obj,*pause_gfx;
 extern mytimer StartGameTime,EndTime,ideal;
 extern AnimObj *ports,*replay,*arcade_anim,*goal_banner;
-extern GuardaLinee guardalinee[];
+extern GuardaLinee *guardalinee;
 extern struct MyFastScaleArgs *scaling;
 extern int font_width,font_height,result_width,FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
 

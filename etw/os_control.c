@@ -201,8 +201,7 @@ void set_controls(void)
 
 	if(p->squadra[0]->Joystick>=0)
 	{
-		if(control[p->squadra[0]->Joystick]<CTRL_KEY_1)
-		{
+		if(control[p->squadra[0]->Joystick]<CTRL_KEY_1)	{
 			D(bug("Opening joystick %ld\n",p->squadra[0]->Joystick));
 
 			if ((joy[p->squadra[0]->Joystick]=SDL_JoystickOpen(p->squadra[0]->Joystick))) {
@@ -233,37 +232,30 @@ void set_controls(void)
 		}
 
 		if(control[p->squadra[0]->Joystick]==CTRL_JOYPAD ||
-			control[p->squadra[0]->Joystick]==CTRL_KEY_2)
-		{
+			control[p->squadra[0]->Joystick]==CTRL_KEY_2) {
 			HandleSquadra0=HandleControlledJoyPad;
-//			SetJoyPortAttrs(p->squadra[0]->Joystick,SJA_Type,SJA_TYPE_GAMECTLR,TAG_DONE);
-			D(bug("Joypad for team 0\n"));
+			D(bug("Joypad/key2 for team 0\n"));
 		}
-		else
-		{
-//			SetJoyPortAttrs(p->squadra[0]->Joystick,SJA_Type,SJA_TYPE_JOYSTK,TAG_DONE);
-
+		else {
 			if(control[p->squadra[0]->Joystick]==CTRL_JOY2B || 
-				control[p->squadra[0]->Joystick]==CTRL_KEY_1)
-			{
+				control[p->squadra[0]->Joystick]==CTRL_KEY_1) {
 				HandleSquadra0=HandleControlledJ2B;
+       			D(bug("Joy2b/key1 for team 0\n"));
 			}
-			else
-			{
+			else {
 				HandleSquadra0=HandleControlled;
 			}
 		}
 	}
-	else
-	{
+	else {
 		HandleSquadra0=HandleCPU;
 
 		if(nocpu)
 			p->squadra[0]->Joystick=TYPE_JOYSTICK1;
 	}
 
-	if(player_type[1]==player_type[0]&&player_type[0]!=TYPE_COMPUTER)
-	{
+	if (player_type[1] == player_type[0] && 
+        player_type[0] != TYPE_COMPUTER) {
 			player_type[1]^=1;
 	}
 
@@ -298,28 +290,21 @@ void set_controls(void)
 			}
 			else {
 				D(bug(" ->Error opening joystick!\n"));
-				// Vedi sopra!
 			}
 		}
 		if(control[p->squadra[1]->Joystick]==CTRL_JOYPAD ||
 			control[p->squadra[1]->Joystick]==CTRL_KEY_2) {
 			HandleSquadra1=HandleControlledJoyPad;
-//			SetJoyPortAttrs(p->squadra[1]->Joystick,SJA_Type,SJA_TYPE_GAMECTLR,TAG_DONE);
-			D(bug("Joypad for team 1\n"));
+			D(bug("Joypad/key2 for team 1\n"));
 		}
-		else 
-		{
-//			SetJoyPortAttrs(p->squadra[1]->Joystick,SJA_Type,SJA_TYPE_JOYSTK,TAG_DONE);
-
+		else {
 			if(control[p->squadra[1]->Joystick]==CTRL_JOY2B ||
-				control[p->squadra[1]->Joystick]==CTRL_KEY_1)
-			{
+				control[p->squadra[1]->Joystick]==CTRL_KEY_1) {
 				HandleSquadra1=HandleControlledJ2B;
+       			D(bug("Joy2b/key1 for team 0\n"));
 			}
-			else
-			{
+			else {
 				HandleSquadra1=HandleControlled;
-
 			}
 		}
 	}

@@ -1047,8 +1047,12 @@ void LoadHighlight(void)
             
 		fclose(fh);
 
-		for(i = 0; i < swaps; i++)
+        j = swaps; // swapteams() change the swaps value!
+
+		for(i = 0; i < j; i++)
 			SwapTeams();
+
+        swaps = j;
 
 		start_replay=TRUE;
 	}

@@ -11,7 +11,7 @@
 
 char team_name[2][16]={"brazil","england"};
 int result_width,scivolate_modificate=0;
-GuardaLinee guardalinee[2];
+GuardaLinee *guardalinee;
 
 UBYTE cols[2][4],NumeroTattiche=0,TotaleRiserve[2];
 BOOL teams_swapped=FALSE,has_black[2]={FALSE,FALSE};
@@ -42,14 +42,16 @@ BOOL NumeroDiverso(struct Squadra *s,char n)
 
 void RimuoviGuardalinee(void)
 {
-	if(detail_level&USA_GUARDALINEE)
-	{
+	if((detail_level&USA_GUARDALINEE)
+        && guardalinee)	{
 		D(bug("Removing linesmen...\n"));
 
 		RimuoviLista((Oggetto *)&guardalinee[1]);
 		RimuoviLista((Oggetto *)&guardalinee[0]);
 		FreeAnimObj(guardalinee[1].immagine);
 		FreeAnimObj(guardalinee[0].immagine);
+        free(guardalinee);
+        guardalinee = NULL;
 	}
 }
 
@@ -149,8 +151,7 @@ void SwapTeams(void)
 	p->squadra[0]=p->squadra[1];
 	p->squadra[1]=s;
 
-	for(j=0;j<2;j++)
-	{
+	for(j=0;j<2;j++) {
 		p->squadra[j]->portiere.SNum=j;
 
 		for(i=0;i<10;i++)
@@ -180,8 +181,7 @@ void SwapTeams(void)
 	golrig[0]=golrig[1];
 	golrig[1]=c;
 
-	for(i=0;i<12;i++)
-	{
+	for(i=0;i<12;i++) {
 		struct Giocatore_Disk temp;
 
 		temp=Riserve[0][i];
@@ -410,8 +410,7 @@ BOOL InizializzaOggetti(Partita *p)
 		int j;
 		struct Pos temp;
 
-		if(arcade)
-		{
+		if(arcade) {
 			for(j=0;j<(SECTORS+SPECIALS);j++)
 				portieri[1][i][j].x+=64;
 		}
@@ -479,8 +478,7 @@ BOOL InizializzaOggetti(Partita *p)
 				else
 					o->immagine=ports;
 			
-				if(i==0||i==2)
-				{
+				if(i==0||i==2) {
 					o->immagine->Flags|=AOBJ_OVER;
 					o->world_y=219*8+7;
 				}
@@ -1142,14 +1140,12 @@ Partita *SetupSquadre(void)
 
 	if(detail_level&USA_ARBITRO)
 	{
-		if(!(p->arbitro.immagine=LoadAnimObject( (current_field==7 ? "gfx/arbisnow.obj" : "gfx/arbitro.obj"),Pens)))
-		{
+		if(!(p->arbitro.immagine=LoadAnimObject( (current_field==7 ? "gfx/arbisnow.obj" : "gfx/arbitro.obj"),Pens))) {
 // Non riesco a caricare l'arbitro... Lo disabilito.
 
 			detail_level&=~USA_ARBITRO;
 		}
-		else
-		{
+		else {
 			if(detail_level&USA_ARBITRO)
 				AggiungiLista((Oggetto *)&p->arbitro);
 
@@ -1161,11 +1157,14 @@ Partita *SetupSquadre(void)
 
 	if(detail_level&USA_GUARDALINEE)
 	{
-		if(!(guardalinee[0].immagine=LoadAnimObject( 
+        if (!(guardalinee = calloc(2, sizeof(GuardaLinee)))) {
+			detail_level&=~USA_GUARDALINEE;
+        }
+        else if(!(guardalinee[0].immagine=LoadAnimObject( 
                         (current_field==7 ? NEWGFX_DIR "gls.obj" : 
                          NEWGFX_DIR "gl.obj") ,Pens)))	{
 // Non riesco a caricare i guardalinee... Li disabilito.
-
+            free(guardalinee);
 			detail_level&=~USA_GUARDALINEE;
 		}
 		else {
@@ -1190,6 +1189,7 @@ Partita *SetupSquadre(void)
 			}
 			else {
 				FreeAnimObj(guardalinee[0].immagine);
+                free(guardalinee);
 				detail_level&=~USA_GUARDALINEE;
 			}
 		}		
@@ -1274,12 +1274,18 @@ void LiberaPartita(Partita *p)
 
 	D(bug("Freeing match datas...\n"));
 
-// Necessario, la free sui guardalinee causava dei casini immani!
+
+    if (arcade) { // restore the original goalkeeper position
+        int j;
+            
+        for(i=0;i<2;i++)
+            for(j=0;j<(SECTORS+SPECIALS);j++)
+                portieri[1][i][j].x -= 64;
+    }
 
 	RimuoviGuardalinee();
 
-	if(scivolate_modificate)
-	{
+	if(scivolate_modificate) {
 		scivolate_modificate=0;
 
 		switch(current_field)
@@ -1294,14 +1300,15 @@ void LiberaPartita(Partita *p)
 		}
 	}
 
-	for(i=0;i<totale_lista;i++)
-	{
-		if(object_list[i])
-		{
+	for(i=0;i<totale_lista;i++)	{
+		if(object_list[i])	{
 // Arbitro e portieri vengono liberati qui
 
-			if(object_list[i]->ObjectType>TIPO_ARBITRO)
-			{
+			if(object_list[i]->ObjectType > TIPO_ARBITRO)	{
+                if (object_list[i]->ObjectType == TIPO_GUARDALINEE) {
+                    D(bug("Warning, linesmen still in list, skipping!"));
+                    continue;
+                }
 				FreeAnimObj(object_list[i]->immagine);
 				free(object_list[i]);
 			}
@@ -1324,9 +1331,14 @@ void LiberaPartita(Partita *p)
 
 	if(detail_level&USA_RISULTATO && p->result)
 		free(p->result);
-
+    
 	free(p);
 
+// these should be reinint on game quit!
+    has_black[0] = has_black[1] = FALSE;
+    NumeroTattiche = 0; swaps = 0;
+    teams_swapped = FALSE;
+    
 	D(bug("Ok.\n"));
 }
 

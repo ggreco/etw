@@ -212,10 +212,32 @@ void HandleScrolling(void)
 	}
 }
 
+// added since events after HandleScrolling() may change the position...
+
+void CheckScrollLimits(void)
+{
+    if (field_y + WINDOW_HEIGHT > background->height) {
+        field_y = background->height - WINDOW_HEIGHT;
+    }
+    if (field_x + WINDOW_WIDTH > background->width) {
+        field_x = background->width - WINDOW_WIDTH;
+    }
+
+    if (field_y < 0)
+        field_y = 0;
+    
+    if (field_x < 0)
+        field_x = 0;
+
+}
+
 void graphic_frame(void)
 {
+    CheckScrollLimits();
+    
 	BltGfxObj(background, field_x, field_y, main_bitmap, 0, 0,
-			  WINDOW_WIDTH, WINDOW_HEIGHT, bitmap_width);
+			  min(WINDOW_WIDTH, background->width), 
+              min(WINDOW_HEIGHT, background->height), bitmap_width);
 
 	if (p->doing_shot) {
 		UpdateCornerLine();
@@ -322,9 +344,6 @@ void MainLoop(void)
 	field_x = max((pl->world_x >> 3) - WINDOW_WIDTH / 2, 0);
 
 	field_y = max((pl->world_y >> 3) - WINDOW_HEIGHT / 2, 0);
-
-// Faccio lo scroll dall'alto...
-//      field_y=0;
 
 	o_limit = WINDOW_WIDTH * 2 / 5;
 	e_limit = WINDOW_WIDTH - o_limit;
