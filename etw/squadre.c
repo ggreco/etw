@@ -1,6 +1,10 @@
 #include "eat.h"
 #ifndef WIN
+#ifdef SOLARIS_X86
+#include <dirent.h>
+#else
 #include <sys/dir.h>
+#endif
 #else
 #include "highdirent.h"
 #endif

@@ -4,9 +4,14 @@
 #include <time.h>
 #include "SDL.h"
 
-#if defined(LINUX)
+#if defined(LINUX) || defined(SOLARIS_X86)
 #include <unistd.h>
+#if defined(LINUX) && !defined(SOLARIS_X86)
 #include <fcntl.h>
+#else
+#include <sys/fcntl.h>
+#define	INADDR_NONE             ((in_addr_t) 0xffffffff)
+#endif
 #include <netinet/in.h>
 #endif							/* !WIN32 */
 

@@ -52,8 +52,11 @@ extern struct dirent	*readdir_r(DIR *, struct dirent *);
 #else
 
 #include <sys/types.h>
+#ifndef SOLARIS_X86
 #include <sys/dir.h>
-
+#else
+#include <dirent.h>
+#endif
 #endif
 
 #endif /* HIGHDIRENT_H */
