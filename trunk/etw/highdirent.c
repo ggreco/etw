@@ -1,4 +1,4 @@
-#if defined(WIN) && !defined(WINCE)
+#if defined(WIN) && !defined(WINCE) && !defined(CROSSCOMPILER)
 
 #include <windows.h>
 
