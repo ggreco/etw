@@ -186,13 +186,17 @@ void set_controls(void)
 	if(control[0]>=CTRL_KEY_1)
 	{
 		use_key0=TRUE;
-		LoadKeyDef(0,KEY_RED_FILE);
+		/* AC: O mi salvo in automatico la configurazione che scelgo, oppure qua
+		 *  meglio non caricare, altrimenti mi perdo le impostazioni non ancora salvate
+		 *
+		LoadKeyDef(0,KEY_RED_FILE);*/
 	}
 
 	if(control[1]>=CTRL_KEY_1)
 	{
 		use_key1=TRUE;
-		LoadKeyDef(1,KEY_BLUE_FILE);
+		/* Idem come sopra
+		LoadKeyDef(1,KEY_BLUE_FILE);*/
 	}
 
 	if(p->squadra[0]->Joystick>=0)
@@ -673,10 +677,12 @@ void CheckKeys(void)
 
 int query[]=
 {
+	/* Rosso */
 	SDLK_UP,SDLK_RIGHT,SDLK_DOWN,SDLK_LEFT,
 	SDLK_BACKSPACE,SDLK_RETURN,
 	SDLK_PAGEUP,SDLK_PAGEDOWN,
 	SDLK_RSHIFT,SDLK_END,
+	/* Blu */
 // Query1
 	SDLK_s,SDLK_c,SDLK_x,SDLK_z, // dir: up->senso orario (s->c->x->z)
 	SDLK_SPACE,SDLK_b,
@@ -755,7 +761,8 @@ void LoadKeyDef(int port,char *file)
 		D(bug("Carico una custom keydefinition...\n"));
 
 		while(fgets(buffer,119,f)) {
-			if(buffer[0]<'0' || buffer[0]>9) {
+			/* AC: Il limite superiore era 9 e non '9'... */
+			if(buffer[0]<'0' || buffer[0]>'9') {
 				continue;
 			}
 
@@ -766,6 +773,31 @@ void LoadKeyDef(int port,char *file)
 
 			q[i]=atoi(buffer);
 
+			i++;
+		}
+
+		fclose(f);
+	}
+}
+
+void SaveKeyDef(int port,char *file)
+{
+	FILE *f;
+
+	if ((f=fopen(file,"w")))
+	{
+		char buffer[120];
+		int i=0;
+		int *q;
+
+		q= (port) ? &query[10] : query;
+
+		D(bug("Salvo una custom key definition...\n"));
+
+		while(i < 10)
+		{
+			sprintf(buffer,"%d\n",q[i]);
+			fputs(buffer,f);
 			i++;
 		}
 

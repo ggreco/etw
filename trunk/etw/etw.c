@@ -392,6 +392,9 @@ BOOL LoadMenuStuff(void)
 	return FALSE;
 }
 
+// AC: Ma nel visual C++ dov'è?
+//int errno;
+
 #ifndef DEMOVERSION
 int main(int argc, char *argv[])
 #else
@@ -440,17 +443,23 @@ int disabled_main(int argc, char *argv[])
 
 	LoadTeams(TEAMS_DIR "default" /*-*/ );
 
+	/* AC: Metto qui il caricamento dei file di config della tastiera
+	 * 
+	 */
+	LoadKeyDef(0,KEY_RED_FILE);
+	LoadKeyDef(1,KEY_BLUE_FILE);
+
 //      EnableReqs();
 
-#ifndef NO_JOYSTICK
+	/* AC: Sotto MacOS X e SDL 1.2.7 sembra proprio che se non ci son Jostick se ne esca.
+	 * Proviamo le due config in cascata.
+	 */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) < 0)
-#else
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_NOPARACHUTE) < 0)
-#endif
-	{
-		fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
-		exit(1);
-	}
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_NOPARACHUTE) < 0)
+		{
+			fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+			exit(1);
+		}
 
 	atexit(SDL_Quit);
 
