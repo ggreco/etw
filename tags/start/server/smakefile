@@ -1,0 +1,10 @@
+OBJS= main.o highsocket.o
+CFLAGS = IDIR=sc:i-netinclude
+
+.c.o:
+	SC $(CFLAGS) OBJNAME=$*.o $*.c
+
+all: etwd
+
+etwd: main.o highsocket.o
+	sc link to etwd main.o highsocket.o
