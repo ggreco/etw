@@ -357,7 +357,8 @@ struct SoundInfo *LoadSound(STRPTR Name)
 			 * necessary under OS X. ^_^
 			 */
 #ifdef MACOSX
-			if(spec.format != obt.format || spec.freq != obt.freq)
+			/* 12/07/04 - If sound isn't started, obt is an invalid structure! */
+			if(sound_started && (spec.format != obt.format || spec.freq != obt.freq))
 			{
 				SDL_AudioCVT  wav_cvt;
 				
