@@ -186,16 +186,16 @@ void set_controls(void)
 	if(control[0]>=CTRL_KEY_1)
 	{
 		use_key0=TRUE;
-		/* AC: O mi salvo in automatico la configurazione che scelgo, oppure qua
-		 *  meglio non caricare, altrimenti mi perdo le impostazioni non ancora salvate
-		 *
+		/* AC: Or the configuration is saved in automatic, or here it is
+		* better not to load, otherwise the settings not still saved are lost
+		*
 		LoadKeyDef(0,KEY_RED_FILE);*/
 	}
 
 	if(control[1]>=CTRL_KEY_1)
 	{
 		use_key1=TRUE;
-		/* Idem come sopra
+		/* Idem like above
 		LoadKeyDef(1,KEY_BLUE_FILE);*/
 	}
 
@@ -219,7 +219,7 @@ void set_controls(void)
 
 				if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE)
 				{
-					D(bug("** Forzo la disabilitazione dell'event manager x i joystick\n"));
+					D(bug("** Forcing deactivation of joystick event manager\n"));
 					SDL_JoystickEventState(SDL_DISABLE);
 				}
 
@@ -290,7 +290,7 @@ void set_controls(void)
 				D(bug("Joystick event manager: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
 
 				if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE) {
-					D(bug("** Forzo la disabilitazione dell'event manager x i joystick\n"));
+					D(bug("** Forcing deactivation of joystick event manager\n"));
 					SDL_JoystickEventState(SDL_DISABLE);
 				}
  
@@ -373,7 +373,7 @@ void CheckKeys(void)
 		case SDL_JOYBUTTONDOWN:
 		case SDL_JOYBUTTONUP:
 		case SDL_JOYAXISMOTION:
-			D(bug("Eventi joystick, non dovrei prenderli!!!!\n"));
+			D(bug("Joystick event, I shouldn't take them!!!!\n"));
 			break;
 
 		case SDL_QUIT:
@@ -391,7 +391,7 @@ void CheckKeys(void)
                 {
 #ifndef DEBUG_DISABLED
 
-                    // I - per debug, mostra le posizioni degli omini
+                    // I - for debug, it shows the men positions
 
                     case SDLK_i:
                         {
@@ -408,12 +408,12 @@ void CheckKeys(void)
                                     int j;
                                     Giocatore *g=&s->giocatore[i];
 
-                                    D(bug("Parametri: Sp:%ld Cmd:%ld Dir:%ld Anim:%ld Spd:%ld Sect:%ld\n",
+                                    D(bug("Parameters: Sp:%ld Cmd:%ld Dir:%ld Anim:%ld Spd:%ld Sect:%ld\n",
                                                 g->Special,g->Comando,g->Direzione,g->AnimType,g->ActualSpeed,g->settore));
 
                                     for(j=0;j<(SECTORS+SPECIALS);j++)
                                     {
-                                        D(bug("S:%ld - senza: X:%ld Y:%ld - con: X:%ld Y:%ld\n",j,
+                                        D(bug("S:%ld - without: X:%ld Y:%ld - with: X:%ld Y:%ld\n",j,
                                                     g->squadra->tattica->Position[0][i][j].x,g->squadra->tattica->Position[0][i][j].y,
                                                     g->squadra->tattica->Position[1][i][j].x,g->squadra->tattica->Position[1][i][j].y));
                                     }
@@ -431,12 +431,12 @@ void CheckKeys(void)
                         PlayBackSound(sound[BOOU]);
                         break;
                     case SDLK_w:
-                        // W - fa finire un tempo!
+                        // W - end time!
                         EndTime=Timer();
-                        D(bug("Forzo la fine del tempo!\n"));
+                        D(bug("Forcing end of time!\n"));
                         break;
 
-                        // D - causa un fallo
+                        // D - create a foul
                     case SDLK_d:
                         pl->InGioco=FALSE;
                         FermaPalla();
@@ -455,7 +455,7 @@ void CheckKeys(void)
                         }
                         break;
 
-                        /* AC: faccio fare un gol fittizio alla squadra 0. */
+                        /* AC: make a fake goal for team 0. */
                     case SDLK_g:
                         p->squadra[0]->Reti++;
                         if(!penalties && (p->squadra[0]->Reti+p->squadra[1]->Reti)<GA_SIZE )
@@ -486,7 +486,7 @@ void CheckKeys(void)
                             }
 
                         }
-                        D(bug("Ho segnato un GOL per la squadra %s\n",p->squadra[0]->Nome));
+                        D(bug("I have signed a GOAL for team %s\n",p->squadra[0]->Nome));
                         break;
 #endif
                     case SDLK_r:
@@ -507,20 +507,20 @@ void CheckKeys(void)
                             }
                         }
                         break;
-                        // S - abilita/disabilita radar
+                        // S - enables/disables the radar
                     case SDLK_s:
-
+						/* With the new default keyboard configuration, this control
+						 * isn't needed anymore
                         if(!use_key1)
-                        {
+                        {*/
                             if(detail_level&USA_RADAR)
                                 detail_level&=(~USA_RADAR);
                             else
                                 detail_level|=USA_RADAR;
-                        }
+                        //}
                         break;
-                        // L - mostra stats
-                        /* C'era una sovrapposizione con SDLK_RETURN, veniva usato della definizione
-                         * della tastiera uno.
+                        // L - shows stats
+                        /* There was an overlap with SDLK_RETURN, used in the keyboard RED definition.
                          */
                     case SDLK_h:
                         p->show_panel|=PANEL_CHAT;
@@ -531,10 +531,13 @@ void CheckKeys(void)
                         p->show_time=80;
                         break;
 
-                        // X - cambia posizione/dimensioni del radar
+                        // X - change position/dimensions of the radar
                     case SDLK_x:
+						/* With the new default keyboard configuration, this control
+						 * isn't needed anymore
                         if(use_key1)
                             break;
+						*/
 
                         radar_position++;
                         ResizeRadar();
@@ -542,12 +545,12 @@ void CheckKeys(void)
 
 #ifdef USE_ROLEPLAY
 
-                        // Alt sinistro, gioco di ruolo attivo/inattivo sq. 1
+					// Left Alt, role play enable/disabled for team 1
                     case SDLK_LALT:
                         p->squadra[1]->gioco_ruolo = (p->squadra[1]->gioco_ruolo ? FALSE : TRUE);
-                        // shift sinistro, cambia giocatore attivo sq.1 se gioco di ruolo
-                        break;
-                    case SDLK_LSHIFT:
+						break;
+					// Left Shift, changes active player team 1 if role play
+					case SDLK_LSHIFT:
                         if(p->squadra[1]->gioco_ruolo)
                         {
                             char num=p->squadra[1]->attivo->GNum;
@@ -561,12 +564,12 @@ void CheckKeys(void)
                             ChangeControlled(p->squadra[1],num);
                             p->squadra[1]->gioco_ruolo=TRUE;
                         }
-                        // Alt destro, gioco di ruolo attivo/inattivo sq. 0
                         break;
+					// Right Alt, role play enable/disabled for team 0
                     case SDLK_RALT:
                         p->squadra[0]->gioco_ruolo = (p->squadra[0]->gioco_ruolo ? FALSE : TRUE);
-                        // shift destro, cambia giocatore attivo sq.0 se gioco di ruolo
                         break;
+					// Right Shift, changes active player team 0 if role play
                     case SDLK_RSHIFT:
                         if(p->squadra[0]->gioco_ruolo)
                         {
@@ -584,7 +587,7 @@ void CheckKeys(void)
                         break;
 #endif
 
-                        // P - pausa
+                        // P - pause
                     case SDLK_p:
                         if(!replay_mode)
                         {
@@ -598,7 +601,7 @@ void CheckKeys(void)
                             }
                         }
                         break;
-                        // DEL - visuale sulla palla
+                        // DEL - visual on the ball
                     case SDLK_DELETE:
                         scroll_type=0;
                         break;
@@ -612,16 +615,18 @@ void CheckKeys(void)
                         quit_game=TRUE;
                         break;
 
-                        // BARRA - cambia visuale
+                        // BARRA - change visual
                     case SDLK_SPACE:
                         if(!replay_mode) {
+							/* With the new default keyboard configuration, this control
+							* isn't needed anymore
                             if(!use_key1) {
-
+							*/
                                 if(scroll_type<23)
                                     scroll_type++;
                                 else
                                     scroll_type=0;
-                            }
+                            //}
                             //							ChangeControlled(p->squadra[0],selected);
                         }
                         else {
@@ -684,10 +689,10 @@ int query[]=
 	SDLK_RSHIFT,SDLK_END,
 	/* Blu */
 // Query1
-	/* AC: C'era una sovrapposizione con i tasti usati dal gioco.
-	 * Al momento le nuove definizioni sono scelte un po' a casaccio
+	/* AC: There was an overlap with the keys used by the game.
+	 * At the moment the new definitions have been chosen "a casaccio"
 	 */
-	SDLK_g,SDLK_n,SDLK_b,SDLK_v, // dir: up->senso orario (s->c->x->z)
+	SDLK_g,SDLK_n,SDLK_b,SDLK_v, // dir: up->clockwise (s->c->x->z)
 	SDLK_e,SDLK_r,
 	SDLK_j,SDLK_m,SDLK_LSHIFT,SDLK_TAB
 };
@@ -710,7 +715,7 @@ ULONG ReadKeyPort(ULONG port)
 
 	q= (port) ? &query[10] : query;
 
-// Spostamenti
+// Movements
 
 	if(keys[q[0]]==SDL_PRESSED)
 		v|=JPF_JOY_UP;
@@ -722,7 +727,7 @@ ULONG ReadKeyPort(ULONG port)
 	else if(keys[q[3]]==SDL_PRESSED)
 		v|=JPF_JOY_LEFT;
 
-// Bottoni!
+// Buttons!
 
 	if(keys[q[4]]==SDL_PRESSED)
 		v|=JPF_BUTTON_RED;
@@ -761,16 +766,16 @@ void LoadKeyDef(int port,char *file)
 
 		q= (port) ? &query[10] : query;
 
-		D(bug("Carico una custom keydefinition...\n"));
+		D(bug("Loading custom key definition...\n"));
 
 		while(fgets(buffer,119,f)) {
-			/* AC: Il limite superiore era 9 e non '9'... */
+			/* AC: Upper limit was 9 and not '9'... */
 			if(buffer[0]<'0' || buffer[0]>'9') {
 				continue;
 			}
 
 			if(i>=9) {
-				D(bug("Troppe definizioni!\n"));
+				D(bug("Too much definitions!\n"));
 				break;
 			}
 
@@ -795,7 +800,7 @@ void SaveKeyDef(int port,char *file)
 
 		q= (port) ? &query[10] : query;
 
-		D(bug("Salvo una custom key definition...\n"));
+		D(bug("Saving custom key definition...\n"));
 
 		while(i < 10)
 		{
