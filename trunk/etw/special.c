@@ -597,32 +597,29 @@ void PreparaPassaggio(Giocatore *g,Giocatore *g_min)
 
 void Passaggio(Giocatore *g)
 {
-        Giocatore *g_min;
+    Giocatore *g_min;
 	register WORD Dir=g->Direzione,pos=0;
 
-	while(pos<5)
-	{
-        	if(g_min=TrovaPiuVicinoDirGiocatore(g))
-	        {
-			PreparaPassaggio(g,g_min);
-			break;
-        	}
+	while(pos < 5)  {
+        if ((g_min=TrovaPiuVicinoDirGiocatore(g))) {
+            PreparaPassaggio(g,g_min);
+            break;
+        }
 
-		pos=-pos;
+        pos=-pos;
 
-		if(pos>=0)
-			pos++;
+        if(pos>=0)
+            pos++;
 
-		g->Direzione=Dir+pos;
+        g->Direzione=Dir+pos;
 
-		if(g->Direzione<0)
-			g->Direzione+=8;
-		else if(g->Direzione>7)
-			g->Direzione-=8;
-	}
+        if(g->Direzione<0)
+            g->Direzione+=8;
+        else if(g->Direzione>7)
+            g->Direzione-=8;
+    }
 
-	if(pos==5)
-	{
+	if(pos == 5) {
 		D(bug("Non dovrebbe succedere! Pos==5, fallito passaggio2!\n"));
 
 		pl->velocita=10;
@@ -1096,8 +1093,7 @@ tirapunizione:
 
 			if(g->TimePress>6)
 				pl->TipoTiro=TIRO_CORNER;
-			else
-			{
+			else {
 // Barra di potenza, solo dopo il check del passaggio
 
 				if(l&JP_DIRECTION_MASK)
@@ -1116,8 +1112,7 @@ tirapunizione:
 				WORD xs=pl->world_x+(pl->delta_x<<7);
 				WORD ys=pl->world_y+(pl->delta_y<<7);
 
-				if(g2=TrovaPiuVicino(g->squadra,xs,ys))
-				{
+				if((g2=TrovaPiuVicino(g->squadra,xs,ys))) {
 					g->SpecialData=g2->GNum;
 				}
 			}
@@ -1128,29 +1123,25 @@ tirapunizione:
 			p->mantieni_distanza=FALSE;
 			p->doing_shot=FALSE;
 
-			if(free_kicks)
-			{
+			if(free_kicks) {
 				p->arbitro.Comando=FISCHIA_PREPUNIZIONE;
 				p->arbitro.Tick=150;
 			}
 			return;
 		}
 
-		if(l&JPF_JOY_UP)
-		{
+		if(l&JPF_JOY_UP) {
 			if(pl->MaxQuota<(MAX_QUOTA-1))
 				pl->MaxQuota++;
 
 		}
-		else if(l&JPF_JOY_DOWN)
-		{
+		else if(l&JPF_JOY_DOWN)	{
 			if(pl->MaxQuota>0)
 				pl->MaxQuota--;
 
 		}
 
-		if(l&JPF_JOY_LEFT)
-		{
+		if(l&JPF_JOY_LEFT) {
 			if(g->SpecialData>0)
 				g->SpecialData=-1;
 			else if(g->SpecialData>-16)
@@ -1158,8 +1149,7 @@ tirapunizione:
 
 			pl->Direzione+=g->SpecialData;
 		}
-		else if(l&JPF_JOY_RIGHT)
-		{
+		else if(l&JPF_JOY_RIGHT) {
 			if(g->SpecialData<0)
 				g->SpecialData=1;
 			else if(g->SpecialData<16)
@@ -1170,46 +1160,37 @@ tirapunizione:
 		else
 			g->SpecialData=1;
 
-		switch(pl->world_x)
-		{
+		switch(pl->world_x)	{
 			case CORNER_X_NO:
-				if(pl->Direzione<64)
-				{
+				if(pl->Direzione<64) {
 					pl->Direzione=64;
 				}
-				else if(pl->Direzione>135)
-				{
+				else if(pl->Direzione>135) {
 					pl->Direzione=136;
 				}
 				break;
 			case CORNER_X_NE:
-				if(pl->Direzione<120)
-				{
+				if(pl->Direzione<120) {
 					pl->Direzione=120;
 				}
-				else if(pl->Direzione>192)
-				{
+				else if(pl->Direzione>192) {
 					pl->Direzione=192;
 				}
 				break;
 			case CORNER_X_SO:
-				if(pl->Direzione<8)
-				{
+				if(pl->Direzione<8)	{
 					pl->Direzione=8;
 				}
-				else if(pl->Direzione>64)
-				{
+				else if(pl->Direzione>64) {
 					pl->Direzione=64;
 				}
 				break;
 
 			case CORNER_X_SE:
-				if(pl->Direzione<192)
-				{
+				if(pl->Direzione<192) {
 					pl->Direzione=192;
 				}
-				else if(pl->Direzione>248)
-				{
+				else if(pl->Direzione>248) {
 					pl->Direzione=248;
 				}
 				break;

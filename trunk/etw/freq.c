@@ -99,6 +99,7 @@ BOOL AslRequest(struct MyFileRequest *fr)
 #include "mydebug.h"
 #include <string.h>
 #include <gtk/gtk.h>
+#include <unistd.h>
 
 typedef struct fdt {
 	GtkWidget *fs;

@@ -715,7 +715,7 @@ void SetTeamSettings(WORD team)
 	{
 		if(k==11)
 			k++;
-
+		D(bug("teamlist[team].NumeroGiocatori<15)"));
 		for(i=k;i<17;i++)
 		{
 			if(teamsettings[i*2+1].Testo)
@@ -736,9 +736,9 @@ void SetTeamSettings(WORD team)
 			pannelli[i*3+1].Testo=pannelli[i*3].Testo=pannelli[i*3+2].Testo=NULL;
 		}
 	}
-
-	for(i=0;i<6;i++)
-	{
+	D(bug("SetTeamSettings FREEING"));
+    
+	for(i=0;i<6;i++) {
 		if(!stricmp(teamsettings[34+i].Testo,teamlist[team].Tattiche[0]))
 		{
 			teamsettings[34+i].Colore=COLORE_TATTICA_SELEZIONATA;
@@ -749,21 +749,36 @@ void SetTeamSettings(WORD team)
 	AddName((struct Giocatore_Disk *)&teamlist[team].portiere[0],0);
 	SetPlayerStatus(0,teamlist[team].portiere[0].Infortuni,0,(((teamlist[team].portiere[0].Parata*2+teamlist[team].portiere[0].Attenzione-2*3+2)*10)/7)/3);
 
+	D(bug("SetTeamSettings after SetPlayerStatus, AddName"));
+    
 	if(teamlist[team].NumeroPortieri<2)
 	{
+		D(bug("if(teamlist[team].NumeroPortieri<2)"));
+		
 		if(teamsettings[11*2+1].Testo)
 			free(teamsettings[11*2+1].Testo);
 
 		if(pannelli[11*3].Testo&&pannelli[11*3].Testo!=empty)
 			free(pannelli[11*3].Testo);
 
-		if(pannelli[11*3+1].Testo&&pannelli[11*3+1].Testo!=empty)
+/*
+ * This code could crash since it used to free a const char *,
+ * this is an error, but it cannot be removed because often, when teams
+ * have less than 2 goalkeepers we remove the second "G" panel
+ * to replace it with another position name, so I've made an extra
+ * check about msg_141, the "G" letter, so that it's freed only
+ * it we really need to free it.
+ */
+        if(     pannelli[11*3+1].Testo &&
+                pannelli[11*3+1].Testo!=empty &&
+                pannelli[11*3+1].Testo != msg_141) {
 			free(pannelli[11*3+1].Testo);
+		}
 
 		if(pannelli[11*3+2].Testo&&pannelli[11*3+2].Testo!=empty)
 			free(pannelli[11*3+2].Testo);
 
-		pannelli[11*3+2].Testo=pannelli[11*3+1].Testo=pannelli[11*3].Testo=NULL;
+        pannelli[11*3+2].Testo=pannelli[11*3+1].Testo=pannelli[11*3].Testo=NULL;
 		teamsettings[11*2].Testo=teamsettings[11*2+1].Testo=NULL;
 	}
 	else
@@ -777,6 +792,8 @@ void SetTeamSettings(WORD team)
 		teamsettings[42].Testo=msg_0;
 	else
 		teamsettings[42].Testo=msg_6;
+		
+	D(bug("SetTeamSettings FINISH"));
 }
 
 void SetTeamSelection(void)
@@ -837,8 +854,7 @@ void SaveTeams(char *name)
 
 	/* AC: Secondo me l'opzione è sbagliata. Direi che serve wb :) */
 	//if(fh=fopen(name,"rb"))
-	if(fh=fopen(name,"wb"))
-	{
+	if ((fh=fopen(name,"wb"))) {
 		campionato.NumeroSquadre--;
 
 		fwrite(&campionato,sizeof(struct Campionato_Disk),1,fh);
@@ -848,14 +864,11 @@ void SaveTeams(char *name)
 		for(i=0;i<campionato.NumeroSquadre;i++)
 			WriteTeam(fh,&teamlist[i]);
 
-		if(competition!=MENU_TEAMS)
-		{
+		if(competition!=MENU_TEAMS) {
 			fwrite(DatiCampionato,sizeof(struct DatiSquadra_Disk)*campionato.NumeroSquadre,1,fh);
 
-			for(i=0;i<campionato.NumeroSquadre;i++)
-			{
-				if(DatiCampionato[i].Controllata)
-				{
+			for(i=0;i<campionato.NumeroSquadre;i++)	{
+				if(DatiCampionato[i].Controllata) {
 					fwrite(giocatori[i],sizeof(struct Controlled_Disk),1,fh);
 
 					if(giocatori[i]->ManagerType)
@@ -869,46 +882,39 @@ void SaveTeams(char *name)
 
 // Per ricavarmi correttamente i_scontri uso un patch su turno
 
-			if(i_scontri>scontri)
-			{
+			if(i_scontri>scontri) {
 				turno+=(numero_squadre-1)*(i_scontri-scontri);
 			}
 
 			fwrite(&turno,sizeof(turno),1,fh);
 
-			if(i_scontri>scontri)
-			{
+			if(i_scontri>scontri) {
 				turno-=(numero_squadre-1)*(i_scontri-scontri);
 			}
 
 // Per non distruggere il comportamento attuale uso un patch su totale_giornate...
 
-			if(scontri>1)
-			{
+			if(scontri>1) {
 				totale_giornate+=(numero_squadre-1)*(scontri-1);
 			}
 
 			fwrite(&totale_giornate,sizeof(totale_giornate),1,fh);
 
-			if(scontri>1)
-			{
+			if(scontri>1) {
 				totale_giornate-=(numero_squadre-1)*(scontri-1);
 			}
 
 			fwrite(teamarray,sizeof(teamarray),1,fh);
 			fwrite(controllo,sizeof(controllo),1,fh);
 
-			if(competition==MENU_WORLD_CUP)
-			{
-				extern BYTE start_groups[8][4],groups[8][4];
+			if(competition==MENU_WORLD_CUP)	{
+				extern BYTE start_groups[8][4]; //,groups[8][4]; i don't need this
 				
-				for(i=0;i<8;i++)
-				{
+				for(i=0;i<8;i++) {
 					fwrite(start_groups[i],4,sizeof(BYTE),fh);
 				}
 			}
-			else if(competition==MENU_LEAGUE)
-			{
+			else if(competition==MENU_LEAGUE) {
 				fwrite(league_pos,sizeof(league_pos),1,fh);
 			}
 			
@@ -927,14 +933,12 @@ void LoadTeams(char *name)
 
 	temp=campionato;
 
-	if(fh=fopen(name,"rb"))
-	{
+	if ((fh=fopen(name,"rb"))) {
 		BOOL ok=FALSE;
 
 		D(bug("Carico le squadre da %s...\n",name));
 
-		if(fread(&campionato,1,sizeof(struct Campionato_Disk),fh)==sizeof(struct Campionato_Disk))
-		{
+		if(fread(&campionato,1,sizeof(struct Campionato_Disk),fh)==sizeof(struct Campionato_Disk)) {
 			struct Squadra_Disk *teamold;
 			D(bug("Campionato: %s V:%ld-P:%ld-L:%ld-S:%ld\n",campionato.Nome,campionato.Vittoria,
 					campionato.Pareggio, campionato.Sconfitta,campionato.NumeroSquadre+1));
@@ -955,19 +959,16 @@ void LoadTeams(char *name)
 
 			teamold=teamlist;
 
-			if(teamlist=malloc(campionato.NumeroSquadre*sizeof(struct Squadra_Disk)) )
-			{
+			if ((teamlist=malloc(campionato.NumeroSquadre*sizeof(struct Squadra_Disk)) ))	{
 				int i;
 				char *s;
 
-				for(i=0;i<campionato.NumeroSquadre;i++)
-				{
+				for(i=0;i<campionato.NumeroSquadre;i++)	{
 					ReadTeam(fh,&teamlist[i]);
 					
 					s=teamlist[i].nome;
 
-					while(*s)
-					{
+					while(*s) {
 						*s=toupper(*s);
 						s++;
 					}
@@ -977,15 +978,13 @@ void LoadTeams(char *name)
 
 					s=teamlist[i].allenatore;
 
-					while(*s)
-					{
+					while(*s) {
 						*s=toupper(*s);
 						s++;
 					}
 				}
 
-				if(i==campionato.NumeroSquadre)
-				{
+				if(i==campionato.NumeroSquadre)	{
 					ok=TRUE;
 
 					if(teamold)
@@ -999,19 +998,15 @@ void LoadTeams(char *name)
 					teamlist=teamold;
 				}
 
-				if(competition!=MENU_TEAMS)
-				{
-					if(fread(DatiCampionato,sizeof(struct DatiSquadra_Disk)*campionato.NumeroSquadre,1,fh)==sizeof(struct DatiSquadra_Disk)*campionato.NumeroSquadre)
-					{
+				if(competition!=MENU_TEAMS)	{
+					if(fread(DatiCampionato,sizeof(struct DatiSquadra_Disk)*campionato.NumeroSquadre,1,fh)==sizeof(struct DatiSquadra_Disk)*campionato.NumeroSquadre) {
 						for(i=0;i<campionato.NumeroSquadre;i++)
 						{
-							if(DatiCampionato[i].Controllata)
-							{
+							if(DatiCampionato[i].Controllata) {
 								if(!giocatori[i])
 									giocatori[i]=malloc( sizeof(struct Controlled_Disk) ); 
 
-								if(giocatori[i])
-								{
+								if(giocatori[i]) {
 									fread(giocatori[i],sizeof(struct Controlled_Disk),1,fh);
 
 									if(giocatori[i]->ManagerType)
@@ -1037,8 +1032,7 @@ void LoadTeams(char *name)
 
 					fread(&turno,sizeof(turno),1,fh);
 
-					while(turno>=numero_squadre)
-					{
+					while(turno>=numero_squadre) {
 						/* AC: Al primo ciclo del while, numero_squadre vale 0 
 						 * e turno 1.
 						 * Dopo questa istruzione turno vale 2 perch - * - = +
@@ -1059,8 +1053,7 @@ void LoadTeams(char *name)
 
 // Patch per gestire correttamente il caricamento di un campionato con + di uno scontro!
 
-					while(totale_giornate>=numero_squadre)
-					{
+					while(totale_giornate>=numero_squadre) {
 						/* AC: Stesso discorso del while precedente */
 						if(numero_squadre != 0)
 							totale_giornate-=(numero_squadre-1);
@@ -1069,8 +1062,7 @@ void LoadTeams(char *name)
 						scontri++;
 					}
 
-					if(i_scontri>1&&i_scontri!=scontri)
-					{
+					if(i_scontri>1&&i_scontri!=scontri)	{
 // Significa che devo fare uno swap delle squadre...
 						InvertiSquadre();
 					}
@@ -1078,12 +1070,10 @@ void LoadTeams(char *name)
 					fread(teamarray,sizeof(teamarray),1,fh);
 					fread(controllo,sizeof(controllo),1,fh);
 
-					if(competition==MENU_WORLD_CUP)
-					{
+					if(competition==MENU_WORLD_CUP)	{
 						extern BYTE start_groups[8][4],groups[8][4];
 						
-						for(i=0;i<8;i++)
-						{
+						for(i=0;i<8;i++) {
 							fread(start_groups[i],sizeof(BYTE),4,fh);
 
 							memcpy(groups[i],start_groups[i],4*sizeof(BYTE));
@@ -1091,8 +1081,7 @@ void LoadTeams(char *name)
 
 						GroupsUpdate();
 					}
-					else if(competition==MENU_LEAGUE)
-					{
+					else if(competition==MENU_LEAGUE) {
 						fread(league_pos,sizeof(league_pos),1,fh);
 
 						InitTable();

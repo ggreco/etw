@@ -504,12 +504,10 @@ APTR OpenCatalog(char *catalog)
 	strcat(buffer,"/");
 	strcat(buffer,catalog);
 
-	if(f=fopen(buffer,"rb"))
-	{
+	if((f=fopen(buffer,"rb"))) 	{
 		D(bug("Trovato il file catalog %s...\n",buffer));
 
-		if(cat=(struct MyCatalog *)malloc(sizeof(struct MyCatalog)))
-		{
+		if ((cat=(struct MyCatalog *)malloc(sizeof(struct MyCatalog))))	{
 			int l,offset=0,t;
 			long clen,id,slen;
 
@@ -529,14 +527,12 @@ APTR OpenCatalog(char *catalog)
 				goto fallback;
 
 
-			while(strncmp(buffer,"LANG",4)&&!feof(f))
-			{
+			while (strncmp(buffer,"LANG",4)&&!feof(f)) {
 				fseek(f,-3,SEEK_CUR);
 				fread(buffer,4,1,f);
 			}
 
-			if(feof(f))
-			{
+			if (feof(f))	{
 				D(bug("Chunk non trovato!\n"));
 				goto fallback;
 			}
@@ -545,20 +541,17 @@ APTR OpenCatalog(char *catalog)
 			l=fgetc(f);
 			fread(buffer,l,1,f);
 
-			if(stricmp(lang,buffer))
-			{
+			if (stricmp(lang,buffer)) {
 				D(bug("Errore lingua selezionata e catalog non corrispondono!\n"));
 				goto fallback;
 			}
 
-			while(strncmp(buffer,"STRS",4)&&!feof(f))
-			{
+			while(strncmp(buffer,"STRS",4)&&!feof(f))	{
 				fseek(f,-3,SEEK_CUR);
 				fread(buffer,4,1,f);
 			}
 
-			if(feof(f))
-			{
+			if(feof(f))	{
 				D(bug("Chunk non trovato!\n"));
 				goto fallback;
 			}
@@ -572,8 +565,7 @@ APTR OpenCatalog(char *catalog)
 
 			D(bug("Lunghezza catalog: %ld bytes\n",clen));
 
-			while(clen>offset&&!feof(f))
-			{
+			while(clen>offset&&!feof(f)) {
 				fread(&id,sizeof(long),1,f);
 				SWAP_LONG(id);
 
@@ -590,8 +582,7 @@ APTR OpenCatalog(char *catalog)
 
 				t=(offset>>2)<<2;
 
-				if(t!=offset)
-				{
+				if(t!=offset) {
 					t+=4;
 					t>>=2;
 					t<<=2;
@@ -604,16 +595,14 @@ APTR OpenCatalog(char *catalog)
 
 			return cat;
 		}
-		else
-		{
+		else {
 fallback:
 			D(bug("Il file non e' un catalog IFF!\n"));
 			fclose(f);
 			return NULL;
 		}
 	}
-	else
-	{
+	else {
 		D(bug("Non trovo %s, uso la lingua builtin.\n",buffer));
 		return NULL;
 	}
@@ -621,17 +610,14 @@ fallback:
 
 void CloseCatalog(APTR ctg)
 {
-	if(ctg)
-	{
+	if(ctg)	{
 		struct MyCatalog *c=ctg;
 		int i;
 
 		fclose(c->handle);
 
-		if(c->strings_ptr)
-		{
-			for(i=0;i<c->strings;i++)
-			{
+		if(c->strings_ptr) {
+			for(i=0;i<c->strings;i++) {
 				if(c->strings_ptr[i].string)
 					free(c->strings_ptr[i].string);
 			}
