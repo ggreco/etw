@@ -147,7 +147,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 	else if(network_game && network_player->num) {
 		UBYTE temp=team1;
 
-		D(bug("Al giocatore e' assegnata la squadra 1, swappo i teams\n"));
+		D(bug("Player got team 1, swapping teams\n"));
 
 		team1=team2;
 		team2=temp;
@@ -157,21 +157,18 @@ WORD StartMatch(BYTE team1,BYTE team2)
 	if( (daytime==0 && RangeRand(2)==0 ) || daytime==2 )
 			nightgame=TRUE;
 
-	game_start=TRUE;
-
 	if(controllo[team1]>=0&&!arcade_teams) {
-		SetTeamSettings(team1);
+		SetTeamSettings(team1, TRUE);
 		ChangeMenu(MENU_TEAM_SETTINGS);
 		while(HandleMenuIDCMP());
 	}
 
 	if(controllo[team2]>=0&&!training&&!arcade_teams) {
-		SetTeamSettings(team2);
+		SetTeamSettings(team2, TRUE);
 		ChangeMenu(MENU_TEAM_SETTINGS);
 		while(HandleMenuIDCMP());
 	}
 
-	game_start=FALSE;
 	window_opened=FALSE;
 //	write_config(TEMP_DIR "thismatch"/*-*/);
 
