@@ -345,20 +345,17 @@ WORD StartMatch(BYTE team1,BYTE team2)
 			}
 		}
 	}
-	else
-	{
+	else {
 		char c=field_type-1;
 
 		if(!field_type)
 			c=RangeRand(NUMERO_CAMPI);
 
-		if(newpitches)
-		{
+		if(newpitches)	{
 			sprintf(fieldname,"newgfx/pitch%lc+.gfx"/*-*/,c+'a');
 			sprintf(palette,"newgfx/eat32%s.col"/*-*/,palettes[t]);
 		}
-		else
-		{
+		else {
 			sprintf(fieldname,"gfx/pitch%lc.gfx"/*-*/,c+'a');
 			sprintf(palette,"gfx/eat16%s.col"/*-*/,palettes[t]);
 		}
@@ -692,8 +689,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 
 	if(parent_menu==MENU_ARCADE_SELECTION||parent_menu==MENU_TEAM_SELECTION)
 		ChangeMenu(parent_menu);
-	else 
-	{
+	else {
 		D(bug("No menu change! Parent menu: %ld\n"/*-*/,parent_menu));
 	}
 
@@ -704,14 +700,7 @@ void LoadHigh(char *file)
 {
 	FILE *f,*f2;
 
-    request("LoadHigh not yet safe in portable version.");
-
-//    return;
-
-	if((f=fopen(file,"rb")))
-	{
-		UWORD tempuw;
-
+	if((f=fopen(file,"rb"))) {
         ReadGameConfig(f);
 
 // team handling...
@@ -719,16 +708,11 @@ void LoadHigh(char *file)
 		ReadTeam(f, &leftteam_dk);
 		ReadTeam(f, &rightteam_dk);
 
-		fread(&tempuw,sizeof(tempuw),1,f);
-
-        SWAP_WORD(tempuw);
-
-        highsize = tempuw;
+		READ_WORD(highsize, f);
         
 // Here we handle the REAL highlight...
 
-		if(!(f2=fopen(TEMP_DIR "high"/*-*/,"wb")))
-		{
+		if(!(f2=fopen(TEMP_DIR "high"/*-*/,"wb"))) {
 			fclose(f);
 			return;
 		}

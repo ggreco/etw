@@ -94,6 +94,11 @@ void HandleControlled(int squadra)
         return;
     }
 
+    if (g->squadra->Joystick < 0) {
+        D(bug("HandleControlled with Joystick < 0!\n"));
+        return;
+    }
+
     joystate=r_controls[g->squadra->Joystick][counter];
 
     // Gestione del fire
@@ -356,6 +361,11 @@ void HandleControlledJ2B(int squadra)
     {
         CheckChange(g);
         NoPlayerControl(g);
+        return;
+    }
+
+    if (g->squadra->Joystick < 0) {
+        D(bug("HandleControlled with Joystick < 0!\n"));
         return;
     }
 
@@ -624,6 +634,11 @@ void HandleControlledJoyPad(int squadra)
         return;
     }
 
+    if (g->squadra->Joystick < 0) {
+        D(bug("HandleControlled with Joystick < 0!\n"));
+        return;
+    }
+    
     joystate=r_controls[g->squadra->Joystick][counter];
 
     // Gestione del fire
