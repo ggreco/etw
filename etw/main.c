@@ -30,10 +30,11 @@ void Progress(void)
 
     y = WINDOW_HEIGHT - 20;
 
-    block_width = ((WINDOW_WIDTH - 20) / 20) - 1;
+	/* AC: I've noticed that the max block was 22, but now I've reduced them to 20 */
+    block_width = ((WINDOW_WIDTH - 20) / 20); //- 1;
     
-    x += (progress_called*(block_width + 1));
-    rectfill(main_bitmap, x, y, x + block_width, y + 14, Pens[P_BIANCO],bitmap_width);
+    x += (progress_called*(block_width /*+ 1*/));
+    rectfill(main_bitmap, x, y, x + block_width -2, y + 14, Pens[P_BIANCO],bitmap_width);
     progress_called++;
     
     ScreenSwap();
@@ -719,7 +720,8 @@ BOOL LoadStuff(void)
 		LoadPLogo("gfx/islona");
 		os_delay(60);
 #else
-		Progress();
+		/* AC: I remove this Progress, in order to gain 20 blocks instead of 21
+		Progress();*/
 #endif
 		if (SetupSquadre()) {
 			Progress();
@@ -782,6 +784,9 @@ BOOL LoadStuff(void)
 			}
 
 			Progress();
+
+			/* AC: Just a very little delay, showing the final loading */
+			os_delay(6);
 
 /* Nascondo lo schermo per cambiare la palette */
 
