@@ -26,7 +26,7 @@ struct MyList GfxList, DrawList, TempList;
 
 BOOL InitAnimSystem(void)
 {
-	D(bug("Inizio InitAnimSystem!\n"));
+	D(bug("Start: InitAnimSystem!\n"));
 
 	MyNewList(&DrawList);
 	MyNewList(&GfxList);
@@ -322,7 +322,7 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 	UBYTE *planes[8];
 	BOOL ok = TRUE;
 
-	D(bug("Carico %s...", name));
+	D(bug("Loading %s...", name));
 
 	if ((obj = calloc(1, sizeof(struct GfxObject)))) {
 		if ((fh = fopen(name, "rb"))) {
@@ -332,7 +332,7 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 
 			if (strncmp(buffer, "GGFX" /*-*/ , 4)) {
 				fclose(fh);
-				D(bug("Il file non e' nel formato GfxObj!\n"));
+				D(bug("File is not a GfxObj!\n"));
 				free(obj);
 				return NULL;
 			}
@@ -364,7 +364,7 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 					} else {
 						use_remapping = FALSE;
 						D(bug
-						  ("Remapping disabilitato per problemi di memoria.\n"));
+						  ("Remapping disabilitato for low memory.\n"));
 					}
 				} else {
 					use_remapping = FALSE;
@@ -418,7 +418,7 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 			}
 
 		} else {
-			D(bug("File non trovato...\n"));
+			D(bug("File not found...\n"));
 		}
 
 		free(obj);
@@ -452,13 +452,13 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 			bb[strlen(bb) - 1] = 'c';
 
 			if (!(fh = fopen(bb, "rb"))) {
-				D(bug("Non trovo l'animobj chunky...\n"));
+				D(bug("chunky animobj not found...\n"));
 
 				if ((fh = fopen(name, "rb"))) {
 					convert = TRUE;
 
 					if (!(fo = fopen(bb, "wb")))
-						D(bug("Non posso scrivere su %s\n", bb));
+						D(bug("*** Unable to write to %s\n", bb));
 				}
 			}
 		}
@@ -467,7 +467,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 			char buffer[4];
 			LONG i;
 
-			D(bug("Carico %s...", name));
+			D(bug("Loading %s...", name));
 
 
 			fread(buffer, 4, 1, fh);
@@ -475,7 +475,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 			if (strncmp(buffer, "GOBJ" /*-*/ , 4)
 				&& strncmp(buffer, "GOBC" /*-*/ , 4)) {
 				fclose(fh);
-				D(bug("Il file non e' nel formato AnimObj!\n"));
+				D(bug("File is not an AnimObj!\n"));
 				free(obj);
 				return NULL;
 			}
@@ -663,7 +663,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 
 			fclose(fh);
 		} else {
-			D(bug("Non posso aprire il file...\n"));
+			D(bug("Unable to open file...\n"));
 		}
 
 		free(obj);
@@ -758,12 +758,13 @@ void FreeGraphics(void)
 {
 	struct MyNode *n, *next;
 
-	D(bug("Libero i messaggi...\n"));
 
-	if (double_buffering)
+	if (double_buffering) {
+    	D(bug("Freeing double buffering...\n"));
 		os_free_dbuffer();
-
-	D(bug("Entro nel loop...\n"));
+    }
+    
+	D(bug("Entering loop...\n"));
 
 	for (n = GfxList.lh_Head; n->ln_Succ; n = next) {
 		next = n->ln_Succ;
@@ -772,27 +773,27 @@ void FreeGraphics(void)
 
 		switch (n->ln_Type) {
 		case TYPE_GFXOBJ:
-			D(bug("Libero un GfxObj.\n"));
+			D(bug("Freeing a GfxObj.\n"));
 			FreeGfxObj((GfxObj *) n->ln_Name);
 			break;
 		case TYPE_ANIMOBJ:
-			D(bug("Libero un AnimObj.\n"));
+			D(bug("Freeing a AnimObj.\n"));
 			FreeAnimObj((AnimObj *) n->ln_Name);
 			break;
 		case TYPE_RASTPORT:
-			D(bug("Libero una RastPort.\n"));
+			D(bug("Freeing a RastPort.\n"));
 			free(n->ln_Name);
 			break;
 		case TYPE_SCREENBUFFER:
-			D(bug("Libero uno screen buffer...\n"));
+			D(bug("Freeing a screen buffer...\n"));
 // Viene gia' fatta in os_free_dbuffer();
 			break;
 		case TYPE_BITMAP:
-			D(bug("Libero una bitmap.\n"));
+			D(bug("Freeing a bitmap.\n"));
 			free(n->ln_Name);
 			break;
 		default:
-			D(bug("Attenzione, libero una risorsa sconosciuta!\n"));
+			D(bug("WARNING Freeing unknown resource!\n"));
 			break;
 		}
 
@@ -880,7 +881,7 @@ BOOL LoadIFFPalette(char *filename)
 						c = min(colors, cmap_len);
 
 						D(bug
-						  ("Carico %ld colori da %s...\n", c, filename));
+						  ("Loading %ld colors from %s...\n", c, filename));
 
 						for (j = 0; j < c * 3; j++) {
 							unsigned char cc;
@@ -905,12 +906,12 @@ BOOL LoadIFFPalette(char *filename)
 				D(bug("Non e' un file ILBM.\n"));
 			}
 		} else {
-			D(bug("Non e' un file IFF.\n"));
+			D(bug("Not an IFF file.\n"));
 		}
 
 		fclose(fh);
 	} else {
-		D(bug("Il file <%s> non esiste!\n", filename));
+		D(bug("Palette file <%s> not found!\n", filename));
 	}
 
 	return rc;
@@ -1056,7 +1057,7 @@ LONG RemapIFFPalette(char *filename, LONG * Pens)
 		}
 		fclose(fh);
 	} else {
-		D(bug("Il file <%s> non esiste!\n", filename));
+		D(bug("Palette file <%s> not found!\n", filename));
 	}
 
 	return cmap_len;
@@ -1094,7 +1095,7 @@ void LoadGfxObjPalette(char *name)
 		palette[depth * 3 + 1] = 0;
 		os_load_palette(palette);
 
-		D(bug("Carico %ld colori da %s\n", depth, name));
+		D(bug("Loading %ld colors from GfxObj %s\n", depth, name));
 
 		for (i = 0; i < depth; i++)
 			lock_pen(i);
@@ -1109,7 +1110,7 @@ void FreeIFFPalette(void)
 
 	depth = (1 << screen_depth);
 
-	D(bug("Rilascio %ld colori...\n", depth));
+	D(bug("Freeed %ld colors...\n", depth));
 
 	for (i = 0; i < depth; i++)
 		release_pen(i);

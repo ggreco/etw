@@ -1,23 +1,22 @@
 #include "eat.h"
 #include "preinclude.h"
 
+// this code has been largely semplified removing double buffering since the loading
+// of the samples is done in foreground and so DBuffering was unuseful.
+
 extern struct SoundInfo *busy[];
 
 struct SoundInfo *Cori[NUMERO_CORI];
 
-struct SoundInfo *Coro[2], *oldcoro = NULL;
-
 LONG wanted_sound = FONDO, playing = -1, last_looped = FONDO;
-WORD coro_attuale = 0, numero_loops = 0;
+WORD numero_loops = 0;
 
-char corobuffer[] = "+.crowd/crowd00.snd";
+char corobuffer[] = ".crowd/crowd00.wav";
 
 BOOL played = FALSE, crowd_loading = FALSE;
 
 void init_crowd(void)
 {
-	oldcoro = NULL;
-	coro_attuale = 0;
 	played = FALSE;
 	playing = -1;
 	last_looped = FONDO;
@@ -30,21 +29,17 @@ void init_crowd(void)
 		sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
 		numero_loops = 128 / (sound[FONDO]->Length / 3600);
 		D(bug
-		  ("CT: Uso audio2fast L: %ld B: %lx NL: %ld...\n",
+		  ("CT: Using audio2fast L: %ld B: %lx NL: %ld...\n",
 		   sound[FONDO]->Length, sound[FONDO]->SoundData, numero_loops));
 	} else {
 		numero_loops = -1;
 
-		corobuffer[14] = MyRangeRand(9) + '1';	// Carico da coro 1 a coro 9
+		corobuffer[13] = MyRangeRand(9) + '1';	// Carico da coro 1 a coro 9
 
-		if ((Coro[coro_attuale] = LoadSound(corobuffer))) {
-			convert_sound(Coro[coro_attuale]);
-
-			if(sound[FONDO])
-				FreeSound(sound[FONDO]);
-
-			sound[FONDO] = Coro[coro_attuale];
-		}
+    	if(sound[FONDO])
+			FreeSound(sound[FONDO]);
+        
+		sound[FONDO] = LoadSound(corobuffer);
 	}
 
 	busy[AUDIO_CROWD] = sound[FONDO];
@@ -83,33 +78,21 @@ struct SoundInfo *handle_crowd(void)
 			} else {
 				int i = MyRangeRand(NUMERO_CORI) + 1;
 
-				corobuffer[13] = (i / 10) + '0';
-				corobuffer[14] = (i % 10) + '0';
+				corobuffer[12] = (i / 10) + '0';
+				corobuffer[13] = (i % 10) + '0';
 
-				if (Coro[coro_attuale]) {
-					sound[FONDO] = Coro[coro_attuale];
+                FreeSound(sound[FONDO]);
+
+                sound[FONDO] = LoadSound(corobuffer);
+                
+				if (sound[FONDO]) {
+    				convert_sound(sound[FONDO]);
 					numero_loops =
-						128 / (Coro[coro_attuale]->Length / 3600);
+						128 / (sound[FONDO]->Length / 3600);
 				} else {
-//                                   D(bug("Errore, non c'e' un coro disponibile!\n"));
 					playing = -1;
 					return FALSE;
 				}
-
-    //            D(bug("[DISK] Coro (%s): %ld - %ld (l: %ld)\n",corobuffer, Coro[coro_attuale]->SoundData,Coro[coro_attuale]->Length,numero_loops));
-
-// Uso questo trucco per tenere sempre almeno due suoni in memoria
-
-				if (oldcoro)
-					FreeSound(oldcoro);
-
-				oldcoro = Coro[coro_attuale ^ 1];
-
-				coro_attuale ^= 1;
-
-
-				Coro[coro_attuale] = LoadSound(corobuffer);
-				convert_sound(Coro[coro_attuale]);
 			}
 		}
 

@@ -11,12 +11,9 @@
 
 // char versione[]="\0$VER: ETW-Menu " ETW_VERSION " " __AMIGADATE__ " by Gabriele Greco - Hurricane Studios";
 
-// char team_name[2][16]={"genoa","verona"};
 extern SDL_Surface *screen;
 // ULONG detail_level=~(USA_RISULTATO);
-// LONG Colors=0,basepri=3;
 extern LONG Colors;
-// LONG WINDOW_WIDTH=320,WINDOW_HEIGHT=256,
 LONG oldwidth = 320, oldheight = 256;
 WORD players = 1, music_channel = -1;
 BOOL quit_game = FALSE, no_sound = FALSE;
@@ -30,85 +27,6 @@ int bitmap_width, bitmap_height;
 struct SoundInfo *music = NULL;
 extern void convert_sound(struct SoundInfo *);
 
-#if 0
-
-BOOL FindDataDir(char *base)
-{
-	char buffer[100];
-	int l = strlen(base);
-	DIR *lk;
-
-	D(bug("Cerco la dir dei dati in: %s\n" /*-*/ , base));
-
-	strcpy(buffer, base);
-
-	strcpy(buffer + l, "gfx" /*-*/ );
-
-	if (lk = opendir(buffer)) {
-		strcpy(buffer + l, "menugfx" /*-*/ );
-
-		closedir(lk);
-
-		if (lk = opendir(buffer)) {
-			strcpy(buffer + l, "snd" /*-*/ );
-
-			closedir(lk);
-
-			if (lk = opendir(buffer)) {
-				D(bug("Data dir trovata!\n"));
-
-				closedir(lk);
-
-				if (lk = opendir(base)) {
-					closedir(lk);
-
-					chdir(base);
-
-					return TRUE;
-				}
-			}
-		}
-	}
-
-	return FALSE;
-}
-
-BOOL FindAssign(char *assign, char *path)
-{
-	char buffer[100];
-	BPTR l;
-
-	strcpy(buffer, "PROGDIR:" /*-*/ );
-	strcat(buffer, path);
-
-	if (l = Lock(assign, ACCESS_READ)) {
-		UnLock(l);
-		return TRUE;
-	} else if (l = Lock(path, ACCESS_READ)) {
-		assign[strlen(assign) - 1] = 0;
-		D(bug("Assegno %s a %s\n" /*-*/ , assign, path));
-		return (BOOL) AssignLock(assign, l);
-	} else if (l = Lock(buffer, ACCESS_READ)) {
-		assign[strlen(assign) - 1] = 0;
-		D(bug("Assegno %s a %s\n" /*-*/ , assign, buffer));
-		return (BOOL) AssignLock(assign, l);
-	}
-
-	strcpy(buffer, "EatTheWhistle-CD:" /*-*/ );
-	strcat(buffer, path);
-
-	if (l = Lock(buffer, ACCESS_READ)) {
-		assign[strlen(assign) - 1] = 0;
-		D(bug("Assegno %s a %s\n" /*-*/ , assign, buffer));
-		return (BOOL) AssignLock(assign, l);
-	} else {
-		D(bug("Non riesco a lockare %s -> %s\n" /*-*/ , assign, path));
-		return FALSE;
-	}
-}
-
-#endif
-
 void PlayMenuMusic(void)
 {
 	char buffer[120];
@@ -117,9 +35,9 @@ void PlayMenuMusic(void)
 		return;
 
 
-	sprintf(buffer, "+.music/back%d.iff" /*-*/ , RangeRand(NUMERO_LOOPS));
+	sprintf(buffer, "+.music/back%d.wav" /*-*/ , RangeRand(NUMERO_LOOPS));
 
-	D(bug("Carico %s per i menu...\n" /*-*/ , buffer));
+	D(bug("Loading %s as menu music...\n" /*-*/ , buffer));
 
 	if (music) {
 		FreeSound(music);
@@ -128,7 +46,7 @@ void PlayMenuMusic(void)
 
 	if ((music = LoadSound(buffer))) {
 //		if (music->Rate < 19000 || music->Rate > 24000) let's ALWAYS convert samples, our rate maybe 44khz!
-			convert_sound(music);
+		convert_sound(music);
 
 		music_channel = PlayBackSound(music);
 
@@ -142,7 +60,7 @@ void StopMenuMusic(void)
 	if (music_playing && music_channel >= 0 && !no_sound) {
 		extern struct SoundInfo *busy[];
 
-		D(bug("Fermo la musica dei menu...\n" /*-*/ ));
+		D(bug("Stopping menu music on channel %d...\n" /*-*/, music_channel ));
 		SDL_LockAudio();
 		busy[music_channel] = NULL;
 // sblocco il canale            
@@ -211,7 +129,7 @@ BOOL LoadArcadeBack(void)
 
 void FreeMenuStuff(void)
 {
-	D(bug("Libero i logos...\n"));
+	D(bug("Freeing logos...\n"));
 
 /*
 	Non dovrebbe servire...
@@ -231,31 +149,31 @@ void FreeMenuStuff(void)
 		symbols = NULL;
 	}
 
-	D(bug("Libero lo sfondo...\n"));
+	D(bug("Freeing background picture...\n"));
 
 	if (back) {
 		free(back);
 		back = NULL;
 	}
 
-	D(bug("Libero la bitmap temporanea...\n"));
+	D(bug("Freeing main bitmap...\n"));
 
 	free(main_bitmap);
 
-	D(bug("Libero i fonts...\n"));
+	D(bug("Freeing fonts...\n"));
 	FreeMenuFonts();
 
-	D(bug("Libero i suoni...\n"));
+	D(bug("Freeing sounds...\n"));
 	LiberaSuoniMenu();
 
-	D(bug("Inizio FreeGraphics()!\n"));
+	D(bug("Begin: FreeGraphics()!\n"));
 	FreeGraphics();
-	D(bug("Fine FreeGraphics()!\n"));
+	D(bug("End: FreeGraphics()!\n"));
 
 	if (public_screen && Colors > 0) {
 //              int i;
 
-		D(bug("Libero i colori!\n"));
+		D(bug("Freeing pens!\n"));
 
 /*		for(i=0;i<Colors;i++)
 			os_releasepen(Pens[i]);
@@ -279,7 +197,7 @@ BOOL LoadMenuStuff(void)
 
 	}
 
-	D(bug("Alloco la palette...\n"));
+	D(bug("Palette allocation...\n"));
 
 	{
 		int i;
@@ -293,19 +211,19 @@ BOOL LoadMenuStuff(void)
 			Pens[i] = i;
 	}
 
-	D(bug("Rimappata la palette dei menu.\n" /*-*/ ));
+	D(bug("Menu palette remapped.\n" /*-*/ ));
 
 // ModifyIDCMP
 
-	D(bug("Apro la finestra...\n"));
+	D(bug("Opening game window...\n"));
 
 	ClipX = WINDOW_WIDTH - 1;
 	ClipY = WINDOW_HEIGHT - 1;
 
-	D(bug("Inizializzo l'AnimSystem...\n" /*-*/ ));
+	D(bug("Anim System initialization...\n" /*-*/ ));
 
 	if (!InitAnimSystem()) {
-		D(bug("Errore in InitAnimSystem!\n" /*-*/ ));
+		D(bug("Error in InitAnimSystem!\n" /*-*/ ));
 		return FALSE;
 	}
 
@@ -322,7 +240,7 @@ BOOL LoadMenuStuff(void)
 			os_delay(40);
 	}
 
-	D(bug("Apro i fonts...\n" /*-*/ ));
+	D(bug("Opening fonts...\n" /*-*/ ));
 
 	if (!InitMenuFonts()) {
 		free(main_bitmap);
@@ -330,7 +248,7 @@ BOOL LoadMenuStuff(void)
 		return FALSE;
 	}
 
-	D(bug("Inizializzo il sound system...\n" /*-*/ ));
+	D(bug("Sound system initialization...\n" /*-*/ ));
 
 	if (!no_sound) {
 		FILE *fh;
@@ -367,13 +285,13 @@ BOOL LoadMenuStuff(void)
 			os_delay(40);
 	}
 
-	D(bug("Apro la bitmap temporanea\n" /*-*/ ));
+	D(bug("Main bitmap creation\n" /*-*/ ));
 
 
 	if (firsttime) {
 		FILE *b;
 
-		D(bug("Carico il primo logo.\n" /*-*/ ));
+		D(bug("Loading logo...\n" /*-*/ ));
 
 		if ((b = fopen("newgfx/hurricane" /*-*/ , "r"))) {
 			fclose(b);
@@ -395,7 +313,7 @@ BOOL LoadMenuStuff(void)
 	if (firsttime) {
 		init_joy_config();
 
-		D(bug("Carico il secondo logo.\n" /*-*/ ));
+		D(bug("Loading logo N.2\n" /*-*/ ));
 
 		if (nointro)
 			rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
@@ -406,7 +324,7 @@ BOOL LoadMenuStuff(void)
 		LoadMenuLogo("gfx/etwlogo" /*-*/ );
 		SDL_SaveBMP(screen, "etw.bmp");
 
-		D(bug("Carico gli scores...\n"));
+		D(bug("Updating scores...\n"));
 		LoadScores();
 
 		os_delay(50);
@@ -431,7 +349,7 @@ BOOL LoadMenuStuff(void)
 		FreeGraphics();
 	}
 
-	D(bug("Carico la nuova palette\n" /*-*/ ));
+	D(bug("Palette reinitialization\n" /*-*/ ));
 
 	if (!public_screen) {
 		int i;
@@ -446,7 +364,7 @@ BOOL LoadMenuStuff(void)
 		}
 
 		if (!LoadIFFPalette("gfx/eat16menu.col" /*-*/ )) {
-			D(bug("Non riesco a caricare la palette!\n" /*-*/ ));
+			D(bug("Unable to load the menu palette!\n" /*-*/ ));
 			free(main_bitmap);
 			free(back);
 			FreeMenuFonts();
@@ -455,25 +373,23 @@ BOOL LoadMenuStuff(void)
 		}
 //      LoadGfxObjPalette("menugfx/arcade0.gfx"/*-*/); Prova x quando era buggata l'altra chiamata
 
-		D(bug("Caricata la palette dei menu.\n" /*-*/ ));
+		D(bug("Loaded menu palette.\n" /*-*/ ));
 	}
 
 	if ((logos = LoadAnimObject("menugfx/clips.obj" /*-*/ , Pens))) {
 		if (LoadBack()) {
 			if ((symbols =
 				LoadAnimObject("menugfx/simboli.obj" /*-*/ , Pens))) {
-				D(bug("Alloco il file requester...\n"));
-/* Da fare... gestione file requester... */
 
 				D(bug
-				  ("Esco in modo corretto dalla InitStuff()...\n" /*-*/ ));
+				  ("InitStuff() OK...\n" /*-*/ ));
 				firsttime = FALSE;
 
 				PlayMenuMusic();
 
 				return TRUE;
 			}
-			D(bug("Errore nel caricamento di symbols...\n" /*-*/ ));
+			D(bug("Error in symbols loading...\n" /*-*/ ));
 		}
 	}
 
@@ -548,13 +464,13 @@ int disabled_main(int argc, char *argv[])
 
 	if (screen) {
 		if (LoadMenuStuff()) {
-			D(bug("Lancio la Change Menu...\n"));
+			D(bug("Starting ChangeMenu...\n"));
 
 			os_start_audio();
 
 			ChangeMenu(0);
 
-			D(bug("Entro nel loop...\n"));
+			D(bug("Entering main loop...\n"));
 			while (HandleMenuIDCMP());
 
 			if (audio_to_fast) {
@@ -562,16 +478,16 @@ int disabled_main(int argc, char *argv[])
 				DeleteAudio2Fast();
 			}
 
-			D(bug("Inizio FreeMenuStuff...\n" /*-*/ ));
+			D(bug("Start: FreeMenuStuff...\n" /*-*/ ));
 			FreeMenuStuff();
-			D(bug("Fine FreeMenuStuff()...\n" /*-*/ ));
+			D(bug("End: FreeMenuStuff()...\n" /*-*/ ));
 		}
 
 		if(SoundStarted())
 			FreeSoundSystem();
 	}
 
-	D(bug("Fine!\n"));
+	D(bug("Program exited cleanly!\n"));
 
 	return 0;
 }

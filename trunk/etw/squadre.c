@@ -44,7 +44,7 @@ void RimuoviGuardalinee(void)
 {
 	if(detail_level&USA_GUARDALINEE)
 	{
-		D(bug("Rimuovo i guardalinee...\n"));
+		D(bug("Removing linesmen...\n"));
 
 		RimuoviLista((Oggetto *)&guardalinee[1]);
 		RimuoviLista((Oggetto *)&guardalinee[0]);
@@ -67,7 +67,7 @@ void ChangeImmagine(Giocatore *g,AnimObj *o)
 
 	if(g->immagine->Flags&AOBJ_CLONED)
 	{
-		D(bug("Sostituisco giocatore di pelle diversa, caso semplice!\n"));
+		D(bug("Changing skin colors, simple case!\n"));
 
 		FreeAnimObj(g->immagine);
 		g->immagine=CloneAnimObj(o);
@@ -97,7 +97,7 @@ void ChangeImmagine(Giocatore *g,AnimObj *o)
 
 		if(g2)
 		{
-			D(bug("Metto l'omino base su un altro giocatore ed effettuo il cambio!\n"));
+			D(bug("Changing skin colors, trick case A!\n"));
 			g->immagine->x_pos=g2->immagine->x_pos;
 			g->immagine->y_pos=g2->immagine->y_pos;
 			g->immagine->current_frame=g2->immagine->current_frame;
@@ -113,7 +113,7 @@ void ChangeImmagine(Giocatore *g,AnimObj *o)
 // G e' l'unico nero (o bianco), quindi lo rimuovo!
 			int snum=g->SNum;
 
-			D(bug("Rimuovo l'unico omino di colore diverso!\n"));
+			D(bug("Changing skin colors, trick case B!\n"));
 
 			if(teams_swapped)
 				snum^=1;
@@ -141,7 +141,7 @@ void SwapTeams(void)
 	UBYTE tmp;
 	void (*Temp)(int);
 
-	D(bug("Inverto le squadre...\n"));
+	D(bug("Inverting teams in pitch...\n"));
 
 	swaps++;
 
@@ -216,7 +216,7 @@ void CheckPelle(void)
 
 		Progress();
 
-		D(bug("CheckPelle squadra %ld\n",i));
+		D(bug("Check skin color team %ld\n",i));
 		neri=0;
 
 		for(j=0;j<10;j++)
@@ -225,15 +225,14 @@ void CheckPelle(void)
 				neri++;
 		}
 
-		if( neri>9 )
-		{
+// if all the players are black remap every player
+		if( neri>9 ) {
 			has_black[i]=FALSE;
 
 			RemapAnimObjColor(s->giocatore[9].immagine,Pens[P_ROSSO2],Pens[P_NERO]);
 			RemapAnimObjColor(s->giocatore[9].immagine,Pens[P_ARANCIO1],Pens[P_ROSSO2]);
 		}
-		else if(neri>0)
-		{
+		else if(neri>0)	{
 			AnimObj *o;
 
 			if ((o=CopyAnimObj(s->giocatore[9].immagine)))	{
@@ -276,7 +275,7 @@ void CheckPelle(void)
 			}
 		}
 
-		D(bug("%ld giocatori neri.\n",neri));
+		D(bug("%ld black skinned players.\n",neri));
 	}
 }
 
@@ -342,9 +341,6 @@ void ChangePlayer(struct Giocatore_Disk *src,Giocatore *dest)
 		}
 	}
 
-#if OLD_VERSION
-	memcpy(&dest->Numero,&src->Numero,sizeof(char)*10);
-#else
 	dest->Numero=src->Numero;
 	dest->Velocita=src->Velocita;
 	dest->Contrasto=src->Contrasto;
@@ -355,8 +351,8 @@ void ChangePlayer(struct Giocatore_Disk *src,Giocatore *dest)
 	dest->Creativita=src->Creativita;
 	dest->Tecnica=src->Tecnica;
 	dest->Posizioni=src->Posizioni;
-#endif
-	free(dest->Nome);
+	
+    free(dest->Nome);
 	MakeName(dest,src);
 
 	dest->Posizioni=src->Posizioni;
@@ -367,7 +363,7 @@ void ScanTactics(void)
 	DIR *dir;
 	struct dirent *ent;
 
-	D(bug("Scan della dir ETW-TCT:...\n"));
+	D(bug("Scan of dir ETW-TCT:...\n"));
 
 	if ((dir=opendir(TCT_DIR))) {
 		while( (ent=readdir(dir))!=NULL) {
@@ -379,7 +375,7 @@ void ScanTactics(void)
 		}
 		closedir(dir);
 	}
-	D(bug("%ld tattiche presenti.\n",NumeroTattiche));
+	D(bug("%ld available tactics.\n",NumeroTattiche));
 }
 
 BOOL InizializzaOggetti(Partita *p)
@@ -609,7 +605,7 @@ void DisponiSquadra(Squadra *s,int settore,BOOL possesso)
 		{
 //			char *a=NULL;
 
-			D(bug("Il giocatore %ld della squadra %ld ha dei problemi interni!\n",i+2,s->giocatore[i].SNum));
+			D(bug(" *** Player %ld of team %ld with internal problems!\n",i+2,s->giocatore[i].SNum));
 //			a[0]=1;
 		}
 
@@ -629,7 +625,7 @@ void DisponiSquadra(Squadra *s,int settore,BOOL possesso)
 	    }
 	    else
 	    {
-		D(bug("Salto il giocatore %ld della squadra %ld(A:%ld,S:%ld,C:%ld)\n",i+2,s->giocatore[0].SNum,
+		D(bug("Skipping player %ld of team %ld(A:%ld,S:%ld,C:%ld)\n",i+2,s->giocatore[0].SNum,
 			s->giocatore[i].AnimType,s->giocatore[i].Special,s->giocatore[i].Comando));
 	    }
 	}
@@ -949,7 +945,7 @@ Squadra *CreaSquadra(int num)
 		else if(s->portiere.Attenzione<7)
 			s->portiere.Attenzione+=1;
 
-		D(bug("Rinforzato portiere %ld, P: %ld (%ld) - A: %ld (%ld)\n",snum,
+		D(bug("Enhanced goalkeeper %ld, P: %ld (%ld) - A: %ld (%ld)\n",snum,
 			s->portiere.Parata,sd.portiere[0].Parata,
 			s->portiere.Attenzione,sd.portiere[0].Attenzione));
 	}
@@ -1043,7 +1039,7 @@ Partita *SetupSquadre(void)
 
 	if(!stricmp(shirt[0],shirt[1]))
 	{
-		D(bug("Clono la maglia della squadra 0...\n"));
+		D(bug("Cloning shirt of team 0...\n"));
 
 		cols[1][3]=cols[0][3];
 
@@ -1057,7 +1053,7 @@ Partita *SetupSquadre(void)
 	{
 		AnimObj *obj;
 
-		D(bug("Carico %s per la maglia della squadra 1...\n",shirt[1]));
+		D(bug("Loading %s for team 1 shirt...\n",shirt[1]));
 
 		cols[1][3]=shirt[1][strlen(shirt[1])-5];
 
@@ -1202,7 +1198,7 @@ Partita *SetupSquadre(void)
 
 		if(!(p->result=malloc( result_width * (VS_CHAR_Y+1))))
 		{
-			D(bug("Non riesco ad allocare la bitmap per il risultato! Lo disabilito\n"));
+			D(bug("Unable to allocate result bitmap... disabled.\n"));
 			detail_level&=(~USA_RISULTATO);
 		}
 		else
@@ -1262,7 +1258,7 @@ Partita *SetupSquadre(void)
 	DisponiSquadra(p->squadra[0],KICKOFF,TRUE);
 	DisponiSquadra(p->squadra[1],KICKOFF,FALSE);
 */
-	D(bug("Portiere 0: P:%ld A:%ld\nPortiere 1: P:%ld A:%ld\n",
+	D(bug("GK 0: P:%ld A:%ld\nGK 1: P:%ld A:%ld\n",
 		p->squadra[0]->portiere.Parata,	p->squadra[0]->portiere.Attenzione,
 		p->squadra[1]->portiere.Parata,	p->squadra[1]->portiere.Attenzione));
 
@@ -1273,7 +1269,7 @@ void LiberaPartita(Partita *p)
 {
 	int i;
 
-	D(bug("Libero la partita...\n"));
+	D(bug("Freeing match datas...\n"));
 
 // Necessario, la free sui guardalinee causava dei casini immani!
 

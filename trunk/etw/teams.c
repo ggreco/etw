@@ -272,7 +272,7 @@ void SetupSpecialEvent(struct Bottone *b)
 					if(teamlist[i].Flags==0)
 						wanted_number++;
 				}
-				D(bug("Campionato con %ld squadre\n",wanted_number));
+				D(bug("League with %ld teams\n",wanted_number));
 			}
 			ppv=campionato.Vittoria;
 			ppp=campionato.Pareggio;
@@ -519,7 +519,7 @@ void MakeLeague(int ns)
 
 		for(i=0;i<totale_giornate;i++)
 		{
-			D(bug("Giornata %ld\n",i+1));
+			D(bug("Round %ld\n",i+1));
 
 			for(j=0;j<(numero_squadre/2);j++)
 				D(bug("%2ld-%2ld\n",turni[i][j].t1,turni[i][j].t2));
@@ -582,7 +582,7 @@ void SetPlayerStatus(int posizione,char infortuni,char ammonizioni,long v)
 		if(t>3)
 			t=3;
 
-		D(bug("Imposto %ld infortunio per %ld\n",t,posizione));
+		D(bug("Mark %ld injuried for %ld\n",t,posizione));
 
 		pannelli[posizione*3].Testo=malloc(2);
 
@@ -596,7 +596,7 @@ void SetPlayerStatus(int posizione,char infortuni,char ammonizioni,long v)
 		if(t>3)
 			t=3;
 
-		D(bug("Imposto %ld ammonizioni per %ld\n",t,posizione));
+		D(bug("Mark %ld yellow card for %ld\n",t,posizione));
 
 		pannelli[posizione*3].Testo=malloc(2);
 
@@ -936,11 +936,11 @@ void LoadTeams(char *name)
 	if ((fh=fopen(name,"rb"))) {
 		BOOL ok=FALSE;
 
-		D(bug("Carico le squadre da %s...\n",name));
+		D(bug("Loading teams from %s...\n",name));
 
 		if(fread(&campionato,1,sizeof(struct Campionato_Disk),fh)==sizeof(struct Campionato_Disk)) {
 			struct Squadra_Disk *teamold;
-			D(bug("Campionato: %s V:%ld-P:%ld-L:%ld-S:%ld\n",campionato.Nome,campionato.Vittoria,
+			D(bug("League: %s V:%ld-P:%ld-L:%ld-S:%ld\n",campionato.Nome,campionato.Vittoria,
 					campionato.Pareggio, campionato.Sconfitta,campionato.NumeroSquadre+1));
 
 			campionato.NumeroSquadre++;

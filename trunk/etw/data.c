@@ -6,39 +6,36 @@ int totale_lista=0,totale_lista_c=0; // Numero di oggetti nelle liste
 
 // Suoni
 
-struct SoundInfo *sound[NUMERO_SUONI+4];
+struct SoundInfo *sound[NUMERO_SUONI+2];
 
 char *soundname[]=
 {
-        "snd/shoot",
-        "-snd/crash",
-        "-snd/dog",
-        "snd/fischiocorto",
-        "snd/fischiolungo",
-	"+snd/crowd",
-	"-snd/rigore",
-	"+.snd/replay", // Tengo in ram un po' piu' roba per default...
-	"+.snd/fondo",
-	"+snd/boou",
-#ifdef DEMOVERSION
-// Per il demo carico 2 volte shoot, cosi' evito di doverci mettere hallelujah...
-        "+snd/shoot",	
-#else
-	"-snd/hallelujah",
-#endif
-	"snd/pass",
-	"snd/shot",
-	"snd/palo",
-	"snd/ouch",
-	"snd/ouch2",
-        "-snd/bandierina",
-	"-snd/speed",
-	"-snd/glue",
-	"-snd/cannon",
-	"-snd/freeze",
-	"-snd/repop",
-	"-snd/letsgo",
-        NULL
+    "snd/shoot.wav",
+    "-snd/crash.wav",
+    "-snd/dog.wav",
+    "snd/fischiocorto.wav",
+    "snd/fischiolungo.wav",
+    "+snd/crowd.wav",
+    "-snd/rigore.wav",
+    "+.snd/replay.wav", // Tengo in ram un po' piu' roba per default...
+    "+.snd/fondo.wav",
+    "+snd/boou.wav",
+    "-snd/hallelujah.wav",
+    "snd/pass.wav",
+    "snd/shot.wav",
+    "snd/palo.wav",
+    "snd/ouch.wav",
+    "snd/ouch2.wav",
+    "-snd/bandierina.wav",
+    "snd/shoot2.wav",
+    "snd/shoot3.wav",
+    "-snd/speed.wav",
+    "-snd/glue.wav",
+    "-snd/cannon.wav",
+    "-snd/freeze.wav",
+    "-snd/repop.wav",
+    "-snd/letsgo.wav",
+    NULL
 };
 
 // Statistiche

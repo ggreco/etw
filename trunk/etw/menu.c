@@ -178,7 +178,7 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
 	fake_menu.Bottone = req_bottoni;
     actual_button = 0;
 
-    D(bug("Creo un requester con %d bottoni\n", bottoni));
+    D(bug("Creating requester with %d buttons\n", bottoni));
 
     DrawBox(0);
 
@@ -269,7 +269,7 @@ void StoreButtonList()
 			k += 2;
 	}
 
-	D(bug("Allocate %ld word per i dati di default dei menu.\n", k));
+	D(bug("Allocated %ld words for default menu datas.\n", k));
 
 	if (!(menubase = malloc(k * sizeof(WORD))))
 		return;
@@ -823,7 +823,7 @@ BOOL DoAction(WORD bottone)
 				if (AslRequest(&freq)) {
 					strcpy(buffer, freq.File);
 
-					D(bug("Carico le squadre <%s>...\n" /*-*/ , buffer));
+					D(bug("Loading teams <%s>...\n" /*-*/ , buffer));
 					LoadTeams(buffer);
 
 					competition = MENU_TEAMS;
@@ -940,7 +940,7 @@ BOOL DoAction(WORD bottone)
 			}
 			break;
 		default:
-			D(bug("Non ci sono procedure speciali in questo menu!\n"));
+			D(bug("No special procs for this menu!\n"));
 		}
 	}
 
@@ -1539,7 +1539,7 @@ BOOL HandleMenuIDCMP(void)
 				break;
 */
 		case SDL_QUIT:
-			D(bug("Ricevuto SDL quit!\n"));
+			D(bug("SDL quit received!\n"));
 			if (!reqqing)
 				returncode = FALSE;
 			break;

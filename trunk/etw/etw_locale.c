@@ -503,7 +503,7 @@ APTR OpenCatalog(char *catalog)
 	strcat(buffer,catalog);
 
 	if((f=fopen(buffer,"rb"))) 	{
-		D(bug("Trovato il file catalog %s...\n",buffer));
+		D(bug("Found language file %s...\n",buffer));
 
 		if ((cat=(struct MyCatalog *)malloc(sizeof(struct MyCatalog))))	{
 			int l,offset=0,t;
@@ -531,7 +531,7 @@ APTR OpenCatalog(char *catalog)
 			}
 
 			if (feof(f))	{
-				D(bug("Chunk non trovato!\n"));
+				D(bug("Chunk not found!\n"));
 				goto fallback;
 			}
 
@@ -540,7 +540,7 @@ APTR OpenCatalog(char *catalog)
 			fread(buffer,l,1,f);
 
 			if (stricmp(lang,buffer)) {
-				D(bug("Errore lingua selezionata e catalog non corrispondono!\n"));
+				D(bug("Error, language and catalog don't match!\n"));
 				goto fallback;
 			}
 
@@ -561,7 +561,7 @@ APTR OpenCatalog(char *catalog)
 
 			cat->offsetfirst=ftell(f);
 
-			D(bug("Lunghezza catalog: %ld bytes\n",clen));
+			D(bug("Catalog length: %ld bytes\n",clen));
 
 			while(clen>offset&&!feof(f)) {
 				fread(&id,sizeof(long),1,f);
@@ -589,19 +589,19 @@ APTR OpenCatalog(char *catalog)
 				}
 			}
 
-			D(bug("Trovate %ld stringhe nel catalog...\n",cat->strings));
+			D(bug("Found %ld language strings in catalog...\n",cat->strings));
 
 			return cat;
 		}
 		else {
 fallback:
-			D(bug("Il file non e' un catalog IFF!\n"));
+			D(bug("Not an IFF catalog!\n"));
 			fclose(f);
 			return NULL;
 		}
 	}
 	else {
-		D(bug("Non trovo %s, uso la lingua builtin.\n",buffer));
+		D(bug("*** %s not found, using builtin language.\n",buffer));
 		return NULL;
 	}
 }

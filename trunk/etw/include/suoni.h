@@ -1,6 +1,6 @@
 // in questo include ci sono le definizioni relative ai suoni
 
-#define NUMERO_SUONI 23
+#define NUMERO_SUONI 25
 
 // Numero di suoni (data.c)
 
@@ -21,15 +21,15 @@
 #define OUCH 14
 #define OUCH2 15
 #define BANDIERINA 16
-#define AS_SPEED 17
-#define AS_GLUE 18
-#define AS_CANNON 19
-#define AS_FREEZE 20
-#define AS_REPOP 21
-#define AS_LETSGO 22
+#define PALLEGGIO 17
+#define CONTRASTO 18
+#define AS_SPEED 19
+#define AS_GLUE 20
+#define AS_CANNON 21
+#define AS_FREEZE 22
+#define AS_REPOP 23
+#define AS_LETSGO 24
 
-#define PALLEGGIO NUMERO_SUONI+1
-#define CONTRASTO NUMERO_SUONI+2
-#define COMMENTO NUMERO_SUONI+3
+#define COMMENTO NUMERO_SUONI+1
 
 #define FIRST_ARCADE_SOUND	AS_SPEED
