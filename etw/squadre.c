@@ -1,13 +1,6 @@
 #include "eat.h"
-#ifndef WIN
-#ifdef SOLARIS_X86
-#include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
-#else
+
 #include "highdirent.h"
-#endif
 
 char team_name[2][16]={"brazil","england"};
 int result_width,scivolate_modificate=0;

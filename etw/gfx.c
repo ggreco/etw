@@ -471,13 +471,15 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 			bb[strlen(bb) - 1] = 'c';
 
 			if (!(fh = fopen(bb, "rb"))) {
-				D(bug("chunky animobj not found...\n"));
+				D(bug("chunky animobj %s not found...\n",  bb));
 
 				if ((fh = fopen(name, "rb"))) {
 					convert = TRUE;
 
+#ifndef WINCE
 					if (!(fo = fopen(bb, "wb")))
 						D(bug("*** Unable to write to %s\n", bb));
+#endif
 				}
 			}
 		}
@@ -601,7 +603,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 						unsigned short tempw;
 
 						D(bug
-						  ("Carico i frames (%ld), mh: %ld mw: %ld rd: %ld\n",
+						  ("Loading frames (%ld), mh: %ld mw: %ld rd: %ld\n",
 						   obj->num_frames, obj->max_width,
 						   obj->max_height, obj->RealDepth));
 
@@ -619,6 +621,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 							obj->Heights[i] = tempw;
 
 							if (convert) {
+//								D(bug("Conversion to mchunky of %s/%d...", name, i));
 								if (!
 									(obj->Frames[i] =
 									 convert_mchunky(fh, fo,
@@ -631,6 +634,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 									  ("Non c'e' memoria per le bitmap!\n"));
 									break;
 								}
+//								D(bug("OK\n"));
 							} else {
 								if (!
 									(obj->Frames[i] =
@@ -970,7 +974,11 @@ AnimObj *CopyAnimObj(AnimObj * obj)
 		memcpy(o, obj, sizeof(struct AnimObject));
 		o->node.mln_Succ = o->node.mln_Pred = NULL;
 
-		o->Flags = (AOBJ_COPIED | AOBJ_SHAREPENS);
+		o->Flags = AOBJ_COPIED;
+		
+		if (obj->Pens || (obj->Flags & AOBJ_SHAREPENS))
+			o->Flags |= AOBJ_SHAREPENS;
+				
 		o->Pens = NULL;
 		o->Palette = NULL;
 

@@ -11,7 +11,9 @@
 
 #define BITRASSIZE(w,h)	((ULONG)(h)*( ((ULONG)(w)+15)>>3&0xFFFE))
 
+#ifndef WINCE
 #define SMART_MCHUNKY
+#endif
 
 void bltchunkybitmap(bitmap src,int xs,int ys,bitmap dest,int xd,int yd,int w,int h,int srcmod,int destmod)
 {
@@ -222,6 +224,8 @@ void free_mchunky(struct MChunky *c)
 	free(c);
 }
 #endif
+
+// #define SUPER_DEBUG
 
 #ifdef SMART_MCHUNKY
 BOOL create_mchunky(struct MChunky *m,unsigned short *blks,short *bufs,unsigned char *t_data,long *Pens)
@@ -454,6 +458,7 @@ struct MChunky *load_mchunky(FILE *f,int height,long *Pens)
 	return NULL;
 }
 
+
 struct MChunky *convert_mchunky(FILE *f,FILE *fo,int width, int height,int depth,long *Pens)
 {
 	int planesize=BITRASSIZE(width,height),i,k;
@@ -623,6 +628,7 @@ struct MChunky *convert_mchunky(FILE *f,FILE *fo,int width, int height,int depth
 	return NULL;
 }
 
+#ifdef SMART_MCHUNKY
 
 struct MChunky *CloneMChunky(struct MChunky *c)
 {
@@ -698,7 +704,68 @@ struct MChunky *CloneMChunky(struct MChunky *c)
 
 	return n;
 }
+#else
 
+struct MChunky *CloneMChunky(struct MChunky *c)
+{
+	struct ALine *l,*nl,*pnl=NULL;
+	struct ABlock *b,*nb,*pnb;
+	struct MChunky *n;
+
+	if(!(n=malloc(sizeof(struct MChunky))))
+		return NULL;
+	
+	n->lines=c->lines;
+	n->blocks=c->blocks;
+	n->buffers=c->buffers;
+
+	l=c->FirstLine;
+
+	while(l) {
+		nl=(struct ALine *)malloc(sizeof(struct ALine));	
+
+		if (!pnl) {
+			n->FirstLine=nl;
+			pnl=nl;
+		}
+		else {
+			pnl->Next=nl;
+			pnl=pnl->Next;
+		}
+	
+		b=l->FirstBlock;
+
+// il blocco precedente non deve esserci all'inizio di una linea!
+
+		pnb=NULL;
+
+		while(b) {
+			nb=(struct ABlock *)malloc(sizeof(struct ABlock));
+
+			if(!pnb) {
+				nl->FirstBlock=nb;
+				pnb=nb;
+			}
+			else {
+				pnb->Next=nb;
+				pnb=pnb->Next;
+			}
+			
+			if(b->Buffer) {
+				nb->Buffer=malloc(b->Length);
+				memcpy(nb->Buffer,b->Buffer,b->Length);
+			}
+
+			nb->Length=b->Length;
+			b=b->Next;
+		}
+
+		l=l->Next;
+	}	
+
+	return n;
+}
+#endif
 
 void RemapMChunkyColors(struct MChunky *m,unsigned char *pens)
 {

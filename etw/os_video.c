@@ -178,6 +178,7 @@ void lock_pen(int p)
 
 void OpenTheScreen(void)
 {
+	#ifndef WINCE
 	if(wb_game)
 	{
         screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_RESIZABLE);   
@@ -211,6 +212,12 @@ void OpenTheScreen(void)
 
 		D(bug("Fine InitAnimSystem!\n"));
 	}
+	#else
+	force_single = TRUE; double_buffering = FALSE; wb_game = FALSE;
+	public_screen = FALSE; use_remapping = FALSE;
+	scaling = FALSE;
+	screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_FULLSCREEN);
+	#endif
 }
 
 void os_set_window_frame(void)
