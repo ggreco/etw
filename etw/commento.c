@@ -232,6 +232,33 @@ void CheckStatus(void)
     }
 }
 
+BOOL speaker2memory(void)
+{
+    char buffer[100];
+    FILE *f;
+    BOOL ok = FALSE;
+    
+    strcpy(buffer, spk_basename);
+    strcat(buffer, ".spk");
+
+    if ((f = fopen(buffer, "rb"))) {
+        long l;
+
+        fseek(f, 0, SEEK_END);
+        l = ftell(f);
+        fseek(f, 0, SEEK_SET);
+
+        if ((comment_file = malloc((int) l))) {
+            fread(comment_file, 1, (int) l, f);
+            ok = TRUE;
+        }
+
+        fclose(f);
+    }
+
+    return ok;
+}
+
 void init_speaker(void)
 {
 	FILE *f;
@@ -307,18 +334,23 @@ void free_speaker(void)
    if(Lengths)
        free(Lengths);
 
-   Lengths = NULL;
    
    if(!audio2fast && commento)
        fclose(commento);
 
-   commento = NULL;
 
    frase = NON_DECISA;
    game_status = S_NON_INIZIATO;
 
    fondolen = sound[FONDO]->Length;
    fondobase = sound[FONDO]->SoundData;
+
+   if (audio2fast && comment_file) 
+       free(comment_file);
+   
+   Lengths = NULL;
+   commento = NULL;
+   comment_file = NULL;
 }
 
 

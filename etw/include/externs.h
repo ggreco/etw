@@ -152,11 +152,13 @@ extern WORD IndirizzaTiro(Giocatore *,ULONG );
 extern void SetShotSpeed(Giocatore *,WORD);
 
 extern void init_crowd(void);
+extern void free_crowd(void);
+extern BOOL crowd2memory(void);
+extern BOOL speaker2memory(void);
 extern void init_speaker(void);
 extern void free_speaker(void);
 extern struct SoundInfo *handle_crowd(void);
 extern struct SoundInfo *handle_speaker(void);
-extern void convert_sound(struct SoundInfo *);
 
 // Rimbalzi
 

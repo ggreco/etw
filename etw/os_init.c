@@ -107,69 +107,19 @@ void init_system(void)
 
 void os_audio2fast(void)
 {
-	extern char *comment_file;
+    audio2fast = FALSE;
+    
+    D(bug("Handling audio2fast!\n"));
 
-	D(bug("Handling audio2fast!\n"));
+    if (use_speaker && !speaker2memory())
+        return;
 
-	if (use_speaker) {
-		char buffer[100];
-		FILE *f;
-
-		strcpy(buffer, spk_basename);
-		strcat(buffer, ".spk");
-
-		if ((f = fopen(buffer, "rb"))) {
-			long l;
-
-			fseek(f, 0, SEEK_END);
-			l = ftell(f);
-			fseek(f, 0, SEEK_SET);
-
-			if ((comment_file = malloc((int) l))) {
-				fread(comment_file, 1, (int) l, f);
-			} else {
-				audio2fast = FALSE;
-				return;
-			}
-			fclose(f);
-		}
-	}
-
-	if (use_crowd) {
-		extern struct SoundInfo *Cori[NUMERO_CORI];
-		extern char corobuffer[];
-		int i;
-		BOOL ok = TRUE;
-
-		use_ahi = TRUE;
-
-		for (i = 0; i < NUMERO_CORI; i++) {
-			corobuffer[12] = ((i + 1) / 10) + '0';
-			corobuffer[13] = ((i + 1) % 10) + '0';
-
-			if (!(Cori[i] = LoadSound(corobuffer))) {
-				D(bug("Error loading crowd %ld!\n", i + 1));
-				ok = FALSE;
-				break;
-			}
-
-			convert_sound(Cori[i]);
-		}
-
-		if (!ok) {
-			int l;
-
-			for (l = 0; l < i; l++)
-				FreeSound(Cori[l]);
-
-			if (use_speaker && comment_file)
-				free(comment_file);
-			audio2fast = FALSE;
-		} else {
-			D(bug("Crowd preload completed!\n"));
-			audio2fast = TRUE;
-		}
-	}
+    if (use_crowd && !crowd2memory()) {
+        free_speaker();
+        return;
+    }
+        
+    audio2fast = TRUE;
 }
 
 // Ritarda di s 50esimi di secondo
