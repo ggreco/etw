@@ -1,5 +1,7 @@
 #include "etw_locale.h"
 #include "menu.h"
+#include <ctype.h>
+
 #ifdef WIN
 #include "highdirent.h"
 #elif SOLARIS_X86
@@ -10,9 +12,11 @@
 
 #include "SDL.h"
 
+//#define TESTING_RES_1024
+
 extern void MenuResizing(int,int);
 extern char joycfg_buttons[2][8];
-extern int query[];
+extern int query[20];
 
 int actual_joystick=0;
 
@@ -33,24 +37,26 @@ char *buttons[]=
 	"BUTTON 13",
 };
 
-/* Queste stringhe....
- * Alloco spazio per i nomi dei tasti configurati */
-char keys_names[10][20];
+/* Space for the names of the configured keys */
+char keys_names[20][20];
 
-/* Qua posso decidere quali tasti escludere da quelli possibili */
+/* AC: Here it's possible to decide which keys to exclude from those possible ones */
 SDLKey keys[] =
 {
 	/* The keyboard syms have been cleverly chosen to map to ASCII */
 
-	//SDLK_UNKNOWN,
-	//SDLK_FIRST,
+	//SDLK_UNKNOWN, ???
+	//SDLK_FIRST, ???
 	SDLK_BACKSPACE,
 	SDLK_TAB,
 	SDLK_CLEAR,
 	SDLK_RETURN,
 	SDLK_PAUSE,
-	//SDLK_ESCAPE,
-	SDLK_SPACE,
+	//SDLK_ESCAPE,			// Playgame interruption and end game
+	//SDLK_SPACE,			// Changes game visual
+	
+	/* AC: Some older Macs have these keys obtained without pressing the shift
+	 * in place of the numbers */
 	SDLK_EXCLAIM,
 	SDLK_QUOTEDBL,
 	SDLK_HASH,
@@ -65,6 +71,7 @@ SDLKey keys[] =
 	SDLK_MINUS,
 	SDLK_PERIOD,
 	SDLK_SLASH,
+	
 	SDLK_0,
 	SDLK_1,
 	SDLK_2,
@@ -75,6 +82,8 @@ SDLKey keys[] =
 	SDLK_7,
 	SDLK_8,
 	SDLK_9,
+	
+	/* AC: This ones like the comment above */
 	SDLK_COLON,
 	SDLK_SEMICOLON,
 	SDLK_LESS,
@@ -95,130 +104,132 @@ SDLKey keys[] =
 	SDLK_a,
 	SDLK_b,
 	SDLK_c,
-	SDLK_d,
+	SDLK_d,					// DEBUG: Penalty
 	SDLK_e,
 	SDLK_f,
-	SDLK_g,
-	SDLK_h,
-	SDLK_i,
+	SDLK_g,					// DEBUG: Team 0 makes a goal
+	//SDLK_h,				// Shows chat panel
+	SDLK_i,					// DEBUG: Shows men positions
+	//SDLK_l,				// Shows stats panel
 	SDLK_j,
 	SDLK_k,
 	SDLK_m,
 	SDLK_n,
 	SDLK_o,
-	SDLK_p,
-	SDLK_q,
-	SDLK_r,
-	SDLK_s,
+	//SDLK_p,				// Pauses game
+	//SDLK_q,				// Quits game
+	//SDLK_r,				// Shows the replay
+	//SDLK_s,				// Enables or disables the radar
 	SDLK_t,
 	SDLK_u,
 	SDLK_v,
-	SDLK_w,
-	SDLK_x,
+	SDLK_w,					// DEBUG: Forces time to finish
+	//SDLK_x,				// Changes position and dimension of the radar
 	SDLK_y,
 	SDLK_z,
-	SDLK_DELETE,
+	//SDLK_DELETE,			// Centers the visuale on the ball
 
+	/* AC: What about this keys? */
 #if 0
 	/* End of ASCII mapped keysyms */
 
 	/* International keyboard syms */
-	SDLK_WORLD_0		= 160,		/* 0xA0 */
-	SDLK_WORLD_1		= 161,
-	SDLK_WORLD_2		= 162,
-	SDLK_WORLD_3		= 163,
-	SDLK_WORLD_4		= 164,
-	SDLK_WORLD_5		= 165,
-	SDLK_WORLD_6		= 166,
-	SDLK_WORLD_7		= 167,
-	SDLK_WORLD_8		= 168,
-	SDLK_WORLD_9		= 169,
-	SDLK_WORLD_10		= 170,
-	SDLK_WORLD_11		= 171,
-	SDLK_WORLD_12		= 172,
-	SDLK_WORLD_13		= 173,
-	SDLK_WORLD_14		= 174,
-	SDLK_WORLD_15		= 175,
-	SDLK_WORLD_16		= 176,
-	SDLK_WORLD_17		= 177,
-	SDLK_WORLD_18		= 178,
-	SDLK_WORLD_19		= 179,
-	SDLK_WORLD_20		= 180,
-	SDLK_WORLD_21		= 181,
-	SDLK_WORLD_22		= 182,
-	SDLK_WORLD_23		= 183,
-	SDLK_WORLD_24		= 184,
-	SDLK_WORLD_25		= 185,
-	SDLK_WORLD_26		= 186,
-	SDLK_WORLD_27		= 187,
-	SDLK_WORLD_28		= 188,
-	SDLK_WORLD_29		= 189,
-	SDLK_WORLD_30		= 190,
-	SDLK_WORLD_31		= 191,
-	SDLK_WORLD_32		= 192,
-	SDLK_WORLD_33		= 193,
-	SDLK_WORLD_34		= 194,
-	SDLK_WORLD_35		= 195,
-	SDLK_WORLD_36		= 196,
-	SDLK_WORLD_37		= 197,
-	SDLK_WORLD_38		= 198,
-	SDLK_WORLD_39		= 199,
-	SDLK_WORLD_40		= 200,
-	SDLK_WORLD_41		= 201,
-	SDLK_WORLD_42		= 202,
-	SDLK_WORLD_43		= 203,
-	SDLK_WORLD_44		= 204,
-	SDLK_WORLD_45		= 205,
-	SDLK_WORLD_46		= 206,
-	SDLK_WORLD_47		= 207,
-	SDLK_WORLD_48		= 208,
-	SDLK_WORLD_49		= 209,
-	SDLK_WORLD_50		= 210,
-	SDLK_WORLD_51		= 211,
-	SDLK_WORLD_52		= 212,
-	SDLK_WORLD_53		= 213,
-	SDLK_WORLD_54		= 214,
-	SDLK_WORLD_55		= 215,
-	SDLK_WORLD_56		= 216,
-	SDLK_WORLD_57		= 217,
-	SDLK_WORLD_58		= 218,
-	SDLK_WORLD_59		= 219,
-	SDLK_WORLD_60		= 220,
-	SDLK_WORLD_61		= 221,
-	SDLK_WORLD_62		= 222,
-	SDLK_WORLD_63		= 223,
-	SDLK_WORLD_64		= 224,
-	SDLK_WORLD_65		= 225,
-	SDLK_WORLD_66		= 226,
-	SDLK_WORLD_67		= 227,
-	SDLK_WORLD_68		= 228,
-	SDLK_WORLD_69		= 229,
-	SDLK_WORLD_70		= 230,
-	SDLK_WORLD_71		= 231,
-	SDLK_WORLD_72		= 232,
-	SDLK_WORLD_73		= 233,
-	SDLK_WORLD_74		= 234,
-	SDLK_WORLD_75		= 235,
-	SDLK_WORLD_76		= 236,
-	SDLK_WORLD_77		= 237,
-	SDLK_WORLD_78		= 238,
-	SDLK_WORLD_79		= 239,
-	SDLK_WORLD_80		= 240,
-	SDLK_WORLD_81		= 241,
-	SDLK_WORLD_82		= 242,
-	SDLK_WORLD_83		= 243,
-	SDLK_WORLD_84		= 244,
-	SDLK_WORLD_85		= 245,
-	SDLK_WORLD_86		= 246,
-	SDLK_WORLD_87		= 247,
-	SDLK_WORLD_88		= 248,
-	SDLK_WORLD_89		= 249,
-	SDLK_WORLD_90		= 250,
-	SDLK_WORLD_91		= 251,
-	SDLK_WORLD_92		= 252,
-	SDLK_WORLD_93		= 253,
-	SDLK_WORLD_94		= 254,
-	SDLK_WORLD_95		= 255,		/* 0xFF */
+	SDLK_WORLD_0		/* 0xA0 */
+	SDLK_WORLD_1,
+	SDLK_WORLD_2,
+	SDLK_WORLD_3,
+	SDLK_WORLD_4,
+	SDLK_WORLD_5,
+	SDLK_WORLD_6,
+	SDLK_WORLD_7,
+	SDLK_WORLD_8,
+	SDLK_WORLD_9,
+	SDLK_WORLD_10,
+	SDLK_WORLD_11,
+	SDLK_WORLD_12,
+	SDLK_WORLD_13,
+	SDLK_WORLD_14,
+	SDLK_WORLD_15,
+	SDLK_WORLD_16,
+	SDLK_WORLD_17,
+	SDLK_WORLD_18,
+	SDLK_WORLD_19,
+	SDLK_WORLD_20,
+	SDLK_WORLD_21,
+	SDLK_WORLD_22,
+	SDLK_WORLD_23,
+	SDLK_WORLD_24,
+	SDLK_WORLD_25,
+	SDLK_WORLD_26,
+	SDLK_WORLD_27,
+	SDLK_WORLD_28,
+	SDLK_WORLD_29,
+	SDLK_WORLD_30,
+	SDLK_WORLD_31,
+	SDLK_WORLD_32,
+	SDLK_WORLD_33,
+	SDLK_WORLD_34,
+	SDLK_WORLD_35,
+	SDLK_WORLD_36,
+	SDLK_WORLD_37,
+	SDLK_WORLD_38,
+	SDLK_WORLD_39,
+	SDLK_WORLD_40,
+	SDLK_WORLD_41,
+	SDLK_WORLD_42,
+	SDLK_WORLD_43,
+	SDLK_WORLD_44,
+	SDLK_WORLD_45,
+	SDLK_WORLD_46,
+	SDLK_WORLD_47,
+	SDLK_WORLD_48,
+	SDLK_WORLD_49,
+	SDLK_WORLD_50,
+	SDLK_WORLD_51,
+	SDLK_WORLD_52,
+	SDLK_WORLD_53,
+	SDLK_WORLD_54,
+	SDLK_WORLD_55,
+	SDLK_WORLD_56,
+	SDLK_WORLD_57,
+	SDLK_WORLD_58,
+	SDLK_WORLD_59,
+	SDLK_WORLD_60,
+	SDLK_WORLD_61,
+	SDLK_WORLD_62,
+	SDLK_WORLD_63,
+	SDLK_WORLD_64,
+	SDLK_WORLD_65,
+	SDLK_WORLD_66,
+	SDLK_WORLD_67,
+	SDLK_WORLD_68,
+	SDLK_WORLD_69,
+	SDLK_WORLD_70,
+	SDLK_WORLD_71,
+	SDLK_WORLD_72,
+	SDLK_WORLD_73,
+	SDLK_WORLD_74,
+	SDLK_WORLD_75,
+	SDLK_WORLD_76,
+	SDLK_WORLD_77,
+	SDLK_WORLD_78,
+	SDLK_WORLD_79,
+	SDLK_WORLD_80,
+	SDLK_WORLD_81,
+	SDLK_WORLD_82,
+	SDLK_WORLD_83,
+	SDLK_WORLD_84,
+	SDLK_WORLD_85,
+	SDLK_WORLD_86,
+	SDLK_WORLD_87,
+	SDLK_WORLD_88,
+	SDLK_WORLD_89,
+	SDLK_WORLD_90,
+	SDLK_WORLD_91,
+	SDLK_WORLD_92,
+	SDLK_WORLD_93,
+	SDLK_WORLD_94,
+	SDLK_WORLD_95,		/* 0xFF */
 #endif
 
 	/* Numeric keypad */
@@ -283,21 +294,23 @@ SDLKey keys[] =
 	SDLK_LALT,
 	SDLK_RMETA,
 	SDLK_LMETA,
+	
+	/* AC: I think isn't a good idea allowing the use of this keys */
 #if 0 
-	SDLK_LSUPER		= 311,		/* Left "Windows" key */
-	SDLK_RSUPER		= 312,		/* Right "Windows" key */
-	SDLK_MODE		= 313,		/* "Alt Gr" key */
-	SDLK_COMPOSE		= 314,		/* Multi-key compose key */
+	SDLK_LSUPER,		/* Left "Windows" key */
+	SDLK_RSUPER,		/* Right "Windows" key */
+	SDLK_MODE,			/* "Alt Gr" key */
+	SDLK_COMPOSE,		/* Multi-key compose key */
 
 	/* Miscellaneous function keys */
-	SDLK_HELP		= 315,
-	SDLK_PRINT		= 316,
-	SDLK_SYSREQ		= 317,
-	SDLK_BREAK		= 318,
-	SDLK_MENU		= 319,
-	SDLK_POWER		= 320,		/* Power Macintosh power key */
-	SDLK_EURO		= 321,		/* Some european keyboards */
-	SDLK_UNDO		= 322,		/* Atari keyboard has Undo */
+	SDLK_HELP,
+	SDLK_PRINT,
+	SDLK_SYSREQ,
+	SDLK_BREAK,
+	SDLK_MENU,
+	SDLK_POWER,			/* Power Macintosh power key */
+	SDLK_EURO,			/* Some european keyboards */
+	SDLK_UNDO,			/* Atari keyboard has Undo */
 
 #endif
 
@@ -327,12 +340,15 @@ char *resolutions[]=
 	"640x400",
 	"640X480",
 	"800X600",
+#ifdef TESTING_RES_1024	
+	"1024X768",
+#endif
 	NULL
 };
 
 
 void UpdateJoyCfg(int joy);
-void UpdateKeyCfg(int key);
+void UpdateKeyCfg(void);
 
 void init_joy_config(void)
 {
@@ -351,6 +367,9 @@ char *scaling_resolutions[]=
 	"320X256",
 	"356X288",
 	"400X300",
+#ifdef TESTING_RES_1024
+	"512X384",
+#endif
 	NULL
 };
 
@@ -441,7 +460,7 @@ char *time_options[]=
 	NULL,
 };
 
-// Mischio le squadre!
+// Teams shuffle!
 
 void RandomDraw(int n)
 {
@@ -456,8 +475,7 @@ void RandomDraw(int n)
 		if(s1==s2)
 			continue;
 
-// controllo e' fisso sulle squadre, quindi non serve swapparlo!
-
+// We don't need to swap controllo because is fixed on the teams!
 		temp=teamarray[s1];
 		teamarray[s1]=teamarray[s2];
 		teamarray[s2]=temp;
@@ -693,7 +711,7 @@ BOOL TeamSelection(WORD bottone)
 			if(actual_menu->Bottone[i].Colore!=COLORE_UNSELECTED)
 			{
 /*
-	Questo e' disabilitato perche' controllo e' fisso sulla squadra!
+	This is disabled because controllo is fixed on the team!
 
 				if(actual_menu->Bottone[i].Colore==COLORE_SQUADRA_A)
 					controllo[j]=0;
@@ -708,7 +726,7 @@ BOOL TeamSelection(WORD bottone)
 			}
 
 		if(j!=selected_number)
-			D(bug("Attenzione, selezionato un numero errato di squadre! (%ld invece di %ld)\n",j,selected_number));
+			D(bug("Warning, wrong number of teams selected! (%ld instead of %ld)\n",j,selected_number));
 
 		actual_menu->Bottone[64].Testo=actual_menu->Bottone[66].Testo=NULL;
 
@@ -727,7 +745,7 @@ BOOL TeamSelection(WORD bottone)
 			}
 		}
 		else if(competition==MENU_MATCHES) {
-// coppa
+// Cup
 			RandomDraw(selected_number);
 
 			numero_squadre=selected_number;
@@ -738,7 +756,7 @@ BOOL TeamSelection(WORD bottone)
 			ChangeMenu(MENU_MATCHES);
 		}
 		else if(competition==MENU_LEAGUE) {
-// campionato
+// League
 			if(j>20) {
 				request(msg_178);
 				j=20;
@@ -772,11 +790,11 @@ singlematch:
 				}
 			}
 			else {
-				D(bug("Carriera non ancora implementata!"/*-*/));
+				D(bug("Career not implemented yet!"/*-*/));
 			}
 		}
 
-		// Da finire!
+		// To finish!
 	}
 	else if(bottone==65&&b->ID>=0) {
 		team1_selected=team2_selected=FALSE;
@@ -835,9 +853,43 @@ BOOL JoyCfg(WORD bottone)
 
 BOOL KeyCfg(WORD bottone)
 {
-	/* AC: 27/05/04 - Inzio bozza per configurare la tastiera */
-	if(bottone>=(actual_menu->NumeroBottoni-1)&&actual_menu->Bottone[bottone].ID>=0)
-		ChangeMenu(actual_menu->Bottone[bottone].ID);
+	/* AC: 27/05/04 - First rudimental keyboard configuration */
+	if(bottone>=(actual_menu->NumeroBottoni-3)&&actual_menu->Bottone[bottone].ID>=0)
+	{
+		/* Which "main" button the user have pressed? */
+		switch(actual_menu->Bottone[bottone].ID)
+		{
+			extern void *hwin;
+			extern BOOL MyEasyRequest(void *,struct EasyStruct *,void *);
+			/* Why if I include externs.h I obtain 55 compilation error? */
+			extern void SaveKeyDef(int, char *);
+			
+			/* Save RED keyboard configuration */
+			case 0:
+				SaveKeyDef(0,KEY_RED_FILE);
+				
+				easy.es_TextFormat = msg_70;
+				easy.es_GadgetFormat = msg_58;
+
+				MyEasyRequest(hwin, &easy, NULL);
+			break;
+			
+			/* Save BLUE keyboard configuration */
+			case 1:
+				SaveKeyDef(1,KEY_BLUE_FILE);
+				
+				easy.es_TextFormat = msg_70;
+				easy.es_GadgetFormat = msg_58;
+
+				MyEasyRequest(hwin, &easy, NULL);
+			break;
+			
+			/* Go back to previuos menu */
+			default:
+				ChangeMenu(actual_menu->Bottone[bottone].ID);
+			break;
+		}
+	}
 	else
 	{
 		char *temp;
@@ -847,11 +899,32 @@ BOOL KeyCfg(WORD bottone)
 
 		bottone/=2;
 
+		/* If we have selected a six keys RED control skip the configuration
+		 * of the extended keys.
+		 */
+		if(bottone >= 6 && bottone < 10 && control[1] == CTRL_KEY_1)
+			return TRUE;
+
+		/* If we have selected a six keys BLUE control skip the configuration 
+		 * of the extended keys.
+		 */
+		if(bottone >= 16 && control[0] == CTRL_KEY_1)
+			return TRUE; 
+						
+#ifdef ORIG_METHOD
 		temp=actual_menu->Bottone[bottone*2].Testo;
 
 		actual_menu->Bottone[bottone*2].Testo="WAITING BUTTON...";
 
 		RedrawBottone(&actual_menu->Bottone[bottone*2],actual_menu->Bottone[bottone*2].Highlight);
+#else
+		/* Alternative method that leaves visible the association of the key during key pressing */
+		temp=actual_menu->Bottone[bottone*2+1].Testo;
+
+		actual_menu->Bottone[bottone*2+1].Testo="WAITING BUTTON...";
+
+		RedrawBottone(&actual_menu->Bottone[bottone*2+1],actual_menu->Bottone[bottone*2+1].Highlight);
+#endif
 
 		ScreenSwap();
 
@@ -860,26 +933,58 @@ BOOL KeyCfg(WORD bottone)
 			SDL_WaitEvent(&e);
 			switch (e.type)
 			{
-				/* Ridisegno appena premo il tasto... */
+				/* Update button as soon a key is pressed... */
 				case SDL_KEYDOWN:
-					D(bug("Tasto premuto %s\n",SDL_GetKeyName(e.key.keysym.sym)));
+					D(bug("Key pressed C: %d, S: %d, M: %d, U: %d, N: %s\n",
+						e.key.keysym.scancode,
+						e.key.keysym.sym,
+						e.key.keysym.mod,
+						e.key.keysym.unicode,
+						SDL_GetKeyName(e.key.keysym.sym)));
 					
-					/* ESC interrompo la modifica */
+					/* Hit ESC to quit the modification */
 					if(e.key.keysym.sym == SDLK_ESCAPE)
 					{
 						k = -1;
 					}
 					else
 					{
-						/* Ricerco il tasto nella tabella dei tasti validi */
-						for(k = 0;k < sizeof(keys);k++)
-							if(e.key.keysym.sym == keys[k])
+						int i,n_keys = sizeof(keys)/sizeof(SDLKey);
+						
+						/* Search the key selected in the valid keys table */
+						k = -1;					
+						for(i = 0;i < n_keys;i++)
+							if(e.key.keysym.sym == keys[i])
+							{
+								k = i;
 								break;
+							}
 					}
 
 					if(k>=0)
 					{
-						/* Converto in maiuscolo per il font */
+						int s = 0,n_keys = sizeof(query)/sizeof(int);
+
+						/* Verify if the key selected is already used */
+						while(s < n_keys)
+						{
+							/* Skip the currently selected button */
+							if(s != bottone)
+							{						
+								/* Key already mapped? */
+								if(keys[k] == query[s])
+								{
+									/* Delete the old used association */
+									actual_menu->Bottone[s*2+1].Testo=NULL;
+									query[s] = NULL;
+									CancellaBottone(&actual_menu->Bottone[s*2+1]);
+									break;
+								}
+							}
+							s++;
+						}
+						
+						/* Uppercase conversion for ETW font */
 						char *tmp=SDL_GetKeyName(keys[k]);
 						int i = 0;
 						while(*tmp)
@@ -889,18 +994,28 @@ BOOL KeyCfg(WORD bottone)
 							i++;
 						}
 						keys_names[bottone][i] = 0;
+						query[bottone] = keys[k];		
 						actual_menu->Bottone[bottone*2+1].Testo=keys_names[bottone];
-						query[bottone] = keys[k];
 						RedrawBottone(&actual_menu->Bottone[bottone*2+1],actual_menu->Bottone[bottone*2+1].Colore);
 					}
+#ifndef ORIG_METHOD
+					else
+					{
+						/* Restore the old button */
+						actual_menu->Bottone[bottone*2+1].Testo=temp;
+						RedrawBottone(&actual_menu->Bottone[bottone*2+1],actual_menu->Bottone[bottone*2+1].Colore);
+					}
+#endif
 
+#ifdef ORIG_METHOD
 					actual_menu->Bottone[bottone*2].Testo=temp;
 
 					RedrawBottone(&actual_menu->Bottone[bottone*2],actual_menu->Bottone[bottone*2].Colore);
+#endif
 					ScreenSwap();
 				break;
-				/* ...ma esco quando lo rilasci per non trappare l'evento 
-				 * nel ciclo principale
+				/* ...but exit when the key is released in order to skip this event 
+				 * in the main cycle
 				 */
 				case SDL_KEYUP:
 					ok = TRUE;
@@ -910,13 +1025,10 @@ BOOL KeyCfg(WORD bottone)
 			}
 		}
 
-		/* Pulisco la coda di eventi? *
-		 Non funziona...
+		/* Flush the event queue. *
+		 It doesn't work...
 		while(SDL_PollEvent(&e));*/
-
-		// non mi piace questa soluzioneSDL_WaitEvent(&e);
 	}
-	//ChangeMenu(actual_menu->Bottone[bottone].ID);
 	return TRUE;
 }
 
@@ -945,9 +1057,9 @@ BOOL ArcadeTeamSelection(WORD bottone)
 
 		if(jingle>=0&&(selected!=bottone||b->Colore==COLORE_COMPUTER) )
 		{
-			D(bug("Interrompo il canale %ld\n",jingle));
+			D(bug("Interrupt channel %ld\n",jingle));
 			SDL_LockAudio();
-// codice che blocca il sample.
+// code that block the sample.
 			busy[jingle]=NULL;
 			SDL_UnlockAudio();
 			jingle=-1;
@@ -956,7 +1068,7 @@ BOOL ArcadeTeamSelection(WORD bottone)
 		if(selected!=bottone&&b->Colore!=COLORE_COMPUTER&&!no_sound)
 		{
 			jingle=PlayBackSound(menusound[FIRST_ARCADE+b->ID]);
-			D(bug("Playo il suono %ld sul canale %ld\n",FIRST_ARCADE+b->ID,jingle));
+			D(bug("Play sound %ld on channel %ld\n",FIRST_ARCADE+b->ID,jingle));
 		}
 
 		selected=bottone;
@@ -1045,9 +1157,9 @@ BOOL ArcadeTeamSelection(WORD bottone)
 		{
 			if(jingle>=0)
 			{
-				D(bug("Interrompo il canale %ld\n",jingle));
+				D(bug("Interrupt channel %ld\n",jingle));
 				SDL_LockAudio();
-// codice che blocca il sample.
+// code that block the sample.
 				busy[jingle]=NULL;
 				SDL_UnlockAudio();
 				jingle=-1;
@@ -1064,16 +1176,16 @@ BOOL ArcadeTeamSelection(WORD bottone)
 	{
 		int i,j;
 
-		D(bug("Selezionato continue\n"));
+		D(bug("Continue selected\n"));
 
 		team1_selected=FALSE;
 		team2_selected=FALSE;
 
 		if(jingle>=0)
 		{
-			D(bug("Interrompo il canale %ld\n",jingle));
+			D(bug("Interrupt channel %ld\n",jingle));
 			SDL_LockAudio();
-// codice che blocca il sample.
+// code that block the sample.
 			busy[jingle]=NULL;
 			SDL_UnlockAudio();
 			jingle=-1;
@@ -1091,12 +1203,12 @@ BOOL ArcadeTeamSelection(WORD bottone)
 					controllo[j]=-1;
 */
 				teamarray[j]=actual_menu->Bottone[i].ID;
-				D(bug("Squadra %ld selezionata\n",teamarray[j]));
+				D(bug("Selected %ld team\n",teamarray[j]));
 				j++;
 			}
 
 		if(j!=selected_number)
-			D(bug("Attenzione, selezionato un numero errato di squadre! (%ld invece di %ld)\n",j,selected_number));
+			D(bug("Warning, wrong number of selected teams! (%ld instead of %ld)\n",j,selected_number));
 
 		if(friendly||training)
 		{
@@ -1117,7 +1229,7 @@ BOOL ArcadeTeamSelection(WORD bottone)
 		}
 		else if(competition==MENU_CHALLENGE)
 		{
-// Da fare!
+// To do!
 			turno=0;
 			cb[0].ID=MENU_CHALLENGE;
 			SetupMatches();
@@ -1126,7 +1238,7 @@ BOOL ArcadeTeamSelection(WORD bottone)
 		else
 		{
 friendlymatch:
-			D(bug("Inizio amichevole/allenamento...\n"));
+			D(bug("Starting friendly match/practice...\n"));
 			actual_menu->Bottone[ARCADE_TEAMS].Testo=actual_menu->Bottone[ARCADE_TEAMS+2].Testo=NULL;
 
 			PlayMenuMusic();
@@ -1140,12 +1252,12 @@ friendlymatch:
 			}
 			else if(j==2)
 			{
-				D(bug("->Entro in startmatch!\n"));
+				D(bug("->Entering startmatch!\n"));
 				StartMatch(teamarray[0],teamarray[1]);
 			}
 			else
 			{
-				D(bug("Carriera non ancora implementata!"/*-*/));
+				D(bug("Career not implemented yet!"/*-*/));
 			}
 		}
 
@@ -1160,9 +1272,9 @@ friendlymatch:
 
 		if(jingle>=0)
 		{
-			D(bug("Interrompo il canale %ld\n",jingle));
+			D(bug("Interrupt channel %ld\n",jingle));
 			SDL_LockAudio();
-// codice che blocca il sample.
+// code that block the sample.
 			busy[jingle]=NULL;
 			SDL_UnlockAudio();
 			jingle=-1;
@@ -1199,7 +1311,7 @@ BOOL TeamSettings(WORD bottone)
 			return FALSE;
 	}
 	else if(bottone==43) {
-// "Default" Da implementare!		
+// "Default" To develop!		
         D(bug("We shouldn't pass here!"));
 	}
 
@@ -1540,7 +1652,7 @@ BOOL GamePrefs(WORD bottone)
 			}
 			break;
 		default:
-			D(bug("Errore, opzione (%ld) non prevista!\n"/*-*/,bottone));
+			D(bug("Error, option (%ld) not previewed!\n"/*-*/,bottone));
 			return FALSE;
 	}
 
@@ -1562,15 +1674,15 @@ BOOL AudioPrefs(WORD bottone)
 	switch(bottone)
     {
         case 1:
-            /* AC: Quando il programma parte con no_sound = true, ma le opzioni
-             * vengono modificate a no_sound = false, i suoni dei men non sono
-             * caricati e la PlayBackSound viene chiamata con un elemento NULL
-             * ( successo nei men arcade). 
-             * Secondo me bisogna chiamare la CaricaSuoniMenu.
-             */
+			/* AC: When the program starts with no_sound = true, but the options
+             * are modified to no_sound = false, the sounds of the menu are not
+             * loaded and the PlayBackSound is called with a NULL element
+             * (it has happened in the arcade menu). 
+             * According to me it must be called the CaricaSuoniMenu.
+			 */
             no_sound = no_sound ? FALSE : TRUE;
 
-            /* Se il suono  off, libero i suoni, altrimenti li carico */
+            /* If the sound is off, unload the sounds, else load them */
             if(no_sound)
             {
                 LiberaSuoniMenu();
@@ -1578,12 +1690,12 @@ BOOL AudioPrefs(WORD bottone)
             }
             else
             {
-                /* AC: sicuramente ci vogliono dei controlli */
+                /* AC: Surely some controls are needed */
                 InitSoundSystem();
                 CaricaSuoniMenu();
             }    
 
-            /* AC: Credo serva anche questa. */
+            /* AC: I think this func is needed. */
             os_start_audio();
 
             break;
@@ -1667,10 +1779,10 @@ BOOL SystemPrefs(WORD bottone)
 			}
 			else UpdateJoyCfg(actual_joystick);
 		}
-		/* AC: Aggiorno la configurazione della tastiera */
+		/* AC: Update keyboard configuration */
 		else if(bottone==(actual_menu->NumeroBottoni-2))
 		{
-			UpdateKeyCfg(0);
+			UpdateKeyCfg();
 		}
 
 		ChangeMenu(actual_menu->Bottone[bottone].ID);
@@ -1732,20 +1844,20 @@ BOOL VideoPrefs(WORD bottone)
 			if(wb_game)
 			{
 				wb_game=FALSE;
-				/* AC: se sono su schermo, disattivo lo scaling */
+				/* AC: if we are on screen, disable the scaling */
 				use_gfx_scaling = FALSE;
 
 				MenuResizing(atol(resolutions[current_resolution]),atol(resolutions[current_resolution]+4));
 
-				/* AC: Da come vengono ripristinati in seguito, credo non debbano essere
-				 * eliminati questi bottoni che sono Scaling e Buffering.
+				/* AC: Since these buttons are restored later on, I think that we don't
+				 * have to eliminate them. They are Scaling and Buffering.
 				 */
 				//CancellaBottone(&actual_menu->Bottone[16]);
 				//CancellaBottone(&actual_menu->Bottone[17]);
 				CancellaBottone(&actual_menu->Bottone[18]);
 				CancellaBottone(&actual_menu->Bottone[19]);
 				
-				/* AC: Lo stesso dicasi per questi */
+				/* AC: The same one is said for these */
 				//CancellaBottone(&actual_menu->Bottone[20]);
 				//CancellaBottone(&actual_menu->Bottone[21]);
 			}
@@ -1911,7 +2023,7 @@ BOOL VideoPrefs(WORD bottone)
 	    		if(!scaling_resolutions[current_scaling])
 		    		current_scaling=0;
                 
-				// AC: Un piccolo refuso :-)
+				// AC: A small misprint :-)
     			//scaling_resolutions[current_scaling][3]=0;
 
                 strncpy(buffer, scaling_resolutions[current_scaling], 3);
@@ -1925,19 +2037,19 @@ BOOL VideoPrefs(WORD bottone)
 		case 21:
 			if(force_single)
 			{
-// Uso il DBuffering
+// Using DBuffering
 				force_single=FALSE;
 				triple=FALSE;
 			}
 			else if(triple)
 			{
-// Uso il Single buffering
+// Using Single buffering
 				triple=FALSE;
 				force_single=TRUE;
 			}
 			else
 			{
-// Uso il triple buffering
+// Using triple buffering
 				force_single=FALSE;
 				triple=TRUE;
 			}
@@ -1968,6 +2080,12 @@ BOOL VideoPrefs(WORD bottone)
 
 				wanted_width=atol(resolutions[current_resolution]);
 				wanted_height=atol(resolutions[current_resolution]+4);	
+				
+#ifdef TESTING_RES_1024				
+				/* AC: Trying to increase screen resolution upto 1024x768 */
+				if(wanted_height == 0)
+					wanted_height=atol(resolutions[current_resolution]+5);
+#endif
 			}
 			while (!os_videook(wanted_width,wanted_height));
 
@@ -2177,7 +2295,7 @@ void SetupMatches(void)
 	{
 		case MENU_CHALLENGE:
 
-// Azzero il controllo per tutti tranne la squadra in uso...
+// Reset the control for all except the team in use...
 
 			if(turno==0)
 			{
@@ -2222,14 +2340,14 @@ void SetupMatches(void)
 				menu[MENU_CHALLENGE].Titolo=msg_42;
 			else
 			{
-// Aggiungere qui la schermata finale dell'arcade.
+// Add here the final visualization one of the arcade.
 
 #ifdef CD_VERSION
 				Outro();
 #else
 				ShowCredits();
 #endif
-				arcade_score+=500; // Bonus finale
+				arcade_score+=500; // Final bonus
 
 				AddScore(*teamarray);
 				LoadTeams("teams/arcade"/*-*/);
@@ -2237,10 +2355,7 @@ void SetupMatches(void)
 				competition=MENU_TEAMS;
 				cb[0].ID=MENU_ARCADE;
 			}
-// Squadra A
-// AC: Ancora quella stranezza delle stringhe globabili inmodificabili... ma c'è
-// qualche opzione di compilazione?
-// -fwritable-strings
+// Team A
 			cp[0].Testo[1]=*teamarray;
 			cp[4].Colore=cp[0].Colore=cp[0].Highlight=cp[2].Colore=colore_team[controllo[*teamarray]+1];
 			cp[2].Testo=teamlist[*teamarray].nome;
@@ -2255,9 +2370,7 @@ void SetupMatches(void)
 				cp[4].Testo=NULL;
 				cp[5].Testo=NULL;
 			}
-// Squadra B
-// AC: Ancora quella stranezza delle stringhe globabili inmodificabili... ma c'è
-// qualche opzione di compilazione?
+// Team B
 			cp[1].Testo[1]=arcade_sequence[turno];
 			cp[3].Testo=teamlist[arcade_sequence[turno]].nome;
 			cp[5].Colore=cp[1].Colore=cp[1].Highlight=cp[3].Colore=colore_team[0];
@@ -2437,9 +2550,9 @@ void PlayMatches(void)
 
 				if(jingle>=0)
 				{
-					D(bug("Interrompo il canale %ld\n",jingle));
+					D(bug("Interrupt channel %ld\n",jingle));
 					SDL_LockAudio();
-// codice che blocca il sample.
+// code that block the sample.
 					busy[jingle]=NULL;
 					SDL_UnlockAudio();
 					jingle=-1;
@@ -2482,7 +2595,7 @@ void PlayMatches(void)
 						AddScore(*teamarray);
 					turno=0;
 					competition=MENU_TEAMS;					
-					LoadTeams("teams/arcade"/*-*/); // Ricarico le squadre originali...
+					LoadTeams("teams/arcade"/*-*/); // Reload original teams...
 					cp[2].Testo=teamlist[*teamarray].nome;
 					cp[3].Testo=teamlist[arcade_sequence[turno]].nome;
 					cp[6].Testo=msg_52;
@@ -2594,7 +2707,7 @@ void PlayMatches(void)
 				GroupsUpdate();
 				mb[0].ID=MENU_WORLD_CUP;
 
-// Creo l'array da usare per l'eliminazione diretta
+// Create array to use for direct elimination
 
 				if(turno==3)
 				{
@@ -2640,7 +2753,7 @@ void PlayMatches(void)
 			}
 			else
 			{
-				D(bug("Qui non dovrei arrivarci! (ottavo turno mondiale)\n"/*-*/));
+				D(bug("I wouldn't arrive here! (eighth world-wide turn)\n"/*-*/));
 			}
 			break;
 	}
@@ -2675,7 +2788,7 @@ BOOL HighSelection(WORD bottone)
 		strcat(buffer,b->Testo);
 
 		if (!savehigh)	{
-			D(bug("Carico %s...\n",b->Testo));
+			D(bug("Load %s...\n",b->Testo));
 
 			LoadHigh(buffer);
 		}
@@ -2726,7 +2839,7 @@ void SetHighSelection(void)
 	int righe,start;
 	DIR *lock;
 
-	D(bug("Scan della dir " TEMP_DIR "...\n"));
+	D(bug("Scan dir " TEMP_DIR "...\n"));
 
 	for(i=0;i<64;i++)
 		hl[i].Testo=NULL;
@@ -2767,14 +2880,14 @@ void UpdateJoyCfg(int joy)
 	}
 }
 
-void UpdateKeyCfg(int key)
+void UpdateKeyCfg(void)
 {
 	extern struct Bottone keycfg_bottoni[];
 	int i;
-
-	for(i=0;i<10;i++)
-	{
-		/* Converto in maiuscolo per il font */
+	
+	for(i=0;i<20;i++)
+	{	 
+		/* Uppercase conversion for ETW font */
 		char *tmp = SDL_GetKeyName(query[i]);
 		int j = 0;
 		while(*tmp)
@@ -2786,4 +2899,14 @@ void UpdateKeyCfg(int key)
 		keys_names[i][j] = 0;
 		keycfg_bottoni[i*2+1].Testo=keys_names[i];
 	}
+	
+	/* If we have selected a six keys BLUE control */
+	if(control[0] == CTRL_KEY_1)
+		for(i=16;i<20;i++)
+			keycfg_bottoni[i*2+1].Testo=NULL;
+			
+	/* If we have selected a six keys RED control */
+	if(control[1] == CTRL_KEY_1)
+		for(i=6;i<10;i++)
+			keycfg_bottoni[i*2+1].Testo=NULL;
 }

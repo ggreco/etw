@@ -684,9 +684,12 @@ int query[]=
 	SDLK_RSHIFT,SDLK_END,
 	/* Blu */
 // Query1
-	SDLK_s,SDLK_c,SDLK_x,SDLK_z, // dir: up->senso orario (s->c->x->z)
-	SDLK_SPACE,SDLK_b,
-	SDLK_n,SDLK_m,SDLK_LSHIFT,SDLK_TAB
+	/* AC: C'era una sovrapposizione con i tasti usati dal gioco.
+	 * Al momento le nuove definizioni sono scelte un po' a casaccio
+	 */
+	SDLK_g,SDLK_n,SDLK_b,SDLK_v, // dir: up->senso orario (s->c->x->z)
+	SDLK_e,SDLK_r,
+	SDLK_j,SDLK_m,SDLK_LSHIFT,SDLK_TAB
 };
 
 void UpdatePortStatus(void)

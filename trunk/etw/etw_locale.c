@@ -434,7 +434,7 @@ struct MyCatalog
 
 #define CAT_DIR "catalogs/"
 
-#ifdef WIN
+#if defined(WIN)
 
 // Questa semplice routine trova la locale di default di win.
 
@@ -448,6 +448,26 @@ char *GetLanguage(void)
 			case LANG_ITALIAN:
 				return "italiano";
 			case LANG_GERMAN:
+				return "deutsch";
+			default:
+				return "english";
+		}
+	}
+	else
+		return "english";
+}
+#elif defined(MACOSX)
+char *GetLanguage(void)
+{
+	extern int MacGetLanguage(void);
+	int langid;
+	if((langid = MacGetLanguage()))
+	{
+		switch(langid)
+		{
+			case 1:
+				return "italiano";
+			case 2:
 				return "deutsch";
 			default:
 				return "english";
