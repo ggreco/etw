@@ -26,6 +26,7 @@ struct BufferInfo
 #define SOUND_FAST   2
 #define SOUND_DISK   4
 #define SOUND_LOOP   8
+#define SOUND_CONVERTED 16
 
 struct SoundInfo
 {

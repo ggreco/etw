@@ -183,13 +183,12 @@ void PlayIfNotPlaying(int s)
 }
 
 
-void convert_sound(struct SoundInfo *s)
+static void convert_sound(struct SoundInfo *s)
 {
     UBYTE *buffer, *destsnd;
     long length;
 
-    if (s->Flags & SOUND_DISK || 
-            (s->Rate > (samplerate-2000) && s->Rate < (samplerate+2000)))
+    if (s->Flags & SOUND_DISK) 
         return;
 
     if (!(buffer = malloc(s->Rate))) {
@@ -229,8 +228,10 @@ void convert_sound(struct SoundInfo *s)
     }
 
     free(buffer);
-    free(s->SoundData);
 
+    SDL_FreeWAV(s->SoundData); // a sound is never converted twice so I've not to make any check
+
+    s->Flags |= SOUND_CONVERTED;
     s->Length = length;
     s->Rate = samplerate;
     s->SoundData = s->LeftData = destsnd;
@@ -291,11 +292,14 @@ void FreeSoundSystem(void)
 	D(bug("Done.\n"));
 }
 
-void FreeSound(struct SoundInfo *SoundInfo)
-{
-    SDL_FreeWAV(SoundInfo->SoundData);
+void FreeSound(struct SoundInfo *s)
+{   
+    if (s->Flags & SOUND_CONVERTED)
+        free(s->SoundData);
+    else
+        SDL_FreeWAV(s->SoundData);
 
-	free(SoundInfo);
+	free(s);
 }
 
 struct SoundInfo *LoadSound(STRPTR Name)
@@ -318,21 +322,25 @@ struct SoundInfo *LoadSound(STRPTR Name)
 
 
     if ( SDL_LoadWAV(Name, &spec, &buffer, &len)) {
-    	struct SoundInfo *SoundInfo;
+    	struct SoundInfo *s;
         
-        if ( (SoundInfo = (struct SoundInfo *) calloc(sizeof(struct SoundInfo), 1))) {
-    		SoundInfo->Flags = SOUND_FAST;
+        if ( (s = (struct SoundInfo *) calloc(sizeof(struct SoundInfo), 1))) {
+    		s->Flags = SOUND_FAST;
 
             if (loop)
-				SoundInfo->Flags |=	SOUND_LOOP;
+				s->Flags |=	SOUND_LOOP;
 
-			SoundInfo->Volume = 63; // unused
-			SoundInfo->Rate = spec.freq; // unused
-			SoundInfo->Length = len;
-            SoundInfo->SoundData = SoundInfo->LeftData = buffer;
+			s->Volume = 63; // unused
+			s->Rate = spec.freq; // unused
+			s->Length = len;
+            s->SoundData = s->LeftData = buffer;
 
             D(bug(" length: %d rate: %d\n", len, spec.freq));
-            return SoundInfo;
+
+            if (s->Rate < (samplerate-1000) || s->Rate > (samplerate+1000))
+                convert_sound(s); // convert sample if needed
+            
+            return s;
         }
         SDL_FreeWAV(buffer);
     }

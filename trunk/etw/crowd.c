@@ -6,14 +6,66 @@
 
 extern struct SoundInfo *busy[];
 
-struct SoundInfo *Cori[NUMERO_CORI];
+static struct SoundInfo *Cori[NUMERO_CORI] = {0}; // initialize everything to zero
 
-LONG wanted_sound = FONDO, playing = -1, last_looped = FONDO;
-WORD numero_loops = 0;
+LONG wanted_sound = FONDO, playing = -1;
 
-char corobuffer[] = ".crowd/crowd00.wav";
+static LONG last_looped = FONDO, numero_loops = 0;
 
-BOOL played = FALSE, crowd_loading = FALSE;
+static char *CrowdName(int i)
+{
+    static char corobuffer[] = ".crowd/crowd00.wav";    
+
+    corobuffer[12] = (i / 10) + '0';
+    corobuffer[13] = (i % 10) + '0';
+
+    return corobuffer;
+}
+
+static char *RandomCrowdName()
+{
+    return CrowdName(MyRangeRand(NUMERO_CORI) + 1);
+}
+
+static BOOL played = FALSE;
+
+void free_crowd()
+{
+	if (use_crowd && audio2fast) {
+		int i;
+
+		for (i = 0; i < (NUMERO_CORI - 1); i++) {
+			if (Cori[i])
+				FreeSound(Cori[i]);
+		}
+		sound[FONDO] = Cori[NUMERO_CORI - 1];
+	}
+}
+
+// preload crowd samples, may help on slower machines.
+BOOL crowd2memory()
+{
+    int i;
+    BOOL ok = TRUE;
+
+    for (i = 0; i < NUMERO_CORI; i++) {
+        if (!(Cori[i] = LoadSound(CrowdName(i + 1)))) {
+            D(bug("Error loading crowd %ld!\n", i + 1));
+            ok = FALSE;
+            break;
+        }
+    }
+
+    if (!ok) {
+        int l;
+
+        for (l = 0; l < i; l++)
+            FreeSound(Cori[l]);
+    }
+    D( else bug("Crowd preload completed!\n"));
+
+    return ok;
+}
 
 void init_crowd(void)
 {
@@ -21,7 +73,6 @@ void init_crowd(void)
 	playing = -1;
 	last_looped = FONDO;
 	wanted_sound = FONDO;
-	crowd_loading = FALSE;
 
 	if (audio2fast) {
 		D(bug("A2F: init crowd...\n"));
@@ -34,12 +85,10 @@ void init_crowd(void)
 	} else {
 		numero_loops = -1;
 
-		corobuffer[13] = MyRangeRand(9) + '1';	// Carico da coro 1 a coro 9
-
     	if(sound[FONDO])
 			FreeSound(sound[FONDO]);
         
-		sound[FONDO] = LoadSound(corobuffer);
+		sound[FONDO] = LoadSound(RandomCrowdName());
 	}
 
 	busy[AUDIO_CROWD] = sound[FONDO];
@@ -66,8 +115,6 @@ struct SoundInfo *handle_crowd(void)
 	}
 
 	if (playing >= 0) {
-  //            D(bug("CT: Inizio a playare il suono %ld!\n",playing));
-
 		if (playing == FONDO)
 			numero_loops--;
 
@@ -75,23 +122,13 @@ struct SoundInfo *handle_crowd(void)
 			if (audio2fast) {
 				sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
 				numero_loops = 128 / (sound[FONDO]->Length / 3600);
-// i loop ora sono ricampionati a 20khz, 256 non andava piu' bene!
-
-//	            D(bug("CT: Coro: %ld - %ld (l: %ld)\n",sound[FONDO]->SoundData,sound[FONDO]->Length,numero_loops));
 			} else {
-				int i = MyRangeRand(NUMERO_CORI) + 1;
-
-				corobuffer[12] = (i / 10) + '0';
-				corobuffer[13] = (i % 10) + '0';
-
                 FreeSound(sound[FONDO]);
 
-                sound[FONDO] = LoadSound(corobuffer);
+                sound[FONDO] = LoadSound(RandomCrowdName());
                 
 				if (sound[FONDO]) {
-    				convert_sound(sound[FONDO]);
-					numero_loops =
-						128 / (sound[FONDO]->Length / 3600);
+					numero_loops = 128 / (sound[FONDO]->Length / 3600);
 				} else {
 					playing = -1;
 					return FALSE;
@@ -101,11 +138,6 @@ struct SoundInfo *handle_crowd(void)
 
 		if (!(sound[playing]->Flags & SOUND_LOOP) && !newloop) {
 			wanted_sound = playing = last_looped;
-		}
-
-		if (!(sound[playing]->Flags & SOUND_FAST)) {
-//                      D(bug("CT: Suoni in chip o disco non supportati!\n"));
-			return NULL;
 		}
 
 		return sound[playing];

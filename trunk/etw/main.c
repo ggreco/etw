@@ -400,22 +400,8 @@ void FreeStuff(void)
 	D(bug("Freeing fonts...\n"));
 	FreeFonts();
 
-#ifdef LOAD_ALL
-	if (use_crowd && audio2fast) {
-		extern struct SoundInfo *Cori[NUMERO_CORI];
-		int i;
-
-		for (i = 0; i < (NUMERO_CORI - 1); i++) {
-			if (Cori[i])
-				FreeSound(Cori[i]);
-		}
-
-// Senno crasha quando libera i suoni...
-
-		sound[FONDO] = Cori[NUMERO_CORI - 1];
-	}
-#endif
-
+    free_crowd();
+    
 	if (!no_sound || (replay_mode && !was_using_nosound)) {
 // non libero piu' il sound system, lo condivido tra menu' e game
 		D(bug("Freeing sounds.\n"));

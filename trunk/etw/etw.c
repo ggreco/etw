@@ -25,7 +25,6 @@ GfxObj *arcade_gfx[ARCADE_TEAMS + 1];
 char *back;
 int bitmap_width, bitmap_height;
 struct SoundInfo *music = NULL;
-extern void convert_sound(struct SoundInfo *);
 
 void PlayMenuMusic(void)
 {
@@ -45,9 +44,6 @@ void PlayMenuMusic(void)
 	}
 
 	if ((music = LoadSound(buffer))) {
-//		if (music->Rate < 19000 || music->Rate > 24000) let's ALWAYS convert samples, our rate maybe 44khz!
-		convert_sound(music);
-
 		music_channel = PlayBackSound(music);
 
 		if (music_channel >= 0)
