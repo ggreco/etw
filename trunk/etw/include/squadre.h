@@ -110,5 +110,8 @@ struct DatiSquadra_Disk
 	BYTE TurnoNazionale;
 };
 
+void ReadTeam(FILE *, struct Squadra_Disk *);
+void WriteTeam(FILE *, struct Squadra_Disk *);
+
 #endif
 

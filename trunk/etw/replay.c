@@ -198,15 +198,16 @@ void LoadReplay(UBYTE Set)
 
 			e=(c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4];
 
-			if(e!=d)
-			{
+			if(e!=d) {
 				char buffer[40];
 
+				sprintf(buffer, "ETW-TCT:%c%c%c-%c",
+                        (char) ((d&0xff000000)>>24),
+                        (char) ((d&0x00ff0000)>>16),
+                        (char) ((d&0xff00)>>8),
+                        (char) (d&0xff) );
 
-				sprintf(buffer,"ETW-TCT:%lc%lc%lc-%lc",((d&0xff000000)>>24),((d&0x00ff0000)>>16),((d&0xff00)>>8),(d&0xff));
-
-				if(!(p->squadra[i]->tattica=LoadTactic(buffer)))
-				{
+				if(!(p->squadra[i]->tattica=LoadTactic(buffer))) {
 					quit_game=TRUE;
 					p->squadra[i]->tattica=a[i*SQ_PTR+11];
 				}

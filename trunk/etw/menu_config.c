@@ -440,7 +440,7 @@ void write_config(char *dest)
 		{
 			extern int FIXED_SCALING_HEIGHT;
 
-			fprintf(f,"scaling_y=%ld\n"/*-*/,FIXED_SCALING_HEIGHT);
+			fprintf(f,"scaling_y=%d\n"/*-*/,FIXED_SCALING_HEIGHT);
 			fprintf(f,"scaling\n"/*-*/);
 		}
 
@@ -471,10 +471,10 @@ void write_config(char *dest)
                     display_id, overscan);
 
 		if(!public_screen)
-			fprintf(f,"width=%d\nheight=%d\n"/*-*/,
+			fprintf(f,"width=%ld\nheight=%ld\n"/*-*/,
                     wanted_width, wanted_height);
 		else if(wb_game)
-			fprintf(f,"width=%d\nheight=%d\n"/*-*/,
+			fprintf(f,"width=%ld\nheight=%ld\n"/*-*/,
                     WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		if(!(detail_level&USA_RADAR))
@@ -495,7 +495,7 @@ void write_config(char *dest)
 		fprintf(f,"time=%ld\n"/*-*/,t_l);
 
 // relativo al campo...
-		fprintf(f,"field=%ld\nfield_type=%ld\n"/*-*/,
+		fprintf(f,"field=%d\nfield_type=%d\n"/*-*/,
                 field, field_type);
 
 // nocpu (disabilitato, solo utile in sviluppo)
@@ -507,7 +507,7 @@ void write_config(char *dest)
 			if(situation)
 			{
 				fprintf(f,"situation_time=%ld\n"/*-*/,situation_time);
-				fprintf(f,"situation_result=%ld-%ld\n"/*-*/,situation_result[0],situation_result[1]);
+				fprintf(f,"situation_result=%d-%d\n"/*-*/,situation_result[0],situation_result[1]);
 			}
 		}
 
@@ -522,7 +522,7 @@ void write_config(char *dest)
 		if(free_longpass)
 			fprintf(f,"freepass\n"/*-*/);
 
-		fprintf(f,"strictness=%ld\n", strictness);
+		fprintf(f,"strictness=%d\n", strictness);
 		
 		BFP(f,"crowd=%s\n"/*-*/,use_crowd);
 		BFP(f,"speaker=%s\n"/*-*/,use_speaker);

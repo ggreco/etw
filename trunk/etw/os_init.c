@@ -142,14 +142,14 @@ void os_audio2fast(void)
 		strcpy(buffer, spk_basename);
 		strcat(buffer, ".spk");
 
-		if (f = fopen(buffer, "rb")) {
+		if ((f = fopen(buffer, "rb"))) {
 			long l;
 
 			fseek(f, 0, SEEK_END);
 			l = ftell(f);
 			fseek(f, 0, SEEK_SET);
 
-			if (comment_file = malloc((int) l)) {
+			if ((comment_file = malloc((int) l))) {
 				fread(comment_file, 1, (int) l, f);
 			} else {
 				audio2fast = FALSE;

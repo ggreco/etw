@@ -2303,38 +2303,32 @@ BOOL HighSelection(WORD bottone)
 
 	b=&actual_menu->Bottone[bottone];
 
-	if(bottone==64)
-	{
+	if (bottone == 64)	{
 		FreeHighSelection();
 		ChangeMenu(MENU_HIGHLIGHT);
 	}
-	else
-	{
+	else {
 		char buffer[32];
 
 		strcpy(buffer,TEMP_DIR "replay."/*-*/);
 		strcat(buffer,b->Testo);
 
-		if(!savehigh)
-		{
+		if (!savehigh)	{
 			D(bug("Carico %s...\n",b->Testo));
 
 			LoadHigh(buffer);
 		}
-		else
-		{
+		else {
 			FILE *fh;
 
-			if(fh=fopen(buffer,"rb"))
-			{
+			if ((fh=fopen(buffer,"rb")))	{
 				
 				LONG l;
 
 				freq.Title="Save highlight...";
 				freq.Save=TRUE;
 
-				if(AslRequest(&freq))
-				{
+				if (AslRequest(&freq)) {
 					char buffer[130];
 					APTR a;
 
@@ -2343,14 +2337,12 @@ BOOL HighSelection(WORD bottone)
 
 					strcpy(buffer,freq.File);
 
-					if(a=malloc(l))
-					{
+					if ((a=malloc(l))) {
 						FILE *f2;
 
 						fread(a,1,l,fh);
 
-						if(f2=fopen(buffer,"wb"))
-						{
+						if ((f2=fopen(buffer,"wb"))) {
 							fwrite(a,1,l,f2);
 							fclose(f2);
 						}
@@ -2378,15 +2370,11 @@ void SetHighSelection(void)
 	for(i=0;i<64;i++)
 		hl[i].Testo=NULL;
 
-	if(lock=opendir(TEMP_DIR))
-	{
+	if ((lock=opendir(TEMP_DIR))) {
 		struct dirent *ent;
 
-		while( (ent=readdir(lock))!=NULL)
-		{
-			if(!strnicmp(ent->d_name,"replay."/*-*/,7))
-			{
-
+		while( (ent=readdir(lock))!=NULL) {
+			if(!strnicmp(ent->d_name,"replay."/*-*/,7))	{
 				highs[n]=strdup(ent->d_name+7);
 				n++;
 			}
@@ -2401,8 +2389,7 @@ void SetHighSelection(void)
 
 	start=TS_RIGHE/2-righe/2;
 
-	for(i=0;i<n;i++)
-	{
+	for(i=0;i<n;i++) {
 		hl[i+start*TS_COLONNE].ID=i;
 		hl[i+start*TS_COLONNE].Testo=highs[i];
 	}

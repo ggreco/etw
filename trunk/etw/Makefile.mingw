@@ -1,4 +1,4 @@
-CC = /usr/local/cross-tools/i386-mingw32msvc/bin/gcc
+CC = /usr/local/cross-gcc33/i386-mingw32msvc/bin/gcc
 DEBUG = 
 CFLAGS = -Iinclude -I/usr/local/cross-tools/i386-mingw32msvc/include/SDL \
          -O2 -fwritable-strings -Wall -fsigned-char -Wno-char-subscripts

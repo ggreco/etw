@@ -443,10 +443,8 @@ char *GetLanguage(void)
 
 	WORD langid;
 
-	if(langid=GetSystemDefaultLangID())
-	{
-		switch(PRIMARYLANGID(langid))
-		{
+	if ((langid=GetSystemDefaultLangID()))	{
+		switch(PRIMARYLANGID(langid)) {
 			case LANG_ITALIAN:
 				return "italiano";
 			case LANG_GERMAN:
@@ -633,21 +631,17 @@ char *GetCatalogStr(APTR *Ctg, long num, char *def)
 {
 	struct MyCatalog *cat=(struct MyCatalog *)Ctg;
 
-	if(cat!=NULL && cat->strings_ptr)
-	{
+	if(cat!=NULL && cat->strings_ptr) {
 		int i;
 
 		for(i=0;i<cat->strings;i++)
-			if(cat->strings_ptr[i].id==num)
-			{
+			if(cat->strings_ptr[i].id==num) {
 				if(cat->strings_ptr[i].string)
 					return cat->strings_ptr[i].string;
-				else
-				{
+				else {
 					cat->strings_ptr[i].string=(char *)malloc(cat->strings_ptr[i].len+1);
 
-					if(cat->strings_ptr[i].string)
-					{
+					if(cat->strings_ptr[i].string) {
 						fseek(cat->handle,cat->offsetfirst+cat->strings_ptr[i].offset,SEEK_SET);
 						fread(cat->strings_ptr[i].string,cat->strings_ptr[i].len,1,cat->handle);
 						cat->strings_ptr[i].string[cat->strings_ptr[i].len]=0;
