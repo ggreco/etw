@@ -340,10 +340,12 @@ void os_free_timer(void)
 }
 #endif
 
-#ifdef LINUX
-
+#if defined(LINUX) || defined(SOLARIS_X86)
+#if defined(LINUX) && !defined(SOLARIS_X86)
 #include <sys/dir.h>
-
+#else
+#include <dirent.h>
+#endif
 #undef fopen
 
 FILE *os_open(char *name, char *mode)

@@ -5,7 +5,7 @@
 #include "highdirent.h"
 #include "sound.h"
 
-#ifdef LINUX
+#if defined(LINUX) || defined(SOLARIS_X86)
 #include <gtk/gtk.h>
 #endif
 
@@ -505,7 +505,7 @@ int disabled_main(int argc, char *argv[])
 
 	InitStrings();
 
-#ifdef LINUX
+#if defined(LINUX) || defined(SOLARIS_X86)
 	gtk_init(&argc, &argv);
 #endif
 

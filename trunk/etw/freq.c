@@ -92,7 +92,7 @@ BOOL AslRequest(struct MyFileRequest *fr)
 	return res;
 }
 
-#elif defined(LINUX)
+#elif defined(LINUX) || defined(SOLARIS_X86)
 
 #include "mytypes.h"
 #include "freq.h"

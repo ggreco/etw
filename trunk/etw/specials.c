@@ -2,6 +2,8 @@
 #include "menu.h"
 #ifdef WIN
 #include "highdirent.h"
+#elif SOLARIS_X86
+#include <dirent.h>
 #else
 #include <sys/dir.h>
 #endif
