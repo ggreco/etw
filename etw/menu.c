@@ -16,8 +16,6 @@ BOOL reqqing = FALSE;
 struct MyFileRequest freq = { 0 };
 
 
-extern int AslRequest(struct MyFileRequest *);
-
 BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
 {
 	struct GfxMenu *old_menu, fake_menu;
@@ -1487,10 +1485,10 @@ void MenuResizing(int w, int h)
 	oldwidth = WINDOW_WIDTH;
 	oldheight = WINDOW_HEIGHT;
 
-	if (screen =
+	if ((screen =
 		SDL_SetVideoMode(w, h, 8,
 						 SDL_SWSURFACE | (wb_game ? SDL_RESIZABLE :
-										  SDL_FULLSCREEN))) {
+										  SDL_FULLSCREEN)))) {
 		LoadIFFPalette("gfx/eat16menu.col" /*-*/ );
 
 		free(main_bitmap);
@@ -1551,6 +1549,8 @@ BOOL HandleMenuIDCMP(void)
     			case SDLK_RETURN:
 	    			returncode = HandleJoy(JPF_BUTTON_RED);
 		    		break;
+                default:
+                    break;
             }
             break;
 		case SDL_KEYUP:

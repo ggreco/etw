@@ -6,6 +6,8 @@
 #include <sys/dir.h>
 #endif
 
+#include "SDL.h"
+
 extern void MenuResizing(int,int);
 extern char joycfg_buttons[2][8];
 
@@ -33,7 +35,7 @@ extern struct GfxMenu *actual_menu;
 extern int FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
 
 BOOL make_setup=FALSE,game_start=FALSE,can_modify=TRUE,savehigh=FALSE,
-	powerpc=FALSE,triple=FALSE,chunky_version=FALSE,use_gfx_scaling=FALSE;
+	triple=FALSE,chunky_version=FALSE,use_gfx_scaling=FALSE;
 BYTE selected_number=0,wanted_number=0,duration=1,field_type=0,daytime=0;
 char *enabled=msg_7,*disabled=msg_8;
 extern struct SoundInfo *busy[];
@@ -299,7 +301,7 @@ BOOL TeamSelection(WORD bottone)
 		struct Bottone *b3=&actual_menu->Bottone[66];
 
 		if(selected>=0)
-			RestoreBack();
+			MyRestoreBack();
 		
 		selected=bottone;
 
@@ -580,7 +582,7 @@ BOOL ArcadeTeamSelection(WORD bottone)
 		struct Bottone *b3=&actual_menu->Bottone[ARCADE_TEAMS+2];
 
 		if(selected>=0)
-			RestoreBack();
+			MyRestoreBack();
 
 		if(menu_music&&music_playing)
 			StopMenuMusic();
@@ -1789,10 +1791,6 @@ void UpdatePrefs(BYTE set)
 	break;
 
     case MENU_SYSTEM_PREFS:
-	if(powerpc)
-		m->Bottone[1].Testo=enabled;
-	else
-		m->Bottone[1].Testo=disabled;
 
 	if(chunky_version)
 		m->Bottone[3].Testo=enabled;

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include "SDL.h"
 
 #if defined(LINUX)
 #include <unistd.h>
@@ -16,6 +17,8 @@
 #include "mydebug.h"
 #include "os_defs.h"
 #include "mymacros.h"
+
+#include "menu_externs.h"
 
 extern struct Squadra_Disk *teamlist;
 extern struct Squadra_Disk leftteam_dk,rightteam_dk;
@@ -114,7 +117,7 @@ void UpdateNetStatus(char *string)
 	extern struct myfont *bigfont;
 	extern long WINDOW_WIDTH,WINDOW_HEIGHT;
 
-	RestoreBack();
+	MyRestoreBack();
 	PrintShadow(FixedScaledX(1),FixedScaledY(210),string,strlen(string),bigfont);
 	ScreenSwap();
 }
@@ -478,7 +481,7 @@ tryagain:
                 network_frame++;
             }
             else if (msg->hdr.type == MSG_QUIT) {
-                extern int quit_game, final;
+                extern int quit_game;
 
                 final=FALSE;
                 quit_game=TRUE;

@@ -1,7 +1,7 @@
 CC = /usr/local/cross-tools/i386-mingw32msvc/bin/gcc
 DEBUG = 
 CFLAGS = -Iinclude -I/usr/local/cross-tools/i386-mingw32msvc/include/SDL \
-         -O2 -g -fwritable-strings
+         -O2 -fwritable-strings -Wall -fsigned-char -Wno-char-subscripts
 LFLAGS = -lmingw32 -lSDLmain -lSDL -mwindows -lwsock32 -lcomdlg32 
 DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER
 

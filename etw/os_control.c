@@ -1,6 +1,5 @@
 #include "preinclude.h"
 #include "eat.h"
-#include "my_protos.h"
 #include "network.h"
 
 extern struct Window *win;
@@ -54,7 +53,7 @@ ULONG ReadNetworkPort(ULONG l)
 
 ULONG MyReadJoyPort(ULONG l)
 {	
-	extern struct joy_config joycfg[];
+//	extern struct joy_config joycfg[];
 	int xc,yc;
 	ULONG mask=0;
 
@@ -131,8 +130,7 @@ BOOL os_check_joy(int i)
 {
 	SDL_Joystick *j;
 
-	if(j=SDL_JoystickOpen(i))
-	{
+	if((j=SDL_JoystickOpen(i))) {
 		SDL_JoystickClose(j);
 		return TRUE;
 	}
@@ -147,8 +145,7 @@ int os_get_joy_button(int i)
 	
 	SDL_JoystickEventState(SDL_ENABLE);
 
-	if(j=SDL_JoystickOpen(i))
-	{
+	if ((j=SDL_JoystickOpen(i))) {
 		int k=-1;
 		BOOL ok=FALSE;
 		SDL_Event e;
@@ -204,8 +201,7 @@ void set_controls(void)
 		{
 			D(bug("Apro il joystick %ld\n",p->squadra[0]->Joystick));
 
-			if(joy[p->squadra[0]->Joystick]=SDL_JoystickOpen(p->squadra[0]->Joystick))
-			{
+			if ((joy[p->squadra[0]->Joystick]=SDL_JoystickOpen(p->squadra[0]->Joystick))) {
 				num_joys++;
 				has_joystick=TRUE;
 
@@ -225,8 +221,7 @@ void set_controls(void)
 
 				joybuttons[p->squadra[0]->Joystick]=SDL_JoystickNumButtons(joy[p->squadra[0]->Joystick]);
 			}
-			else
-			{
+			else {
 				// Prevedo fallback a tastiera o ritorno un errore?
 				D(bug(" ->Errore nell'apertura del joystick!\n"));
 			}
@@ -269,21 +264,17 @@ void set_controls(void)
 
 	p->squadra[1]->Joystick=player_type[1];
 
-	if(p->squadra[1]->Joystick<0)
-	{
+	if(p->squadra[1]->Joystick<0) {
 		HandleSquadra1=HandleCPU;
 
 		if(nocpu)
 			p->squadra[1]->Joystick=TYPE_JOYSTICK1;
 	}
-	else
-	{
-		if(control[p->squadra[1]->Joystick]<CTRL_KEY_1)
-		{
+	else {
+		if(control[p->squadra[1]->Joystick]<CTRL_KEY_1) {
 			D(bug("Apro il joystick %ld\n",p->squadra[1]->Joystick));
 
-			if(joy[p->squadra[1]->Joystick]=SDL_JoystickOpen(p->squadra[1]->Joystick))
-			{
+			if ((joy[p->squadra[1]->Joystick]=SDL_JoystickOpen(p->squadra[1]->Joystick))) {
 				has_joystick=TRUE;
 				num_joys++;
 				D(bug("Opened Joystick %ld\n",p->squadra[1]->Joystick));
@@ -293,23 +284,20 @@ void set_controls(void)
 				D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->squadra[1]->Joystick])));
 				D(bug("Stato dell'event manager x i joystick: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
 
-				if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE)
-				{
+				if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE) {
 					D(bug("** Forzo la disabilitazione dell'event manager x i joystick\n"));
 					SDL_JoystickEventState(SDL_DISABLE);
 				}
  
 				joybuttons[p->squadra[1]->Joystick]=SDL_JoystickNumButtons(joy[p->squadra[1]->Joystick]);
 			}
-			else
-			{
+			else {
 				D(bug(" ->Errore nell'apertura del joystick!\n"));
 				// Vedi sopra!
 			}
 		}
 		if(control[p->squadra[1]->Joystick]==CTRL_JOYPAD ||
-			control[p->squadra[1]->Joystick]==CTRL_KEY_2)
-		{
+			control[p->squadra[1]->Joystick]==CTRL_KEY_2) {
 			HandleSquadra1=HandleControlledJoyPad;
 //			SetJoyPortAttrs(p->squadra[1]->Joystick,SJA_Type,SJA_TYPE_GAMECTLR,TAG_DONE);
 			D(bug("Joypad per la squadra 1\n"));
@@ -360,6 +348,9 @@ int os_wait_end_pause(void)
 				ScreenSwap();
 
 			break;
+        default:
+          // not handled keys...
+            break;
 	}
 
 	return ok;
@@ -390,251 +381,253 @@ void CheckKeys(void)
 			ResizeWin(&e);
 			break;
 		case SDL_KEYDOWN:
-			if(!(p->show_panel&PANEL_CHAT)) {
-				switch(e.key.keysym.sym)
-				{
+            if(!(p->show_panel&PANEL_CHAT)) {
+                switch(e.key.keysym.sym)
+                {
 #ifndef DEBUG_DISABLED
-					
-					// I - per debug, mostra le posizioni degli omini
-					
-				case SDLK_i:
-					{
-						Squadra *s=p->squadra[1];
-						int i;
-						
-						for(i=0;i<10;i++)
-						{
-							D(bug("G: %ld A: %ld S: %ld C: %ld\n",i+2,s->giocatore[i].AnimType,s->giocatore[i].Special,s->giocatore[i].Comando));
-							
-							if(s->giocatore[i].world_x<0 || s->giocatore[i].world_y<0 ||
-								s->giocatore[i].world_x>11000 || s->giocatore[i].world_y>4200 )
-							{
-								int j;
-								Giocatore *g=&s->giocatore[i];
-								
-								D(bug("Parametri: Sp:%ld Cmd:%ld Dir:%ld Anim:%ld Spd:%ld Sect:%ld\n",
-									g->Special,g->Comando,g->Direzione,g->AnimType,g->ActualSpeed,g->settore));
-								
-								for(j=0;j<(SECTORS+SPECIALS);j++)
-								{
-									D(bug("S:%ld - senza: X:%ld Y:%ld - con: X:%ld Y:%ld\n",j,
-										g->squadra->tattica->Position[0][i][j].x,g->squadra->tattica->Position[0][i][j].y,
-										g->squadra->tattica->Position[1][i][j].x,g->squadra->tattica->Position[1][i][j].y));
-								}
-							}
-						}
-					}
-					break;
-				case SDLK_1:
-					PlayBackSound(sound[DOG]);
-					break;
-				case SDLK_2:
-					PlayBackSound(sound[CRASH]);
-					break;
-				case SDLK_3:
-					PlayBackSound(sound[BOOU]);
-					break;
-				case SDLK_w:
-					// W - fa finire un tempo!
-					EndTime=Timer();
-					D(bug("Forzo la fine del tempo!\n"));
-					break;
-					
-					// D - causa un fallo
-				case SDLK_d:
-					pl->InGioco=FALSE;
-					FermaPalla();
-					
-					p->arbitro.Comando=FISCHIA_FALLO;
-					TogliPalla();
-					if(p->squadra[0]->Possesso)
-					{
-						pl->sq_palla=p->squadra[0];
-						p->squadra[1]->Falli++;
-					}
-					else
-					{
-						pl->sq_palla=p->squadra[1];
-						p->squadra[0]->Falli++;
-					}
-					break;
-					
-				/* AC: faccio fare un gol fittizio alla squadra 0. */
-				case SDLK_g:
-					p->squadra[0]->Reti++;
-					if(!penalties && (p->squadra[0]->Reti+p->squadra[1]->Reti)<GA_SIZE )
-					{
-						mytimer temptime;
-						int i=p->squadra[0]->Reti+p->squadra[1]->Reti-1;
 
-						goal_array[i]=p->last_touch;
+                    // I - per debug, mostra le posizioni degli omini
 
-						goal_team[i]= (p->last_touch&32)==0 ? teams_swapped : teams_swapped^1;
+                    case SDLK_i:
+                        {
+                            Squadra *s=p->squadra[1];
+                            int i;
 
-						temptime=Timer();
+                            for(i=0;i<10;i++)
+                            {
+                                D(bug("G: %ld A: %ld S: %ld C: %ld\n",i+2,s->giocatore[i].AnimType,s->giocatore[i].Special,s->giocatore[i].Comando));
 
-						goal_minute[i]=((((temptime-StartGameTime)/MY_CLOCKS_PER_SEC)*45)/t_l/60);
+                                if(s->giocatore[i].world_x<0 || s->giocatore[i].world_y<0 ||
+                                        s->giocatore[i].world_x>11000 || s->giocatore[i].world_y>4200 )
+                                {
+                                    int j;
+                                    Giocatore *g=&s->giocatore[i];
 
-						if(extratime)
-						{
-							goal_minute[i]/=3;
+                                    D(bug("Parametri: Sp:%ld Cmd:%ld Dir:%ld Anim:%ld Spd:%ld Sect:%ld\n",
+                                                g->Special,g->Comando,g->Direzione,g->AnimType,g->ActualSpeed,g->settore));
 
-							if(first_half)
-								goal_minute[i]+=90;
-							else
-								goal_minute[i]+=105;
-						}
-						else if(!first_half)
-						{
-							goal_minute[i]+=45;
-						}
-						
-					}
-					D(bug("Ho segnato un GOL per la squadra %s\n",p->squadra[0]->Nome));
-					break;
+                                    for(j=0;j<(SECTORS+SPECIALS);j++)
+                                    {
+                                        D(bug("S:%ld - senza: X:%ld Y:%ld - con: X:%ld Y:%ld\n",j,
+                                                    g->squadra->tattica->Position[0][i][j].x,g->squadra->tattica->Position[0][i][j].y,
+                                                    g->squadra->tattica->Position[1][i][j].x,g->squadra->tattica->Position[1][i][j].y));
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case SDLK_1:
+                        PlayBackSound(sound[DOG]);
+                        break;
+                    case SDLK_2:
+                        PlayBackSound(sound[CRASH]);
+                        break;
+                    case SDLK_3:
+                        PlayBackSound(sound[BOOU]);
+                        break;
+                    case SDLK_w:
+                        // W - fa finire un tempo!
+                        EndTime=Timer();
+                        D(bug("Forzo la fine del tempo!\n"));
+                        break;
+
+                        // D - causa un fallo
+                    case SDLK_d:
+                        pl->InGioco=FALSE;
+                        FermaPalla();
+
+                        p->arbitro.Comando=FISCHIA_FALLO;
+                        TogliPalla();
+                        if(p->squadra[0]->Possesso)
+                        {
+                            pl->sq_palla=p->squadra[0];
+                            p->squadra[1]->Falli++;
+                        }
+                        else
+                        {
+                            pl->sq_palla=p->squadra[1];
+                            p->squadra[0]->Falli++;
+                        }
+                        break;
+
+                        /* AC: faccio fare un gol fittizio alla squadra 0. */
+                    case SDLK_g:
+                        p->squadra[0]->Reti++;
+                        if(!penalties && (p->squadra[0]->Reti+p->squadra[1]->Reti)<GA_SIZE )
+                        {
+                            mytimer temptime;
+                            int i=p->squadra[0]->Reti+p->squadra[1]->Reti-1;
+
+                            goal_array[i]=p->last_touch;
+
+                            goal_team[i]= (p->last_touch&32)==0 ? teams_swapped : teams_swapped^1;
+
+                            temptime=Timer();
+
+                            goal_minute[i]=((((temptime-StartGameTime)/MY_CLOCKS_PER_SEC)*45)/t_l/60);
+
+                            if(extratime)
+                            {
+                                goal_minute[i]/=3;
+
+                                if(first_half)
+                                    goal_minute[i]+=90;
+                                else
+                                    goal_minute[i]+=105;
+                            }
+                            else if(!first_half)
+                            {
+                                goal_minute[i]+=45;
+                            }
+
+                        }
+                        D(bug("Ho segnato un GOL per la squadra %s\n",p->squadra[0]->Nome));
+                        break;
 #endif
-				case SDLK_r:
-					// R - replay
-					if(!replay_mode&&!start_replay)
-						start_replay=TRUE;
-					else
-					{
-						if(!slow_motion)
-						{
-							MY_CLOCKS_PER_SEC_50<<=2;
-							slow_motion=TRUE;
-						}
-						else
-						{
-							slow_motion=FALSE;
-							MY_CLOCKS_PER_SEC_50>>=2;
-						}
-					}
-					break;
-					// S - abilita/disabilita radar
-				case SDLK_s:
-					
-					if(!use_key1)
-					{
-						if(detail_level&USA_RADAR)
-							detail_level&=(~USA_RADAR);
-						else
-							detail_level|=USA_RADAR;
-					}
-					break;
-					// L - mostra stats
-                                /* C'era una sovrapposizione con SDLK_RETURN, veniva usato della definizione
-                                 * della tastiera uno.
-                                 */
-				case SDLK_h:
-					p->show_panel|=PANEL_CHAT;
-					p->show_time=120;
-					break;
-				case SDLK_l:
-					p->show_panel|=PANEL_STATS;
-					p->show_time=80;
-					break;
-					
-					// X - cambia posizione/dimensioni del radar
-				case SDLK_x:
-					if(use_key1)
-						break;
-					
-					radar_position++;
-					ResizeRadar();
-					break;
-					
+                    case SDLK_r:
+                        // R - replay
+                        if(!replay_mode&&!start_replay)
+                            start_replay=TRUE;
+                        else
+                        {
+                            if(!slow_motion)
+                            {
+                                MY_CLOCKS_PER_SEC_50<<=2;
+                                slow_motion=TRUE;
+                            }
+                            else
+                            {
+                                slow_motion=FALSE;
+                                MY_CLOCKS_PER_SEC_50>>=2;
+                            }
+                        }
+                        break;
+                        // S - abilita/disabilita radar
+                    case SDLK_s:
+
+                        if(!use_key1)
+                        {
+                            if(detail_level&USA_RADAR)
+                                detail_level&=(~USA_RADAR);
+                            else
+                                detail_level|=USA_RADAR;
+                        }
+                        break;
+                        // L - mostra stats
+                        /* C'era una sovrapposizione con SDLK_RETURN, veniva usato della definizione
+                         * della tastiera uno.
+                         */
+                    case SDLK_h:
+                        p->show_panel|=PANEL_CHAT;
+                        p->show_time=120;
+                        break;
+                    case SDLK_l:
+                        p->show_panel|=PANEL_STATS;
+                        p->show_time=80;
+                        break;
+
+                        // X - cambia posizione/dimensioni del radar
+                    case SDLK_x:
+                        if(use_key1)
+                            break;
+
+                        radar_position++;
+                        ResizeRadar();
+                        break;
+
 #ifdef USE_ROLEPLAY
-					
-					// Alt sinistro, gioco di ruolo attivo/inattivo sq. 1
-				case SDLK_LALT:
-					p->squadra[1]->gioco_ruolo = (p->squadra[1]->gioco_ruolo ? FALSE : TRUE);
-					// shift sinistro, cambia giocatore attivo sq.1 se gioco di ruolo
-					break;
-				case SDLK_LSHIFT:
-					if(p->squadra[1]->gioco_ruolo)
-					{
-						char num=p->squadra[1]->attivo->GNum;
-						
-						if(num<9)
-							num++;
-						else
-							num=0;
-						
-						p->squadra[1]->gioco_ruolo=FALSE;
-						ChangeControlled(p->squadra[1],num);
-						p->squadra[1]->gioco_ruolo=TRUE;
-					}
-					// Alt destro, gioco di ruolo attivo/inattivo sq. 0
-					break;
-				case SDLK_RALT:
-					p->squadra[0]->gioco_ruolo = (p->squadra[0]->gioco_ruolo ? FALSE : TRUE);
-					// shift destro, cambia giocatore attivo sq.0 se gioco di ruolo
-					break;
-				case SDLK_RSHIFT:
-					if(p->squadra[0]->gioco_ruolo)
-					{
-						char num=p->squadra[0]->attivo->GNum;
-						
-						if(num<9)
-							num++;
-						else
-							num=0;
-						
-						p->squadra[0]->gioco_ruolo=FALSE;
-						ChangeControlled(p->squadra[0],num);
-						p->squadra[0]->gioco_ruolo=TRUE;
-					}
-					break;
-#endif
-					
-					// P - pausa
-				case SDLK_p:
-					if(!replay_mode)
-					{
-						if( (p->show_panel&PANEL_REPLAY) && friendly)
-						{
-							RestartGame();
-						}
-						else
-						{
-							DoPause();
-						}
-					}
-					break;
-					// DEL - visuale sulla palla
-				case SDLK_DELETE:
-					scroll_type=0;
-					break;
-					
-					// Q - quit game
-				case SDLK_ESCAPE:
-				case SDLK_q:
-					SetResult("break");
-                    final = FALSE;
 
-					quit_game=TRUE;
-					break;
-					
-					// BARRA - cambia visuale
-				case SDLK_SPACE:
-					if(!replay_mode) {
-						if(!use_key1) {
-							
-							if(scroll_type<23)
-								scroll_type++;
-							else
-								scroll_type=0;
-						}
-						//							ChangeControlled(p->squadra[0],selected);
-					}
-					else {
-						SaveReplay();
-					}
-					break;
-					
-				}
-			}
+                        // Alt sinistro, gioco di ruolo attivo/inattivo sq. 1
+                    case SDLK_LALT:
+                        p->squadra[1]->gioco_ruolo = (p->squadra[1]->gioco_ruolo ? FALSE : TRUE);
+                        // shift sinistro, cambia giocatore attivo sq.1 se gioco di ruolo
+                        break;
+                    case SDLK_LSHIFT:
+                        if(p->squadra[1]->gioco_ruolo)
+                        {
+                            char num=p->squadra[1]->attivo->GNum;
+
+                            if(num<9)
+                                num++;
+                            else
+                                num=0;
+
+                            p->squadra[1]->gioco_ruolo=FALSE;
+                            ChangeControlled(p->squadra[1],num);
+                            p->squadra[1]->gioco_ruolo=TRUE;
+                        }
+                        // Alt destro, gioco di ruolo attivo/inattivo sq. 0
+                        break;
+                    case SDLK_RALT:
+                        p->squadra[0]->gioco_ruolo = (p->squadra[0]->gioco_ruolo ? FALSE : TRUE);
+                        // shift destro, cambia giocatore attivo sq.0 se gioco di ruolo
+                        break;
+                    case SDLK_RSHIFT:
+                        if(p->squadra[0]->gioco_ruolo)
+                        {
+                            char num=p->squadra[0]->attivo->GNum;
+
+                            if(num<9)
+                                num++;
+                            else
+                                num=0;
+
+                            p->squadra[0]->gioco_ruolo=FALSE;
+                            ChangeControlled(p->squadra[0],num);
+                            p->squadra[0]->gioco_ruolo=TRUE;
+                        }
+                        break;
+#endif
+
+                        // P - pausa
+                    case SDLK_p:
+                        if(!replay_mode)
+                        {
+                            if( (p->show_panel&PANEL_REPLAY) && friendly)
+                            {
+                                RestartGame();
+                            }
+                            else
+                            {
+                                DoPause();
+                            }
+                        }
+                        break;
+                        // DEL - visuale sulla palla
+                    case SDLK_DELETE:
+                        scroll_type=0;
+                        break;
+
+                        // Q - quit game
+                    case SDLK_ESCAPE:
+                    case SDLK_q:
+                        SetResult("break");
+                        final = FALSE;
+
+                        quit_game=TRUE;
+                        break;
+
+                        // BARRA - cambia visuale
+                    case SDLK_SPACE:
+                        if(!replay_mode) {
+                            if(!use_key1) {
+
+                                if(scroll_type<23)
+                                    scroll_type++;
+                                else
+                                    scroll_type=0;
+                            }
+                            //							ChangeControlled(p->squadra[0],selected);
+                        }
+                        else {
+                            SaveReplay();
+                        }
+                        break;
+                    default:
+                        // not handled keys...
+                        break;
+                }
+            }
 			else {
 				if( (e.key.keysym.sym>=SDLK_a && e.key.keysym.sym<=SDLK_z) ||
 					(e.key.keysym.sym>=SDLK_0 && e.key.keysym.sym<=SDLK_9) ||
@@ -656,11 +649,7 @@ void CheckKeys(void)
 							outgoing_chat[strlen(outgoing_chat)-1]=0;
 						}
 						break;
-                                /* Credo che questo SDLK_RETURN andasse in coppia con l'altro.
-                                 * C'era una sovrapposizione con SDLK_RETURN, veniva usato della definizione
-                                 * della tastiera uno.
-                                 */
-					case SDLK_h:
+					case SDLK_RETURN:
 						if(network_game)
 							SendChatMessage();
 
@@ -671,6 +660,9 @@ void CheckKeys(void)
 						*outgoing_chat=0;
 						p->show_panel&=(~PANEL_CHAT);
 						break;
+                    default:
+                        // not handled keys...
+                        break;
 				}
 			}
 		}
@@ -752,8 +744,7 @@ void LoadKeyDef(int port,char *file)
 {
 	FILE *f;
 
-	if(f=fopen(file,"r"))
-	{
+	if ((f=fopen(file,"r"))) {
 		char buffer[120];
 		int i=0;
 		int *q;
@@ -762,15 +753,12 @@ void LoadKeyDef(int port,char *file)
 
 		D(bug("Carico una custom keydefinition...\n"));
 
-		while(fgets(buffer,119,f))
-		{
-			if(buffer[0]<'0' || buffer[0]>9)
-			{
+		while(fgets(buffer,119,f)) {
+			if(buffer[0]<'0' || buffer[0]>9) {
 				continue;
 			}
 
-			if(i>=9)
-			{
+			if(i>=9) {
 				D(bug("Troppe definizioni!\n"));
 				break;
 			}
