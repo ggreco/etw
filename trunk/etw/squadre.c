@@ -210,11 +210,15 @@ void CheckPelle(void)
 	}
 
 
+	/* AC: I put Progress() out of the for, so the number of progres block are 20 and not 22,
+	 * in order to have a plain result from the division between window width and number of
+	 * blocks
+	 */ 
+	Progress();
+	
 	for(i=0;i<2;i++)
 	{
 		struct Squadra *s=p->squadra[i];
-
-		Progress();
 
 		D(bug("Check skin color team %ld\n",i));
 		neri=0;
