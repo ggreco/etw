@@ -1,7 +1,7 @@
 #include "eat.h"
 
-Oggetto *object_list[DIMENSIONI_LISTA_OGGETTI];
-struct DOggetto *c_list[NUMERO_OGGETTI+1];
+Oggetto *object_list[DIMENSIONI_LISTA_OGGETTI] = {0};
+struct DOggetto *c_list[NUMERO_OGGETTI+1] = {0};
 int totale_lista=0,totale_lista_c=0; // Numero di oggetti nelle liste
 
 // Suoni

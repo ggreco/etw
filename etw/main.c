@@ -384,6 +384,8 @@ void FreeStuff(void)
 
 	LiberaPartita(p);
 
+    VuotaCLista();
+
     D(bug("Freeing scaling data...\n"));
     
     if(scaling) {
@@ -631,21 +633,22 @@ BOOL LoadStuff(void)
 					} else
 						peoples[i].Collisione = FALSE;
 
-					/* AC: Non capisco perche`, ma questa parte di codice,
-					 * alla seconda partita prova un crash.
-					 * In genere quando i vale 16 o 17.
-					 * Credo che sia il solito motivo, non si possono
-					 * modificare determinate allocazioni globali.
-					 */
-					if ((detail_level & USA_FOTOGRAFI)
+// FIX: Now we clone the object before modifiying to avoid to have to scale
+//      back coords again
+                    if ((detail_level & USA_FOTOGRAFI)
 						&& peoples[i].Collisione) {
 						extern UBYTE people_type[];
-
-						peoples[i].Range =
-							people_type[peoples[i].Frame[x]];
-						peoples[i].X *= 8;
-						peoples[i].Y *= 8;
-						AggiungiCLista(&peoples[i]);
+                        struct DOggetto *d;
+                        
+                        if ((d = malloc(sizeof(struct DOggetto)))) {
+                            d->Collisione = TRUE;
+                            d->Frame = peoples[i].Frame;
+                            d->Range = people_type[peoples[i].Frame[x]];
+                            d->X = peoples[i].X * 8;
+                            d->Y = peoples[i].Y * 8;
+                                
+                            AggiungiCLista(d);
+                        }
 					}
 				}
 

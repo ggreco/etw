@@ -133,6 +133,7 @@ extern BOOL AggiungiLista(Oggetto *);
 extern void RimuoviLista(Oggetto *);
 extern BOOL AggiungiCLista(struct DOggetto *);
 extern void RimuoviCLista(struct DOggetto *);
+extern void VuotaCLista(void);
 
 
 extern void LoadKeyDef(int, char *);

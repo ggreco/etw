@@ -217,8 +217,7 @@ void bitmapScale(struct MyScaleArgs *s)
 {
 	UBYTE xref[640],yref[480],*src,*dest;
 
-	if(s->SrcWidth>sizeof(xref) || s->SrcHeight>sizeof(yref))
-	{
+	if(s->SrcWidth>sizeof(xref) || s->SrcHeight>sizeof(yref)) {
 		D(bug("Errore, src di bitmapScale troppo grosso!\n"));
 		return;
 	}
@@ -232,32 +231,28 @@ void bitmapScale(struct MyScaleArgs *s)
 // Nota, in questo modo prendo gli xref e yref al contrario, ma non importa.
 
 	{
-		register int i,j,k;
-		register bitmap sline,dline;
+		register int i, j, k;
+		register bitmap sline, dline;
 
-		i=0;
+		i = s->SrcHeight;
 
-		while(i<s->SrcHeight)
-		{
-			while(yref[i])
-			{
+		while (i--) {
+			while (yref[i]--) {
 
-				sline=src; dline=dest; j=0;
+				sline = src; dline = dest; 
+                j = s->SrcWidth;
 
-				while(j<s->SrcWidth)
-				{
-					k=xref[j];
+				while (j--) {
+					k = xref[j];
 
-					while(k)
-					{
-						*dline=*sline;
-						dline++; k--;
-					}
-					sline++; j++;
+					while (k--)
+						*dline++ = *sline;
+
+                    sline++;
 				}
-				dest+=s->DestSpan; yref[i]--;
+				dest+=s->DestSpan;
 			}
-			src+=s->SrcSpan; i++;
+			src+=s->SrcSpan;
 		}
 	}
 }
@@ -267,15 +262,13 @@ void draw(long pen, WORD x1,WORD y1,WORD x2,WORD y2)
 	bitmap b;
 	WORD t;
 
-	if(x1>x2)
-	{
+	if(x1>x2) {
 		t=x1;
 		x1=x2;
 		x2=t;
 	}
 	
-	if(y1>y2)
-	{
+	if(y1>y2) {
 		t=y1;
 		y1=y2;
 		y2=t;
@@ -283,12 +276,10 @@ void draw(long pen, WORD x1,WORD y1,WORD x2,WORD y2)
 
 	b=main_bitmap+x1+y1*bitmap_width;
 
-	if(x1==x2)
-	{
+	if(x1==x2) {
 		y2-=y1;
 
-		while(y2>=0)
-		{
+		while(y2>=0) {
 			*b=pen;
 			b+=bitmap_width;
 			y2--;
@@ -381,17 +372,14 @@ void midpoint_2(long pen,WORD x0,WORD y0,WORD x1,WORD y1)
 
 	x1-=x0;
 	
-	while(x1)
-	{
+	while(x1) {
 		x1--;
 
-		if(d<=0)
-		{
+		if(d<=0) {
 			d+=incrE;
 			b+=bitmap_width;
 		}
-		else
-		{
+		else {
 			d+=incrNE;
 			b++;
 			b+=bitmap_width;
@@ -415,17 +403,14 @@ void midpoint_4(long pen,WORD x0,WORD y0,WORD x1,WORD y1)
 
 	x1-=x0;
 	
-	while(x1)
-	{
+	while(x1) {
 		x1--;
 
-		if(d<=0)
-		{
+		if(d<=0) {
 			d+=incrE;
 			b-=bitmap_width;
 		}
-		else
-		{
+		else {
 			d+=incrNE;
 			b++;
 			b-=bitmap_width;
@@ -440,8 +425,7 @@ void freedraw(long pen, WORD x1,WORD y1,WORD x2,WORD y2)
 
 // Gestisco i prolungamenti.
 
-	if(x1>x2)
-	{
+	if(x1>x2) {
 		t=x1;
 		x1=x2;
 		x2=t;
@@ -450,15 +434,13 @@ void freedraw(long pen, WORD x1,WORD y1,WORD x2,WORD y2)
 		y2=t;
 	}
 
-	if(y1>y2)	
-	{
+	if(y1>y2) {
 		if((x2-x1)>(y1-y2))
 			midpoint_3(pen,x1,y1,x2,2*y1-y2); // ok
 		else			
 			midpoint_4(pen,y1,x1,2*y1-y2,x2); // ok
 	}
-	else
-	{
+	else {
 		if((x2-x1)>(y2-y1))
 			midpoint_1(pen,x1,y1,x2,y2); // ok
 		else
@@ -468,8 +450,7 @@ void freedraw(long pen, WORD x1,WORD y1,WORD x2,WORD y2)
 
 void freepolydraw(long pen,int points, WORD *index)
 {
-	while(points>0)
-	{
+	while(points>0)	{
 		if(index[0]==index[2]||index[1]==index[3])
 			draw(pen,index[0],index[1],index[2],index[3]);
 		else		
@@ -486,8 +467,7 @@ void polydraw(long pen,WORD xs,WORD ys,int points, WORD *index)
 
 	points--;
 
-	while(points>0)
-	{
+	while(points>0)	{
 		draw(pen,index[0],index[1],index[2],index[3]);
 		index+=2;
 		points--;
@@ -497,44 +477,32 @@ void polydraw(long pen,WORD xs,WORD ys,int points, WORD *index)
 
 void bitmapFastScale(struct MyFastScaleArgs *s)
 {
-	register UBYTE *xref=s->XRef,*yref=s->YRef;
-	register int i=0,j,k,t;
-	register bitmap sline,dline,src=s->Src,dest=s->Dest;
+	register UBYTE *xref=s->XRef, *yref=s->YRef;
+	register int i=0, j, k, t;
+	register bitmap sline, dline, src=s->Src, dest=s->Dest;
 
-	while(i<s->SrcHeight)
-	{
-		sline=src;
+    i = s->SrcHeight;
 
+    while (i--) {
 		t=yref[i];
 
-		while(t)
-		{
-			dline=dest;
+		while (t--) {
+    		sline=src;
+			dline = dest;
 
-			j=0;
+			j = s->SrcWidth;
 
-			while(j<s->SrcWidth)
-			{
-				k=xref[j];
+			while (j--) {
+				k = xref[j];
 
-				while(k)
-				{
-					*dline=*sline;
-					dline++;
-
-					k--;
-				}
+				while (k--)
+					*dline++ = *sline;
 
 				sline++;
-				j++;
 			}
-
 			dest+=s->DestSpan;
-			t--;
 		}
-
 		src+=s->SrcSpan;
-		i++;
 	}
 }
 
