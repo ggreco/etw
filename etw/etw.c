@@ -393,7 +393,7 @@ BOOL LoadMenuStuff(void)
 }
 
 // AC: Where is errno in Microsoft Visual C++? In which lib is contained?
-#ifdef MSVC
+#ifdef _MBCS
 int errno;
 #endif
 

@@ -181,7 +181,7 @@ BOOL StartGame(void)
 WORD StartMatch(BYTE team1,BYTE team2)
 {
 	FILE *f;
-	BOOL swapped=FALSE,team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
+	BOOL /*swapped=FALSE,*/ team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
 	WORD risultato=-1,parent_menu;
 	int t;
 

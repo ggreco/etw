@@ -8,7 +8,8 @@ extern void Outro(void);
 extern void RemoveReqs(void);
 extern void EnableReqs(void);
 extern void FreeMenuFonts(void);
-#ifndef _WINUSER_H
+/* AC: _WINUSER_ is for Microsoft Visual C++ _WINUSER_H for MinGW */
+#if !defined(_WINUSER_) && !defined(_WINUSER_H)
 extern void ChangeMenu(WORD );
 #endif
 extern void OpenMenuScreen(void);
