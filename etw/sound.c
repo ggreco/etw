@@ -40,7 +40,7 @@ struct BufferInfo *BufferInfo;
 
 struct SoundInfo *busy[AVAILABLE_CHANNELS + 2] = { 0 };
 
-static int samplerate = 44100; // 22050;
+static int samplerate = 44100; // era 44100
 static int signed_samples = 0;
 
 static int sound_started = 0;
@@ -234,7 +234,7 @@ void convert_sound(struct SoundInfo *s)
 
 	length = (long)((((double)samplerate)/ ((double)s->Rate)) * ((double)s->Length));
 
-	if (!(destsnd = malloc(length + 255))) {
+	if (!(destsnd = malloc(length + 512))) {
 		D(bug("Non c'e' memoria!\n"));
 		return;
 	}
@@ -282,7 +282,11 @@ BOOL InitSoundSystem(void)
 	D(bug("Inizializzo i canali audio...\n"));
 
 	fmt.freq = samplerate;
+#ifdef LINUX
+	fmt.format = AUDIO_U8; // su linux mi serve U8, su MacOSX probabilmente S8
+#else
 	fmt.format = AUDIO_S8;
+#endif    
 	fmt.samples = BUFFER_SIZE;
 	fmt.callback = handle_sound;
 	fmt.channels = 1;

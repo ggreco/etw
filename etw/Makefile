@@ -17,7 +17,7 @@ OBJECTS = highdirent.o	  cpu.o		   human.o	  myiff.o	specials.o \
 	$(CC) $(CFLAGS) $(DEFINES) -c $<
 
 
-etw: $(OBJECTS)
+etw: 
 	echo "Usa il makefile per la piattaforma apposita!"
 #	$(CC) -o ../etw $(OBJECTS) $(LFLAGS)
 
