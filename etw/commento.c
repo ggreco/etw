@@ -166,7 +166,7 @@ void CheckStatus(void)
                                 frase=CI_PROVA_SULLA_FASCIA+MyRangeRand(2);
                             }
                         }
-                        else if(g=pl->gioc_palla)
+                        else if((g=pl->gioc_palla))
                         {
                             if(CanScore(g)==CS_SI)
                             {

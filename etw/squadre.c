@@ -232,8 +232,7 @@ void CheckPelle(void)
 		{
 			AnimObj *o;
 
-			if(o=CopyAnimObj(s->giocatore[9].immagine))
-			{
+			if ((o=CopyAnimObj(s->giocatore[9].immagine)))	{
 				BOOL fatti=FALSE;
 				has_black[i]=TRUE;
 
@@ -366,10 +365,8 @@ void ScanTactics(void)
 
 	D(bug("Scan della dir ETW-TCT:...\n"));
 
-	if(dir=opendir(TCT_DIR))
-	{
-		while( (ent=readdir(dir))!=NULL)
-		{
+	if ((dir=opendir(TCT_DIR))) {
+		while( (ent=readdir(dir))!=NULL) {
 			if( *ent->d_name == '.' )
 				continue;
 
@@ -432,12 +429,9 @@ BOOL InizializzaOggetti(Partita *p)
 
 // Inizializzo i bonus arcade...
 
-	if(arcade)
-	{
-		for(i=0;i<MAX_ARCADE_ON_FIELD;i++)
-		{
-			if(o=malloc(sizeof(Oggetto)))
-			{
+	if (arcade)	{
+		for (i=0;i<MAX_ARCADE_ON_FIELD;i++)	{
+			if ((o=malloc(sizeof(Oggetto)))) {
 				o->world_x=-1000;
 
 				o->ObjectType=TIPO_BONUS;
@@ -447,8 +441,7 @@ BOOL InizializzaOggetti(Partita *p)
 			
 				o->world_y=0;
 
-				if(!(o->immagine=CloneAnimObj(p->squadra[0]->Marker)))
-				{
+				if (!(o->immagine=CloneAnimObj(p->squadra[0]->Marker)))	{
 					D(bug("Non c'e' piu' memoria per gli animobj!\n"));
 					ok=FALSE;
 					break;
@@ -463,10 +456,8 @@ BOOL InizializzaOggetti(Partita *p)
 
 // Carico le porte
 
-	for(i=0;i<4;i++)
-	{
-		if(o=malloc(sizeof(Oggetto)))
-		{
+	for(i=0;i<4;i++) {
+		if ((o=malloc(sizeof(Oggetto)))) {
 			o->world_x=-1000;
 
 			o->ObjectType=TIPO_PORTA;
@@ -474,12 +465,9 @@ BOOL InizializzaOggetti(Partita *p)
 			o->AnimType=i;
 			o->OnScreen=FALSE;
 
-			if(!arcade)
-			{
-				if(i!=3)
-				{
-					if(!(o->immagine=CloneAnimObj(ports)))
-					{
+			if(!arcade)	{
+				if(i!=3) {
+					if(!(o->immagine=CloneAnimObj(ports))) {
 						D(bug("Non c'e' piu' memoria per gli animobj!\n"));
 						ok=FALSE;
 						break;
@@ -501,20 +489,16 @@ BOOL InizializzaOggetti(Partita *p)
 
 			pezzi_porte[i]=o;
 		}
-		else
-		{
-			D(bug("Non c'e' memoria sufficiente!\n"));
+		else {
+			D(bug("Not enough free memory!\n"));
 			ok=FALSE;
 			break;
 		}
 	}
 
-	if(ok==FALSE)
-	{
-		for(i=0;i<totale_lista;i++)
-		{
-			if(o=object_list[i])
-			{
+	if(ok==FALSE) {
+		for(i=0;i<totale_lista;i++) {
+			if(o=object_list[i]) {
 				if(o->ObjectType>TIPO_ARBITRO)
 				{
 					FreeAnimObj(o->immagine);
@@ -535,7 +519,7 @@ void LiberaSquadra(Squadra *s)
 {
 	int i;
 
-	D(bug("Libero una squadra...\n"));
+	D(bug("Freeing team...\n"));
 
 	if(s->Marker)
 		FreeAnimObj(s->Marker);

@@ -24,6 +24,8 @@
 
 #ifdef DEMOVERSION
 	#define Progress() os_delay(4)
+#else
+void Progress();
 #endif
 
 // Macro sperimentale, vediamo se va bene :)

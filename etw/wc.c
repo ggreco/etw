@@ -340,8 +340,7 @@ void LoadScores(void)
 	char buffer[100];
 	FILE *f;
 
-	if(f=fopen("ETWScores"/*-*/,"r"))
-	{
+	if ((f=fopen("ETWScores"/*-*/,"r"))) {
 		if(fgets(buffer,99,f))
 		{
 			if(sscanf(buffer,"%d",&score_number)==1)
@@ -371,14 +370,12 @@ void WriteScores(void)
 {
 	FILE *f;
 
-	if(f=fopen("ETWScores"/*-*/,"r"))
-	{
+	if ((f=fopen("ETWScores"/*-*/,"r"))) 	{
 		int i,j;
 
-		fprintf(f,"%ld\n",score_number);
+		fprintf(f, "%d\n", score_number);
 
-		for(i=0;i<score_number;i++)
-		{
+        for(i=0;i<score_number;i++)		{
 			for(j=0;j<6;j++)
 				if(scores[i*2+1].Testo[j]==0)
 					scores[i*2+1].Testo[j]=' ';
@@ -428,7 +425,7 @@ void AddScore(UBYTE team)
 	if(arcade_score<0)
 		arcade_score=0;
 
-	sprintf(buffer,"%-5ld %s",arcade_score,teamlist[team].nome);
+	sprintf(buffer, "%-5d %s", arcade_score, teamlist[team].nome);
 
 	arcade_score=0;
 
