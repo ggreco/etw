@@ -137,6 +137,7 @@ extern void DrawAnimObj(void);
 void DrawAnimObjScale(void); // Disegna i bob tenendo conto dello scaling
 extern void ScreenSwap(void);
 extern BOOL InitAnimSystem(void);
+extern BOOL InAnimList(AnimObj *);
 extern void AddAnimObj(AnimObj *,WORD, WORD, WORD);
 extern void FreeAnimObj(AnimObj *);
 extern BOOL LoadIFFPalette(char *);

@@ -6,6 +6,15 @@
 
 #define OWN_GOAL 64
 
+
+extern UBYTE team_a,team_b;
+extern BYTE player_type[4],role[4],current_field;
+extern char shirt[2][24],palette[24],fieldname[24];
+extern LONG time_length;
+extern BOOL use_offside, highlight;
+BYTE field;
+extern int highsize, matchstatus_size;
+
 char *palettes[]= 
 {
 	"",
@@ -48,13 +57,68 @@ BOOL CheckMaglie(UBYTE a,UBYTE b)
 
 extern void game_main(void);
 
+#include "files.h"
+
 void WriteGameConfig(FILE *f)
 {
+    WRITE_BOOL(use_offside, f);
+    WRITE_BOOL(training, f); 
+    WRITE_BOOL(arcade, f); 
+    WRITE_BOOL(arcade_teams, f); 
+    WRITE_BOOL(free_longpass, f);
+
+    WRITE_BOOL(injuries, f);
+    WRITE_BOOL(bookings, f);
+    WRITE_BOOL(substitutions, f);
+    WRITE_BOOL(newchange, f);
+    WRITE_BOOL(newpitches, f);
+
+    WRITE_LONG(detail_level, f);
+
+    WRITE_DATA(team_a, f);
+    WRITE_DATA(team_b, f);
+    WRITE_DATA(field, f);
+    WRITE_DATA(strictness, f);
+    WRITE_DATA(player_type, f);
+    WRITE_DATA(current_field, f);
+
+    WRITE_DATA(shirt, f);
+
+    WRITE_DATA(palette, f);
+    WRITE_DATA(fieldname, f);
+
+    WRITE_LONG(time_length, f);
 }
 
 void ReadGameConfig(FILE *f)
 {
-    // TODO
+    READ_BOOL(use_offside, f);
+    READ_BOOL(training, f); 
+    READ_BOOL(arcade, f); 
+    READ_BOOL(arcade_teams, f); 
+    READ_BOOL(free_longpass, f);
+    
+    READ_BOOL(injuries, f);
+    READ_BOOL(bookings, f);
+    READ_BOOL(substitutions, f);
+    READ_BOOL(newchange, f);
+    READ_BOOL(newpitches, f);
+
+    READ_LONG(detail_level, f);
+    
+    READ_DATA(team_a, f);
+    READ_DATA(team_b, f);
+    READ_DATA(field, f);
+    READ_DATA(strictness, f);
+    READ_DATA(player_type, f);
+    READ_DATA(current_field, f);
+
+    READ_DATA(shirt, f);
+
+    READ_DATA(palette, f);
+    READ_DATA(fieldname, f);
+
+    READ_LONG(time_length, f);
 }
 
 BOOL StartGame(void)
@@ -113,14 +177,6 @@ BOOL StartGame(void)
 
 	return TRUE;
 }
-
-extern UBYTE team_a,team_b;
-extern BYTE player_type[4],role[4],current_field;
-extern char shirt[2][24],palette[24],fieldname[24];
-extern LONG time_length;
-extern BOOL use_offside, highlight;
-BYTE field;
-extern int highsize, matchstatus_size;
 
 WORD StartMatch(BYTE team1,BYTE team2)
 {
@@ -654,9 +710,7 @@ void LoadHigh(char *file)
 
 	if((f=fopen(file,"rb")))
 	{
-		UWORD len, tempuw;
-		int i;
-		char *a;
+		UWORD tempuw;
 
         ReadGameConfig(f);
 
@@ -665,7 +719,7 @@ void LoadHigh(char *file)
 		ReadTeam(f, &leftteam_dk);
 		ReadTeam(f, &rightteam_dk);
 
-		fread(&tempuw,sizeof(WORD),1,f);
+		fread(&tempuw,sizeof(tempuw),1,f);
 
         SWAP_WORD(tempuw);
 

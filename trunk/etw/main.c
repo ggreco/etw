@@ -5,11 +5,8 @@
 ULONG detail_level = 255;
 LONG Colors = 0;
 LONG WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 50;
-//WORD players=1;
 extern BOOL free_longpass;
 BOOL use_key0 = FALSE, use_key1 = FALSE;
-//      nosync=FALSE,quit_game=FALSE,training=FALSE,no_sound=FALSE;
-// char control[4]={CTRL_JOY,CTRL_JOY,CTRL_JOY,CTRL_JOY};
 
 Partita *p;
 Pallone *pl;
@@ -22,21 +19,22 @@ char versione[] =
 
 BOOL highlight = FALSE;
 
+static int progress_called = 0;
+
 void Progress(void)
 {
-    static int x=10, called = 0;
-    int y, block_width;
+    int x = 10, y, block_width;
     
-    called++;
 
-    D(bug("Progress: %d\n", called));
+    D(bug("Progress: %d\n", progress_called));
 
     y = WINDOW_HEIGHT - 20;
 
     block_width = ((WINDOW_WIDTH - 20) / 20) - 1;
     
+    x += (progress_called*(block_width + 1));
     rectfill(main_bitmap, x, y, x + block_width, y + 14, Pens[P_BIANCO],bitmap_width);
-    x+=block_width+1; 
+    progress_called++;
     
     ScreenSwap();
 }
@@ -666,7 +664,7 @@ BOOL LoadStuff(void)
 		os_delay(200);
 #endif
 		if (!arcade) {
-			char portname[] = "gfx/porte.obj";
+			char portname[20] = "gfx/porte.obj";
 			AnimObj *obj = LoadAnimObject(portname, Pens);
 
 			if (!obj) {
@@ -828,6 +826,8 @@ BOOL LoadStuff(void)
 
 int game_main(void)
 {
+    progress_called = 0;
+
 	read_config();
 
 	if (arcade_teams && use_speaker) {

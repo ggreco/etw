@@ -158,15 +158,30 @@ void DrawAnimObj(void)
 	}
 }
 
-/* Aggiunge un AnimObj alla drawlist, ne inizializza anche posizione e immagine
-	a seconda dei parametri
+/*
+ * Find an anim object in the drawlist
+ */
+
+BOOL InAnimList(AnimObj *obj)
+{
+    struct MyNode *n;
+    
+    for (n = DrawList.lh_Head; n->ln_Succ != NULL; n = n->ln_Succ) {
+        if (n == (struct MyNode *)obj)
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
+/*
+ *  Add an anim object to the drawlist and set its position
+ *  and frame.
  */
 
 void AddAnimObj(AnimObj * obj, WORD x, WORD y, WORD frame)
 {
 	MyAddTail(&DrawList, (struct MyNode *) obj);
-
-// C'erano anche delle condizioni su double_buffering, non capisco bene perche'...
 
 	if (save_back) {
 		obj->x_back = x;
@@ -179,16 +194,14 @@ void AddAnimObj(AnimObj * obj, WORD x, WORD y, WORD frame)
 	obj->bottom = y + obj->Heights[frame];
 	obj->moved = FALSE;
 
-// Come sopra
-
 	if (save_back)
 		bltchunkybitmap(main_bitmap, obj->x_back, obj->y_back, obj->bg,
 						0, 0, obj->max_width, obj->max_height,
 						bitmap_width, obj->max_width);
 }
 
-/* Sposta un AnimObj, nel caso il movimento sia verticale controlla anche
-	se le priorita' sono cambiate ed aggiorna di conseguenza la lista 
+/*
+ * Sort the drawlist to the correct object priorities
  */
 
 void SortDrawList(void)
@@ -286,7 +299,7 @@ void SortDrawList(void)
 
 
 
-/* Cancella tutti gli AnimObj */
+/* Remove all AnimObj from the display */
 
 
 void ClearAnimObj(void)

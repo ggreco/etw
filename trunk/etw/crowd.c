@@ -102,6 +102,9 @@ struct SoundInfo *handle_crowd(void)
 {
 	BOOL newloop = FALSE;
 
+    if (highlight)
+        return NULL;
+
 	if (wanted_sound != playing) {
 		if (wanted_sound < 0)
 			return NULL;
