@@ -376,6 +376,7 @@ struct SoundInfo *handle_speaker(void)
 			case S_NOMESQUADRA:
 				special_status=S_RESET;
             default:
+                break;
 		}
 
 		game_status=S_RESET;
