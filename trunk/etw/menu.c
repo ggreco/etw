@@ -1558,9 +1558,11 @@ BOOL HandleMenuIDCMP(void)
 {
 	SDL_Event e;
 	BOOL returncode = TRUE;
-
+	
 	if (SDL_WaitEvent(&e)) {
 
+		D(bug("Ricevuto evento %d\n", e.type));
+		
 		switch (e.type) {
 		case SDL_VIDEORESIZE:
 			if (!reqqing)
@@ -1589,6 +1591,7 @@ BOOL HandleMenuIDCMP(void)
             break;
 		case SDL_KEYUP:
 			switch (e.key.keysym.sym) {
+#ifndef WINCE
 			case SDLK_UP:
 				returncode = HandleJoy(JPF_JOY_UP);
 				break;
@@ -1601,6 +1604,20 @@ BOOL HandleMenuIDCMP(void)
 			case SDLK_RIGHT:
 				returncode = HandleJoy(JPF_JOY_RIGHT);
 				break;
+#else
+			case SDLK_UP:
+				returncode = HandleJoy(JPF_JOY_RIGHT);
+				break;
+			case SDLK_DOWN:
+				returncode = HandleJoy(JPF_JOY_LEFT);
+				break;
+			case SDLK_LEFT:
+				returncode = HandleJoy(JPF_JOY_UP);
+				break;
+			case SDLK_RIGHT:
+				returncode = HandleJoy(JPF_JOY_DOWN);
+				break;
+#endif
           	case SDLK_SPACE:
    			case SDLK_RETURN:
 	    			returncode = HandleJoy(0L);
@@ -1640,6 +1657,7 @@ BOOL HandleMenuIDCMP(void)
 
 			}
 			break;
+
 		case SDL_MOUSEBUTTONUP:
 		case SDL_MOUSEBUTTONDOWN:
 			if (e.button.state == SDL_PRESSED) {
@@ -1650,14 +1668,16 @@ BOOL HandleMenuIDCMP(void)
 					EraseBox(actual_button);
 
 					actual_button = current_button;
+					
+					D(bug("Eseguo swap...\n"));
 					DrawBox(actual_button);
 					ScreenSwap();
 				}
-//                                      D(bug("Bottone premuto (%ld)!",current_button));
 			} else if (e.button.state == SDL_RELEASED
 					   && current_button != NESSUN_BOTTONE) {
 				WORD temp;
 
+				D(bug("Eseguo swap su deseleziona bottone...\n"));
 				DeselezionaBottone(current_button);
 				ScreenSwap();
 

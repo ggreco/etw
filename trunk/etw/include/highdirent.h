@@ -2,7 +2,7 @@
 
 #define HIGHDIRENT_H
 
-#if defined(WIN)
+#if defined(WIN) && !defined(WIN32)
 
 #include <io.h>
 
@@ -49,14 +49,13 @@ extern struct dirent	*readdir_r(DIR *, struct dirent *);
 
 #include <sys/dir.h>
 
+#elif defined(SOLARIS_X86) || defined(WINCE)
+#include <sys/types.h>
+#include <dirent.h>
 #else
 
 #include <sys/types.h>
-#ifndef SOLARIS_X86
 #include <sys/dir.h>
-#else
-#include <dirent.h>
-#endif
 #endif
 
 #endif /* HIGHDIRENT_H */

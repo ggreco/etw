@@ -1,4 +1,4 @@
-#if defined(WIN)
+#if defined(WIN) && !defined(WINCE)
 
 #include <windows.h>
 

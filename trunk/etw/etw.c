@@ -228,8 +228,8 @@ BOOL LoadMenuStuff(void)
 	} else
 		bitmap_width = WINDOW_WIDTH;
 
-	if (!nointro && firsttime) {
-		LoadPLogo("gfx/epic" /*-*/ );
+	if (firsttime) {
+		LoadPLogo("newgfx/hurricane" /*-*/ );
 		os_delay(50);
 
 		if (!public_screen)
@@ -273,27 +273,14 @@ BOOL LoadMenuStuff(void)
 	}
 // Creo tre RP per evitare di usare SetAPen che e' molto lenta.
 
-	if (!nointro && firsttime) {
-		LoadPLogo("gfx/islona" /*-*/ );
-		os_delay(75);
-
-		if (!public_screen)
-			os_delay(40);
-	}
 
 	D(bug("Main bitmap creation\n" /*-*/ ));
 
 
 	if (firsttime) {
-		FILE *b;
-
 		D(bug("Loading logo...\n" /*-*/ ));
 
-		if ((b = fopen("newgfx/hurricane" /*-*/ , "r"))) {
-			fclose(b);
-			LoadPLogo("newgfx/hurricane" /*-*/ );
-		} else
-			LoadPLogo("gfx/hurricane" /*-*/ );
+		LoadPLogo("gfx/etwlogo" /*-*/ );
 
 		if (!nointro)
 			Intro();
@@ -308,6 +295,7 @@ BOOL LoadMenuStuff(void)
 	if (firsttime) {
 		init_joy_config();
 
+#if 0
 		D(bug("Loading logo N.2\n" /*-*/ ));
 
 		if (nointro)
@@ -317,7 +305,7 @@ BOOL LoadMenuStuff(void)
 		ScreenSwap();
 
 		LoadMenuLogo("gfx/etwlogo" /*-*/ );
-
+#endif
 		D(bug("Updating scores...\n"));
 		LoadScores();
 
@@ -427,7 +415,7 @@ int disabled_main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 #endif
 
-/* Fix per il bug sul catalog... */
+/* Fix for catalog translation bugs... */
 
 	{
 		int i;
@@ -460,8 +448,8 @@ int disabled_main(int argc, char *argv[])
 	 * computer, the SDL_Init fails. 
 	 * Now I'm trying the fallback config.
 	 */
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) < 0)
-		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_NOPARACHUTE) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK /*| SDL_INIT_NOPARACHUTE */) < 0)
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO /*| SDL_INIT_NOPARACHUTE */) < 0)
 		{
 			fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
 			exit(1);
@@ -473,6 +461,7 @@ int disabled_main(int argc, char *argv[])
 
 	if (screen) {
 		if (LoadMenuStuff()) {
+			
 			D(bug("Starting ChangeMenu...\n"));
 
 			os_start_audio();

@@ -1,8 +1,10 @@
 #if !defined(HIGHSOCKET_H)
 	#define HIGHSOCKET_H
 
+#if defined(WINCE)
 
-#if defined(WIN32)
+	#include <winsock.h>
+#elif defined(WIN32)
 	#include <winsock.h>
 	#define EWOULDBLOCK 10000
 	extern struct Library *SockBase;

@@ -7,12 +7,12 @@
 #else
 
 typedef void	       *APTR;	    /* 32-bit untyped pointer */
-#ifndef _WINNT_H
+#if !defined(_WINNT_H) && !defined(_WINNT_)
 typedef long		LONG;	    /* signed 32-bit quantity */
 typedef unsigned long	ULONG;	    /* unsigned 32-bit quantity */
 #endif
 
-#ifndef _WINDEF_H
+#if !defined( _WINDEF_H) && !defined(_WINDEF_)
 #ifndef WORD
 typedef short		WORD;	    /* signed 16-bit quantity */
 #endif

@@ -1,5 +1,6 @@
 #include "preinclude.h"
-#ifdef WIN32
+
+#if defined(WIN32) && !defined(WINCE)
 #include <windows.h>
 #endif
 #include "eat.h"

@@ -1,6 +1,20 @@
 static char szFileName[300];
 
-#if defined(WIN)
+#if defined(WINCE)
+
+#include "mytypes.h"
+#include "freq.h"
+
+void SHFullScreen(void) {}
+
+
+// TODO
+BOOL AslRequest(struct MyFileRequest *fr)
+{
+	return FALSE;
+}
+
+#elif defined(WIN)
 
 #include <windows.h>
 
