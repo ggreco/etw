@@ -438,6 +438,27 @@ struct Bottone cb[]=
 
 struct Bottone keycfg_bottoni[]=
 {
+	/* Configurazione tastiera "ROSSA" */
+	{10,64,100,71,-1,9,7,"UP"},{101,64,184,71,-1,7,0,NULL},
+	{10,75,100,82,-1,9,7,"RIGHT"},{101,75,184,82,-1,7,0,NULL},
+	{10,86,100,93,-1,9,7,"DOWN"},{101,86,184,93,-1,7,0,NULL},
+	{10,97,100,104,-1,9,7,"LEFT"},{101,97,184,104,-1,7,0,NULL},
+	{10,108,100,115,-1,9,7,"SHOT"},{101,108,184,115,-1,7,0,NULL},
+	{10,119,100,126,-1,9,7,"SHORT PASS"},{101,119,184,126,-1,7,0,NULL},
+	{10,130,100,137,-1,9,7,"LONG PASS"},{101,130,184,137,-1,7,0,NULL},
+	{10,141,100,148,-1,9,7,"FILTERING PASS"},{101,141,184,148,-1,7,0,NULL},
+	{10,152,100,159,-1,9,7,"CHANGE ACTIVE"},{101,152,184,159,-1,7,0,NULL},
+	{10,163,100,170,-1,9,7,"FAST RUN"},{101,163,184,170,-1,7,0,NULL},
+/*
+	/* Configurazione tastiera "BLU" *
+	{10,145,100,152,-1,6,8,"UP"},{101,145,184,152,-1,8,0,NULL},
+	{10,156,100,163,-1,6,8,"LEFT"},{101,156,184,163,-1,8,0,NULL},
+	{10,167,100,174,-1,6,8,"RIGHT"},{101,167,184,174,-1,8,0,NULL},
+	{10,178,100,185,-1,6,8,"DOWN"},{101,178,184,185,-1,8,0,NULL},
+	{10,189,100,196,-1,6,8,"SHORT PASS"},{101,189,184,196,-1,8,0,NULL},
+	{10,202,100,209,-1,6,8,"LONG PASS"},{101,202,184,209,-1,8,0,NULL},
+	{10,213,100,220,-1,6,8,"PAUSE"},{101,213,184,220,-1,8,0,NULL},
+*/
 	{90,229,230,241,MENU_SYSTEM_PREFS,11,12,msg_6},
 };
 
@@ -639,7 +660,7 @@ struct GfxMenu menu[]=
 	{msg_177,scorelist_bottoni,scores,1,40,-1,0,0,-1,8,15,NULL},
 	{NULL,hl,NULL,64+1,0,-1,0,0,-1,11,12,(APTR)HighSelection},
 	{"SYSTEM",sprefs_bottoni,NULL,13,0,-1,190,38,0,3,0,(APTR)SystemPrefs},
-	{"KEYBOARD CONFIGURATION",keycfg_bottoni,NULL,1,0,-1,190,38,0,3,0,(APTR)KeyCfg},
+	{"KEYBOARD CONFIGURATION",keycfg_bottoni,NULL,21,0,-1,190,38,0,3,0,(APTR)KeyCfg},
 	{"JOYSTICK CONFIGURATION",joycfg_bottoni,NULL,15,0,-1,190,38,0,3,0,(APTR)JoyCfg},
 };
 

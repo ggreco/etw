@@ -2,7 +2,7 @@ CC = sc
 DEBUG = 
 DEFINES	= DEFINE=CD_VERSION DEFINE=inline=__inline DEBUG=FULL
 
-INCLUDES = IDIR=dh8:sdl-1.2.0/include IDIR=include
+INCLUDES = IDIR=dh8:sdl-1.2.0/include
 CFLAGS= NOSTKCHK NOSTKEXT MATH=STD CPU=68020 DATA=FAR CODE=FAR
 LIBS = dh8:sdl-1.2.0/sassrc/sdl.lib lib:scm.lib lib:sc.lib lib:debug.lib lib:amiga.lib
 LFLAGS = NOICONS 

@@ -12,6 +12,7 @@
 
 extern void MenuResizing(int,int);
 extern char joycfg_buttons[2][8];
+extern int query[];
 
 int actual_joystick=0;
 
@@ -30,6 +31,277 @@ char *buttons[]=
 	"BUTTON 11",
 	"BUTTON 12",
 	"BUTTON 13",
+};
+
+/* Queste stringhe....
+ * Alloco spazio per i nomi dei tasti configurati */
+char keys_names[10][20];
+
+/* Qua posso decidere quali tasti escludere da quelli possibili */
+SDLKey keys[] =
+{
+	/* The keyboard syms have been cleverly chosen to map to ASCII */
+
+	//SDLK_UNKNOWN,
+	//SDLK_FIRST,
+	SDLK_BACKSPACE,
+	SDLK_TAB,
+	SDLK_CLEAR,
+	SDLK_RETURN,
+	SDLK_PAUSE,
+	//SDLK_ESCAPE,
+	SDLK_SPACE,
+	SDLK_EXCLAIM,
+	SDLK_QUOTEDBL,
+	SDLK_HASH,
+	SDLK_DOLLAR,
+	SDLK_AMPERSAND,
+	SDLK_QUOTE,
+	SDLK_LEFTPAREN,
+	SDLK_RIGHTPAREN,
+	SDLK_ASTERISK,
+	SDLK_PLUS,
+	SDLK_COMMA,
+	SDLK_MINUS,
+	SDLK_PERIOD,
+	SDLK_SLASH,
+	SDLK_0,
+	SDLK_1,
+	SDLK_2,
+	SDLK_3,
+	SDLK_4,
+	SDLK_5,
+	SDLK_6,
+	SDLK_7,
+	SDLK_8,
+	SDLK_9,
+	SDLK_COLON,
+	SDLK_SEMICOLON,
+	SDLK_LESS,
+	SDLK_EQUALS,
+	SDLK_GREATER,
+	SDLK_QUESTION,
+	SDLK_AT,
+
+	/* 
+	   Skip uppercase letters
+	 */
+	//SDLK_LEFTBRACKET,
+	SDLK_BACKSLASH,
+	//SDLK_RIGHTBRACKET,
+	//SDLK_CARET,
+	SDLK_UNDERSCORE,
+	//SDLK_BACKQUOTE,
+	SDLK_a,
+	SDLK_b,
+	SDLK_c,
+	SDLK_d,
+	SDLK_e,
+	SDLK_f,
+	SDLK_g,
+	SDLK_h,
+	SDLK_i,
+	SDLK_j,
+	SDLK_k,
+	SDLK_m,
+	SDLK_n,
+	SDLK_o,
+	SDLK_p,
+	SDLK_q,
+	SDLK_r,
+	SDLK_s,
+	SDLK_t,
+	SDLK_u,
+	SDLK_v,
+	SDLK_w,
+	SDLK_x,
+	SDLK_y,
+	SDLK_z,
+	SDLK_DELETE,
+
+#if 0
+	/* End of ASCII mapped keysyms */
+
+	/* International keyboard syms */
+	SDLK_WORLD_0		= 160,		/* 0xA0 */
+	SDLK_WORLD_1		= 161,
+	SDLK_WORLD_2		= 162,
+	SDLK_WORLD_3		= 163,
+	SDLK_WORLD_4		= 164,
+	SDLK_WORLD_5		= 165,
+	SDLK_WORLD_6		= 166,
+	SDLK_WORLD_7		= 167,
+	SDLK_WORLD_8		= 168,
+	SDLK_WORLD_9		= 169,
+	SDLK_WORLD_10		= 170,
+	SDLK_WORLD_11		= 171,
+	SDLK_WORLD_12		= 172,
+	SDLK_WORLD_13		= 173,
+	SDLK_WORLD_14		= 174,
+	SDLK_WORLD_15		= 175,
+	SDLK_WORLD_16		= 176,
+	SDLK_WORLD_17		= 177,
+	SDLK_WORLD_18		= 178,
+	SDLK_WORLD_19		= 179,
+	SDLK_WORLD_20		= 180,
+	SDLK_WORLD_21		= 181,
+	SDLK_WORLD_22		= 182,
+	SDLK_WORLD_23		= 183,
+	SDLK_WORLD_24		= 184,
+	SDLK_WORLD_25		= 185,
+	SDLK_WORLD_26		= 186,
+	SDLK_WORLD_27		= 187,
+	SDLK_WORLD_28		= 188,
+	SDLK_WORLD_29		= 189,
+	SDLK_WORLD_30		= 190,
+	SDLK_WORLD_31		= 191,
+	SDLK_WORLD_32		= 192,
+	SDLK_WORLD_33		= 193,
+	SDLK_WORLD_34		= 194,
+	SDLK_WORLD_35		= 195,
+	SDLK_WORLD_36		= 196,
+	SDLK_WORLD_37		= 197,
+	SDLK_WORLD_38		= 198,
+	SDLK_WORLD_39		= 199,
+	SDLK_WORLD_40		= 200,
+	SDLK_WORLD_41		= 201,
+	SDLK_WORLD_42		= 202,
+	SDLK_WORLD_43		= 203,
+	SDLK_WORLD_44		= 204,
+	SDLK_WORLD_45		= 205,
+	SDLK_WORLD_46		= 206,
+	SDLK_WORLD_47		= 207,
+	SDLK_WORLD_48		= 208,
+	SDLK_WORLD_49		= 209,
+	SDLK_WORLD_50		= 210,
+	SDLK_WORLD_51		= 211,
+	SDLK_WORLD_52		= 212,
+	SDLK_WORLD_53		= 213,
+	SDLK_WORLD_54		= 214,
+	SDLK_WORLD_55		= 215,
+	SDLK_WORLD_56		= 216,
+	SDLK_WORLD_57		= 217,
+	SDLK_WORLD_58		= 218,
+	SDLK_WORLD_59		= 219,
+	SDLK_WORLD_60		= 220,
+	SDLK_WORLD_61		= 221,
+	SDLK_WORLD_62		= 222,
+	SDLK_WORLD_63		= 223,
+	SDLK_WORLD_64		= 224,
+	SDLK_WORLD_65		= 225,
+	SDLK_WORLD_66		= 226,
+	SDLK_WORLD_67		= 227,
+	SDLK_WORLD_68		= 228,
+	SDLK_WORLD_69		= 229,
+	SDLK_WORLD_70		= 230,
+	SDLK_WORLD_71		= 231,
+	SDLK_WORLD_72		= 232,
+	SDLK_WORLD_73		= 233,
+	SDLK_WORLD_74		= 234,
+	SDLK_WORLD_75		= 235,
+	SDLK_WORLD_76		= 236,
+	SDLK_WORLD_77		= 237,
+	SDLK_WORLD_78		= 238,
+	SDLK_WORLD_79		= 239,
+	SDLK_WORLD_80		= 240,
+	SDLK_WORLD_81		= 241,
+	SDLK_WORLD_82		= 242,
+	SDLK_WORLD_83		= 243,
+	SDLK_WORLD_84		= 244,
+	SDLK_WORLD_85		= 245,
+	SDLK_WORLD_86		= 246,
+	SDLK_WORLD_87		= 247,
+	SDLK_WORLD_88		= 248,
+	SDLK_WORLD_89		= 249,
+	SDLK_WORLD_90		= 250,
+	SDLK_WORLD_91		= 251,
+	SDLK_WORLD_92		= 252,
+	SDLK_WORLD_93		= 253,
+	SDLK_WORLD_94		= 254,
+	SDLK_WORLD_95		= 255,		/* 0xFF */
+#endif
+
+	/* Numeric keypad */
+	SDLK_KP0,
+	SDLK_KP1,
+	SDLK_KP2,
+	SDLK_KP3,
+	SDLK_KP4,
+	SDLK_KP5,
+	SDLK_KP6,
+	SDLK_KP7,
+	SDLK_KP8,
+	SDLK_KP9,
+	SDLK_KP_PERIOD,
+	SDLK_KP_DIVIDE,
+	SDLK_KP_MULTIPLY,
+	SDLK_KP_MINUS,
+	SDLK_KP_PLUS,
+	SDLK_KP_ENTER,
+	SDLK_KP_EQUALS,
+
+	/* Arrows + Home/End pad */
+	SDLK_UP,
+	SDLK_DOWN,
+	SDLK_RIGHT,
+	SDLK_LEFT,
+	SDLK_INSERT,
+	SDLK_HOME,
+	SDLK_END,
+	SDLK_PAGEUP,
+	SDLK_PAGEDOWN,
+
+#if 0
+	/* Function keys */
+	SDLK_F1,
+	SDLK_F2,
+	SDLK_F3,
+	SDLK_F4,
+	SDLK_F5,
+	SDLK_F6,
+	SDLK_F7,
+	SDLK_F8,
+	SDLK_F9,
+	SDLK_F10,
+	SDLK_F11,
+	SDLK_F12,
+	SDLK_F13,
+	SDLK_F14,
+	SDLK_F15,
+
+	/* Key state modifier keys */
+	SDLK_NUMLOCK,
+	SDLK_CAPSLOCK,
+	SDLK_SCROLLOCK,
+#endif
+
+	SDLK_RSHIFT,
+	SDLK_LSHIFT,
+	SDLK_RCTRL,
+	SDLK_LCTRL,
+	SDLK_RALT,
+	SDLK_LALT,
+	SDLK_RMETA,
+	SDLK_LMETA,
+#if 0 
+	SDLK_LSUPER		= 311,		/* Left "Windows" key */
+	SDLK_RSUPER		= 312,		/* Right "Windows" key */
+	SDLK_MODE		= 313,		/* "Alt Gr" key */
+	SDLK_COMPOSE		= 314,		/* Multi-key compose key */
+
+	/* Miscellaneous function keys */
+	SDLK_HELP		= 315,
+	SDLK_PRINT		= 316,
+	SDLK_SYSREQ		= 317,
+	SDLK_BREAK		= 318,
+	SDLK_MENU		= 319,
+	SDLK_POWER		= 320,		/* Power Macintosh power key */
+	SDLK_EURO		= 321,		/* Some european keyboards */
+	SDLK_UNDO		= 322,		/* Atari keyboard has Undo */
+
+#endif
+
+	/* Add any other keys here */
 };
 
 LONG jingle=-1;
@@ -60,6 +332,7 @@ char *resolutions[]=
 
 
 void UpdateJoyCfg(int joy);
+void UpdateKeyCfg(int key);
 
 void init_joy_config(void)
 {
@@ -562,7 +835,88 @@ BOOL JoyCfg(WORD bottone)
 
 BOOL KeyCfg(WORD bottone)
 {
-	ChangeMenu(actual_menu->Bottone[bottone].ID);
+	/* AC: 27/05/04 - Inzio bozza per configurare la tastiera */
+	if(bottone>=(actual_menu->NumeroBottoni-1)&&actual_menu->Bottone[bottone].ID>=0)
+		ChangeMenu(actual_menu->Bottone[bottone].ID);
+	else
+	{
+		char *temp;
+		int k;
+		BOOL ok=FALSE;
+		SDL_Event e;
+
+		bottone/=2;
+
+		temp=actual_menu->Bottone[bottone*2].Testo;
+
+		actual_menu->Bottone[bottone*2].Testo="WAITING BUTTON...";
+
+		RedrawBottone(&actual_menu->Bottone[bottone*2],actual_menu->Bottone[bottone*2].Highlight);
+
+		ScreenSwap();
+
+		while (!ok)
+		{
+			SDL_WaitEvent(&e);
+			switch (e.type)
+			{
+				/* Ridisegno appena premo il tasto... */
+				case SDL_KEYDOWN:
+					D(bug("Tasto premuto %s\n",SDL_GetKeyName(e.key.keysym.sym)));
+					
+					/* ESC interrompo la modifica */
+					if(e.key.keysym.sym == SDLK_ESCAPE)
+					{
+						k = -1;
+					}
+					else
+					{
+						/* Ricerco il tasto nella tabella dei tasti validi */
+						for(k = 0;k < sizeof(keys);k++)
+							if(e.key.keysym.sym == keys[k])
+								break;
+					}
+
+					if(k>=0)
+					{
+						/* Converto in maiuscolo per il font */
+						char *tmp=SDL_GetKeyName(keys[k]);
+						int i = 0;
+						while(*tmp)
+						{
+							keys_names[bottone][i]=toupper(*tmp);
+							tmp++;
+							i++;
+						}
+						keys_names[bottone][i] = 0;
+						actual_menu->Bottone[bottone*2+1].Testo=keys_names[bottone];
+						query[bottone] = keys[k];
+						RedrawBottone(&actual_menu->Bottone[bottone*2+1],actual_menu->Bottone[bottone*2+1].Colore);
+					}
+
+					actual_menu->Bottone[bottone*2].Testo=temp;
+
+					RedrawBottone(&actual_menu->Bottone[bottone*2],actual_menu->Bottone[bottone*2].Colore);
+					ScreenSwap();
+				break;
+				/* ...ma esco quando lo rilasci per non trappare l'evento 
+				 * nel ciclo principale
+				 */
+				case SDL_KEYUP:
+					ok = TRUE;
+				break;
+				default:
+				break;
+			}
+		}
+
+		/* Pulisco la coda di eventi? *
+		 Non funziona...
+		while(SDL_PollEvent(&e));*/
+
+		// non mi piace questa soluzioneSDL_WaitEvent(&e);
+	}
+	//ChangeMenu(actual_menu->Bottone[bottone].ID);
 	return TRUE;
 }
 
@@ -1312,6 +1666,11 @@ BOOL SystemPrefs(WORD bottone)
 				return TRUE;
 			}
 			else UpdateJoyCfg(actual_joystick);
+		}
+		/* AC: Aggiorno la configurazione della tastiera */
+		else if(bottone==(actual_menu->NumeroBottoni-2))
+		{
+			UpdateKeyCfg(0);
 		}
 
 		ChangeMenu(actual_menu->Bottone[bottone].ID);
@@ -2405,5 +2764,26 @@ void UpdateJoyCfg(int joy)
 	for(i=0;i<7;i++)
 	{
 		joycfg_bottoni[i*2+1].Testo=buttons[joycfg_buttons[joy][i]];
+	}
+}
+
+void UpdateKeyCfg(int key)
+{
+	extern struct Bottone keycfg_bottoni[];
+	int i;
+
+	for(i=0;i<10;i++)
+	{
+		/* Converto in maiuscolo per il font */
+		char *tmp = SDL_GetKeyName(query[i]);
+		int j = 0;
+		while(*tmp)
+		{
+			keys_names[i][j]=toupper(*tmp);
+			tmp++;
+			j++;
+		}
+		keys_names[i][j] = 0;
+		keycfg_bottoni[i*2+1].Testo=keys_names[i];
 	}
 }
