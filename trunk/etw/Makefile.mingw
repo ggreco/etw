@@ -1,6 +1,7 @@
-CC = /usr/local/cross-gcc33/i386-mingw32msvc/bin/gcc
+CROSSDIR = /usr/local/cross-gcc33/i386-mingw32msvc
+CC = $(CROSSDIR)/bin/gcc
 DEBUG = 
-CFLAGS = -Iinclude -I/usr/local/cross-tools/i386-mingw32msvc/include/SDL \
+CFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL \
          -O2 -fwritable-strings -Wall -fsigned-char -Wno-char-subscripts
 LFLAGS = -lmingw32 -lSDLmain -lSDL -mwindows -lwsock32 -lcomdlg32 
 DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER
@@ -22,10 +23,10 @@ OBJECTS = icon.o highdirent.o	  cpu.o		   human.o	  myiff.o	specials.o \
 
 
 etw.exe: $(OBJECTS)
-	$(CC) -o $@ /usr/local/cross-tools/i386-mingw32msvc/lib/libSDLmain.a $(OBJECTS) $(LFLAGS)
+	$(CC) -o $@ $(CROSSDIR)/lib/libSDLmain.a $(OBJECTS) $(LFLAGS)
 
 icon.o: Script1.rc
-	i386-mingw32msvc-windres $< $@
+	$(CROSSDIR)/../bin/i386-mingw32msvc-windres $< $@
    
 clean:
 	rm -rf *.o
