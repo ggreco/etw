@@ -344,13 +344,12 @@ void ShowCredits(void)
 
 	setfont(bigfont);
 
-// Cerco prima newgfx e quindi menugfx...
+// Serching in newgfx and then in menugfx...
 
 	if(!(o=LoadGfxObject("newgfx/credits.gfx"/*-*/,Pens,NULL)))
 		o=LoadGfxObject("menugfx/credits.gfx"/*-*/,Pens,NULL);
 
-	if(o)
-	{
+	if(o) {
 		SDL_Event e;
 
 		ScaleGfxObj(o,back);

@@ -53,6 +53,63 @@ void bltchunkybitmap(bitmap src,int xs,int ys,bitmap dest,int xd,int yd,int w,in
 	}
 }
 
+void bltanimobjscale(struct scaleAnimObjArgs *args)
+{
+	register struct ALine *line=args->src->FirstLine;
+	struct ABlock *block;
+    char *dest = args->dest + args->xd; 
+	register int line_offset, i;
+    char x_ref[800], y_ref[600]; // XXX this is a limit to the animobj size!
+    dest += (args->yd*args->destmod);
+  
+    if (args->ws > sizeof(x_ref) ||
+        args->hs > sizeof(y_ref) ) {
+        D(bug("Unable to scale such a big animobj!\n"));
+        return;
+    }
+    
+    MakeRef(x_ref, args->ws, args->wd);
+    MakeRef(y_ref, args->hs, args->hd);
+    
+	while(args->ys--)
+		line = line->Next;
+
+    if (args->hs <= 0)
+        return;
+
+    while (args->hs >= 0 && line) {
+        args->hs--;
+
+        while (y_ref[args->hs]--) {
+            register char *d = dest;
+            block = line->FirstBlock;
+            line_offset = -args->xs;
+
+            while (block) {
+                if (block->Buffer) {
+                    for (i = 0; i < block->Length; i++, line_offset++)
+                        if (line_offset >= 0 && line_offset < args->ws) {
+                            int k = x_ref[line_offset];
+
+                            while (k--) 
+                                *d++ = block->Buffer[i];
+                        }
+                }
+                else {
+                    for (i = 0; i < block->Length; i++, line_offset++)
+                        if (line_offset >= 0 && line_offset < args->ws)
+                            d += x_ref[line_offset];
+                }
+
+                block = block->Next;
+            }
+
+            dest += args->destmod;
+        }
+        line = line->Next;
+    } 
+}
+
 void bltbitmap_x(bitmap src,int xs,int ys,bitmap dest,int xd,int yd,int w,int h,int srcmod,int destmod,unsigned char noblit)
 {
 	register int i;

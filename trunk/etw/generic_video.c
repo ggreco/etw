@@ -39,7 +39,8 @@ void MakeRef(UBYTE *ref,int source_size, int dest_size)
 
 		r=(m*t)>>9;
 
-		ref[r]++;
+        if (r < source_size)
+    		ref[r]++;
 	}
 }
 

@@ -178,9 +178,8 @@ void lock_pen(int p)
 
 void OpenTheScreen(void)
 {
-	#ifndef WINCE
-	if(wb_game)
-	{
+#ifndef WINCE
+	if(wb_game) {
         screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_RESIZABLE);   
 
 		use_remapping=FALSE;
@@ -189,8 +188,7 @@ void OpenTheScreen(void)
 		public_screen=FALSE;
 		// metto due false qui x evitare problemi
 	}
-	else
-	{
+	else {
 		if(!force_single)
 			double_buffering=TRUE;
 		else
@@ -212,12 +210,13 @@ void OpenTheScreen(void)
 
 		D(bug("Fine InitAnimSystem!\n"));
 	}
-	#else
+#else
+    screen_depth = 8;
 	force_single = TRUE; double_buffering = FALSE; wb_game = FALSE;
 	public_screen = FALSE; use_remapping = FALSE;
 	scaling = FALSE;
 	screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_FULLSCREEN);
-	#endif
+#endif
 }
 
 void os_set_window_frame(void)
@@ -313,14 +312,6 @@ void ScreenSwap(void)
 void os_free_dbuffer(void)
 {
 }
-
-/* Questa funzione disegna dei semplici GfxObj */
-/*
-void DrawObject(GfxObj *obj, WORD x,WORD y)
-{
-	WritePixelArray8(CurrentRP,x,y,x+obj->width-1,y+obj->height-1,obj->bmap,&TempRP);
-}
-*/
 
 int os_videook(int x, int y)
 {

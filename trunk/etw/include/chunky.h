@@ -22,6 +22,15 @@ struct MChunky
 	unsigned long buffers;
 };
 
+struct scaleAnimObjArgs
+{
+    struct MChunky *src;
+    bitmap dest;
+    int destmod;
+    int xs, ys, ws, hs;
+    int xd, yd, wd, hd;
+};
+  
 
 // Da chunkyblitting.c
 
@@ -34,4 +43,5 @@ struct MChunky *load_mchunky(FILE *,int, long *);
 void do_p2c(unsigned char **,bitmap ,int ,int ,int ,long *);
 void free_mchunky(struct MChunky *);
 struct MChunky *CloneMChunky(struct MChunky *);
+void bltanimobjscale(struct scaleAnimObjArgs *args);
 void do_p2c(unsigned char **p,bitmap b,int width,int height,int depth,long *pens);
