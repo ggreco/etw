@@ -424,409 +424,397 @@ void FreeStuff(void)
 
 BOOL LoadStuff(void)
 {
-	save_back = FALSE;			/* Non mi interessa conservare gli sfondi */
-	use_clipping = TRUE;		/* Voglio vedere gli omini parzialmente fuori dallo schermo */
+    save_back = FALSE;			/* Non mi interessa conservare gli sfondi */
+    use_clipping = TRUE;		/* Voglio vedere gli omini parzialmente fuori dallo schermo */
+    int i;
 
-//	srand((int) time(NULL));
+    //	srand((int) time(NULL));
 
-	os_init_timer();
+    os_init_timer();
 
-	if (!public_screen) {
-		int i;
-
-		use_remapping = FALSE;
+    use_remapping = FALSE;
 
 #ifdef USE_TRIPLE
-		triple_buffering = TRUE;
+    triple_buffering = TRUE;
 #endif
-		D(bug("Loading menu palette...\n"));
+    D(bug("Loading menu palette...\n"));
 
 #ifndef DEMOVERSION
-		if (!LoadIFFPalette("gfx/eat16menu.col"))
-			return FALSE;
+    if (!LoadIFFPalette("gfx/eat16menu.col"))
+        return FALSE;
 #endif
 
-		for (i = 0; i < 32; i++)
-			Pens[i] = i;
+    for (i = 0; i < 32; i++)
+        Pens[i] = i;
 
-		os_set_window_frame();
-	} else {
-		use_remapping = TRUE;
+    os_set_window_frame();
 
-		if (!(Colors = RemapIFFPalette(palette, Pens))) {
-			D(bug("Unable to remap palette.\n"));
-			return FALSE;
-		}
-	}
+    if (!InitAnimSystem())
+        return FALSE;
 
-	if (!InitAnimSystem())
-		return FALSE;
+    if (!window_open()) {
+        close_graphics();
+        return FALSE;
+    }
 
-	if (!window_open()) {
-		close_graphics();
-		return FALSE;
-	}
+    if (scaling) {
+        D(bug("Initializing scaling...\n"));
 
-	if (scaling) {
-		D(bug("Initializing scaling...\n"));
+        scaling->Dest = main_bitmap;
+        scaling->DestWidth = WINDOW_WIDTH;
+        scaling->DestSpan = bitmap_width;
+        scaling->DestHeight = WINDOW_HEIGHT;
 
-		scaling->Dest = main_bitmap;
-		scaling->DestWidth = WINDOW_WIDTH;
-		scaling->DestSpan = bitmap_width;
-		scaling->DestHeight = WINDOW_HEIGHT;
+        if ((scaling->Src =
+                    malloc(FIXED_SCALING_WIDTH * FIXED_SCALING_HEIGHT))) {
+            if ((scaling->XRef = malloc(FIXED_SCALING_WIDTH * sizeof(char)))) {
+                if ((scaling->YRef =
+                            malloc(FIXED_SCALING_HEIGHT * sizeof(char)))) {
+                    MakeRef(scaling->XRef, FIXED_SCALING_WIDTH,
+                            WINDOW_WIDTH);
+                    MakeRef(scaling->YRef, FIXED_SCALING_HEIGHT,
+                            WINDOW_HEIGHT);
+                    main_bitmap = scaling->Src;
+                    bitmap_width = scaling->SrcWidth = scaling->SrcSpan =
+                        FIXED_SCALING_WIDTH;
+                    bitmap_height = scaling->SrcHeight =
+                        FIXED_SCALING_HEIGHT;
+                    WINDOW_WIDTH = bitmap_width;
+                    WINDOW_HEIGHT = bitmap_height;
+                    D(bug("Scaling correctly initialized!\n"));
+                } else {
+                    free(scaling->XRef);
+                    free(scaling->Src);
+                    free(scaling);
+                    scaling = NULL;
+                }
+            } else {
+                free(scaling->Src);
+                free(scaling);
+                scaling = NULL;
+            }
+        } else {
+            free(scaling);
+            scaling = NULL;
+        }
+    }
 
-		if ((scaling->Src =
-			malloc(FIXED_SCALING_WIDTH * FIXED_SCALING_HEIGHT))) {
-			if ((scaling->XRef = malloc(FIXED_SCALING_WIDTH * sizeof(char)))) {
-				if ((scaling->YRef =
-					malloc(FIXED_SCALING_HEIGHT * sizeof(char)))) {
-					MakeRef(scaling->XRef, FIXED_SCALING_WIDTH,
-							WINDOW_WIDTH);
-					MakeRef(scaling->YRef, FIXED_SCALING_HEIGHT,
-							WINDOW_HEIGHT);
-					main_bitmap = scaling->Src;
-					bitmap_width = scaling->SrcWidth = scaling->SrcSpan =
-						FIXED_SCALING_WIDTH;
-					bitmap_height = scaling->SrcHeight =
-						FIXED_SCALING_HEIGHT;
-					WINDOW_WIDTH = bitmap_width;
-					WINDOW_HEIGHT = bitmap_height;
-					D(bug("Scaling correctly initialized!\n"));
-				} else {
-					free(scaling->XRef);
-					free(scaling->Src);
-					free(scaling);
-					scaling = NULL;
-				}
-			} else {
-				free(scaling->Src);
-				free(scaling);
-				scaling = NULL;
-			}
-		} else {
-			free(scaling);
-			scaling = NULL;
-		}
-	}
+    ClipX = WINDOW_WIDTH - 1;
+    ClipY = WINDOW_HEIGHT - 1;
 
-	ClipX = WINDOW_WIDTH - 1;
-	ClipY = WINDOW_HEIGHT - 1;
-
-	if (!InitFonts()) {
-		close_graphics();
-		return FALSE;
-	}
+    if (!InitFonts()) {
+        close_graphics();
+        return FALSE;
+    }
 #ifdef DEMOVERSION
-	LoadPLogo("gfx/epic");
-	os_delay(75);
+    LoadPLogo("gfx/epic");
+    os_delay(75);
 #else
-	Loading();
+    Loading();
 #endif
 
-	if (!no_sound) {
-		if (training) {
-			use_crowd = FALSE;
-			use_speaker = FALSE;
-		}
+    if (!no_sound) {
+        if (training) {
+            use_crowd = FALSE;
+            use_speaker = FALSE;
+        }
 
-//              wanted_sound=-1;
+        //              wanted_sound=-1;
 
         if (!CaricaSuoni()) {
-			FreeFonts();
-			close_graphics();
-			return FALSE;
-		}
+            FreeFonts();
+            close_graphics();
+            return FALSE;
+        }
 
-		if (use_crowd)
-			init_crowd();
-		if (use_speaker)
-			init_speaker();
+        if (use_crowd)
+            init_crowd();
+        if (use_speaker)
+            init_speaker();
 
-		SetCrowd(FONDO);
-	}
+        SetCrowd(FONDO);
+    }
 
-	if ((background = LoadGfxObject(fieldname, Pens, NULL))) {
-		GfxObj *temp;
-		int i, x = 106;
+    if ((background = LoadGfxObject(fieldname, Pens, NULL))) {
+        GfxObj *temp;
+        int i, x = 106;
 
-		Progress();
+        Progress();
 
-// Carico e stampo gli sponsors
+        // Carico e stampo gli sponsors
 
-		if (!arcade) {
-			if ((temp = LoadGfxObject("gfx/sponsors", Pens, NULL))) {
-				for (i = 0; i < 8; i++) {
-					if (i == 4)
-						x = SPONSOR_X_2;
+        if (!arcade) {
+            if ((temp = LoadGfxObject("gfx/sponsors", Pens, NULL))) {
+                for (i = 0; i < 8; i++) {
+                    if (i == 4)
+                        x = SPONSOR_X_2;
 
-					if (training)
-						BltGfxObj(temp, 0, 0, background->bmap, x,
-								  SPONSOR_Y_POS, SPONSOR_X - 1, SPONSOR_Y,
-								  background->width);
-					else
-						BltGfxObj(temp, 0,
-								  (MyRangeRand(SPONSORS - 1) +
-								   1) * SPONSOR_Y, background->bmap, x,
-								  SPONSOR_Y_POS, SPONSOR_X - 1, SPONSOR_Y,
-								  background->width);
+                    if (training)
+                        BltGfxObj(temp, 0, 0, background->bmap, x,
+                                SPONSOR_Y_POS, SPONSOR_X - 1, SPONSOR_Y,
+                                background->width);
+                    else
+                        BltGfxObj(temp, 0,
+                                (MyRangeRand(SPONSORS - 1) +
+                                 1) * SPONSOR_Y, background->bmap, x,
+                                SPONSOR_Y_POS, SPONSOR_X - 1, SPONSOR_Y,
+                                background->width);
 
-					x += SPONSOR_X;
-				}
+                    x += SPONSOR_X;
+                }
 
 
-				BltGfxObj(temp, 0,
-						  (!training
-						   ? ((MyRangeRand(SPONSORS - 1) +
-							   1) * SPONSOR_Y) : 0), background->bmap, 485,
-						  529, SPONSOR_X - 1, SPONSOR_Y,
-						  background->width);
-				BltGfxObj(temp, 0,
-						  (!training
-						   ? ((MyRangeRand(SPONSORS - 1) +
-							   1) * SPONSOR_Y) : 0), background->bmap, 690,
-						  529, SPONSOR_X - 1, SPONSOR_Y,
-						  background->width);
+                BltGfxObj(temp, 0,
+                        (!training
+                         ? ((MyRangeRand(SPONSORS - 1) +
+                                 1) * SPONSOR_Y) : 0), background->bmap, 485,
+                        529, SPONSOR_X - 1, SPONSOR_Y,
+                        background->width);
+                BltGfxObj(temp, 0,
+                        (!training
+                         ? ((MyRangeRand(SPONSORS - 1) +
+                                 1) * SPONSOR_Y) : 0), background->bmap, 690,
+                        529, SPONSOR_X - 1, SPONSOR_Y,
+                        background->width);
 
-				FreeGfxObj(temp);
-			}
-		}
+                FreeGfxObj(temp);
+            }
+        }
 
-		Progress();
+        Progress();
 
-// Carico e stampo gli spalti
-		if (!arcade)
-			if ((temp = LoadGfxObject("gfx/spalti", Pens, NULL))) {
-				x = 34;
+        // Carico e stampo gli spalti
+        if (!arcade)
+            if ((temp = LoadGfxObject("gfx/spalti", Pens, NULL))) {
+                x = 34;
 
-				for (i = 0; i < 4; i++) {
-					if (training)
-						BltGfxObj(temp, 0, SPALTI * SPALTI_Y,
-								  background->bmap, x, 0, SPALTI_X,
-								  SPALTI_Y, background->width);
-					else
-						BltGfxObj(temp, 0, MyRangeRand(SPALTI) * SPALTI_Y,
-								  background->bmap, x, 0, SPALTI_X,
-								  SPALTI_Y, background->width);
+                for (i = 0; i < 4; i++) {
+                    if (training)
+                        BltGfxObj(temp, 0, SPALTI * SPALTI_Y,
+                                background->bmap, x, 0, SPALTI_X,
+                                SPALTI_Y, background->width);
+                    else
+                        BltGfxObj(temp, 0, MyRangeRand(SPALTI) * SPALTI_Y,
+                                background->bmap, x, 0, SPALTI_X,
+                                SPALTI_Y, background->width);
 
-					x += SPALTI_X;
+                    x += SPALTI_X;
 
-					if (i == 1)
-						x = SPALTI_X_2;
-				}
-				FreeGfxObj(temp);
-			}
+                    if (i == 1)
+                        x = SPALTI_X_2;
+                }
+                FreeGfxObj(temp);
+            }
 
-		Progress();
+        Progress();
 
-		if (!arcade && !training) {
-			AnimObj *p;
+        if (!arcade && !training) {
+            AnimObj *p;
 
-			if ( (p = LoadAnimObject("gfx/people.obj", Pens))) {
-				for (i = 0; i < NUMERO_OGGETTI; i++) {
-					x = MyRangeRand(peoples[i].Range);
+            if ( (p = LoadAnimObject("gfx/people.obj", Pens))) {
+                for (i = 0; i < NUMERO_OGGETTI; i++) {
+                    x = MyRangeRand(peoples[i].Range);
 
-					if (peoples[i].Frame[x] >= 0) {
-						BltAnimObj(p, background->bmap,
-								   peoples[i].Frame[x], peoples[i].X,
-								   peoples[i].Y, background->width);
-					} else
-						peoples[i].Collisione = FALSE;
+                    if (peoples[i].Frame[x] >= 0) {
+                        BltAnimObj(p, background->bmap,
+                                peoples[i].Frame[x], peoples[i].X,
+                                peoples[i].Y, background->width);
+                    } else
+                        peoples[i].Collisione = FALSE;
 
-// FIX: Now we clone the object before modifiying to avoid to have to scale
-//      back coords again
+                    // FIX: Now we clone the object before modifiying to avoid to have to scale
+                    //      back coords again
                     if ((detail_level & USA_FOTOGRAFI)
-						&& peoples[i].Collisione) {
-						extern UBYTE people_type[];
+                            && peoples[i].Collisione) {
+                        extern UBYTE people_type[];
                         struct DOggetto *d;
-                        
+
                         if ((d = malloc(sizeof(struct DOggetto)))) {
                             d->Collisione = TRUE;
                             d->Frame = peoples[i].Frame;
                             d->Range = people_type[peoples[i].Frame[x]];
                             d->X = peoples[i].X * 8;
                             d->Y = peoples[i].Y * 8;
-                                
+
                             AggiungiCLista(d);
                         }
-					}
-				}
+                    }
+                }
 
-				FreeAnimObj(p);
-			}
-		}
+                FreeAnimObj(p);
+            }
+        }
 
-		Progress();
+        Progress();
 
 #ifdef SUPER_DEBUG
-		os_delay(100);
-		BltGfxObj(background, 0, 0, main_bitmap, 0, 0, WINDOW_WIDTH,
-				  WINDOW_HEIGHT, bitmap_width);
-		ScreenSwap();
-		os_delay(200);
+        os_delay(100);
+        BltGfxObj(background, 0, 0, main_bitmap, 0, 0, WINDOW_WIDTH,
+                WINDOW_HEIGHT, bitmap_width);
+        ScreenSwap();
+        os_delay(200);
 #endif
-		if (!arcade) {
-			char portname[20] = "gfx/porte.obj";
-			AnimObj *obj = LoadAnimObject(portname, Pens);
+        if (!arcade) {
+            char portname[20] = "gfx/porte.obj";
+            AnimObj *obj = LoadAnimObject(portname, Pens);
 
-			if (!obj) {
-				FreeFonts();
+            if (!obj) {
+                FreeFonts();
 
-				if (!no_sound) {
-					LiberaSuoni();
-				}
-				close_graphics();
-				return FALSE;
-			}
+                if (!no_sound) {
+                    LiberaSuoni();
+                }
+                close_graphics();
+                return FALSE;
+            }
 
-			i = MyRangeRand(TIPI_PORTE);
+            i = MyRangeRand(TIPI_PORTE);
 
-			tipo_porta = i;
+            tipo_porta = i;
 
-			portname[8] = '0' + i;
+            portname[8] = '0' + i;
 
-			BltAnimObj(obj, background->bmap, i * 2, porte_x[i * 2],
-					   PORTE_Y, background->width);
-			BltAnimObj(obj, background->bmap, i * 2 + 1,
-					   porte_x[i * 2 + 1], PORTE_Y, background->width);
+            BltAnimObj(obj, background->bmap, i * 2, porte_x[i * 2],
+                    PORTE_Y, background->width);
+            BltAnimObj(obj, background->bmap, i * 2 + 1,
+                    porte_x[i * 2 + 1], PORTE_Y, background->width);
 
-			FreeAnimObj(obj);
+            FreeAnimObj(obj);
 
-// Carico il file ports adeguato...
+            // Carico il file ports adeguato...
 
-			if (!(ports = LoadAnimObject(portname, Pens))) {
-				FreeFonts();
+            if (!(ports = LoadAnimObject(portname, Pens))) {
+                FreeFonts();
 
-				if (!no_sound) {
-					LiberaSuoni();
-				}
+                if (!no_sound) {
+                    LiberaSuoni();
+                }
 
-				close_graphics();
-				return FALSE;
-			}
-		} else {
-			detail_level &=
-				~(USA_FOTOGRAFI | USA_POLIZIOTTI | USA_ARBITRO |
-				  USA_GUARDALINEE);
-		}
+                close_graphics();
+                return FALSE;
+            }
+        } else {
+            detail_level &=
+                ~(USA_FOTOGRAFI | USA_POLIZIOTTI | USA_ARBITRO |
+                        USA_GUARDALINEE);
+        }
 
 #ifdef SUPER_DEBUG
-		BltGfxObj(background, 0, 0, main_bitmap, 0, 0, WINDOW_WIDTH,
-				  WINDOW_HEIGHT, bitmap_width);
-		ScreenSwap();
-		os_delay(200);
+        BltGfxObj(background, 0, 0, main_bitmap, 0, 0, WINDOW_WIDTH,
+                WINDOW_HEIGHT, bitmap_width);
+        ScreenSwap();
+        os_delay(200);
 #endif
 
 #ifdef DEMOVERSION
-		LoadPLogo("gfx/islona");
-		os_delay(60);
+        LoadPLogo("gfx/islona");
+        os_delay(60);
 #else
-		/* AC: I remove this Progress, in order to gain 20 blocks instead of 21
-		Progress();*/
+        /* AC: I remove this Progress, in order to gain 20 blocks instead of 21
+           Progress();*/
 #endif
-		if (SetupSquadre()) {
-			Progress();
+        if (SetupSquadre()) {
+            Progress();
 
             if(!network_game)
-    			p->TabCounter = MyRangeRand(256);
+                p->TabCounter = MyRangeRand(256);
             else
                 p->TabCounter = 0;
 
-			if (free_longpass)
-				LongPass = FreePass;
-			else
-				LongPass = TargetedPass;
+            if (free_longpass)
+                LongPass = FreePass;
+            else
+                LongPass = TargetedPass;
 
-			set_controls();
+            set_controls();
 
-			if (player_type[0] == TYPE_JOYSTICK1) {
-				p->squadra[0]->MarkerRed = Pens[RADAR_SQUADRA_A];
-				p->squadra[1]->MarkerRed = Pens[RADAR_SQUADRA_B];
-			} else {
-				p->squadra[0]->MarkerRed = Pens[RADAR_SQUADRA_B];
-				p->squadra[1]->MarkerRed = Pens[RADAR_SQUADRA_A];
-			}
+            if (player_type[0] == TYPE_JOYSTICK1) {
+                p->squadra[0]->MarkerRed = Pens[RADAR_SQUADRA_A];
+                p->squadra[1]->MarkerRed = Pens[RADAR_SQUADRA_B];
+            } else {
+                p->squadra[0]->MarkerRed = Pens[RADAR_SQUADRA_B];
+                p->squadra[1]->MarkerRed = Pens[RADAR_SQUADRA_A];
+            }
 
-			if (big)
-				HandleRadar = HandleRadarBig;
-			else
-				HandleRadar = HandleRadarLittle;
+            if (big)
+                HandleRadar = HandleRadarBig;
+            else
+                HandleRadar = HandleRadarLittle;
 
-			ResizeRadar();
+            ResizeRadar();
 
-// Questi li carico soltanto se ho spazio!
+            // Questi li carico soltanto se ho spazio!
 
-			if (last_obj) {
-				FreeGfxObj(last_obj);
-				last_obj = NULL;
-			}
+            if (last_obj) {
+                FreeGfxObj(last_obj);
+                last_obj = NULL;
+            }
 
-			if ((goal_banner = LoadAnimObject("gfx/goal.obj", Pens)))
-				goal_banner->Flags |= AOBJ_OVER;
+            if ((goal_banner = LoadAnimObject("gfx/goal.obj", Pens)))
+                goal_banner->Flags |= AOBJ_OVER;
 
-			pause_gfx = LoadGfxObject("gfx/paused", Pens, NULL);
+            pause_gfx = LoadGfxObject("gfx/paused", Pens, NULL);
 
-			if ((replay = LoadAnimObject("gfx/replay.obj", Pens)))
-				replay->Flags |= AOBJ_OVER;
+            if ((replay = LoadAnimObject("gfx/replay.obj", Pens)))
+                replay->Flags |= AOBJ_OVER;
 
-			Progress();
+            Progress();
 
-			if (situation) {
-				p->squadra[0]->Reti = situation_result[0];
-				p->squadra[1]->Reti = situation_result[1];
-				MakeResult();
-			}
+            if (situation) {
+                p->squadra[0]->Reti = situation_result[0];
+                p->squadra[1]->Reti = situation_result[1];
+                MakeResult();
+            }
 
-			D(bug("Allocating replay buffers...\n"));
+            D(bug("Allocating replay buffers...\n"));
 
-			if (!AllocReplayBuffers()) {
-				FreeStuff();
-				return FALSE;
-			}
+            if (!AllocReplayBuffers()) {
+                FreeStuff();
+                return FALSE;
+            }
 
-			Progress();
+            Progress();
 
-			/* AC: Just a very little delay, showing the final loading */
-			os_delay(6);
 
-/* Nascondo lo schermo per cambiare la palette */
+            /* hide the screen to change palette */
 
-			if (!public_screen) {
-				memset(main_bitmap, Pens[P_NERO],
-					   bitmap_width * bitmap_height);
+            memset(main_bitmap, Pens[P_NERO],
+                    bitmap_width * bitmap_height);
 
-				D(bug("Last swap before match...\n"));
+            D(bug("Last swap before match...\n"));
 
-				ScreenSwap();
+            ScreenSwap();
 
-				if (triple_buffering)
-					ScreenSwap();
+            /* AC: Just a very little delay, showing the final loading */
+            os_delay(6);
+            if (triple_buffering)
+                ScreenSwap();
 
-				if (!screen_opened)
-					FreeIFFPalette();
+            if (!screen_opened)
+                FreeIFFPalette();
 
-				if (!(LoadIFFPalette(palette))) {
+            if (!(LoadIFFPalette(palette))) {
 
-					FreeStuff();
-					return FALSE;
-				}
-				AdjustSDLPalette();
-			}
+                FreeStuff();
+                return FALSE;
+            }
+            AdjustSDLPalette();
 
-			return TRUE;
-		}
+            return TRUE;
+        }
 
-	}
+    }
 
-	FreeFonts();
+    FreeFonts();
     LiberaListe();
 
-	close_graphics();
+    close_graphics();
 
-	if (!no_sound) {
-		LiberaSuoni();
-	}
+    if (!no_sound) {
+        LiberaSuoni();
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 int game_main(void)

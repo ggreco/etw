@@ -3,6 +3,8 @@
 #include <SDL.h>
 #include <ctype.h>
 
+#include "chunky.h"
+
 WORD current_menu = 0, current_button = NESSUN_BOTTONE, actual_button = 0;
 struct GfxMenu *actual_menu = &menu[0];
 void *hwin = NULL;
@@ -1129,9 +1131,30 @@ void ChangeMenu(WORD m)
 			 FixedScaledY(7) - 1, Pens[actual_menu->Highlight],
 			 bitmap_width);
 
-	if (actual_menu->Immagine >= 0)
+	if (actual_menu->Immagine >= 0) {
+	        struct scaleAnimObjArgs a;
+            
+            a.src = logos->Frames[actual_menu->Immagine];
+            a.dest = main_bitmap;
+            a.destmod = bitmap_width;
+            a.xs = 0;
+            a.ys = 0;
+            a.ws = logos->Widths[actual_menu->Immagine];
+            a.hs = logos->Heights[actual_menu->Immagine];
+            a.xd = actual_menu->X;
+            a.yd = actual_menu->Y;
+            a.wd = FixedScaledX(logos->Widths[actual_menu->Immagine]);
+            a.hd = FixedScaledY(logos->Widths[actual_menu->Immagine]);
+            D(bug("bltanimobjscale: (%d,%d %dx%d) to (%d,%d %dx%d)\n", 
+                        a.xs, a.ys, a.ws, a.hs, 
+                        a.xd, a.yd, a.wd, a.hd));
+
+            bltanimobjscale(&a);
+#if 0
 		BltAnimObj(logos, main_bitmap, actual_menu->Immagine,
 				   actual_menu->X, actual_menu->Y, bitmap_width);
+#endif
+    }
 
 	if (current_menu == MENU_TEAM_SETTINGS) {
 		char *c = msg_80;
@@ -1561,8 +1584,6 @@ BOOL HandleMenuIDCMP(void)
 	
 	if (SDL_WaitEvent(&e)) {
 
-		D(bug("Ricevuto evento %d\n", e.type));
-		
 		switch (e.type) {
 		case SDL_VIDEORESIZE:
 			if (!reqqing)
@@ -1669,7 +1690,6 @@ BOOL HandleMenuIDCMP(void)
 
 					actual_button = current_button;
 					
-					D(bug("Eseguo swap...\n"));
 					DrawBox(actual_button);
 					ScreenSwap();
 				}
@@ -1677,7 +1697,6 @@ BOOL HandleMenuIDCMP(void)
 					   && current_button != NESSUN_BOTTONE) {
 				WORD temp;
 
-				D(bug("Eseguo swap su deseleziona bottone...\n"));
 				DeselezionaBottone(current_button);
 				ScreenSwap();
 

@@ -16,7 +16,7 @@ int screen_depth;
 
 BOOL double_buffering = FALSE, public_screen = FALSE;
 BOOL use_remapping = TRUE, use_window = FALSE;
-BOOL save_back = TRUE, use_scaling = FALSE, use_clipping = FALSE;
+BOOL save_back = FALSE, use_scaling = FALSE, use_clipping = FALSE;
 BOOL force_single = FALSE;
 
 struct MyList GfxList, DrawList, TempList;
@@ -535,6 +535,8 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 				}
 			}
 
+// this code is out of date with the current ETW game
+#ifdef undef
 			if (use_scaling) {
 				if (!(obj->sb = malloc(obj->max_width * obj->max_height))) {
 					if (obj->bg)
@@ -546,7 +548,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 					return NULL;
 				}
 			}
-
+#endif
 			if (use_remapping && !pens) {
 				if ((obj->Palette = malloc((1 << obj->RealDepth) * 3))) {
 					fread(obj->Palette, sizeof(char) * 3,
@@ -706,18 +708,18 @@ void FreeGfxObj(GfxObj * obj)
 		free(n);
 	}
 
-	if (obj->Palette)
-		free(obj->Palette);
+    if (obj->Palette) {
+        free(obj->Palette);
 
-	if (obj->Pens) {
-		int i;
+        if (obj->Pens) {
+            int i;
 
-		for (i = 0; i < (1 << obj->realdepth); i++)
-			release_pen(obj->Pens[i]);
+            for (i = 0; i < (1 << obj->realdepth); i++)
+                release_pen(obj->Pens[i]);
 
-		free(obj->Pens);
-	}
-
+            free(obj->Pens);
+        }
+    }
 	if (obj->bmap)
 		free(obj->bmap);
 
@@ -751,24 +753,26 @@ void FreeAnimObj(AnimObj * obj)
 		if (obj->Frames[i])
 			free_mchunky(obj->Frames[i]);
 
-	if ((obj->Flags & AOBJ_COPIED) == 0) {
-		if (obj->Widths)
-			free(obj->Widths);
-		if (obj->Heights)
-			free(obj->Heights);
-		if (obj->sb)
-			free(obj->sb);
-	}
+    if ((obj->Flags & AOBJ_COPIED) == 0) {
+        if (obj->Widths)
+            free(obj->Widths);
+        if (obj->Heights)
+            free(obj->Heights);
+        if (obj->sb)
+            free(obj->sb);
+
+    }
+
+    if (obj->Pens && ((obj->Flags & AOBJ_SHAREPENS) == 0)) {
+        for (i = 0; i < (1 << obj->RealDepth); i++)
+            release_pen(obj->Pens[i]);
+
+        free(obj->Pens);
+    }
 
 	if (obj->Frames)
 		free(obj->Frames);
 
-	if (obj->Pens && ((obj->Flags & AOBJ_SHAREPENS) == 0)) {
-		for (i = 0; i < (1 << obj->RealDepth); i++)
-			release_pen(obj->Pens[i]);
-
-		free(obj->Pens);
-	}
 
 	if (obj->Palette)
 		free(obj->Palette);
@@ -974,11 +978,10 @@ AnimObj *CopyAnimObj(AnimObj * obj)
 		memcpy(o, obj, sizeof(struct AnimObject));
 		o->node.mln_Succ = o->node.mln_Pred = NULL;
 
-		o->Flags = AOBJ_COPIED;
-		
-		if (obj->Pens || (obj->Flags & AOBJ_SHAREPENS))
-			o->Flags |= AOBJ_SHAREPENS;
-				
+
+// XXX this is a problem on pocketpc, still have to understand why
+		o->Flags = AOBJ_COPIED | AOBJ_SHAREPENS;
+						
 		o->Pens = NULL;
 		o->Palette = NULL;
 
