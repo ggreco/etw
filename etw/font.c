@@ -33,7 +33,7 @@ struct Stats stats[] = {
 	{"POSSESSION", 0, 10},
 };
 
-BOOL draw_r, replay_done, replay_onscreen = FALSE;
+BOOL draw_r, replay_done;
 
 void PrintTeamName(Giocatore * g, LONG y)
 {
@@ -238,14 +238,14 @@ void split_string(char *string, int y)
 		}
 	}
 }
+
 void ShowPanel(void)
 {
-	static BOOL goal_onscreen = FALSE;
+    BOOL goal_onscreen = InAnimList(goal_banner);
 
 	if (replay_mode) {
 		if (goal_onscreen) {
 			RemAnimObj(goal_banner);
-			goal_onscreen = FALSE;
 		}
 		return;
 	}
@@ -717,25 +717,10 @@ void ShowPanel(void)
 						   (WINDOW_HEIGHT * 3 / 5) -
 						   (goal_banner->Heights[0] >> 1), 0);
 
-				goal_onscreen = TRUE;
 			}
-
-
-/*
-
-Vecchio codice per farlo muovere
-
-			if(p->show_time>1)
-			{
-				MoveAnimObj(goal_banner,WINDOW_WIDTH-8-(GOAL_TIME-p->show_time)*value,60);
-			}
-*/
-			if (p->show_time <= 1) {
-				if (goal_onscreen) {
-					RemAnimObj(goal_banner);
-					goal_onscreen = FALSE;
-				}
-			}
+            else if (p->show_time <= 1) {
+                RemAnimObj(goal_banner);
+            }
 		} else {
 			rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - 80,
 							 (WINDOW_HEIGHT >> 1) - 40,
@@ -750,7 +735,6 @@ Vecchio codice per farlo muovere
 		}
 	} else if (goal_onscreen) {
 		RemAnimObj(goal_banner);
-		goal_onscreen = FALSE;
 	}
 
 	if (p->show_panel & PANEL_KICKOFF) {
@@ -805,18 +789,17 @@ void DrawPause(void)
 
 void DrawR(void)
 {
+    BOOL replay_onscreen = InAnimList(replay);
+
 	if (draw_r) {
 		if (replay) {
-			if (!replay_onscreen) {
-				replay_onscreen = TRUE;
+			if (!replay_onscreen) 
 				AddAnimObj(replay, 2, 2, 0);
-			}
-		} else {
+		} else { 
 			drawtext("R", 1, 2, font_height + 2, Pens[P_NERO]);
 		}
 	} else if (replay_onscreen) {
 		RemAnimObj(replay);
-		replay_onscreen = FALSE;
 	}
 }
 

@@ -117,34 +117,34 @@ void bltanimobjclipped(struct MChunky *src,int xs,int ys,bitmap dest,int xd,int 
 {
 	register struct ALine *line=src->FirstLine;
 	register struct ABlock *block;
-	register int line_offset,i;
+	register int line_offset, i;
 
-	dest+=xd;
-	dest+=(yd*destmod);
+	dest += xd;
+	dest += (yd*destmod);
 
-	while(ys>0)	{
-		line=line->Next;
+	while(ys > 0)	{
+		line = line->Next;
 		ys--;
 	}
 
-	while(h>0&&line) {
-		block=line->FirstBlock;
-		line_offset=-xs;
+	while (h>0 && line) {
+		block = line->FirstBlock;
+		line_offset = -xs;
 
-		while(block) {
-			if(block->Buffer) {
-				for(i=0;i<block->Length;i++,line_offset++)
-					if(line_offset>=0&&line_offset<w)
-						dest[line_offset]=block->Buffer[i];
+		while (block) {
+			if (block->Buffer) {
+				for (i = 0; i < block->Length; i++, line_offset++)
+					if (line_offset >= 0 && line_offset < w)
+						dest[line_offset] = block->Buffer[i];
 			}
 			else
-				line_offset+=block->Length;
+				line_offset += block->Length;
 
-			block=block->Next;
+			block = block->Next;
 		}
 		
-		dest+=destmod;
-		line=line->Next;
+		dest += destmod;
+		line = line->Next;
 		h--;
 	}
 }

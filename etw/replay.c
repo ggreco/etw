@@ -1,11 +1,11 @@
 #include "eat.h"
+#include "files.h"
 
 ULONG *r_controls[MAX_PLAYERS];
 // UWORD actual_control[MAX_PLAYERS];
 
 void EndReplay(void);
 
-extern BOOL replay_onscreen;
 extern int highsize;
 
 UBYTE ReplaySet=0,smallcounter=0,old_tc,OriginalReplaySet,SetLimit,StartReplaySet;
@@ -15,7 +15,7 @@ BOOL replay_mode=FALSE,start_replay=FALSE,was_using_radar=FALSE,was_using_nosoun
 UWORD real_counter,counter=0,CounterLimit;
 
 extern BOOL draw_r;
-
+extern void WriteGameConfig(FILE *);
 struct Pos *arcade_buf;
 
 struct MatchStatus
@@ -33,56 +33,27 @@ int matchstatus_size = sizeof(struct MatchStatus);
 
 void ReadMatch(FILE *f, struct MatchStatus *m)
 {
-    WORD tempw;
-    UWORD tempuw;
-
     fread(&m->partita, sizeof(m->partita), 1, f);
     fread(m->squadra, sizeof(m->squadra), 2, f);
     
-    // ReplayCounter
-    fread(&tempuw, sizeof(tempuw), 1, f);
-    SWAP_WORD(tempuw);
-    m->ReplayCounter = tempuw;
+    READ_WORD(m->ReplayCounter, f);
     
-    // field_y
-    fread(&tempw, sizeof(tempw), 1, f);
-    SWAP_WORD(tempw);
-    m->field_x = tempw;
+    READ_WORD(m->field_x, f);
+    READ_WORD(m->field_y, f);
 
-    // field_x;
-    fread(&tempw, sizeof(tempw), 1, f);
-    SWAP_WORD(tempw);
-    m->field_y = tempw;
-
-    // need_release
-    fread(m->need_release, sizeof(UBYTE), MAX_PLAYERS, f);
+    READ_DATA(m->need_release, f);
 }
 
 void WriteMatch(FILE *f, struct MatchStatus *m)
 {
-    WORD tempw;
-    UWORD tempuw;
-    
-    fread(&m->partita, sizeof(m->partita), 1, f);
-    fread(m->squadra, sizeof(m->squadra), 2, f);
+    fwrite(&m->partita, sizeof(m->partita), 1, f);
+    fwrite(m->squadra, sizeof(m->squadra), 2, f);
 
-    // ReplayCounter
-    tempuw = m->ReplayCounter;
-    SWAP_WORD(tempuw);
-    fwrite(&tempuw, sizeof(tempuw), 1, f);
-    
-    // field_y
-    tempw = m->field_x;
-    SWAP_WORD(tempw);
-    fwrite(&tempw, sizeof(tempw), 1, f);
+    WRITE_WORD(m->ReplayCounter, f);
+    WRITE_WORD(m->field_x, f);
+    WRITE_WORD(m->field_y, f);
 
-    // field_x;
-    tempw = m->field_y;
-    SWAP_WORD(tempw);
-    fwrite(&tempw, sizeof(tempw), 1, f);
-
-    // need_release
-    fwrite(m->need_release, sizeof(UBYTE), MAX_PLAYERS, f);
+    WRITE_DATA(m->need_release, f);
 }
 
 void StopTime(void)
@@ -123,7 +94,7 @@ void StoreReplay(UBYTE Set)
 	match[Set].field_x=field_x;
 	match[Set].field_y=field_y;
 
-	memcpy(match[Set].need_release,need_release,sizeof(BYTE)*MAX_PLAYERS);
+	memcpy(match[Set].need_release, need_release, sizeof(need_release));
 
 	if(arcade)
 	{
@@ -152,7 +123,7 @@ void LoadReplay(UBYTE Set)
 {
 	register LONG i,j;
 	APTR *a=NULL;
-
+    
 	i=0;
 
 	RestartTime();
@@ -161,12 +132,13 @@ void LoadReplay(UBYTE Set)
 
 	if(!pl->Hide)
 		RemAnimObj(pl->immagine);
-			
+
 	if(p->penalty_onscreen)
 		RemAnimObj(p->extras);
+ 
+    p->penalty_onscreen = FALSE;
 
-	if(highlight)
-	{
+	if (highlight) {
 // Salvo tutti i puntatori...
 
 		if(!(a=(APTR *)malloc(sizeof(APTR)*(SQ_PTR*2+6))))
@@ -176,12 +148,10 @@ void LoadReplay(UBYTE Set)
 		}
 	}
 
-	while(object_list[i])
-	{
-		if(object_list[i]->OnScreen)
-		{
+	while (object_list[i]) {
+		if (object_list[i]->OnScreen) {
 			RemAnimObj(object_list[i]->immagine);
-			object_list[i]->OnScreen=FALSE;
+    	    object_list[i]->OnScreen=FALSE;
 		}
 
 		i++;
@@ -190,149 +160,142 @@ void LoadReplay(UBYTE Set)
 	for(i=0;i<4;i++)
 		pezzi_porte[i]->world_x=-1000;
 
-	for(i=0;i<2;i++)
-	{
-/*
-	Superfluo e' in object_list
+	for(i=0;i<2;i++) {
 
-		if(p->squadra[i]->portiere.OnScreen)
-			RemAnimObj(p->squadra[i]->portiere.immagine);
-*/
-		
-		if(p->squadra[i]->MarkerOnScreen)
-			RemAnimObj(p->squadra[i]->Marker);
+        if (p->squadra[i]->MarkerOnScreen)
+            RemAnimObj(p->squadra[i]->Marker);
 
-		if(a)
-		{
-			a[i*SQ_PTR+34]=p->squadra[i]->portiere.Nome;
-			a[i*SQ_PTR+35]=p->squadra[i]->portiere.Cognome;
+        if (a) {
+            a[i*SQ_PTR]    = p->squadra[i]->portiere.immagine;
+            a[i*SQ_PTR+11] = p->squadra[i]->tattica;
+            a[i*SQ_PTR+12] = p->squadra[i]->Marker;
+            a[i*SQ_PTR+13] = p->squadra[i]->NomeAttivo;
+            a[i*SQ_PTR+34] = p->squadra[i]->portiere.Nome;
+            a[i*SQ_PTR+35] = p->squadra[i]->portiere.Cognome;
+        }
+        
+        for (j=0; j<10; j++) {
+            if (p->squadra[i]->giocatore[j].OnScreen)
+                RemAnimObj(p->squadra[i]->giocatore[j].immagine);
 
-			a[i*SQ_PTR]=p->squadra[i]->portiere.immagine;
-			a[i*SQ_PTR+11]=p->squadra[i]->tattica;
-			a[i*SQ_PTR+12]=p->squadra[i]->Marker;
-			a[i*SQ_PTR+13]=p->squadra[i]->NomeAttivo;
-		}
+            if (a) {
+                a[j+i*SQ_PTR+1]  = p->squadra[i]->giocatore[j].immagine;
+                a[j+i*SQ_PTR+14] = p->squadra[i]->giocatore[j].Nome;
+                a[j+i*SQ_PTR+24] = p->squadra[i]->giocatore[j].Cognome;
+            }
+        }
 
-		for(j=0;j<10;j++)
-		{
-			if(p->squadra[i]->giocatore[j].OnScreen)
-				RemAnimObj(p->squadra[i]->giocatore[j].immagine);
-
-			if(a)
-			{
-				a[j+i*SQ_PTR+1]=p->squadra[i]->giocatore[j].immagine;
-				a[j+i*SQ_PTR+14]=p->squadra[i]->giocatore[j].Nome;
-				a[j+i*SQ_PTR+24]=p->squadra[i]->giocatore[j].Cognome;
-			}
-		}
-
-		*p->squadra[i]=match[Set].squadra[i];
-
+        // copy over the playing team the saved team
+        *p->squadra[i] = match[Set].squadra[i];
 		p->squadra[i]->portiere.OnScreen=FALSE;
 		p->squadra[i]->MarkerOnScreen=FALSE;
 
-		if(a)
-		{
-			char *c;
-			ULONG d=(ULONG)p->squadra[i]->tattica,e;
+        if (a) {
+            char *c;
+            ULONG d = (ULONG)p->squadra[i]->tattica, e;
+// first fix the pointers then the reference INSIDE them!
+            p->squadra[i]->portiere.immagine = a[i*SQ_PTR];
+            p->squadra[i]->Marker     = a[i*SQ_PTR+12];
 
-			p->squadra[i]->portiere.immagine->node.mln_Succ=p->squadra[i]->portiere.immagine->node.mln_Pred=NULL;
-			p->squadra[i]->portiere.squadra=p->squadra[i];
-			p->squadra[i]->portiere.Nome=a[i*SQ_PTR+34];
-			p->squadra[i]->portiere.Cognome=a[i*SQ_PTR+35];
-			p->squadra[i]->portiere.immagine=a[i*SQ_PTR];
+            p->squadra[i]->portiere.immagine->node.mln_Succ = 
+                p->squadra[i]->portiere.immagine->node.mln_Pred= NULL;
 
-			p->squadra[i]->tattica=a[i*SQ_PTR+11];
-			p->squadra[i]->Marker->node.mln_Succ=p->squadra[i]->Marker->node.mln_Pred=NULL;
-			p->squadra[i]->Marker=a[i*SQ_PTR+12];
-			p->squadra[i]->NomeAttivo=a[i*SQ_PTR+13];
+            p->squadra[i]->portiere.squadra  = p->squadra[i];
+            p->squadra[i]->portiere.Nome     = a[i*SQ_PTR+34];
+            p->squadra[i]->portiere.Cognome  = a[i*SQ_PTR+35];
 
-			p->squadra[i]->attivo=&p->squadra[i]->giocatore[(ULONG)p->squadra[i]->attivo];
+            p->squadra[i]->tattica = a[i*SQ_PTR+11];
+            p->squadra[i]->Marker->node.mln_Succ = 
+                p->squadra[i]->Marker->node.mln_Pred=NULL;
 
-			c=p->squadra[i]->tattica->Name;
 
-			e=(c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4];
+            p->squadra[i]->NomeAttivo = a[i*SQ_PTR+13];
 
-			if(e!=d) {
-				char buffer[40];
+            p->squadra[i]->attivo = &p->squadra[i]->giocatore[(ULONG)p->squadra[i]->attivo];
 
-				sprintf(buffer, "ETW-TCT:%c%c%c-%c",
+            c = p->squadra[i]->tattica->Name;
+
+            e=(c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4];
+
+            if (e != d) {
+                char buffer[40];
+
+                sprintf(buffer, "tct/%c%c%c-%c",
                         (char) ((d&0xff000000)>>24),
                         (char) ((d&0x00ff0000)>>16),
                         (char) ((d&0xff00)>>8),
                         (char) (d&0xff) );
 
-				if(!(p->squadra[i]->tattica=LoadTactic(buffer))) {
-					quit_game=TRUE;
-					p->squadra[i]->tattica=a[i*SQ_PTR+11];
-				}
-				else
-					FreeTactic(p->squadra[i]->tattica);
-			}
-		}
+                if(!(p->squadra[i]->tattica=LoadTactic(buffer))) {
+                    quit_game=TRUE;
+                    p->squadra[i]->tattica=a[i*SQ_PTR+11];
+                }
+                else
+                    FreeTactic(p->squadra[i]->tattica);
+            }
 
+        }
 
-		for(j=0;j<10;j++)
-		{
-			p->squadra[i]->giocatore[j].OnScreen=FALSE;
+        for(j=0;j<10;j++) {
+            p->squadra[i]->giocatore[j].OnScreen = FALSE;
 
-			if(a)
-			{
-				p->squadra[i]->giocatore[j].squadra=p->squadra[i];
-				p->squadra[i]->giocatore[j].immagine->node.mln_Succ=p->squadra[i]->giocatore[j].immagine->node.mln_Pred=NULL;
-				p->squadra[i]->giocatore[j].immagine=a[j+i*SQ_PTR+1];
-				p->squadra[i]->giocatore[j].Nome=a[j+14+i*SQ_PTR];
-				p->squadra[i]->giocatore[j].Cognome=a[j+24+i*SQ_PTR];
-			}
-		}
+            if (a) {
+                p->squadra[i]->giocatore[j].squadra  = p->squadra[i];
+                p->squadra[i]->giocatore[j].immagine = a[j+i*SQ_PTR+1];
+                p->squadra[i]->giocatore[j].Nome     = a[j+14+i*SQ_PTR];
+                p->squadra[i]->giocatore[j].Cognome  = a[j+24+i*SQ_PTR];
 
-		PrintSmall(p->squadra[i]->NomeAttivo,p->squadra[i]->attivo->Cognome,p->squadra[i]->attivo->NameLen);
-	}
+                p->squadra[i]->giocatore[j].immagine->node.mln_Succ = 
+                   p->squadra[i]->giocatore[j].immagine->node.mln_Pred = NULL;
+            }
+        }
+        
+        PrintSmall(p->squadra[i]->NomeAttivo,
+                   p->squadra[i]->attivo->Cognome,
+                   p->squadra[i]->attivo->NameLen);
+    }
 
 //per debug
 	old_tc=p->TabCounter;
 
-	if(a)
-	{
-		a[SQ_PTR*2]=p->arbitro.immagine;
-		a[SQ_PTR*2+1]=pl->immagine;
-		a[SQ_PTR*2+2]=p->result;
-		a[SQ_PTR*2+3]=p->extras;
-		a[SQ_PTR*2+4]=p->squadra[0];
-		a[SQ_PTR*2+5]=p->squadra[1];
-	}
-
+    if (a) {
+		a[SQ_PTR*2]   = p->arbitro.immagine;
+		a[SQ_PTR*2+1] = pl->immagine;
+		a[SQ_PTR*2+2] = p->result;
+		a[SQ_PTR*2+3] = p->extras;
+		a[SQ_PTR*2+4] = p->squadra[0];
+		a[SQ_PTR*2+5] = p->squadra[1];
+    }
+    
 	*p=match[Set].partita;
 
-	if(a)
-	{
-		p->arbitro.immagine->node.mln_Succ=p->arbitro.immagine->node.mln_Pred=NULL;
-		p->palla.immagine->node.mln_Succ=p->palla.immagine->node.mln_Pred=NULL;
-		p->extras->node.mln_Succ=p->extras->node.mln_Pred=NULL;
-		p->arbitro.immagine=a[SQ_PTR*2];
-		p->palla.immagine=a[SQ_PTR*2+1];
-		p->result=a[SQ_PTR*2+2];
-		p->extras=a[SQ_PTR*2+3];
-		p->squadra[0]=a[SQ_PTR*2+4];
-		p->squadra[1]=a[SQ_PTR*2+5];
+    if (a) {
 
-		p->possesso= p->squadra[(LONG)p->possesso];
+        p->arbitro.immagine = a[SQ_PTR*2];
+        p->palla.immagine   = a[SQ_PTR*2+1];
+        p->result           = a[SQ_PTR*2+2];
+        p->extras           = a[SQ_PTR*2+3];
+        p->squadra[0]       = a[SQ_PTR*2+4];
+        p->squadra[1]       = a[SQ_PTR*2+5];
+    
+        p->arbitro.immagine->node.mln_Succ=p->arbitro.immagine->node.mln_Pred=NULL;
+        p->palla.immagine->node.mln_Succ=p->palla.immagine->node.mln_Pred=NULL;
+        p->extras->node.mln_Succ=p->extras->node.mln_Pred=NULL;
 
-		if(p->player_injuried)
-		{
+        p->possesso= p->squadra[(LONG)p->possesso];
+
+		if(p->player_injuried)	{
 			ULONG l=(ULONG)p->player_injuried;
 			l--;
 
 			p->player_injuried=( l>=11 ? &(p->squadra[1]->giocatore[l-11]) : &(p->squadra[0]->giocatore[l]) );
 		}
 
-		if(pl->sq_palla)
-		{
+		if(pl->sq_palla) {
 			pl->sq_palla= p->squadra[ ((ULONG)pl->sq_palla)-1];
 		}
 
-		if(pl->gioc_palla)
-		{
+		if(pl->gioc_palla) 	{
 			ULONG l=(ULONG)pl->gioc_palla;
 
 			l--;
@@ -345,8 +308,7 @@ void LoadReplay(UBYTE Set)
 
 	p->arbitro.OnScreen=FALSE;
 
-	if(!pl->Hide)
-	{
+	if(!pl->Hide) {
 		AddAnimObj(pl->immagine,10,10,0);
 	}
 
@@ -354,16 +316,16 @@ void LoadReplay(UBYTE Set)
 		AddAnimObj(p->extras,0,0,(p->marker_x>640 ? 1 : 0 ));
 
 	real_counter=counter;
-	counter=match[Set].ReplayCounter;
-	field_x=match[Set].field_x;
-	field_y=match[Set].field_y;
-	memcpy(need_release,match[Set].need_release,sizeof(BYTE)*MAX_PLAYERS);
+	counter = match[Set].ReplayCounter;
+	field_x = match[Set].field_x;
+	field_y = match[Set].field_y;
+	memcpy(need_release, match[Set].need_release,
+           sizeof(need_release));
 
 
 	D(bug("Replay: start %ld - end %ld (startset %ld) (TC: %ld->%ld)\n",counter,real_counter,Set,old_tc,p->TabCounter));
 
-	if(arcade)
-	{
+	if(arcade) {
 		Set*=MAX_ARCADE_ON_FIELD;
 
 		for(i=0;i<MAX_ARCADE_ON_FIELD;i++)
@@ -373,36 +335,30 @@ void LoadReplay(UBYTE Set)
 		}
 	}
 
+// free the pointers backup
 	if(highlight)
 		free(a);
-// rilascio tutti i puntatori...		
-
-
 }
 
 void StartReplay(void)
 {
-	if(highlight)
-	{
+	if(highlight) {
 		LoadReplay(0);
 	}
-	else if(full_replay)
-	{
+	else if(full_replay) {
 		OriginalReplaySet=ReplaySet+1;
 		StoreReplay(OriginalReplaySet);
 		LoadReplay(0);
 		StartReplaySet=0;
 		full_replay=FALSE;
 	}
-	else if(SetLimit==1)
-	{
+	else if(SetLimit==1) {
 		OriginalReplaySet=ReplaySet^1;
 		StoreReplay(OriginalReplaySet);
 		StartReplaySet=ReplaySet;
 		LoadReplay(ReplaySet);
 	}
-	else
-	{
+	else {
 		OriginalReplaySet=ReplaySet+1;
 
 		if(OriginalReplaySet>SetLimit)
@@ -412,41 +368,34 @@ void StartReplay(void)
 
 // Ho allungato il replay di un set
 
-		if(ReplaySet>2)
-		{
+		if(ReplaySet>2) {
 			StartReplaySet=ReplaySet-3;
 			LoadReplay(StartReplaySet);
 		}
-		else if(replay_looped)
-		{
+		else if(replay_looped) {
 			StartReplaySet=SetLimit-2+ReplaySet;
 			LoadReplay(StartReplaySet);
 		}
-		else
-		{
+		else {
 			StartReplaySet=0;
 			LoadReplay(0);
 		}
 	}
 
-	if(!full_replay)
-	{
-		if(detail_level&USA_RADAR)
-		{
+	if(!full_replay) {
+		if(detail_level&USA_RADAR) {
 			detail_level&=~USA_RADAR;
 			was_using_radar=TRUE;
 		}
 		else was_using_radar=FALSE;
 
-		if(detail_level&USA_RISULTATO)
-		{
+		if(detail_level&USA_RISULTATO) {
 			detail_level&=~USA_RISULTATO;
 			was_using_result=TRUE;
 		}
 		else was_using_result=FALSE;
 
-		if(!no_sound)
-		{
+		if(!no_sound) {
 			SetCrowd(REPLAY);
 			was_using_nosound=FALSE;
 			no_sound=TRUE;
@@ -458,8 +407,7 @@ void StartReplay(void)
 	replay_mode=TRUE;
 	draw_r=TRUE;
 
-	if(highlight)
-	{
+	if(highlight) {
 		counter=0;
 		real_counter=highsize;
 	}
@@ -467,69 +415,66 @@ void StartReplay(void)
 
 void HandleReplay(void)
 {
-	if(!allow_replay)
+	if (!allow_replay)
 		return;
 
-	if(start_replay)
-	{
+	if (start_replay) {
 		StartReplay();
 	}
-	else if(replay_mode)
-	{
+	else if (replay_mode) {
 		smallcounter++;
 
-		if(smallcounter>15)
-		{
+		if (smallcounter > 15) {
 			smallcounter=0;
 
 			draw_r= ( (draw_r==TRUE) ? FALSE : TRUE );
 		}
 
-		if(MyReadPort0(0)&JPF_BUTTON_RED ||
-			MyReadPort1(1)&JPF_BUTTON_RED )
-		{
+		if (MyReadPort0(0)&JPF_BUTTON_RED ||
+			MyReadPort1(1)&JPF_BUTTON_RED ) {
 			counter=real_counter;
 
-			EndReplay();
-			LoadReplay(OriginalReplaySet);
+            if (!highlight) {
+	    		EndReplay();
+    			LoadReplay(OriginalReplaySet);
+            }
 		}
 
-		if(counter>=real_counter)
-		{
-			if(highlight)
-			{
-				if(!was_using_nosound)
-					no_sound=FALSE;
+		if (counter>=real_counter) {
+            if (highlight) {
+                D(bug("Highlight finished, quitting."));
 
-				quit_game=TRUE;
-				replay_mode=FALSE;
-			}
+                if(slow_motion)	{
+                    slow_motion=FALSE;
+                    MY_CLOCKS_PER_SEC_50>>=2;
+                }
+
+                if(!was_using_nosound)
+                    no_sound=FALSE;
+
+                quit_game=TRUE;
+                replay_mode=FALSE;
+            }
 			else
 				EndReplay();
 		}
 
 	}
-	else /* if(!no_record) */
-	{
-		if((counter&0xff)==0)
-		{
-			StoreReplay(ReplaySet);
+    else if((counter&0xff)==0) {
+        StoreReplay(ReplaySet);
 
-			ReplaySet++;
+        ReplaySet++;
 
-			if(ReplaySet>SetLimit)
-			{
-				D(bug("Replay looped!\n"));
-				replay_looped=TRUE;
-				ReplaySet=0;
-			}
-		}
-	}
+        if (ReplaySet>SetLimit) {
+            D(bug("Replay looped!\n"));
+            replay_looped=TRUE;
+            ReplaySet=0;
+        }
+    }
 
 	counter++;
 
-	if(counter>CounterLimit)
-	{
+	if (counter > CounterLimit) {
 		D(bug("Replay looped!\n"));
 		replay_looped=TRUE;
 		counter=0;
@@ -546,18 +491,15 @@ void EndReplay(void)
 	D(bug("Replay end (%ld) - TabCounter: %ld\n",counter,p->TabCounter));
 
 
-	if(old_tc!=p->TabCounter)
-	{
-		D(bug("*** Error in replay sequence, forcing coherency...\n"));
+	if(old_tc!=p->TabCounter) {
+		D(bug("*** Error or interrupted replay sequence, forcing coherency...\n"));
 		LoadReplay(OriginalReplaySet);
 	}
 
 	EndTime+=(EndReplayTime-StartReplayTime);
 	StartGameTime+=(EndReplayTime-StartReplayTime);
 
-	if(replay_onscreen)
-	{
-		replay_onscreen=FALSE;
+	if(InAnimList(replay))	{
 		RemAnimObj(replay);
 	}
 
@@ -567,15 +509,13 @@ void EndReplay(void)
 	if(was_using_result)
 		detail_level|=USA_RISULTATO;
 		
-	if(!was_using_nosound)
-	{
+	if(!was_using_nosound) {
 		no_sound=FALSE;
 
 		SetCrowd(FONDO);
 	}
 
-	if(slow_motion)
-	{
+	if(slow_motion)	{
 		slow_motion=FALSE;
 		MY_CLOCKS_PER_SEC_50>>=2;
 	}
@@ -615,9 +555,7 @@ void SaveReplay(void)
 
 	if ((f=fopen(buffer,"wb"))) {
 		int i, j;
-		FILE *f2;
-		WORD temp;
-		long lf;
+		WORD highsize;
 		struct MatchStatus *m;
 
         WriteGameConfig(f);        
@@ -625,19 +563,17 @@ void SaveReplay(void)
 		WriteTeam(f, &leftteam_dk);
 		WriteTeam(f, &rightteam_dk);
 
-		temp=real_counter-match[StartReplaySet].ReplayCounter+1;
-		SWAP_WORD(temp);
-		fwrite(&temp,sizeof(WORD),1,f);
+		highsize = real_counter-match[StartReplaySet].ReplayCounter+1;
+		WRITE_WORD(highsize, f);
 
 		D(bug("Saving from %ld to %ld (Set %ld), %ld frames\n",
-			match[StartReplaySet].ReplayCounter,real_counter,StartReplaySet,temp));
+			match[StartReplaySet].ReplayCounter, real_counter,
+            StartReplaySet, highsize));
 
 // Da qui viene letto da "game"
 
 		if ((m = malloc(sizeof(struct MatchStatus)))) {
-			SWAP_WORD(swaps);
-			fwrite(&swaps,sizeof(WORD),1,f);
-			SWAP_WORD(swaps);
+			WRITE_WORD(swaps, f);
 
 			*m=match[StartReplaySet];
 
@@ -662,18 +598,10 @@ void SaveReplay(void)
 
 			WriteMatch(f, m);
 
-			for(i=0;i<MAX_PLAYERS;i++) {
-                for (j = 0; j < temp; j++) {
-                    ULONG var = r_controls[i][m->ReplayCounter + j];
-
-                    SWAP_LONG(var);
-                    
-    				fwrite(&var,sizeof(ULONG),1,f);
-                }
-            }
-
-// Qui devo aggiungere il salvataggio delle formazioni.
-
+			for (i=0;i<MAX_PLAYERS;i++) 
+                for (j = 0; j < highsize; j++) 
+                    WRITE_LONG(r_controls[i][m->ReplayCounter + j], f);
+                
 			PlayBackSound(sound[DOG]);
 
 			free(m);
@@ -748,31 +676,22 @@ void LoadHighlight(void)
 	FILE *fh;
 
 	if ((fh=fopen(HIGH_FILE,"rb")))	{
-		WORD temp;
+		WORD swaps;
 		int i, j;
 
-		D(bug("Loading an highlight...\n"));
+		READ_WORD(swaps, fh);
 
-		fread(&temp,sizeof(WORD),1,fh);
-		SWAP_WORD(temp);
+        D(bug("Loading an highlight...(%d frames, %d swaps)\n", highsize, swaps));
 
         ReadMatch(fh, &match[0]);
 
-		for(i=0;i<MAX_PLAYERS;i++) {
-            for (j = 0; j < highsize; j++) {
-                ULONG var;
-                
-    			fread(&var,sizeof(ULONG),1,fh);
-
-                SWAP_LONG(var);
-                
-                r_controls[i][j] = var;
-            }
-        }
-
+		for(i=0;i<MAX_PLAYERS;i++) 
+            for (j = 0; j < highsize; j++) 
+                READ_LONG(r_controls[i][j], fh);
+            
 		fclose(fh);
 
-		for(i=0;i<temp;i++)
+		for(i = 0; i < swaps; i++)
 			SwapTeams();
 
 		start_replay=TRUE;
