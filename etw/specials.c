@@ -853,14 +853,15 @@ BOOL JoyCfg(WORD bottone)
 
 BOOL KeyCfg(WORD bottone)
 {
+	extern void *hwin;
+	extern BOOL MyEasyRequest(void *,struct EasyStruct *,void *);
+
 	/* AC: 27/05/04 - First rudimental keyboard configuration */
 	if(bottone>=(actual_menu->NumeroBottoni-3)&&actual_menu->Bottone[bottone].ID>=0)
 	{
 		/* Which "main" button the user have pressed? */
 		switch(actual_menu->Bottone[bottone].ID)
 		{
-			extern void *hwin;
-			extern BOOL MyEasyRequest(void *,struct EasyStruct *,void *);
 			/* Why if I include externs.h I obtain 55 compilation error? */
 			extern void SaveKeyDef(int, char *);
 			
@@ -952,7 +953,7 @@ BOOL KeyCfg(WORD bottone)
 						int i,n_keys = sizeof(keys)/sizeof(SDLKey);
 						
 						/* Search the key selected in the valid keys table */
-						k = -1;					
+						k = -2;					
 						for(i = 0;i < n_keys;i++)
 							if(e.key.keysym.sym == keys[i])
 							{
@@ -1028,6 +1029,15 @@ BOOL KeyCfg(WORD bottone)
 		/* Flush the event queue. *
 		 It doesn't work...
 		while(SDL_PollEvent(&e));*/
+		
+		/* Signal the user he has pressed a reserved key */
+		if(k == -2)
+		{
+			easy.es_TextFormat = "SORRY, SELECTED KEY IS RESERVED";
+			easy.es_GadgetFormat = msg_58;
+
+			MyEasyRequest(hwin, &easy, NULL);
+		}
 	}
 	return TRUE;
 }
