@@ -109,6 +109,27 @@ int MacRequester(struct MyFileRequest *fr)
 	return result;
 }
 
+int MacGetLanguage(void)
+{
+/*
+	I'm trying to obtain language preferences...
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	NSString *lang;
+	
+	if(lang = [defaults objectForKey:NSThisDayDesignations])
+	{
+		char *tmp = [lang cString];
+		//thisSound = [[[NSSound alloc] initFromSoundfile:soundPath] autorelease];
+		//[thisSound play];
+	}
+
+	//NSArray *plfa = [NSBundle localizations];
+	//NSString *loc = [plfa objectAtIndex:0];
+	//char *tmp = [loc cString];
+	*/
+	return -1;
+}
+
 /* Set the working directory to the .app's parent directory */
 - (void) setupWorkingDirectory:(BOOL)shouldChdir
 {

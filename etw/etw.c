@@ -392,8 +392,10 @@ BOOL LoadMenuStuff(void)
 	return FALSE;
 }
 
-// AC: Ma nel visual C++ dov'è?
-//int errno;
+// AC: Where is errno in Microsoft Visual C++? In which lib is contained?
+#ifdef MSVC
+int errno;
+#endif
 
 #ifndef DEMOVERSION
 int main(int argc, char *argv[])
@@ -401,6 +403,9 @@ int main(int argc, char *argv[])
 int disabled_main(int argc, char *argv[])
 #endif
 {
+	/* AC: Why if I include externs.h I obtain 55 compilation error? */
+	extern void LoadKeyDef(int, char *);
+	
 	DIR *l;
 
 #ifdef USE_LOGFILE
@@ -409,7 +414,7 @@ int disabled_main(int argc, char *argv[])
 #ifdef AMIGA
 	logfile = fopen("dh2:etw.log", "w");
 #elif defined(WIN)
-	logfile = fopen("debug.txt", "w");
+	logfile = fopen("etw.log", "w");
 #else
 	logfile = fopen("/tmp/etw.log", "w");
 #endif
@@ -443,7 +448,7 @@ int disabled_main(int argc, char *argv[])
 
 	LoadTeams(TEAMS_DIR "default" /*-*/ );
 
-	/* AC: Metto qui il caricamento dei file di config della tastiera
+	/* AC: I put here the load of keyboard configuration files
 	 * 
 	 */
 	LoadKeyDef(0,KEY_RED_FILE);
@@ -451,8 +456,9 @@ int disabled_main(int argc, char *argv[])
 
 //      EnableReqs();
 
-	/* AC: Sotto MacOS X e SDL 1.2.7 sembra proprio che se non ci son Jostick se ne esca.
-	 * Proviamo le due config in cascata.
+	/* AC: Under MacOS X and SDL 1.2.7 seems that if there aren't any koystick connected to the
+	 * computer, the SDL_Init fails. 
+	 * Now I'm trying the fallback config.
 	 */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) < 0)
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_NOPARACHUTE) < 0)

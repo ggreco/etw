@@ -26,8 +26,8 @@ char *menu_soundname[]=
 	NULL,
 };
 
-/* Dalla 1.2 ogni menu ha la sua lista di bottoni, questo mi rende MOLTO piu' semplice
- * aggiungere voci a qualunque menu!
+/* Starting from version 1.2 every menu has its own list of buttons, this method permit a
+ * VERY simpler way to add voices to any menu!
  */
 
 struct Bottone main_bottoni[]=
@@ -436,29 +436,42 @@ struct Bottone cb[]=
 };
 */
 
+/* In reality control 0 would be the BLUE keyboard, but for praticity
+ * since the things are inverted, at the moment we hold first red and
+ * then the blue.
+ */
 struct Bottone keycfg_bottoni[]=
 {
-	/* Configurazione tastiera "ROSSA" */
-	{10,64,100,71,-1,9,7,"UP"},{101,64,184,71,-1,7,0,NULL},
-	{10,75,100,82,-1,9,7,"RIGHT"},{101,75,184,82,-1,7,0,NULL},
-	{10,86,100,93,-1,9,7,"DOWN"},{101,86,184,93,-1,7,0,NULL},
-	{10,97,100,104,-1,9,7,"LEFT"},{101,97,184,104,-1,7,0,NULL},
-	{10,108,100,115,-1,9,7,"SHOT"},{101,108,184,115,-1,7,0,NULL},
-	{10,119,100,126,-1,9,7,"SHORT PASS"},{101,119,184,126,-1,7,0,NULL},
-	{10,130,100,137,-1,9,7,"LONG PASS"},{101,130,184,137,-1,7,0,NULL},
-	{10,141,100,148,-1,9,7,"FILTERING PASS"},{101,141,184,148,-1,7,0,NULL},
-	{10,152,100,159,-1,9,7,"CHANGE ACTIVE"},{101,152,184,159,-1,7,0,NULL},
-	{10,163,100,170,-1,9,7,"FAST RUN"},{101,163,184,170,-1,7,0,NULL},
-/*
-	/* Configurazione tastiera "BLU" *
-	{10,145,100,152,-1,6,8,"UP"},{101,145,184,152,-1,8,0,NULL},
-	{10,156,100,163,-1,6,8,"LEFT"},{101,156,184,163,-1,8,0,NULL},
-	{10,167,100,174,-1,6,8,"RIGHT"},{101,167,184,174,-1,8,0,NULL},
-	{10,178,100,185,-1,6,8,"DOWN"},{101,178,184,185,-1,8,0,NULL},
-	{10,189,100,196,-1,6,8,"SHORT PASS"},{101,189,184,196,-1,8,0,NULL},
-	{10,202,100,209,-1,6,8,"LONG PASS"},{101,202,184,209,-1,8,0,NULL},
-	{10,213,100,220,-1,6,8,"PAUSE"},{101,213,184,220,-1,8,0,NULL},
-*/
+	/* "RED" keyboard configuration */
+	{10,24,80,31,-1,7,9,"MOVE UP"},{81,24,154,31,-1,9,11,NULL},
+	{10,35,80,42,-1,7,9,"MOVE RIGHT"},{81,35,154,42,-1,9,11,NULL},
+	{10,46,80,53,-1,7,9,"MOVE DOWN"},{81,46,154,53,-1,9,11,NULL},
+	{10,57,80,64,-1,7,9,"MOVE LEFT"},{81,57,154,64,-1,9,11,NULL},
+	{10,68,80,75,-1,7,9,"SHOT"},{81,68,154,75,-1,9,11,NULL},
+	{10,79,80,86,-1,7,9,"SHORT PASS"},{81,79,154,86,-1,9,11,NULL},
+	{170,24,240,31,-1,7,9,"LONG PASS"},{241,24,311,31,-1,9,11,NULL},
+	{170,35,240,42,-1,7,9,"FILTERING PASS"},{241,35,311,42,-1,9,11,NULL},
+	{170,46,240,53,-1,7,9,"CHANGE ACTIVE"},{241,46,311,53,-1,9,11,NULL},
+	{170,57,240,64,-1,7,9,"FAST RUN"},{241,57,311,64,-1,9,11,NULL},
+	//{10,90,154,102,0,7,9,msg_96},
+
+	/* "BLUE" keyboard configuration */
+	{10,135,80,142,-1,8,15,"MOVE UP"},{81,135,154,142,-1,6,8,NULL},
+	{10,146,80,153,-1,8,15,"MOVE LEFT"},{81,146,154,153,-1,6,8,NULL},
+	{10,157,80,164,-1,8,15,"MOVE RIGHT"},{81,157,154,164,-1,6,8,NULL},
+	{10,168,80,175,-1,8,15,"MOVE DOWN"},{81,168,154,175,-1,6,8,NULL},
+	{10,179,80,186,-1,8,15,"SHOT"},{81,179,154,186,-1,6,8,NULL},
+	{10,190,80,197,-1,8,15,"SHORT PASS"},{81,190,154,197,-1,6,8,NULL},
+	{170,157,240,164,-1,8,15,"LONG PASS"},{241,157,311,164,-1,6,8,NULL},
+	{170,168,240,175,-1,8,15,"FILTERING PASS"},{241,168,311,175,-1,6,8,NULL},
+	{170,179,240,186,-1,8,15,"CHANGE ACTIVE"},{241,179,311,186,-1,6,8,NULL},
+	{170,190,240,197,-1,8,15,"FAST RUN"},{241,190,311,197,-1,6,8,NULL},
+	//{10,210,154,222,1,8,15,msg_96},
+
+	/* Save configurations */
+	{10,210,154,222,0,7,9,msg_96},
+	{170,210,311,222,1,8,15,msg_96},
+	
 	{90,229,230,241,MENU_SYSTEM_PREFS,11,12,msg_6},
 };
 
@@ -523,7 +536,7 @@ struct Bottone mp[]=
 	{30,159,138,166,-1,13,1,NULL},{140,159,148,166,-1,13,1,NULL},{150,159,258,166,-1,13,1,NULL},{260,159,299,166,-1,13,1,NULL},
 };
 
-// Occhio che sono numeri ottali!
+// WARNING: They are octal numbers!
 
 struct Bottone asb[]=
 {
@@ -541,7 +554,7 @@ struct Bottone cp[]=
 	{198,40,267,109,0,COLORE_UNSELECTED,9,"\20b"/*-*/},
 	{32,121,141,140,-1,0,0,NULL},{178,121,287,140,-1,0,0,NULL},
 	{77,151,96,170,-1,0,0,NULL},{223,151,242,170,-1,0,0,NULL},
-	{100,190,219,209,-1,0,0,NULL}, // per il game over
+	{100,190,219,209,-1,0,0,NULL}, // For the game over
 };
 
 struct Bottone cb[]=
@@ -553,7 +566,7 @@ struct Bottone cb[]=
 
 struct Bottone mr[]=
 {
-/* li lascio qui per eventuali bandiere...
+/* I leave them here for eventual flags...
 
 	{52,40,121,109,0,COLORE_UNSELECTED,9,"\20a"},
 	{198,40,267,109,0,COLORE_UNSELECTED,9,"\20b"},
@@ -598,12 +611,12 @@ struct Bottone scores[]=
 
 struct Bottone wcfp[]=
 {
-// Le prime quattro squadre...
+// The first four teams...
 	{120,57,230,76,-1,0,0,NULL},
 	{120,97,230,116,-1,0,0,NULL},
 	{120,137,230,156,-1,0,0,NULL},
 	{120,177,230,196,-1,0,0,NULL},
-// Le posizioni...
+// The positions...
 	{60,40,180,55,-1,P_GIALLO,P_BIANCO,msg_160},
 	{60,80,180,95,-1,P_GIALLO,P_BIANCO,msg_161},
 	{60,120,180,135,-1,P_GIALLO,P_BIANCO,msg_162},
@@ -660,7 +673,7 @@ struct GfxMenu menu[]=
 	{msg_177,scorelist_bottoni,scores,1,40,-1,0,0,-1,8,15,NULL},
 	{NULL,hl,NULL,64+1,0,-1,0,0,-1,11,12,(APTR)HighSelection},
 	{"SYSTEM",sprefs_bottoni,NULL,13,0,-1,190,38,0,3,0,(APTR)SystemPrefs},
-	{"KEYBOARD CONFIGURATION",keycfg_bottoni,NULL,21,0,-1,190,38,0,3,0,(APTR)KeyCfg},
+	{"KEYBOARD CONFIGURATION",keycfg_bottoni,NULL,43,0,-1,200 /*190*/,77 /*38*/,0,3,0,(APTR)KeyCfg},
 	{"JOYSTICK CONFIGURATION",joycfg_bottoni,NULL,15,0,-1,190,38,0,3,0,(APTR)JoyCfg},
 };
 

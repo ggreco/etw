@@ -798,12 +798,6 @@ BOOL DoAction(WORD bottone)
 					write_config("etw.cfg" /*-*/ );
 				}
 
-				/* AC: Metto temporaneamente qui il salvataggio dei file di config della tastiera
-				 * 
-				 */
-				SaveKeyDef(0,KEY_RED_FILE);
-				// Provo solo RED per adesso SaveKeyDef(1,KEY_BLUE_FILE);
-
 				easy.es_TextFormat = msg_70;
 				easy.es_GadgetFormat = msg_58;
 
