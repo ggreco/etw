@@ -4,7 +4,7 @@ CFLAGS = -Iinclude -Isf0:sdl-latest-includes -O2 -fomit-frame-pointer -fsigned-c
 LFLAGS = -lSDL -ldebug -lm -noixemul
 DEFINES = -DAMIGA -DMORPHOS -DCD_VERSION
 
-OBJECTS = Highdirent.o	  cpu.o		   human.o	  myiff.o	specials.o \
+OBJECTS = highdirent.o	  cpu.o		   human.o	  myiff.o	specials.o \
 	anim.o		  crowd.o	   intro.o	  os_control.o	squadre.o \
 	arbitro.o	  data.o	   league.o	  os_init.o	tables.o \
 	arcade.o	  dati_vel.o	   lists.o	  os_video.o	tactics.o \
