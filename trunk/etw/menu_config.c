@@ -274,8 +274,18 @@ void load_config(FILE *f)
 					{
 						if(!strnicmp(&buffer[9],controls[i],strlen(controls[i])))
 						{
-							control[(buffer[7]-'0')^1]=i;
-							D(bug("Controllo per la squadra %ld: %s\n"/*-*/,buffer[7]-'0'+1,controls[i]));
+                            int team = buffer[7]-'0';
+                           
+                            // if joystick is not present fallback to keyboard
+                            if (i < CTRL_KEY_1 && !os_check_joy(0))
+                               i = CTRL_KEY_1; 
+                                
+							control[team ^ 1]=i;
+                            
+                                
+							D(bug("Control for team %ld: %s\n"/*-*/, 
+                                        team + 1,controls[i]));
+                            
 							break;
 						}
 					}

@@ -403,7 +403,7 @@ BOOL TeamSelection(WORD bottone)
 		if(selected>-1)
 		{
 			can_modify=FALSE;
-			SetTeamSettings( -actual_menu->Bottone[selected].ID-1 );
+			SetTeamSettings( -actual_menu->Bottone[selected].ID-1, FALSE );
 			can_modify=TRUE;
 
 			ChangeMenu(MENU_TEAM_SETTINGS);
@@ -700,7 +700,7 @@ BOOL ArcadeTeamSelection(WORD bottone)
 			}
 
 			can_modify=FALSE;
-			SetTeamSettings( actual_menu->Bottone[selected].ID );
+			SetTeamSettings( actual_menu->Bottone[selected].ID, FALSE );
 			can_modify=TRUE;
 
 			ChangeMenu(MENU_TEAM_SETTINGS);
@@ -836,19 +836,19 @@ BOOL TeamSettings(WORD bottone)
 
 	b=&actual_menu->Bottone[bottone];
 
-	if(bottone==42)
-	{
+	if(bottone == 42) {
 		sel1=-1;
 
-		if(!game_start)
+		if(teamsettings[42].Testo == msg_6)
 			ChangeMenu(b->ID);
 		else
 			return FALSE;
 	}
-	else if(bottone==43)
-	{
+	else if(bottone==43) {
 // "Default" Da implementare!		
+        D(bug("We shouldn't pass here!"));
 	}
+
 	else if(controllo[actual_team]>=0&&can_modify)
 	{
 		if(bottone<34)
@@ -1337,7 +1337,7 @@ BOOL SystemPrefs(WORD bottone)
 
 			if(control[(bottone-5)/2]<CTRL_KEY_1)
 			{
-				if(!os_check_joy(0))
+				if(!os_check_joy((bottone-5)/2))
 					control[(bottone-5)/2]=CTRL_KEY_1;
 			}
 

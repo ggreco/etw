@@ -3,7 +3,7 @@
 #include "network.h"
 
 extern struct Window *win;
-SDL_Joystick *joy[2];
+SDL_Joystick *joy[2] = {NULL, NULL};
 char joybuttons[2];
 char joycfg_buttons[2][8];
 char num_joys=0;
@@ -57,7 +57,7 @@ ULONG MyReadJoyPort(ULONG l)
 	int xc,yc;
 	ULONG mask=0;
 
-	if(l<0)
+	if(l<0 || !joy[l])
 		return 0L;
 
 	if(SDL_JoystickGetButton(joy[l],joycfg_buttons[l][0]))
@@ -199,7 +199,7 @@ void set_controls(void)
 	{
 		if(control[p->squadra[0]->Joystick]<CTRL_KEY_1)
 		{
-			D(bug("Apro il joystick %ld\n",p->squadra[0]->Joystick));
+			D(bug("Opening joystick %ld\n",p->squadra[0]->Joystick));
 
 			if ((joy[p->squadra[0]->Joystick]=SDL_JoystickOpen(p->squadra[0]->Joystick))) {
 				num_joys++;
@@ -211,7 +211,7 @@ void set_controls(void)
 				D(bug("Number of Hats: %ld\n", SDL_JoystickNumAxes(joy[p->squadra[0]->Joystick])));
 				D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->squadra[0]->Joystick])));
 				D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->squadra[0]->Joystick])));
-				D(bug("Stato dell'event manager x i joystick: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
+				D(bug("Joystick event manager: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
 
 				if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE)
 				{
@@ -223,7 +223,8 @@ void set_controls(void)
 			}
 			else {
 				// Prevedo fallback a tastiera o ritorno un errore?
-				D(bug(" ->Errore nell'apertura del joystick!\n"));
+				D(bug(" ->Error opening joystick!\n"));
+                has_joystick = FALSE;
 			}
 		}
 
@@ -232,7 +233,7 @@ void set_controls(void)
 		{
 			HandleSquadra0=HandleControlledJoyPad;
 //			SetJoyPortAttrs(p->squadra[0]->Joystick,SJA_Type,SJA_TYPE_GAMECTLR,TAG_DONE);
-			D(bug("Joypad per la squadra 0\n"));
+			D(bug("Joypad for team 0\n"));
 		}
 		else
 		{
@@ -272,7 +273,7 @@ void set_controls(void)
 	}
 	else {
 		if(control[p->squadra[1]->Joystick]<CTRL_KEY_1) {
-			D(bug("Apro il joystick %ld\n",p->squadra[1]->Joystick));
+			D(bug("Opening joystick %ld\n",p->squadra[1]->Joystick));
 
 			if ((joy[p->squadra[1]->Joystick]=SDL_JoystickOpen(p->squadra[1]->Joystick))) {
 				has_joystick=TRUE;
@@ -282,7 +283,7 @@ void set_controls(void)
 				D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->squadra[1]->Joystick])));
 				D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->squadra[1]->Joystick])));
 				D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->squadra[1]->Joystick])));
-				D(bug("Stato dell'event manager x i joystick: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
+				D(bug("Joystick event manager: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
 
 				if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE) {
 					D(bug("** Forzo la disabilitazione dell'event manager x i joystick\n"));
@@ -292,7 +293,7 @@ void set_controls(void)
 				joybuttons[p->squadra[1]->Joystick]=SDL_JoystickNumButtons(joy[p->squadra[1]->Joystick]);
 			}
 			else {
-				D(bug(" ->Errore nell'apertura del joystick!\n"));
+				D(bug(" ->Error opening joystick!\n"));
 				// Vedi sopra!
 			}
 		}
@@ -300,7 +301,7 @@ void set_controls(void)
 			control[p->squadra[1]->Joystick]==CTRL_KEY_2) {
 			HandleSquadra1=HandleControlledJoyPad;
 //			SetJoyPortAttrs(p->squadra[1]->Joystick,SJA_Type,SJA_TYPE_GAMECTLR,TAG_DONE);
-			D(bug("Joypad per la squadra 1\n"));
+			D(bug("Joypad for team 1\n"));
 		}
 		else 
 		{

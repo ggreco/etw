@@ -246,7 +246,7 @@ BOOL InitSoundSystem(void)
 
 	fmt.freq = samplerate;
 
-    fmt.format = AUDIO_S8;
+    fmt.format = AUDIO_S8; // signed o unsigned?!?!?
 
     fmt.samples = BUFFER_SIZE;
 	fmt.callback = handle_sound;

@@ -78,7 +78,7 @@ extern BOOL HighSelection(WORD);
 extern BOOL JoyCfg(WORD);
 extern BOOL KeyCfg(WORD);
 
-extern void SetTeamSettings(WORD);
+extern void SetTeamSettings(WORD, BOOL);
 extern void DisplayTactic(int,int);
 extern void AddGiocatore(struct Giocatore_Disk *,int);
 extern void AddName(struct Giocatore_Disk *,int);

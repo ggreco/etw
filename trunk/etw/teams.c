@@ -668,7 +668,7 @@ void AddGiocatore(struct Giocatore_Disk *g,int posizione)
 		(((g->Tiro+g->Contrasto+g->Velocita*2+g->Tecnica+g->Creativita-2*6+3)*10)/7)/6 );
 }
 
-void SetTeamSettings(WORD team)
+void SetTeamSettings(WORD team, BOOL starting)
 {
 	int i,k;
 
@@ -781,17 +781,16 @@ void SetTeamSettings(WORD team)
         pannelli[11*3+2].Testo=pannelli[11*3+1].Testo=pannelli[11*3].Testo=NULL;
 		teamsettings[11*2].Testo=teamsettings[11*2+1].Testo=NULL;
 	}
-	else
-	{
+	else {
 		AddName((struct Giocatore_Disk *)&teamlist[team].portiere[1],11);
 		SetPlayerStatus(11,teamlist[team].portiere[1].Infortuni,0,
 						(teamlist[team].portiere[1].Parata*2+teamlist[team].portiere[1].Attenzione+2)/3);
 	}
 
-	if(game_start)
-		teamsettings[42].Testo=msg_0;
+	if (starting) 
+		teamsettings[42].Testo = msg_0;
 	else
-		teamsettings[42].Testo=msg_6;
+		teamsettings[42].Testo = msg_6;
 		
 	D(bug("SetTeamSettings FINISH"));
 }
