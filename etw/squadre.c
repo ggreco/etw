@@ -365,6 +365,9 @@ void ScanTactics(void)
 
 	D(bug("Scan of dir ETW-TCT:...\n"));
 
+	/*AC: I think that NumeroTattiche must be resetted to zero here... ^_^ */
+	NumeroTattiche = 0;
+
 	if ((dir=opendir(TCT_DIR))) {
 		while( (ent=readdir(dir))!=NULL) {
 			if( *ent->d_name == '.' )
