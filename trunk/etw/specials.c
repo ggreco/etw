@@ -963,8 +963,8 @@ BOOL KeyCfg(WORD bottone)
 
 					if(k>=0)
 					{
-						int s = 0,n_keys = sizeof(query)/sizeof(int);
-
+						int s = 0,i,n_keys = sizeof(query)/sizeof(int);
+						char *tmp;
 						/* Verify if the key selected is already used */
 						while(s < n_keys)
 						{
@@ -985,8 +985,8 @@ BOOL KeyCfg(WORD bottone)
 						}
 						
 						/* Uppercase conversion for ETW font */
-						char *tmp=SDL_GetKeyName(keys[k]);
-						int i = 0;
+						tmp=SDL_GetKeyName(keys[k]);
+						i = 0;
 						while(*tmp)
 						{
 							keys_names[bottone][i]=toupper(*tmp);
