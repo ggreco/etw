@@ -111,23 +111,25 @@ int MacRequester(struct MyFileRequest *fr)
 
 int MacGetLanguage(void)
 {
-/*
-	I'm trying to obtain language preferences...
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	NSString *lang;
+	NSString *jan;
+	NSArray *months;
+	int lang = 0;
 	
-	if(lang = [defaults objectForKey:NSThisDayDesignations])
+	/* This is a ugly method, but it is the only one that I know at the moment... */
+	if(months = [defaults stringArrayForKey:NSMonthNameArray])
 	{
-		char *tmp = [lang cString];
-		//thisSound = [[[NSSound alloc] initFromSoundfile:soundPath] autorelease];
-		//[thisSound play];
+		if(jan = [months objectAtIndex:0])
+		{
+			/* Italian */
+			if([jan caseInsensitiveCompare:[NSString stringWithCString:"gennaio"]] == 0)
+				lang = 1;
+			/* Deutsch */
+			else if([jan caseInsensitiveCompare:[NSString stringWithCString:"januar"]] == 0)
+				lang = 2;
+		}
 	}
-
-	//NSArray *plfa = [NSBundle localizations];
-	//NSString *loc = [plfa objectAtIndex:0];
-	//char *tmp = [loc cString];
-	*/
-	return -1;
+	return lang;
 }
 
 /* Set the working directory to the .app's parent directory */
