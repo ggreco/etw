@@ -1074,131 +1074,120 @@ void ChangeControlled(Squadra *s,WORD i)
 
 void HandleExtras(void)
 {
-        register int i=0;
-        register Oggetto *g;
-        register WORD xg;
-        register WORD yg;
+    register int i=0;
+    register Oggetto *g;
+    register WORD xg;
+    register WORD yg;
 
-        while(object_list[i])
-        {
-                g=object_list[i];
-                xg=g->world_x>>3;
-                yg=g->world_y>>3;
+    while(object_list[i]) {
+        g=object_list[i];
+        xg=g->world_x>>3;
+        yg=g->world_y>>3;
 
-                if( xg>(field_x-g->immagine->Widths[g->AnimType]) &&
-                    xg<(field_x+WINDOW_WIDTH) &&
-                    yg>(field_y-g->immagine->Heights[g->AnimType]) &&
-                    yg<(field_y+WINDOW_HEIGHT) 
-                   )
-                {
-			struct Rect *r=&ingombri[g->ObjectType];
+        if( xg>(field_x-g->immagine->Widths[g->AnimType]) &&
+                xg<(field_x+WINDOW_WIDTH) &&
+                yg>(field_y-g->immagine->Heights[g->AnimType]) &&
+                yg<(field_y+WINDOW_HEIGHT) 
+          ) {
+            struct Rect *r=&ingombri[g->ObjectType];
 
-                        if(!g->OnScreen)
-                        {
-                                AddAnimObj(g->immagine,xg-field_x,yg-field_y,g->AnimType);
-                                g->OnScreen=TRUE;
-                        }
-                        else /* muovo qui anche le porte if(g->ObjectType!=TIPO_PORTA || nosync) */
-			{
-                                MoveAnimObj(g->immagine,xg-field_x,yg-field_y);
-			}
+            if(!g->OnScreen) {
+                AddAnimObj(g->immagine,xg-field_x,yg-field_y,g->AnimType);
+                g->OnScreen=TRUE;
+            }
+            else { /* muovo qui anche le porte if(g->ObjectType!=TIPO_PORTA || nosync) */
+                MoveAnimObj(g->immagine,xg-field_x,yg-field_y);
+            }
 
 
-/* aggiungere qui il check sulle collisioni, le controllo solo se onscreen */
+            /* aggiungere qui il check sulle collisioni, le controllo solo se onscreen */
 
-                        if(     pl->world_x>(g->world_x+r->MinX)     &&
-                                pl->world_x<(g->world_x+r->MaxX)    &&
-                                pl->world_y>(g->world_y+r->MinY)    &&
-                                pl->world_y<(g->world_y+r->MaxY)    &&
-				pl->quota<6	) 
-                        {
-				if(g->ObjectType==TIPO_ARBITRO)
-				{
-                                        PlayIfNotPlaying(CONTRASTO);
-	                                TogliPallaMod();
+            if(     pl->world_x>(g->world_x+r->MinX)     &&
+                    pl->world_x<(g->world_x+r->MaxX)    &&
+                    pl->world_y>(g->world_y+r->MinY)    &&
+                    pl->world_y<(g->world_y+r->MaxY)    &&
+                    pl->quota<6	) {
+                if(g->ObjectType==TIPO_ARBITRO) {
+                    PlayIfNotPlaying(CONTRASTO);
+                    TogliPallaMod();
 
-					RimbalzoCasuale();
+                    RimbalzoCasuale();
 
-                	                if(pl->velocita<4)
-					{
-                        	                pl->velocita=4;
-						UpdateBallSpeed();
-					}
-				}
-
-/*
-                                switch(g->ObjectType)
-                     		{
-                                        case TIPO_ARBITRO:
-                                                PlayIfNotPlaying(CONTRASTO);
-						break;
-					case TIPO_PORTIERE:
-					case TIPO_PORTA:
-                                                break;
-                                        default:
-                                                PlayIfNotPlaying(CRASH);
-                                }
-*/
-
-/*
-Commentato finche' non aggiungo la fisica del pallone...
-*/
-                        }
+                    if(pl->velocita<4) {
+                        pl->velocita=4;
+                        UpdateBallSpeed();
+                    }
                 }
-                else if(g->OnScreen)
-                {
-                        RemAnimObj(g->immagine);
-                        g->OnScreen=FALSE;
-                }
-                
-                i++;
+
+                /*
+                   switch(g->ObjectType)
+                   {
+                   case TIPO_ARBITRO:
+                   PlayIfNotPlaying(CONTRASTO);
+                   break;
+                   case TIPO_PORTIERE:
+                   case TIPO_PORTA:
+                   break;
+                   default:
+                   PlayIfNotPlaying(CRASH);
+                   }
+                 */
+
+                /*
+                   Commentato finche' non aggiungo la fisica del pallone...
+                 */
+            }
+        }
+        else if(g->OnScreen) {
+            RemAnimObj(g->immagine);
+            g->OnScreen=FALSE;
         }
 
-	if(*c_list)
-	{
-		register struct Rect *r;
-		register struct DOggetto *g;
-		register WORD px=pl->world_x,py=pl->world_y;
+        i++;
+    }
 
-		i=0;
+    if(*c_list)	{
+        register struct Rect *r;
+        register struct DOggetto *g;
+        register WORD px=pl->world_x,py=pl->world_y;
 
-		while ((g=c_list[i]))
-		{
-// Range viene usato per sapere il tipo d'oggetto!
-			r=&ingombri[g->Range];
+        i=0;
 
-			if(	pl->quota<6		&&
-				px >(g->X+r->MinX)	&&
-	        	        px <(g->X+r->MaxX)	&&
-				py >(g->Y+r->MinY)	&&
-				py <(g->Y+r->MaxY)	
-			) 
-			{
-				switch(g->Range)
-				{
-					case TIPO_POLIZIOTTO_CANE:
-						PlayIfNotPlaying(DOG);
-						break;
-					case TIPO_TUTA:
-	                                        PlayIfNotPlaying(CONTRASTO);
-						break;
-                                        default:
-                                                PlayIfNotPlaying(CRASH);						
-				}
+        while ((g=c_list[i])) {
+            // Range viene usato per sapere il tipo d'oggetto!
+            r=&ingombri[g->Range];
 
-                                TogliPallaMod();
+            if(	pl->quota<6		&&
+                    px >(g->X+r->MinX)	&&
+                    px <(g->X+r->MaxX)	&&
+                    py >(g->Y+r->MinY)	&&
+                    py <(g->Y+r->MaxY)	
+              ) {
+                switch(g->Range)
+                {
+                    case TIPO_POLIZIOTTO_CANE:
+                        PlayIfNotPlaying(DOG);
+                        break;
+                    case TIPO_TUTA:
+                        PlayIfNotPlaying(CONTRASTO);
+                        break;
+                    default:
+                        PlayIfNotPlaying(CRASH);						
+                }
 
-				RimbalzoCasuale();
+                TogliPallaMod();
 
-               	                if(pl->velocita<4)
-				{
-                       	                pl->velocita=4;
-					UpdateBallSpeed();
-				}
-			}
-			i++;
-		}
-	}
+                RimbalzoCasuale();
+
+                if(pl->velocita<4)
+                {
+                    pl->velocita=4;
+                    UpdateBallSpeed();
+                }
+            }
+            i++;
+        }
+    }
 }
 
 void CheckChange(Giocatore *g)

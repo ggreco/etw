@@ -23,29 +23,22 @@ void bltchunkybitmap(bitmap src,int xs,int ys,bitmap dest,int xd,int yd,int w,in
 	dest+=(yd*destmod);
 	dest+=xd;
 
-	if(srcmod==destmod&&srcmod==w)
-	{
-		memcpy(dest,src,w*h);
+	if (srcmod == destmod && srcmod == w) {
+		memcpy(dest, src, w*h);
 		return;
 	}
 
-	srcmod-=w;
-	destmod-=w;
+	srcmod -= w;
+	destmod -= w;
 
-	while(h>0)
-	{
+	while(h--) {
 		i=w;
 
-		while(i>0)
-		{
-			*dest++=*src++;
-			i--;
-		}
+		while(i--)
+			*dest++ = *src++;
 
 		src+=srcmod;
 		dest+=destmod;
-
-		h--;
 	}
 }
 
@@ -62,25 +55,19 @@ void bltbitmap_x(bitmap src,int xs,int ys,bitmap dest,int xd,int yd,int w,int h,
 	srcmod-=w;
 	destmod-=w;
 
-	while(h>0)
-	{
+	while(h--) {
 		i=w;
 
-		while(i>0)
-		{
-			if(*src!=noblit)
+		while(i--) {
+			if(*src != noblit)
 				*dest=*src;
 
 			src++;
 			dest++;
-
-			i--;
 		}
 
 		src+=srcmod;
 		dest+=destmod;
-
-		h--;
 	}
 }
 
@@ -135,21 +122,17 @@ void bltanimobjclipped(struct MChunky *src,int xs,int ys,bitmap dest,int xd,int 
 	dest+=xd;
 	dest+=(yd*destmod);
 
-	while(ys>0)
-	{
+	while(ys>0)	{
 		line=line->Next;
 		ys--;
 	}
 
-	while(h>0&&line)
-	{
+	while(h>0&&line) {
 		block=line->FirstBlock;
 		line_offset=-xs;
 
-		while(block)
-		{
-			if(block->Buffer)
-			{
+		while(block) {
+			if(block->Buffer) {
 				for(i=0;i<block->Length;i++,line_offset++)
 					if(line_offset>=0&&line_offset<w)
 						dest[line_offset]=block->Buffer[i];
@@ -175,15 +158,12 @@ void bltanimobj(struct MChunky *src,bitmap dest,int xd,int yd,int destmod)
 	dest+=xd;
 	dest+=(yd*destmod);
 
-	while(line)
-	{
+	while(line) {
 		block=line->FirstBlock;
 		line_offset=0;
 
-		while(block)
-		{
-			if(block->Buffer)
-			{
+		while(block) {
+			if(block->Buffer) {
 				for(i=0;i<block->Length;i++,line_offset++)
 					dest[line_offset]=block->Buffer[i];
 			}
@@ -716,20 +696,16 @@ void RemapMChunkyColors(struct MChunky *m,unsigned char *pens)
 	struct ALine *l=m->FirstLine;
 	struct ABlock *b;
 
-	while(l)
-	{
+	while(l) {
 		b=l->FirstBlock;
 
-		while(b)
-		{
-			if(b->Buffer)
-			{
+		while(b) {
+			if(b->Buffer) {
 // tolti i "register" per favorire il debugging
 				int i;
 				unsigned char *c=b->Buffer;
 
-				for(i=b->Length;i>0;i--)
-				{
+				for(i=b->Length;i>0;i--) {
 					*c=pens[*c];
 					c++;
 				}

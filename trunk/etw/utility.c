@@ -738,6 +738,7 @@ void RimuoviLista(Oggetto *o)
 	}
 }
 
+// we have to free the object we add to the list
 BOOL AggiungiCLista(struct DOggetto *o)
 {
 	if(totale_lista_c<NUMERO_OGGETTI)
@@ -760,20 +761,29 @@ BOOL AggiungiCLista(struct DOggetto *o)
 	return FALSE;
 }
 
+void VuotaCLista(void)
+{
+    while (totale_lista_c--) {
+        if (c_list[totale_lista_c]) {
+            free(c_list[totale_lista_c]);
+            c_list[totale_lista_c] = NULL;
+        }
+    }
+}
+
 void RimuoviCLista(struct DOggetto *o)
 {
-	if(totale_lista_c>0)
-	{
-		register int i=0;
+	if (totale_lista_c > 0) {
+		register int i = 0;
 
-		while(c_list[i]!=o&&i<NUMERO_OGGETTI)
+		while (c_list[i] != o && i < NUMERO_OGGETTI)
 			i++;
 
-		if(i<NUMERO_OGGETTI)
-		{
+		if ( i < NUMERO_OGGETTI) {
 			totale_lista_c--;
-			c_list[i]=c_list[totale_lista_c];
-			c_list[totale_lista_c]=NULL;
+            free(o);
+			c_list[i] = c_list[totale_lista_c];
+			c_list[totale_lista_c] = NULL;
 		}
 	}
 }
