@@ -64,7 +64,7 @@ void PrintShadow(LONG x,LONG y,char *t,LONG l,struct myfont *tf)
 	restore_h=tf->height+1;
 }
 
-void RestoreBack(void)
+void MyRestoreBack(void)
 {
 	if(!restore_w||!restore_h)
 		return;

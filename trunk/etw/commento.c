@@ -359,7 +359,6 @@ struct SoundInfo *handle_speaker(void)
 	}
 	else
 	{
-		char *current_offset;
 //		D(bug("Frase %ld (%ld len, %ld off)...\n",frase,Lengths[frase],Offsets[frase]));
 
 		switch(special_status)
@@ -376,16 +375,12 @@ struct SoundInfo *handle_speaker(void)
 				break;
 			case S_NOMESQUADRA:
 				special_status=S_RESET;
+            default:
 		}
 
 		game_status=S_RESET;
 
-		if(audio2fast)
-		{
-			current_offset=comment_file;
-			current_offset+=Offsets[frase];
-		}
-		else
+		if(!audio2fast)
 			fseek(commento,Offsets[frase],SEEK_SET);
 
 		// Qui la frase...
@@ -393,7 +388,7 @@ struct SoundInfo *handle_speaker(void)
         sound[COMMENTO]->Length = Lengths[frase];
 
         if(audio2fast) {
-            sound[COMMENTO]->SoundData = current_offset;
+            sound[COMMENTO]->SoundData = comment_file + Offsets[frase];
             sound[COMMENTO]->Flags = SOUND_DISK;
         }
         else {

@@ -8,7 +8,9 @@ extern void Outro(void);
 extern void RemoveReqs(void);
 extern void EnableReqs(void);
 extern void FreeMenuFonts(void);
+#ifndef _WINUSER_H
 extern void ChangeMenu(WORD );
+#endif
 extern void OpenMenuScreen(void);
 extern void PlayMenuMusic(void);
 extern void StopMenuMusic(void);
@@ -32,11 +34,12 @@ extern void RedrawBottone(struct Bottone *,UBYTE);
 extern void CancellaBottone(struct Bottone *);
 extern void ClearScores(void);
 extern void PrintShadow(LONG,LONG,char *,LONG,struct myfont *);
-extern void RestoreBack(void);
+extern void MyRestoreBack(void);
 extern void ClearScores(void);
 extern void LoadScores(void);
 extern void ShowCredits(void);
 extern void AddScore(UBYTE);
+extern BOOL AslRequest(struct MyFileRequest *);
 /*
 extern void FreeFrames(struct AnimInstData *);
 extern struct AnimInstData *LoadFrames( FILE * );
@@ -112,7 +115,7 @@ extern BOOL no_sound,nosync,allow_replay,nocpu,saved,wb_game,big,injuries,substi
 	menu_music,use_speaker,no_sound,use_crowd,special,random_draw,nopari,make_setup,id_change,
 	window_opened,game_start,penalties,free_kicks,friendly,arcade_back,arcade_teams,newpitches,
 	cgxmode,final,nointro,killer,savehigh,can_modify,warp,music_playing,golden_gol,newchange,network_game,
-	audio_to_fast,use_ahi,using_ahi,powerpc,use_gfx_scaling,wpa8,triple,force_single,chunky_version;
+	audio_to_fast,use_ahi,using_ahi,use_gfx_scaling,wpa8,triple,force_single,chunky_version;
 extern LONG Pens[256],framerate,t_l,display_id,situation_time,framerate,overscan;
 extern ULONG detail_level,ahimode;
 extern struct Match turni[64][32];

@@ -2,7 +2,7 @@
 #include "menu.h"
 #include "os_defs.h"
 #include "SDL.h"
-
+#include <ctype.h>
 
 #define OWN_GOAL 64
 
@@ -45,6 +45,8 @@ BOOL CheckMaglie(UBYTE a,UBYTE b)
 */
 			 );
 }
+
+extern void game_main(void);
 
 BOOL StartGame(void)
 {
@@ -89,10 +91,7 @@ BOOL StartGame(void)
 	SDL_ShowCursor(1);
 
 	if(!screen || !(LoadMenuStuff())) {
-		easy.es_TextFormat="Unable to load the menu datas!";
-		easy.es_GadgetFormat=msg_83;
-
-		MyEasyRequest(NULL,&easy,NULL);
+		request("Unable to load the menu datas!");
 		return FALSE;
 	}
 
@@ -349,7 +348,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 	oldwidth=WINDOW_WIDTH;
 	oldheight=WINDOW_HEIGHT;
 
-	// XXX per ora lo forzo in questo modo.
+	// XXX not yet completed the correct association of player and controls in network play.
 
 
     if(network_game) {
@@ -391,7 +390,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 	use_scaling=FALSE;
 
 	/* AC: Stranamente non veniva usata la define. */ 
-	if(f=fopen(RESULT_FILE,"r"))
+	if((f=fopen(RESULT_FILE,"r")))
 	{
 		char buffer[20];
 		int i,l;
@@ -494,7 +493,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 						if(sscanf(buffer,"%d %d %d",&team,&num,&min)==3)
 						{
 							int t= (team==0 ? team1 : team2),og=0,j;
-							struct Giocatore_Disk *g;
+							struct Giocatore_Disk *g = NULL;
 
 							if(num&OWN_GOAL)
 							{
@@ -639,11 +638,16 @@ void LoadHigh(char *file)
 {
 	FILE *f,*f2,*f3;
 
-	if(f=fopen(file,"rb"))
+    request("LoadHigh not yet implemented in portable version");
+
+    return;
+
+// XXX this needs to be reworked...
+	if((f=fopen(file,"rb")))
 	{
-// sizeof(struct MatchStatus)= 1992, occhio, se modifichiamo MatchStatus va modificato!
+// XXX sizeof(struct MatchStatus)= 2056, occhio, se modifichiamo MatchStatus va modificato!
 		UWORD len,highsize;
-		int i,matchstatus_size=1992; // era sizeof(struct MatchStatus)
+		int i,matchstatus_size= 2056; // era sizeof(struct MatchStatus)
 		char *a;
 		struct Squadra_Disk s;
 
@@ -678,11 +682,6 @@ void LoadHigh(char *file)
 			{
 				a[i]=';';
 			}
-
-// Nelle versioni PPC e chunky e' questa la dimensione del matchstatus...
-
-			if(!strncmp(a+i,"powerpc=on"/*-*/,10)||!strncmp(a+i,"chunky"/*-*/,6))
-				matchstatus_size=2056;
 		}
 
 		fwrite(a,len,1,f2);

@@ -536,7 +536,6 @@ void write_config(char *dest)
 		BFP(f,"linesmen=%s\n"/*-*/,(detail_level&USA_GUARDALINEE));
 		BFP(f,"people=%s\n"/*-*/,(detail_level&USA_POLIZIOTTI));
 		BFP(f,"names=%s\n"/*-*/,(detail_level&USA_NOMI));
-		BFP(f,"powerpc=%s\n"/*-*/,powerpc);
 		BFP(f,"offside=%s\n"/*-*/,offside);
 
 		fclose(f);

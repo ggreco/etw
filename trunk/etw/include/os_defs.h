@@ -5,23 +5,20 @@
 #define OS_DEFS_H
 
 #ifndef __AMIGADATE__
-	#define __AMIGADATE__ (1.2.99)
+	#define __AMIGADATE__ (3.9.2003)
+#endif
+
+
+// set the default arc to linux
+
+#if !defined(WIN) && !defined(LINUX) && !defined(MACOSX) && !defined(AMIGA)
+    #define LINUX
 #endif
 
 #ifdef LINUX 
 extern FILE *os_open(char *, char *);
 
 #define fopen os_open
-#endif
-
-#ifndef WIN
-#ifndef AMIGA
-#ifndef LINUX
-#ifndef MACOSX
-#define AMIGA
-#endif
-#endif
-#endif
 #endif
 
 #if !defined(__SASC)
@@ -63,29 +60,44 @@ extern FILE *os_open(char *, char *);
 #endif
 
 #ifdef WIN
-#pragma warning( disable : 4761)  
 
-#define IS_LITTLE_ENDIAN
+  #if !defined( __GNUC__)
+    #pragma warning( disable : 4761)  
+  #endif
+
+  #define IS_LITTLE_ENDIAN
 //#define USE_LOGFILE
-#define SWAP_WORD(x)	(x=SDL_Swap16(x))
-#define SWAP_LONG(x)	(x=SDL_Swap32(x))
+  #define SWAP_WORD(x)	(x=SDL_Swap16(x))
+  #define SWAP_LONG(x)	(x=SDL_Swap32(x))
+
+
 #elif defined(LINUX)
-#define IS_LITTLE_ENDIAN
-#define SWAP_WORD(x)	(x=SDL_Swap16(x))
-#define SWAP_LONG(x)	(x=SDL_Swap32(x))
-#define stricmp strcasecmp
-#define strnicmp strncasecmp
+
+  #if defined(__PPC__)
+    #define SWAP_WORD(x)
+    #define SWAP_LONG(x)
+  #else
+    #define IS_LITTLE_ENDIAN
+    #define SWAP_WORD(x)	(x=SDL_Swap16(x))
+    #define SWAP_LONG(x)	(x=SDL_Swap32(x))
+  #endif
+
+  #define stricmp strcasecmp
+  #define strnicmp strncasecmp
+
 #else
-#ifndef AMIGA
-#ifndef MACOSX
-typedef int fpos_t;
-#else
-#define stricmp strcasecmp
-#define strnicmp strncasecmp
-#endif
-#endif
-#define SWAP_WORD(x)
-#define SWAP_LONG(x)
+
+  #ifndef AMIGA
+    #ifndef MACOSX
+      typedef int fpos_t;
+    #else
+      #define stricmp strcasecmp
+      #define strnicmp strncasecmp
+    #endif
+  #endif
+
+  #define SWAP_WORD(x)
+  #define SWAP_LONG(x)
 #endif
 
 #define Timer() os_get_timer()

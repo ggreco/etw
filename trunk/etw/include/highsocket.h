@@ -25,7 +25,13 @@ extern struct Library *SockBase;
 #define BSDSOCKET_H
 
 #include <sys/types.h>
-#include <sc:netinclude/sys/socket.h>
+
+#ifndef CROSSAMIGA
+  #include <sc:netinclude/sys/socket.h>
+#else
+  #include <netinclude/sys/socket.h>
+#endif
+
 #include <netinet/in.h>
 #include <inline/socket.h>
 
