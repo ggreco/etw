@@ -229,10 +229,10 @@ void rectfill_pattern(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,i
 
 void bitmapScale(struct MyScaleArgs *s)
 {
-	UBYTE xref[640],yref[480],*src,*dest;
+	UBYTE xref[800],yref[600],*src,*dest;
 
 	if(s->SrcWidth>sizeof(xref) || s->SrcHeight>sizeof(yref)) {
-		D(bug("Errore, src di bitmapScale troppo grosso!\n"));
+		D(bug("Error, src of bitmapScale too big!\n"));
 		return;
 	}
 
