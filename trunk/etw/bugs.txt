@@ -1,112 +1,132 @@
-BUG rilevati in Eat The Whistle
+Eat The Whistle Known BUGS
+==========================
 
 AUDIO
-=====
+-----
 
-1) Quando si seleziona il menu' Audio Si/No, il bottone delle squadre Arcade,
-   si trasforma in No.
+1) When the user choose from the menu Audio Yes/No, the button of the Arcade teams,
+   becomes 'No'.
    
-1bis)   In alcune condizioni, quando si ritornano nelle opzioni dopo una partita,
-   l'Audio e' OFF e se si prova a riattivarlo il gioco va in crash. (FIXED)
+2) In some conditions, when the user comes back to the options after a match,
+   the Audio is OFF and if he tries to reactivate it the game crash. (FIXED)
 
-2) La versione per Mac ha problemi. (FIXED)
+3) Mac version doesn't work correctly. (FIXED)
+   In truth the version for Mac continued to having problems, resolved
+   with the adoption of the 16bit format of the sounds.
+      
+4) Now also Windows version has problems.  (FIXED)
 
-3) Adesso anche la versione per Windows ha problemi.  (FIXED)
+5) Both versions have problems with spoken comment.
 
-4) Entrambe le versione hanno problemi con il commento sonoro.
-
-5) Nel menu' Arcade, ci sono problemi con la riproduzione delle musiche delle
-   squadre. A volte parte, a volte no. Inoltre, all'uscita di una partita 
-   Arcade, la musica dei menu' e' disattivata.  (FIXED)
+6) In the menu Arcade, there are problems with the reproduction of
+   musics of the teams. Sometimes works, sometimes not. Moreover, leaving
+   an Arcade match, the music of the menu is disabled. (FIXED)
 
 
 VIDEO
-=====
+-----
 
-1) Se nelle opzioni Video e' attivata l'opzione People, alla seconda partita 
-   il gioco si pianta nella LoadStuff durante il caricamento del 16/17 omino.
+1) If in Video options is active the option People, during the second match
+   the game crach in the LoadStuff() during the 16/17 men loading. (FIXED?)
 
-2) Nelle opzioni Video, la risoluzione di scaling caricata non corrisponde
-   a quella precedentemente salvata su file. (FIXED)
+2) The rotating triangle above the user active men some time doesn't match
+   the color of the selected control.
+    
+2) In the Video options, the loaded scaling resolution doesn't match to the
+   previously saved on file. (FIXED)
 
-3) Se nella modalita' in finestra e' attivato lo scaling e si passa alla
-   modalita' su schermo, lo scaling rimane attivo. (FIXED)
+3) If in window modality the scaling is activated and the game switch to screen
+   modality, the scaling is still signed active. (FIXED)
 
-4) Se su Windows si carica una squadra con il requester in modalita' schermo, 
-   si rovinano i colori. Su Mac il requester rimane sullo schermo del Finder 
-   e quindi il gioco "si blocca".
+4) Under Windows, if in screen modality, a load requester pops up the colors
+   are ruined. Under Mac the requester is showed on the Finder so the game
+   "hangs".
 
-5) Nei menu' Arcade, ci sono problemi con il bottone Show selected, compare e 
-   scompare quando non dovrebbe.
+5) In Arcade menu, there are problems with Show selected button, it appears and
+   disappears when it would not have.
 
-6) Alcune videate compaiono solo per pochi secondi (forse meno), problemi di 
-   buffering?
+6) Some visualizations shows up only for few seconds (perhaps less), buffering
+   problems? (FIXED?)
 
-7) Alcune volte, nel menu' di selezione delle squadre, rimane una squadra 
-    selezionata, ma non compare il bottone continua.
+7) Some times, in the teams selection menu, remain selected a team, but the
+   Continue button does not appear.
+   
+8) In some options pages (Game, Video, Audio), where the buttons are "grouped", if
+   the exit requester is visualized, it have both the button selected.
+   
+
+GAME
+----
+
+1) The defenders seem to begin to move when the ball has arrived to a well
+   determined distance.
+
+2) If the France '98 championship is selected (I do not know the other
+   seasons), turns out of the games are inverted. If it is gained it loses.
+   The problem must be or in the SetResult or the StartMatch one of the two,
+   if is necessary to swap the teams, or isn't made or is made an extra time.
+   (FIXED?)
+   
+2b) Sometimes, the names of the markers are attributed to the opposing
+    team! 
+
+3) Problems in the management of the offside. Often and gladly, above all
+   when the free kicks are struck, a man is put in offside and the game just
+   finds it. Nothing is worth, to disable the option Offside of the menu.
+   The problem seems a lot more present, if the opposing team occupies the
+   right part of the field. (FIXED?)
+
+4) In practice mode a ghost man appeared and after a little -> crash!
+
+5) During the substitutions, if the cursor key are pressed various times, the
+   game goes in crash.
+
+6) At end of game, the minute of the goals is mistaken. It goes ahead of
+   4min. As an example, 41 instead of 37.
+
+7) In 'Serie A' modality (but I think also in other modality) after four matches,
+   the game goes in crash in the HandleExtras() routine, does not import which
+   graphical options is selected. (FIXED)
+ 
+8) If the user browse the Arcade menu, and then return in the "Normal" menu,
+   for example loading a saved league, the first match played is in Arcade mode
+   (but not the following)!
+
+9) Con alcune squadre, al calcio di inizio, la sequenza  sempre la stessa:
+   passaggio e un tiro senza senso che finisce in rimessa laterale.
+   
+10) Con alcune squadre, la tattica praticamente gol sicuro , passare molto
+    vicini alla linea di bordo campo, i difensori non si muovono nemmeno!
+
+SYSTEM
+------
+
+1) Remember to use -fwritable-strings option. 
+
+2) If on Windows a team is loaded with the requester, the path of the program
+   is losed. (FIXED)
+
+3) For point 2, tactics did not come loaded, the game noticed that and tried to
+   visualize a requester, but the font have been freed and therefore crashes for
+   a null pointer. (WORKAROUND with the FIX of point 2)
+
+4) In Mac version file request doesn't exist. (FIXED)
+
+5) In Mac version reading the used localization is missing. (FIXED)
+
+6) Loading (or saving, is not clear), of the games has problems.
+   The variable numero_squadre is always zero and in the load routine there are
+    two cycles (with turno and totale_giornate) that they are based on it.
+	With a workaround for the cycles, the game does not go in loop and loads the
+	saved game but introduces remarkable problems (played games to replay and a
+	strange day with Argentine against all!).
 
 
-GIOCO
-=====
+NETWORK
+-------
 
-1) I difensori sembrano cominciare a muoversi quando la palla e' arrivata ad 
-   una determinata distanza.
+1) If a team is selected but the server doesn't respond, the team remains selected.
 
-2) Se si seleziona il campionato France 98 (non so le altre stagioni), i 
-   risultati delle partite sono invertiti. Se si vince si perde. Il problema 
-   deve essere o nella SetResult o nella StartMatch una delle due, se c'e' da
-   swappare le squadre, o non lo fa o viene fatto una volta in piu'.
-
-3) Problemi nella gestione del fuorigioco. Spesso e volentieri, soprattutto 
-   quando si battono i calci di punizione, un omino si mette in fuorigioco 
-   ed il gioco giustamente lo rileva. A nulla vale, disattivare
-   l'opzione omonima del menu'. Il problema sembra molto piu' presente, se 
-   la squadra avversaria occupa la parte destra del campo.
-
-4) In allenamento e' comparso un omino fantasma e dopo pochi 
-   rimpalli -> crash!
-
-5) Durante le sostituzioni, se si premono diverse volte i tasti cursore, 
-   il gioco va in crash.
-
-6) A fine partita, il minuto dei gol e' sbagliato. Va avanti di 4min.
-   Ad esempio, 41 invece che 37.
-
-SISTEMA
-=======
-
-1) Tutte le manipolazioni a vettori di caratteri globali, si concludono in 
-   un accesso illegale se non si specifica l'apposita opzione 
-   -fwritable-strings.  Non e' stata ancora trovata un'opzione analoga per
-   il VisualC++ 6.
-
-2) Se su Windows si carica una squadra con il requester si perde il path
-   del programma. (FIXED)
-
-3) Per il punto 2, non venivano caricate le tattiche, il gioco se ne 
-   accorgeva e provava a visualizzare un requester, ma le font sono state
-   liberate e quindi si crashava per un puntatore
-   nullo. (WORKAROUND con il FIX del punto 2)
-
-4) Nella versione Mac, mancano i file requester (FIXED)
-
-5) Nella versione Mac manca la rilevazione delle impostazioni di localizzazione.
-
-6) Il caricamento (o il salvataggio, non mi e' chiaro), delle partite hai 
-   dei problemi. La variabile numero_squadre e' sempre zero e nel caricamento ci
-   sono due cicli (con turno e totale_giornate) che si basano su di essa. 
-   Con un workaround per i cicli, il gioco non va in loop e carica il
-   salvataggio che pero' presenta notevoli problemi (partite giocate da
-   rigiocare e una giornata stranissima con Argentina contro tutti!).
-
-
-RETE
-====
-
-1) Se si seleziona una squadra ma non si riesce a collegarsi al server, 
-   la squadra rimane selezionata.
-
-2) In una prova effettuata con un sistema WindowsNT e un sistema Windows2000, 
-   il gioco nel momento di visualizzare il campo, va in crash su entrambi gli
-   host.
+2) In a test carried out with a WindowsNT system and a system Windows2000, the game
+   in the moment to visualize the field, it goes in crash on both the hosts.
 
