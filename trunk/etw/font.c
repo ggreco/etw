@@ -207,9 +207,9 @@ void LoadLogo(char *name)
 			scale.DestWidth = WINDOW_WIDTH;
 			scale.DestHeight = WINDOW_HEIGHT;
 
-			D(bug("Prima dello scaling: %ldx%ld\n", o->width, o->height));
+			D(bug("Before scaling (font.c): %ldx%ld\n", o->width, o->height));
 			bitmapScale(&scale);
-			D(bug("Dopo: %ldx%ld\n", scale.DestWidth, scale.DestHeight));
+			D(bug("After: %ldx%ld\n", scale.DestWidth, scale.DestHeight));
 
 			if (!use_remapping)
 				FreeGfxObj(o);

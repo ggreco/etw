@@ -128,9 +128,9 @@ BOOL StartGame(void)
 
 	StopMenuMusic();
 
-	D(bug("Prima di FreeMenuStuff()\n"));
+	D(bug("Before FreeMenuStuff()\n"));
 	FreeMenuStuff();
-	D(bug("Dopo FreeMenuStuff()\n"));
+	D(bug("After FreeMenuStuff()\n"));
 
 	for(i=0;i<ARCADE_TEAMS+1;i++)
 		arcade_gfx[i]=NULL;
