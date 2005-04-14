@@ -385,6 +385,10 @@ BOOL LoadMenuStuff(void)
 int errno;
 #endif
 
+#ifdef linux
+#include "prefix.h"
+#endif
+
 #ifndef DEMOVERSION
 int main(int argc, char *argv[])
 #else
@@ -396,6 +400,27 @@ int disabled_main(int argc, char *argv[])
 	
 	DIR *l;
 
+    /* LINUX programs aren't relocatable, except with this trick
+     */
+#ifdef linux
+    if (l = opendir("gfx")) {
+        closedir(l);
+    }
+    else {
+        char *dir = strdup(SELFPATH), *d;
+
+        if ((d = strrchr(dir, '/'))) {
+            *d = 0;
+            D(bug("Setting default directory to %s", d));
+
+            chdir(d);
+        }
+        
+        free(dir);
+    }
+    
+#endif
+    
 #ifdef USE_LOGFILE
 	extern FILE *logfile;
 
