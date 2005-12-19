@@ -48,9 +48,9 @@ static void ReadATeam(FILE *f, Squadra *s)
     READ_DATA(s->Schema, f);
     READ_DATA(s->Joystick, f);
     
-    READ_LONG(((LONG)s->tattica), f);
+    READ_LONG(s->tattica, f);
     READ_LONG(s->TempoPossesso, f);
-    READ_LONG(((LONG)s->attivo), f);
+    READ_LONG(s->attivo, f);
 
 // goalkeeper
     READ_WORD(s->portiere.world_x, f); 
@@ -63,7 +63,7 @@ static void ReadATeam(FILE *f, Squadra *s)
     READ_DATA(s->portiere.ActualSpeed, f); 
     READ_DATA(s->portiere.FrameLen, f); 
     READ_WORD(s->portiere.Tick, f); 
-    READ_LONG(((LONG)s->portiere.squadra), f); 
+    READ_LONG(s->portiere.squadra, f); 
     READ_DATA(s->portiere.NameLen, f); 
     READ_DATA(s->portiere.SNum, f); 
     READ_BOOL(s->portiere.Ammonito, f); 
@@ -90,7 +90,7 @@ static void ReadATeam(FILE *f, Squadra *s)
         READ_DATA(g->ActualSpeed , f);
         READ_DATA(g->FrameLen , f);
         READ_WORD(g->Tick, f);
-        READ_LONG(((LONG)g->squadra), f);
+        READ_LONG(g->squadra, f);
         READ_DATA(g->NameLen , f);
         READ_DATA(g->GNum , f);
         READ_BOOL(g->Ammonito, f);
@@ -139,8 +139,8 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
 {
     int i;
 // write ball related data 
-    READ_LONG(((LONG)m->partita.palla.gioc_palla), f);
-    READ_LONG(((LONG)m->partita.palla.sq_palla), f);
+    READ_LONG(m->partita.palla.gioc_palla, f);
+    READ_LONG(m->partita.palla.sq_palla, f);
     READ_WORD(m->partita.palla.world_x, f);
     READ_WORD(m->partita.palla.world_y, f);
     READ_WORD(m->partita.palla.delta_x, f);
@@ -184,8 +184,8 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
     READ_LONG(m->partita.TempoPassato, f);
     READ_LONG(m->partita.show_panel, f);
     READ_LONG(m->partita.show_time, f);
-    READ_LONG(((LONG)m->partita.possesso), f);
-    READ_LONG(((LONG)m->partita.player_injuried), f);
+    READ_LONG(m->partita.possesso, f);
+    READ_LONG(m->partita.player_injuried, f);
     READ_WORD(m->partita.check_sector, f);
 
     for (i = 0; i < SHOT_LENGTH; i++)
