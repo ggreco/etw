@@ -418,6 +418,12 @@ struct Library *LocaleBase;
 #include "os_defs.h"
 #include "mydebug.h"
 
+#define L10N_ITALIAN	"italiano"
+#define L10N_GERMAN	"deutsch"
+#define L10N_ENGLISH	"english"
+#define L10N_FRENCH	"francais"
+#define L10N_SPANISH	"espanol"
+
 struct MyString
 {
 	long offset,id,len;
@@ -446,15 +452,15 @@ char *GetLanguage(void)
 	if ((langid=GetSystemDefaultLangID()))	{
 		switch(PRIMARYLANGID(langid)) {
 			case LANG_ITALIAN:
-				return "italiano";
+				return L10N_ITALIAN;
 			case LANG_GERMAN:
-				return "deutsch";
+				return L10N_GERMAN;
 			default:
-				return "english";
+				return L10N_ENGLISH;
 		}
 	}
 	else
-		return "english";
+		return L10N_ENGLISH;
 }
 #elif defined(MACOSX)
 char *GetLanguage(void)
@@ -466,20 +472,31 @@ char *GetLanguage(void)
 		switch(langid)
 		{
 			case 1:
-				return "italiano";
+				return L10N_ITALIAN;
 			case 2:
-				return "deutsch";
+				return L10N_GERMAN;
 			default:
-				return "english";
+				return L10N_ENGLISH;
 		}
 	}
 	else
-		return "english";
+		return L10N_ENGLISH;
 }
 #else
 char *GetLanguage(void)
 {
-	return "english";
+	char *lang;
+	if((lang = getenv("LANG")) != NULL)
+	{
+		if(strstr(lang,"it"))
+			return L10N_ITALIAN;
+		else if(strstr(lang,"de"))
+			return L10N_GERMAN;
+		else
+			return L10N_ENGLISH;
+	}
+	else
+		return L10N_ENGLISH;
 }
 
 #endif
