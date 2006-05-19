@@ -1,21 +1,21 @@
 #include "eat.h"
  
-// BitMap principale
+// Main bitmap declaration
 
 bitmap main_bitmap=NULL;
 extern int bitmap_width,bitmap_height;
 
-// Font attuale...
 
-// Tabella di 96 caratteri per la rimappatura dei font
+// 96 chars table for font remapping
 bitmap char_map[CHAR_ARRAY_LEN];
+// Actual font...
 bitmap font_bm=NULL;
 int font_width,font_height;
 int font_span;
 
-/* Creo il file di riferimento per lo scaling */
+/* Creation of reference index for scaling */
 
-/* Uso matematica fixed point */
+/* I use fixed point math for speed */
 
 void MakeRef(UBYTE *ref,int source_size, int dest_size)
 {
@@ -24,9 +24,9 @@ void MakeRef(UBYTE *ref,int source_size, int dest_size)
 /* 
    x = x0/y0 * y 
 
-   retta che passa per l'origine
+   line passing from the origin
 
-   uso un simil codice di rothstein
+   based on rothstein code
 
 */
 	m=(source_size<<8)/dest_size;
@@ -76,7 +76,7 @@ int drawtext(char *buffer,int length,int x,int y, int color)
 	bitmap dest;
 	int t=0;
 
-// Calcolo correttamente la baseline.
+// baseline calculation.
 
 	y-=font_height;
 	y++;
@@ -205,7 +205,7 @@ void rectfill_pattern(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,i
 
 void rectfill_pattern(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,int width)
 {
-	register int i; // ,k=1; non usata
+	register int i; // ,k=1; not used
 
 	b+=x1+y1*width;
 
@@ -216,7 +216,7 @@ void rectfill_pattern(bitmap b,int x1,int y1,int x2,int y2,unsigned char color,i
 		i=x2;
 
 		while(i>0) {
-			b[i]+=224;  // 224 e' la base dei colori a mezza luminosità
+			b[i]+=224;  // 224 is the base for half shaded colors
 			i--;
 		}
 
@@ -242,7 +242,7 @@ void bitmapScale(struct MyScaleArgs *s)
 	src=s->Src+s->SrcX+s->SrcY*s->SrcSpan;
 	dest=s->Dest+s->DestX+s->DestY*s->DestSpan;
 
-// Nota, in questo modo prendo gli xref e yref al contrario, ma non importa.
+// Note: xref and yref are read from the last to the first element but it's not a problem
 
 	{
 		register int i, j, k;
@@ -303,7 +303,7 @@ void draw(long pen, WORD x1,WORD y1,WORD x2,WORD y2)
 		memset(b,pen,x2-x1+1);
 }
 
-// Il midpoint classico del foley, van dam
+// midpoint algorithm, from foley, van dam
 
 void midpoint_1(long pen,WORD x0,WORD y0,WORD x1,WORD y1)
 {
