@@ -8,7 +8,7 @@ extern struct SoundInfo *busy[];
 
 static struct SoundInfo *Cori[NUMERO_CORI] = {0}; // initialize everything to zero
 
-LONG wanted_sound = FONDO, playing = -1;
+long wanted_sound = FONDO, playing = -1;
 
 static LONG last_looped = FONDO, numero_loops = 0;
 

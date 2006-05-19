@@ -9,7 +9,7 @@ BYTE scroll_type = 0;
 LONG frames = 0;
 #endif
 
-LONG
+long
 #ifdef DEMOVERSION
 	time_length = (2 * 60), t_l = 2;
 #else

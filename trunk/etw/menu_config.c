@@ -28,9 +28,9 @@ extern int screen_depth;
 
 BYTE situation_result[2]={0,0},strictness=10;
 
-LONG display_id=0,situation_time=0,wanted_width,wanted_height;
+long display_id = 0, situation_time = 0, wanted_width, wanted_height;
 char localename[40];
-ULONG ahimode=0L;
+ULONG ahimode = 0L;
 
 void OpenMenuScreen(void)
 {
