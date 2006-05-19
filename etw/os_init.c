@@ -1,13 +1,13 @@
 #include "preinclude.h"
 
 #if defined(WIN32) && !defined(WINCE)
-#include <windows.h>
+#   include <windows.h>
 #endif
 #include "eat.h"
 #include "network.h"
 
 #ifdef __SASC
-#include <dos.h>
+#   include <dos.h>
 #endif
 
 extern SDL_Surface *screen;
@@ -21,9 +21,9 @@ ULONG(*MyReadPort1) (ULONG);
 ULONG MyReadJoyPort(ULONG);
 
 #ifdef DEBUG_DISABLED
-#ifdef USE_LOGFILE
-#undef USE_LOGFILE
-#endif
+#   ifdef USE_LOGFILE
+#       undef USE_LOGFILE
+#   endif
 #endif
 
 #ifdef USE_LOGFILE
@@ -36,74 +36,76 @@ void init_system(void)
 
     OpenTheScreen();
 
-    if (screen) {
-        if (LoadStuff()) {
-            if (training && !penalties && !free_kicks) {
-                int i;
-                struct Squadra *s = p->squadra[1];
+    if (!screen)
+        return;
 
-                D(bug("*** TRAINING mode settings"));
-                s->Joystick = -1;
+    if (!LoadStuff())
+        return;
 
-                for (i = 0; i < 10; i++) {
-                    s->giocatore[i].world_x = 12000;
-                    s->giocatore[i].world_y = 10;
+    if (training && !penalties && !free_kicks) {
+        int i;
+        struct Squadra *s = p->squadra[1];
 
-                    DoSpecialAnim((&(s->giocatore[i])), GIOCATORE_ESPULSO);
-                    s->giocatore[i].Comando = STAI_FERMO;
-                }
-            } else if (!penalties && !free_kicks) {
-                p->show_panel = PANEL_TIME | PANEL_KICKOFF;
-                p->show_time = 50;
-            }
-            // questo e' indipendente dalle squadre, dipende solo da chi gioca...
+        D(bug("*** TRAINING mode settings"));
+        s->Joystick = -1;
 
-           
-            D(if (network_game) bug("Network play, net player: %d\n", network_player->num));
-            
-            if (network_game && player_type[network_player->num] == 1) {
-                MyReadPort0 = ReadNetworkPort;
-                D(bug("Assign MyReadPort0: NET\n"));
-            }
-            else if (use_key0) {
-                MyReadPort0 = ReadKeyPort;
-                D(bug("Assign MyReadPort0: KEYBOARD\n"));
-            }
-            else {
-                MyReadPort0 = MyReadJoyPort;
-                D(bug("Assign MyReadPort0: JOYSTICK\n"));
-            }
+        for (i = 0; i < 10; i++) {
+            s->giocatore[i].world_x = 12000;
+            s->giocatore[i].world_y = 10;
 
-            if (network_game && player_type[network_player->num] == 0) {
-                MyReadPort1 = ReadNetworkPort;
-                D(bug("Assign MyReadPort1: NET\n"));
-            }
-            else if (use_key1) {
-                MyReadPort1 = ReadKeyPort;
-                D(bug("Assign MyReadPort1: KEYBOARD\n"));
-            }
-            else {
-                MyReadPort1 = MyReadJoyPort;
-                D(bug("Assign MyReadPort1: JOYSTICK\n"));
-            }
-
-            MainLoop();
-
-            // Abbasso la priorita' in modo che le D(bug()) vengano piazzate nel punto giusto!
-
-            SetCrowd(FONDO);
-
-            os_delay(20);
-
-            situation_result[0] = p->squadra[0]->Reti;
-            situation_result[1] = p->squadra[0]->Reti;
-
-            D(bug("Start: FreeStuff...\n"));
-            FreeStuff();
-
-            D(bug("End: FreeStuff()...\n"));
+            DoSpecialAnim((&(s->giocatore[i])), GIOCATORE_ESPULSO);
+            s->giocatore[i].Comando = STAI_FERMO;
         }
+    } else if (!penalties && !free_kicks) {
+        p->show_panel = PANEL_TIME | PANEL_KICKOFF;
+        p->show_time = 50;
     }
+    // questo e' indipendente dalle squadre, dipende solo da chi gioca...
+
+   
+    D(if (network_game) bug("Network play, net player: %d\n", network_player->num));
+    
+    if (network_game && player_type[network_player->num] == 1) {
+        MyReadPort0 = ReadNetworkPort;
+        D(bug("Assign MyReadPort0: NET\n"));
+    }
+    else if (use_key0) {
+        MyReadPort0 = ReadKeyPort;
+        D(bug("Assign MyReadPort0: KEYBOARD\n"));
+    }
+    else {
+        MyReadPort0 = MyReadJoyPort;
+        D(bug("Assign MyReadPort0: JOYSTICK\n"));
+    }
+
+    if (network_game && player_type[network_player->num] == 0) {
+        MyReadPort1 = ReadNetworkPort;
+        D(bug("Assign MyReadPort1: NET\n"));
+    }
+    else if (use_key1) {
+        MyReadPort1 = ReadKeyPort;
+        D(bug("Assign MyReadPort1: KEYBOARD\n"));
+    }
+    else {
+        MyReadPort1 = MyReadJoyPort;
+        D(bug("Assign MyReadPort1: JOYSTICK\n"));
+    }
+
+    MainLoop();
+
+    // Abbasso la priorita' in modo che le D(bug()) vengano piazzate nel punto giusto!
+
+    SetCrowd(FONDO);
+
+    os_delay(20);
+
+    situation_result[0] = p->squadra[0]->Reti;
+    situation_result[1] = p->squadra[0]->Reti;
+
+    D(bug("Start: FreeStuff...\n"));
+    FreeStuff();
+
+    D(bug("End: FreeStuff()...\n"));
 }
 
 void os_audio2fast(void)
@@ -252,59 +254,61 @@ void os_free_timer(void)
 
 #if defined(LINUX) || defined(SOLARIS_X86)
 #if defined(LINUX) && !defined(SOLARIS_X86)
-#include <sys/dir.h>
+#   include <sys/dir.h>
 #else
-#include <dirent.h>
+#   include <dirent.h>
 #endif
 #undef fopen
 
 FILE *os_open(char *name, char *mode)
 {
-	if (*mode == 'w') {
-		return fopen(name, mode);
-	} else {
-		FILE *f;
+    char dir[120], *fn;
+    struct dirent *e;
+    FILE *f;
+    DIR *d;
 
-		if (!(f = fopen(name, mode))) {
-			char *fn = strrchr(name, '/');
-			char dir[120];
-			DIR *d;
+    if (*mode == 'w')
+        return fopen(name, mode);
 
-			if (!fn)
-				fn = name;
-			else {
-				strcpy(dir, name);
-				fn++;
-			}
+    f = fopen(name, mode);
+    if (f)
+        return f;
 
-			dir[fn - name] = 0;
+    fn = strrchr(name, '/');
 
-			if (!*dir)
-				strcpy(dir, "./");
+    if (!fn)
+        fn = name;
+    else {
+        strcpy(dir, name);
+        fn++;
+    }
 
-			D(bug
-			  ("open on %s failed, trying case insensitive... (%s in %s)\n",
-			   name, fn, dir));
+    dir[fn - name] = 0;
 
-			if ((d = opendir(dir))) {
-				struct dirent *e;
+    if (!*dir)
+        strcpy(dir, "./");
 
-				while ((e = readdir(d))) {
-					if (!stricmp(fn, e->d_name)) {
-						strcat(dir, e->d_name);
+    D(bug
+      ("open on %s failed, trying case insensitive... (%s in %s)\n",
+       name, fn, dir));
 
-						D(bug(" FOUND, opening: %s\n", dir));
-						closedir(d);
+    d = opendir(dir);
+    if (!d)
+        return NULL;
 
-						return fopen(dir, mode);
-					}
-				}
-				closedir(d);
-			}
-		}
+    while ((e = readdir(d))) {
+        if (!stricmp(fn, e->d_name)) {
+            strcat(dir, e->d_name);
 
-		return f;
-	}
+            D(bug(" FOUND, opening: %s\n", dir));
+            closedir(d);
+
+            return fopen(dir, mode);
+        }
+    }
+    closedir(d);
+
+    return NULL;
 }
 
 #endif
