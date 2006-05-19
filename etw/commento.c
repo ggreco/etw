@@ -4,14 +4,14 @@
 
 #define NON_DECISA -1
 
-LONG game_status = S_NON_INIZIATO;
+long game_status = S_NON_INIZIATO;
 
 char *comment_file=NULL, *fondobase;
 
-LONG *Offsets,*Lengths = NULL, NumeroCommenti, 
+LONG *Offsets, *Lengths = NULL, NumeroCommenti, 
     frase = NON_DECISA, previous_status = NON_DECISA,
-    special_status, urgent_status=S_RESET,FondoOffset=0,
-    fondolen;
+    special_status, FondoOffset = 0, fondolen;
+long urgent_status = S_RESET;
 
 BOOL c_played=FALSE;
 

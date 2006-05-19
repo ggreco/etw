@@ -4,7 +4,7 @@
 
 ULONG detail_level = 255;
 LONG Colors = 0;
-LONG WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 50;
+long WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 50;
 extern BOOL free_longpass;
 BOOL use_key0 = FALSE, use_key1 = FALSE;
 

@@ -16,7 +16,8 @@ extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,k
 	friendly,golden_gol,use_key0,use_key1,use_ahi,joyonly,audio2fast,use_offside,
 	newpitches,network_game, game_start;
 extern char control[4],*controls[CONTROLS],tipo_porta, spk_basename[64];
-extern LONG Pens[256],framerate,time_length,t_l,game_status,urgent_status,situation_time,basepri;
+extern uint8_t Pens[256];
+extern long framerate, time_length, t_l, game_status, urgent_status, situation_time, basepri;
 extern WORD velocita_x[3][10][8],cambio_x[8],inversione_x[8][8],arcade_frame_sequence[];
 extern WORD velocita_y[3][10][8],cambio_y[8],inversione_y[8][8];
 extern BYTE prontezza[10],opposto[],scroll_type,situation_result[2];
@@ -29,7 +30,7 @@ extern Pallone *pl;
 extern struct Animazione Animation[],ArbAnim[],PortAnim[],GLAnim[];
 extern WORD field_x,field_y,porte_x[],players,field_x_limit,field_y_limit;
 extern BYTE joy_opposto[],dir_pred[],dir_next[],CambioDirezione[8][8],player_type[4],role[4];
-extern LONG WINDOW_WIDTH,WINDOW_HEIGHT,wanted_sound;
+extern long WINDOW_WIDTH, WINDOW_HEIGHT, wanted_sound;
 extern struct SoundInfo *sound[];
 extern char *soundname[],*Tattiche[];
 extern Oggetto *object_list[];

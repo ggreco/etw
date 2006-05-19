@@ -14,7 +14,7 @@
 extern SDL_Surface *screen;
 // ULONG detail_level=~(USA_RISULTATO);
 extern LONG Colors;
-LONG oldwidth = 320, oldheight = 256;
+long oldwidth = 320, oldheight = 256;
 WORD players = 1, music_channel = -1;
 BOOL quit_game = FALSE, no_sound = FALSE;
 BOOL training = FALSE, nosync = FALSE, firsttime = TRUE, arcade_back =
