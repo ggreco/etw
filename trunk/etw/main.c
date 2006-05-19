@@ -541,7 +541,7 @@ BOOL LoadStuff(void)
 
         Progress();
 
-        // Carico e stampo gli sponsors
+        // Loading and displaying sponsor tablets
 
         if (!arcade) {
             if ((temp = LoadGfxObject("gfx/sponsors", Pens, NULL))) {
@@ -583,7 +583,7 @@ BOOL LoadStuff(void)
 
         Progress();
 
-        // Carico e stampo gli spalti
+        // loading and printing stadium gfx
         if (!arcade)
             if ((temp = LoadGfxObject("gfx/spalti", Pens, NULL))) {
                 x = 34;
@@ -681,7 +681,7 @@ BOOL LoadStuff(void)
 
             FreeAnimObj(obj);
 
-            // Carico il file ports adeguato...
+            // Loading the right net type...
 
             if (!(ports = LoadAnimObject(portname, Pens))) {
                 FreeFonts();
@@ -742,8 +742,6 @@ BOOL LoadStuff(void)
                 HandleRadar = HandleRadarLittle;
 
             ResizeRadar();
-
-            // Questi li carico soltanto se ho spazio!
 
             if (last_obj) {
                 FreeGfxObj(last_obj);
