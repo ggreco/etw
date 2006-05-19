@@ -1,20 +1,11 @@
 CC = gcc
 
 CFLAGS = -Wall -Wno-char-subscripts -g \
-	`sdl-config --cflags;gtk-config --cflags` \
-	-fwritable-strings -fsigned-char -Iinclude
+	`sdl-config --cflags` `pkg-config gtk+-2.0 --cflags` \
+	-fsigned-char -Iinclude
 
-LFLAGS = `sdl-config --libs;gtk-config --libs`
-DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC
-
-#
-# If you experience problems using gtk1.X file requester, try to use this!!
-#
-#CFLAGS = -Wall -Wno-char-subscripts -g \
-#	`sdl-config --cflags;pkg-config gtk+-2.0 --cflags` \
-#	-fwritable-strings -fsigned-char -Iinclude
-
-#LFLAGS = `sdl-config --libs;pkg-config gtk+-2.0 --libs`
+LDFLAGS = `sdl-config --libs` `pkg-config gtk+-2.0 --libs`
+DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H
 
 OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
 	anim.o crowd.o intro.o os_control.o squadre.o \
@@ -33,7 +24,7 @@ OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
 
 
 etw: $(OBJECTS)
-	$(CC) -o etw $(OBJECTS) $(LFLAGS)
+	$(CC) -o etw $(OBJECTS) $(LDFLAGS)
 
 clean:
 	rm -rf *.o
