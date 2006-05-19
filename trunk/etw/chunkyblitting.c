@@ -9,8 +9,6 @@
 
 // Routine generica di blitting...
 
-#define BITRASSIZE(w, h) ((uint32_t)(h) * ( ((uint32_t)(w) + 15) >> 3 & 0xFFFE))
-
 #ifndef WINCE
 #   define SMART_MCHUNKY
 #endif
