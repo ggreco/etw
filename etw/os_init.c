@@ -127,14 +127,14 @@ void os_audio2fast(void)
 
 void os_delay(int s)
 {
-	SDL_Delay(s * 20);
+    SDL_Delay(s * 20);
 }
 
 int os_avail_mem(void)
 {
-	// Ritorno sempre memoria abbondante.
+    // Ritorno sempre memoria abbondante.
 
-	return (int) 10000000;
+    return (int) 10000000;
 }
 
 
@@ -144,83 +144,83 @@ int os_avail_mem(void)
 
 void kprintf(char *fmt, ...)
 {
-	va_list ap;
+    va_list ap;
 
 #ifndef USE_LOGFILE
 #   ifdef WIN32
-	char temp[400];
-	va_start(ap, fmt);
-	vsprintf(temp, fmt, ap);
-	OutputDebugString(temp);
-	va_end(ap);
+    char temp[400];
+    va_start(ap, fmt);
+    vsprintf(temp, fmt, ap);
+    OutputDebugString(temp);
+    va_end(ap);
 #   else
-	va_start(ap, fmt);
-	vprintf(fmt, ap);
-	va_end(ap);
+    va_start(ap, fmt);
+    vprintf(fmt, ap);
+    va_end(ap);
 #   endif
 #else
 
-	if (logfile) {
-		va_start(ap, fmt);
-		vfprintf(logfile, fmt, ap);
-		va_end(ap);
-		fflush(logfile);
-	}
-#endif							/* USE_LOGFILE */
+    if (logfile) {
+        va_start(ap, fmt);
+        vfprintf(logfile, fmt, ap);
+        va_end(ap);
+        fflush(logfile);
+    }
+#endif /* USE_LOGFILE */
 }
 
-#endif							/* NOT DEBUG_DISABLED && NOT AMIGA && NOT MORPHOS */
+#endif/* NOT DEBUG_DISABLED && NOT AMIGA && NOT MORPHOS */
 
 #if defined(__PPC__) && !defined(__SASC)
 
 int strnicmp(const char *a, const char *b, size_t l)
 {
-	char *c = strdup(b), *d = strdup(a), *e, *f;
-	int r;
+    char *c = strdup(b), *d = strdup(a), *e, *f;
+    int r;
 
-	e = c;
-	f = d;
+    e = c;
+    f = d;
 
-	while (*c) {
-		*c = tolower(*c);
-		c++;
-	}
+    while (*c) {
+        *c = tolower(*c);
+        c++;
+    }
 
-	while (*d) {
-		*d = tolower(*d);
-		d++;
-	}
+    while (*d) {
+        *d = tolower(*d);
+        d++;
+    }
 
-	r = strncmp(e, f, l);
+    r = strncmp(e, f, l);
 
-	free(e);
-	free(f);
+    free(e);
+    free(f);
 
-	return r;
+    return r;
 }
 #endif
 
 // Gestione dei timer
 
-ULONG MY_CLOCKS_PER_SEC = 0, MY_CLOCKS_PER_SEC_50;
+unsigned long MY_CLOCKS_PER_SEC = 0, MY_CLOCKS_PER_SEC_50;
 
 #ifndef STANDARD_CLOCK
 
-ULONG os_get_timer(void)
+unsigned long os_get_timer(void)
 {
-	return SDL_GetTicks();
+    return SDL_GetTicks();
 }
 
 
 void os_wait_timer(ULONG clk)
 {
-	while (SDL_GetTicks() < clk);
+    while (SDL_GetTicks() < clk);
 }
 
 void os_init_timer(void)
 {
-	MY_CLOCKS_PER_SEC = 1000;
-	MY_CLOCKS_PER_SEC_50 = 1000 / framerate;
+    MY_CLOCKS_PER_SEC = 1000;
+    MY_CLOCKS_PER_SEC_50 = 1000 / framerate;
 }
 
 
@@ -228,21 +228,21 @@ void os_free_timer(void)
 {
 }
 #else
-ULONG os_get_timer(void)
+unsigned long os_get_timer(void)
 {
-	return clock();
+    return clock();
 }
 
 
 void os_wait_timer(ULONG clk)
 {
-	while (clock() < clk);
+    while (clock() < clk);
 }
 
 void os_init_timer(void)
 {
-	MY_CLOCKS_PER_SEC = CLOCKS_PER_SEC;
-	MY_CLOCKS_PER_SEC_50 = CLOCKS_PER_SEC / framerate;
+    MY_CLOCKS_PER_SEC = CLOCKS_PER_SEC;
+    MY_CLOCKS_PER_SEC_50 = CLOCKS_PER_SEC / framerate;
 }
 
 void os_free_timer(void)
