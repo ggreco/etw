@@ -117,7 +117,7 @@ extern BOOL no_sound,nosync,allow_replay,nocpu,saved,wb_game,big,injuries,substi
 	window_opened,game_start,penalties,free_kicks,friendly,arcade_back,arcade_teams,newpitches,
 	cgxmode,final,nointro,killer,savehigh,can_modify,warp,music_playing,golden_gol,newchange,network_game,
 	audio_to_fast,use_ahi,using_ahi,use_gfx_scaling,wpa8,triple,force_single,chunky_version;
-extern uint8_t Pens[256];
+extern uint32_t Pens[256];
 extern long framerate, t_l, display_id, situation_time, framerate, overscan;
 extern ULONG detail_level,ahimode;
 extern struct Match turni[64][32];
