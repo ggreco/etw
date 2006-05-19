@@ -71,7 +71,7 @@ struct GfxObject
 	int width,height,realdepth;
 };
 
-#define BITRASSIZE(w,h)	((ULONG)(h)*( ((ULONG)(w)+15)>>3&0xFFFE))
+#define BITRASSIZE(w, h) ((uint32_t)(h) * ( ((uint32_t)(w) + 15) >> 3 & 0xFFFE))
 
 typedef struct AnimObject AnimObj;
 typedef struct GfxObject GfxObj;
