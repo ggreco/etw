@@ -177,28 +177,15 @@ void kprintf(char *fmt, ...)
 
 int strnicmp(const char *a, const char *b, size_t l)
 {
-    char *c = strdup(b), *d = strdup(a), *e, *f;
-    int r;
-
-    e = c;
-    f = d;
-
-    while (*c) {
-        *c = tolower(*c);
-        c++;
+    while(l && *a && *b && tolower(*a) == tolower(*b))
+    {
+        a++; b++; l--;
     }
 
-    while (*d) {
-        *d = tolower(*d);
-        d++;
-    }
+    if(l)
+        return (int)tolower(*a) - (int)tolower(*b);
 
-    r = strncmp(e, f, l);
-
-    free(e);
-    free(f);
-
-    return r;
+    return 0;
 }
 #endif
 
