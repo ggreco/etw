@@ -142,17 +142,22 @@ int os_avail_mem(void)
 
 #include <stdarg.h>
 
-#ifdef WIN32
-void kprintf(unsigned char *fmt, ...)
+void kprintf(char *fmt, ...)
 {
 	va_list ap;
 
 #ifndef USE_LOGFILE
+#   ifdef WIN32
 	char temp[400];
 	va_start(ap, fmt);
 	vsprintf(temp, fmt, ap);
 	OutputDebugString(temp);
 	va_end(ap);
+#   else
+	va_start(ap, fmt);
+	vprintf(fmt, ap);
+	va_end(ap);
+#   endif
 #else
 
 	if (logfile) {
@@ -163,28 +168,6 @@ void kprintf(unsigned char *fmt, ...)
 	}
 #endif							/* USE_LOGFILE */
 }
-
-#else							/* NOT WIN */
-
-void kprintf(UBYTE * fmt, ...)
-{
-	va_list ap;
-
-#if !defined(USE_LOGFILE)
-	va_start(ap, fmt);
-	vprintf(fmt, ap);
-	va_end(ap);
-#else
-	if (logfile) {
-		va_start(ap, fmt);
-		vfprintf(logfile, fmt, ap);
-		va_end(ap);
-		fflush(logfile);
-	}
-#endif
-}
-
-#endif
 
 #endif							/* NOT DEBUG_DISABLED && NOT AMIGA && NOT MORPHOS */
 

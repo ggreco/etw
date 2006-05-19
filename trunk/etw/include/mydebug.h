@@ -11,7 +11,7 @@
 
 #ifndef bug
 	#define bug kprintf 
-	void kprintf(unsigned char *fmt,...);
+	void kprintf(char *fmt,...);
 	#define D(x) x
 #endif
 
