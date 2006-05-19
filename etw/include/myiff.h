@@ -6,13 +6,14 @@
 
 /* Questa va cambiata per i little endian */
 
-#define MAKE_ID(a,b,c,d)	\
-	((ULONG) (a)<<24 | (ULONG) (b)<<16 | (ULONG) (c)<<8 | (ULONG) (d))
+#define MAKE_ID(a,b,c,d) \
+    ((uint32_t)(a) << 24 | (uint32_t)(b) << 16 | \
+     (uint32_t)(c) << 8 | (uint32_t)(d))
 
-#define ID_FORM		MAKE_ID('F','O','R','M')
-#define ID_LIST		MAKE_ID('L','I','S','T')
-#define ID_CAT			MAKE_ID('C','A','T',' ')
-#define ID_PROP		MAKE_ID('P','R','O','P')
+#define ID_FORM    MAKE_ID('F','O','R','M')
+#define ID_LIST    MAKE_ID('L','I','S','T')
+#define ID_CAT     MAKE_ID('C','A','T',' ')
+#define ID_PROP    MAKE_ID('P','R','O','P')
 
 #include "mytypes.h"
 #include "lists.h"
@@ -31,7 +32,7 @@ struct ContextNode
 struct IFFHandle
 {
     FILE *iff_Stream;
-    unsigned long iff_Flags,iff_Stops;
+    unsigned long iff_Flags, iff_Stops;
     unsigned long *stops;
     struct ContextNode Current;
 };
@@ -60,7 +61,7 @@ void FreeIFF( struct IFFHandle *iff );
 
 LONG ReadChunkBytes( struct IFFHandle *iff, APTR buf, long numBytes );
 LONG ReadChunkRecords( struct IFFHandle *iff, APTR buf, long bytesPerRecord,
-	long numRecords );
+                       long numRecords );
 
 /* Built-in chunk/property handlers */
 
