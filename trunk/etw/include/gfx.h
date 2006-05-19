@@ -36,7 +36,7 @@ struct AnimObject
 	unsigned char *Palette;         /* Puntatore alla palette, organizzata come RGB */
 	long *Widths;        /* Dimensioni dei singoli frames */
 	long *Heights;
-	long *Pens;       /* Nel caso di remapping conservo le penne che alloco */
+	uint32_t *Pens;       /* Nel caso di remapping conservo le penne che alloco */
 	bitmap bg;           /* Sfondo, grande max_width*max_height */
 	WORD max_width,max_height; /* Dimensioni massime dei frames */
 	WORD num_frames,current_frame;  /* Frame corrente e numero di frames */
@@ -67,7 +67,7 @@ struct GfxObject
 {
 	bitmap bmap;
 	unsigned char *Palette;
-	long *Pens;
+	uint32_t *Pens;
 	int width,height,realdepth;
 };
 
