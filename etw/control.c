@@ -85,11 +85,10 @@ void MoveNonControlled(void)
                 {
 
 #if 0
-                    /* Codice di debug per il replay */
+                    /* this is to debug replay code, cause a segfault */
                     if(arcade && j==1 && i==4)
                     {
                         char *a=NULL;
-                        // Genera un enforcer hit!
                         *a=0;
                     }
 #endif
@@ -104,7 +103,7 @@ void MoveNonControlled(void)
 
                 /* aggiungere qui il check sulle collisioni, le controllo solo se onscreen */
 
-                /* Collisione con la palla */
+                /* Check collisions with the ball */
 
             }
             else if(g->OnScreen)
@@ -178,7 +177,6 @@ void MoveNonControlled(void)
                                 if(GetTable() > 2) {
                                     DoSpecialAnim(pl->gioc_palla,GIOCATORE_CADUTA_FERMO);
                                     CheckInfortuni(pl->gioc_palla);
-                                    // Qui il codice di gestione dell'infortunio
                                 }
                                 else {
                                     DoSpecialAnim(pl->gioc_palla,GIOCATORE_CADUTA_CARPONI);
@@ -349,8 +347,7 @@ skipchange:
                 }
             }
 
-            // Controllo la distanza
-
+            // Check the distance
             if(p->mantieni_distanza&&!g->Comando&&g->squadra!=pl->sq_palla&&g->AnimType!=GIOCATORE_BATTUTA)
             {
                 if(SimpleDistance(pl->world_x,pl->world_y,P2G_X(g->world_x),P2G_Y(g->world_y))<700)
@@ -362,14 +359,13 @@ skipchange:
                 }
             }
 
-            // Controllo la coordinata Y di TUTTI i giocatori
-            // dando pero' piu' liberta' a quelli che stanno eseguendo un comando.
+            // Check Y coord of ALL the players
+            // the ones executing a command may move more freely (for instance to exit the pitch for an injury or a red card).
 
             if(!arcade)
             {
                 if(g->world_y<(RIMESSA_Y_N-200))
                 {
-                    //				D(bug("Il giocatore %ld della squadra %ld e' uscito dal campo!\n",g->GNum,g->SNum));
                     g->Direzione=opposto[g->Direzione];
                     g->ActualSpeed=0;
                     g->world_y=RIMESSA_Y_N-199;
@@ -378,7 +374,6 @@ skipchange:
                 {
                     // Qui si presume che un giocatore con un comando sappia cosa fare!
 
-                    //				D(bug("Il giocatore %ld della squadra %ld e' uscito dal campo!\n",g->GNum,g->SNum));
                     g->Direzione=opposto[g->Direzione];
                     g->ActualSpeed=0;
                     g->world_y=RIMESSA_Y_S+19;
@@ -398,21 +393,17 @@ skipchange:
 
                 if(g->world_y<(RIMESSA_Y_N-132))
                 {
-                    //				D(bug("Il giocatore %ld della squadra %ld e' uscito dal campo!\n",g->GNum,g->SNum));
                     g->Direzione=opposto[g->Direzione];
                     g->ActualSpeed=0;
                     g->world_y=RIMESSA_Y_N-132;
                 }
                 else if(g->world_y>(RIMESSA_Y_S-70))
                 {
-                    //				D(bug("Il giocatore %ld della squadra %ld e' uscito dal campo!\n",g->GNum,g->SNum));
                     g->Direzione=opposto[g->Direzione];
                     g->ActualSpeed=0;
                     g->world_y=RIMESSA_Y_S-70;
                 }
             }
-
-            /* Era !g->Controlled */
 
             if(!g->Controlled)
             {
@@ -431,14 +422,12 @@ skipchange:
 
                     if(g->world_x<80)
                     {
-                        //				D(bug("Il giocatore %ld della squadra %ld e' uscito dal campo!\n",g->GNum,g->SNum));
                         g->Direzione=opposto[g->Direzione];
                         g->ActualSpeed=0;
                         g->world_x=80;
                     }
                     else if(g->world_x>(1270*8))
                     {
-                        //				D(bug("Il giocatore %ld della squadra %ld e' uscito dal campo!\n",g->GNum,g->SNum));
                         g->Direzione=opposto[g->Direzione];
                         g->ActualSpeed=0;
                         g->world_x=1270*8;
@@ -469,7 +458,7 @@ skipchange:
                     else
                     {
 
-                        // Se segue la palla e' piu' "pronto" (il doppio)
+                        // If he is following the ball is TWICE quicker
 
                         g->Tick=(prontezza[g->Prontezza]>>2);
 
@@ -480,7 +469,7 @@ skipchange:
             }
             else
             {
-                /* Gestione del marker del giocatore */
+                /* Player marker handling */
 
                 if(arcade)
                 {
@@ -550,7 +539,7 @@ skipchange:
                     }
                 }
 
-                // Controlli sulla posizione del giocatore nel campo
+                // Check player positions on pitch
 
                 if(g->world_x<(60*8))
                 {
@@ -606,27 +595,14 @@ skipchange:
 
                         if(g->WaitForControl<0)
                         {
-                            //						D(bug("Cerco la palla...\n"));
-
                             g->WaitForControl=4;
 
                             if(!IsVeryVeryNear(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y)))
                             {
                                 g->Direzione=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
-                                /*
-                                   Codice di debug...
-                                   BYTE d=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
-
-                                   if(d!=g->Direzione)
-                                   {
-                                   D(bug("Aggiorno la direzione! %ld -> %ld\n",g->Direzione,d));
-                                   g->Direzione=d;
-                                   }
-                                 */
                             }
                             else
                             {
-                                //							D(bug("Arrivo a destinazione!\n"));
                                 EseguiDopoComando(g);
                             }
                         }
@@ -638,7 +614,7 @@ skipchange:
                         {
                             g->WaitForControl=12;
 
-                            // Aspetto che l'arbitro finisca l'espulsione.
+                            // Let's wait red card refree animation completion.
 
                             if(p->arbitro.Tick>240)
                                 break;
@@ -653,7 +629,7 @@ skipchange:
                                     g->ActualSpeed=1;
                                 }
                             }
-                            else if(p->player_injuried!=g) // E' un'espulsione.
+                            else if(p->player_injuried!=g) // It's a red card
                             {
                                 //							D(bug("Fine ESCI_CAMPO, giocatore a destinazione!\n"));
                                 g->Comando=STAI_FERMO;
@@ -757,7 +733,7 @@ skipchange:
                     g->AnimType=(GIOCATORE_CORSA_LENTA-1)+g->ActualSpeed;
 
                     if(g==pl->gioc_palla)
-                        g->AnimType+=3; // 3 tipi di corsa...
+                        g->AnimType+=3; // 3 running types...
                 }
                 else if(g->AnimType==GIOCATORE_RESPIRA&&g==pl->gioc_palla)
                 {
@@ -970,30 +946,8 @@ skipchange:
                     case GIOCATORE_SCIVOLATA:
                         if(g->SpecialData>=0&&g->SpecialData<32)
                         {
-                            // Ho modificato direttamente l'array
                             g->world_x+=velocita_scivolata_x[g->SpecialData];
                             g->world_y+=velocita_scivolata_y[g->SpecialData];
-
-                            /*
-                               Rimosso, agisco in modo diverso...
-
-                               switch(current_field)
-                               {
-                               case 5:
-                               g->world_x-=(velocita_scivolata_x[g->SpecialData]>>1);
-                               g->world_y-=(velocita_scivolata_y[g->SpecialData]>>1);
-                               break;
-                               case 6:
-                               case 7:
-                               g->world_x+=(velocita_scivolata_x[g->SpecialData]>>1);
-                               g->world_y+=(velocita_scivolata_y[g->SpecialData]>>1);
-                               break;
-                               case 4:
-                               g->world_x+=velocita_scivolata_x[g->SpecialData];
-                               g->world_y+=velocita_scivolata_y[g->SpecialData];
-                               break;
-                               }
-                             */
                         }
                         break;
                     case GIOCATORE_STACCO:
@@ -1001,7 +955,6 @@ skipchange:
                     case GIOCATORE_PRETUFFO:
                         if(g->SpecialData>=0&&g->SpecialData<256)
                         {
-                            // Questo non va cambiato, ho gia' dimezzato CA[0]
                             g->world_y+=-(cos_table[g->SpecialData]*g->CA[0])>>7;
                             g->world_x+=(sin_table[g->SpecialData]*g->CA[0])>>7;
                         }
@@ -1071,12 +1024,10 @@ void HandleExtras(void)
                 AddAnimObj(g->immagine,xg-field_x,yg-field_y,g->AnimType);
                 g->OnScreen=TRUE;
             }
-            else { /* muovo qui anche le porte if(g->ObjectType!=TIPO_PORTA || nosync) */
+            else { /* move the ALSO the nets if(g->ObjectType!=TIPO_PORTA || nosync) */
                 MoveAnimObj(g->immagine,xg-field_x,yg-field_y);
             }
 
-
-            /* aggiungere qui il check sulle collisioni, le controllo solo se onscreen */
 
             if(     pl->world_x>(g->world_x+r->MinX)     &&
                     pl->world_x<(g->world_x+r->MaxX)    &&
@@ -1130,7 +1081,7 @@ void HandleExtras(void)
         i=0;
 
         while ((g=c_list[i])) {
-            // Range viene usato per sapere il tipo d'oggetto!
+            // Range is used to find the object type!
             r=&ingombri[g->Range];
 
             if(	pl->quota<6		&&

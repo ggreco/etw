@@ -47,7 +47,7 @@ void HandleScrolling(void)
 {
 	register WORD xs, ys, max_scroll;
 	static WORD scroll_tick = 0, key_tick = 0;
-/* Controlli sullo scrolling */
+/* checks on the display scrolling */
 
 	scroll_tick++;
 	key_tick++;
@@ -85,26 +85,26 @@ void HandleScrolling(void)
 	if (!scroll_type) {
 		xs = (pl->world_x >> 3) - field_x - quota_mod_x[pl->quota];
 		ys = (pl->world_y >> 3) - field_y - quota_mod_y[pl->quota];
-// Scroll sulla palla
+// DEFAULT: scroll on ball movement 
 	}
-// Scroll sui giocatori
+// Scroll on player movement
 	else {
 		if (scroll_type == 1) {
-// Portiere sq. 0
+// GK team 0
 			xs = (p->squadra[0]->portiere.world_x >> 3) - field_x + 5;
 			ys = (p->squadra[0]->portiere.world_y >> 3) - field_y + 16;
 		} else if (scroll_type == 12) {
-// Portiere sq. 1
+// GK team 1
 			xs = (p->squadra[1]->portiere.world_x >> 3) - field_x + 5;
 			ys = (p->squadra[1]->portiere.world_y >> 3) - field_y + 16;
 		} else if (scroll_type < 12) {
-// Giocatore sq. 0
+// Player of team 0
 			xs = (p->squadra[0]->giocatore[scroll_type - 2].world_x >> 3) -
 				field_x + 5;
 			ys = (p->squadra[0]->giocatore[scroll_type - 2].world_y >> 3) -
 				field_y + 15;
 		} else if (scroll_type < 23) {
-// Giocatore sq. 1
+// Player of team 1
 			xs = (p->squadra[1]->giocatore[scroll_type - 13].
 				  world_x >> 3) - field_x + 5;
 			ys = (p->squadra[1]->giocatore[scroll_type - 13].
@@ -199,10 +199,10 @@ void HandleScrolling(void)
 
 			D(if (p->show_panel & 0xff00)
 			  bug
-			  ("Errore, pannelli speciali presenti con la palla in gioco!\n"));
+			  ("Error, special panel opened during gameplay!\n"));
 		} else if (!p->show_panel) {
 			p->show_panel = PANEL_TIME;
-		} else if (!(p->show_panel & 0xff00))	// Sostituzioni e cambio tattica fermano il tempo.
+		} else if (!(p->show_panel & 0xff00))	// Substitutions and tactic change stops the timer.
 		{
 			if (p->show_time <= 0) {
 				p->show_time = 0;
@@ -378,7 +378,7 @@ void MainLoop(void)
   	ideal = start = StartGameTime = Timer();
 	EndTime = time_length * MY_CLOCKS_PER_SEC + start;
 
-// Nel caso si giochi una situazione metto il tempo al minuto giusto!
+// When we play a "scenario" we set the starting minute
 
 	D(bug
 	  ("Start: %ld, End: %ld, Current:%ld, CPS: %ld\n", start, EndTime,
@@ -404,7 +404,7 @@ void MainLoop(void)
 			while (Timer() < ideal) {
 				rep++;
 
-                SDL_Delay(5); // XXX messo solo per facilitare debug
+                SDL_Delay(5); // give some time to ther processes
 
 /*				if (network_game)
 					HandleNetwork();*/
@@ -422,9 +422,9 @@ void MainLoop(void)
 
 #ifndef DEBUG_DISABLED
 	D(bug
-	  ("Totale frames: %ld fisici, %ld logici, saltati %ld, ripetuti %ld\n",
+	  ("Totale frames: %ld real, %ld logic, skip %ld, repeated %ld\n",
 	   frames, logic, f_skip, rep));
 	logic = (Timer() - start) / MY_CLOCKS_PER_SEC;
-	D(bug("Totale tempo: %ld secs, %ld FPS\n", logic, frames / logic));
+	D(bug("Total time: %ld secs, %ld FPS\n", logic, frames / logic));
 #endif
 }
