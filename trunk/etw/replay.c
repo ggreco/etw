@@ -241,9 +241,9 @@ static void WriteATeam(FILE *f, Squadra *s)
     fwrite_u8(s->Schema, f);
     fwrite_u8(s->Joystick, f);
     
-    fwrite_u32(((int32_t)s->tattica), f);
+    fwrite_u32((int32_t)s->tattica, f);
     fwrite_u32(s->TempoPossesso, f);
-    fwrite_u32(((int32_t)s->attivo), f);
+    fwrite_u32((int32_t)s->attivo, f);
 
 // goalkeeper
     fwrite_u16(s->portiere.world_x, f); 
@@ -256,7 +256,7 @@ static void WriteATeam(FILE *f, Squadra *s)
     fwrite_u8(s->portiere.ActualSpeed, f); 
     fwrite_u8(s->portiere.FrameLen, f); 
     fwrite_u16(s->portiere.Tick, f); 
-    fwrite_u32(((int32_t)s->portiere.squadra), f); 
+    fwrite_u32((int32_t)s->portiere.squadra, f); 
     fwrite_u8(s->portiere.NameLen, f); 
     fwrite_u8(s->portiere.SNum, f); 
     fwrite_u8(s->portiere.Ammonito, f); 
@@ -283,7 +283,7 @@ static void WriteATeam(FILE *f, Squadra *s)
         fwrite_u8(g->ActualSpeed , f);
         fwrite_u8(g->FrameLen , f);
         fwrite_u16(g->Tick, f);
-        fwrite_u32(((int32_t)g->squadra), f);
+        fwrite_u32((int32_t)g->squadra, f);
         fwrite_u8(g->NameLen , f);
         fwrite_u8(g->GNum , f);
         fwrite_u8(g->Ammonito, f);
@@ -332,8 +332,8 @@ void WriteMatch(FILE *f, struct MatchStatus *m)
 {
     int i;
 // write ball related data 
-    fwrite_u32(((int32_t)m->partita.palla.gioc_palla), f);
-    fwrite_u32(((int32_t)m->partita.palla.sq_palla), f);
+    fwrite_u32((int32_t)m->partita.palla.gioc_palla, f);
+    fwrite_u32((int32_t)m->partita.palla.sq_palla, f);
     fwrite_u16(m->partita.palla.world_x, f);
     fwrite_u16(m->partita.palla.world_y, f);
     fwrite_u16(m->partita.palla.delta_x, f);
@@ -377,8 +377,8 @@ void WriteMatch(FILE *f, struct MatchStatus *m)
     fwrite_u32(m->partita.TempoPassato, f);
     fwrite_u32(m->partita.show_panel, f);
     fwrite_u32(m->partita.show_time, f);
-    fwrite_u32(((int32_t)m->partita.possesso), f);
-    fwrite_u32(((int32_t)m->partita.player_injuried), f);
+    fwrite_u32((int32_t)m->partita.possesso, f);
+    fwrite_u32((int32_t)m->partita.player_injuried, f);
     fwrite_u16(m->partita.check_sector, f);
 
     for (i = 0; i < SHOT_LENGTH; i++)
@@ -481,7 +481,7 @@ void LoadReplay(UBYTE Set)
     register LONG i, j;
     APTR *a = NULL;
 
-    i=0;
+    i = 0;
 
     RestartTime();
 
@@ -498,7 +498,7 @@ void LoadReplay(UBYTE Set)
     if (highlight) {
 // Salvo tutti i puntatori...
 
-        a=(APTR *)malloc(sizeof(APTR) * (SQ_PTR * 2 + 6));
+        a = (APTR *)malloc(sizeof(APTR) * (SQ_PTR * 2 + 6));
 
         if(!a) {
             quit_game = TRUE;
@@ -792,7 +792,7 @@ void HandleReplay(void)
         }
 
         if (MyReadPort0(0) & JPF_BUTTON_RED ||
-            MyReadPort1(1)& J PF_BUTTON_RED ) {
+            MyReadPort1(1) & JPF_BUTTON_RED ) {
             counter = real_counter;
 
             if (!highlight) {
@@ -890,86 +890,91 @@ void EndReplay(void)
 
 void SaveReplay(void)
 {
+    char buffer[16] = "t/replay.001";
+    extern struct Squadra_Disk leftteam_dk, rightteam_dk;
     FILE *f;
-    char buffer[16]="t/replay.001";
-    extern struct Squadra_Disk leftteam_dk,rightteam_dk;
+    int i, j;
+    WORD highsize;
+    struct MatchStatus *m;
 
-    if(real_counter<=match[StartReplaySet].ReplayCounter)
+
+    if(real_counter <= match[StartReplaySet].ReplayCounter)
         return;
 
     while ((f=fopen(buffer,"r"))) {
         fclose(f);
         buffer[11]++;
 
-        if(buffer[11]>'9')
+        if(buffer[11] > '9')
         {
-            buffer[11]='0';
+            buffer[11] = '0';
             buffer[10]++;
 
-            if(buffer[10]>'9')
+            if(buffer[10] > '9')
             {
-                buffer[10]='0';
+                buffer[10] = '0';
                 buffer[9]++;
             }
         }
     }
 
-    if ((f=fopen(buffer,"wb"))) {
-        int i, j;
-        WORD highsize;
-        struct MatchStatus *m;
+    f = fopen(buffer,"wb");
+    if (!f)
+        return;
 
-        WriteGameConfig(f);        
+    WriteGameConfig(f);        
 
-        WriteTeam(f, &leftteam_dk);
-        WriteTeam(f, &rightteam_dk);
+    WriteTeam(f, &leftteam_dk);
+    WriteTeam(f, &rightteam_dk);
 
-        highsize = real_counter-match[StartReplaySet].ReplayCounter + 1;
-        fwrite_u16(highsize, f);
+    highsize = real_counter-match[StartReplaySet].ReplayCounter + 1;
+    fwrite_u16(highsize, f);
 
-        D(bug("Saving from %ld to %ld (Set %ld), %ld frames\n",
-              match[StartReplaySet].ReplayCounter, real_counter,
-              StartReplaySet, highsize));
+    D(bug("Saving from %ld to %ld (Set %ld), %ld frames\n",
+          match[StartReplaySet].ReplayCounter, real_counter,
+          StartReplaySet, highsize));
 
 // Da qui viene letto da "game"
 
-        if ((m = malloc(sizeof(struct MatchStatus)))) {
-            fwrite_u16(swaps, f);
-
-            *m=match[StartReplaySet];
-
-            if(m->partita.player_injuried)
-                m->partita.player_injuried=(Giocatore *)(1+m->partita.player_injuried->SNum*11+m->partita.player_injuried->GNum);
-
-            m->partita.possesso=(Squadra *)(m->partita.possesso==p->squadra[0] ? 0 : 1);
-            
-            if(m->partita.palla.sq_palla)
-                m->partita.palla.sq_palla=(Squadra *)(m->partita.palla.sq_palla==p->squadra[0] ? 1 : 2);
-
-            for(i=0;i<2;i++) {
-                char *c=m->squadra[i].tattica->Name;
-
-                m->squadra[i].attivo=(Giocatore *)((int)m->squadra[i].attivo->GNum);
-
-                m->squadra[i].tattica=(struct Tactic *)( (c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4]);
-            }
-
-            if(m->partita.palla.gioc_palla)
-                m->partita.palla.gioc_palla = (Giocatore *)(m->partita.palla.gioc_palla->SNum * 11 + m->partita.palla.gioc_palla->GNum + 1);
-
-            WriteMatch(f, m);
-
-            for (i = 0; i < MAX_PLAYERS; i++) 
-                for (j = 0; j < highsize; j++) 
-                    fwrite_u32(r_controls[i][m->ReplayCounter + j], f);
-                
-            PlayBackSound(sound[DOG]);
-
-            free(m);
-        }
-
+    m = malloc(sizeof(struct MatchStatus));
+    if (!m) {
         fclose(f);
+        return;
     }
+
+    fwrite_u16(swaps, f);
+
+    *m = match[StartReplaySet];
+
+    if(m->partita.player_injuried)
+        m->partita.player_injuried=(Giocatore *)(1+m->partita.player_injuried->SNum*11+m->partita.player_injuried->GNum);
+
+    m->partita.possesso=(Squadra *)(m->partita.possesso==p->squadra[0] ? 0 : 1);
+    
+    if(m->partita.palla.sq_palla)
+        m->partita.palla.sq_palla=(Squadra *)(m->partita.palla.sq_palla==p->squadra[0] ? 1 : 2);
+
+    for(i = 0; i < 2; i++) {
+        char *c = m->squadra[i].tattica->Name;
+
+        m->squadra[i].attivo=(Giocatore *)((int)m->squadra[i].attivo->GNum);
+
+        m->squadra[i].tattica=(struct Tactic *)( (c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4]);
+    }
+
+    if(m->partita.palla.gioc_palla)
+        m->partita.palla.gioc_palla = (Giocatore *)(m->partita.palla.gioc_palla->SNum * 11 + m->partita.palla.gioc_palla->GNum + 1);
+
+    WriteMatch(f, m);
+
+    for (i = 0; i < MAX_PLAYERS; i++) 
+        for (j = 0; j < highsize; j++) 
+            fwrite_u32(r_controls[i][m->ReplayCounter + j], f);
+        
+    PlayBackSound(sound[DOG]);
+
+    free(m);
+    fclose(f);
 }
 
 BOOL AllocReplayBuffers(void)
@@ -1035,36 +1040,36 @@ void FreeReplayBuffers(void)
 void LoadHighlight(void)
 {
     FILE *fh;
+    WORD swaps;
+    int i, j;
 
-    if ((fh=fopen(HIGH_FILE,"rb"))) {
-        WORD swaps;
-        int i, j;
-
-        swaps = fread_u16(fh);
-
-        D(bug("Loading an highlight...(%d frames, %d swaps)\n", highsize, swaps));
-
-        ReadMatch(fh, &match[0]);
-
-        for(i=0;i<MAX_PLAYERS;i++) 
-            for (j = 0; j < highsize; j++) 
-                r_controls[i][j] = fread_u32(fh);
-            
-        fclose(fh);
-
-        j = swaps; // swapteams() change the swaps value!
-
-        for(i = 0; i < j; i++)
-            SwapTeams();
-
-        swaps = j;
-
-        start_replay=TRUE;
-    }
-    else {
+    fh = fopen(HIGH_FILE,"rb");
+    if (!fh) {
         D(bug("Unable to open the highlight file!\n"));
-        quit_game=TRUE;
+        quit_game = TRUE;
+        return;
     }
+
+    swaps = fread_u16(fh);
+
+    D(bug("Loading an highlight...(%d frames, %d swaps)\n", highsize, swaps));
+
+    ReadMatch(fh, &match[0]);
+
+    for(i = 0; i < MAX_PLAYERS; i++) 
+        for (j = 0; j < highsize; j++) 
+            r_controls[i][j] = fread_u32(fh);
+
+    fclose(fh);
+
+    j = swaps; // swapteams() change the swaps value!
+
+    for(i = 0; i < j; i++)
+        SwapTeams();
+
+    swaps = j;
+
+    start_replay = TRUE;
 }
 
 
