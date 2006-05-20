@@ -123,7 +123,7 @@ extern ULONG detail_level,ahimode;
 extern struct Match turni[64][32];
 extern int arcade_score;
 
-extern BYTE competition,selected_number,wanted_number,actual_team,controllo[],p_control[],
+extern int8_t competition,selected_number,wanted_number,actual_team,controllo[],p_control[],
 	situation_result[2],strictness,field,duration,field_type,ruolo[];
 extern UBYTE totale_giornate;
 extern BYTE teamarray[],turno,numero_squadre,daytime,league_pos[64],ppp,ppv,pps;

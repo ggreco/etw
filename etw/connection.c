@@ -7,12 +7,12 @@
 #define OWN_GOAL 64
 
 
-extern UBYTE team_a,team_b;
-extern BYTE player_type[4],role[4],current_field;
-extern char shirt[2][24],palette[24],fieldname[24];
+extern uint8_t team_a, team_b;
+extern int8_t player_type[4], role[4], current_field;
+extern char shirt[2][24], palette[24], fieldname[24];
 extern LONG time_length;
 extern BOOL use_offside, highlight;
-BYTE field;
+int8_t field;
 extern int highsize, matchstatus_size;
 
 char *palettes[]= 
@@ -61,64 +61,64 @@ extern void game_main(void);
 
 void WriteGameConfig(FILE *f)
 {
-    WRITE_BOOL(use_offside, f);
-    WRITE_BOOL(training, f); 
-    WRITE_BOOL(arcade, f); 
-    WRITE_BOOL(arcade_teams, f); 
-    WRITE_BOOL(free_longpass, f);
+    fwrite_u8(use_offside, f);
+    fwrite_u8(training, f); 
+    fwrite_u8(arcade, f); 
+    fwrite_u8(arcade_teams, f); 
+    fwrite_u8(free_longpass, f);
 
-    WRITE_BOOL(injuries, f);
-    WRITE_BOOL(bookings, f);
-    WRITE_BOOL(substitutions, f);
-    WRITE_BOOL(newchange, f);
-    WRITE_BOOL(newpitches, f);
+    fwrite_u8(injuries, f);
+    fwrite_u8(bookings, f);
+    fwrite_u8(substitutions, f);
+    fwrite_u8(newchange, f);
+    fwrite_u8(newpitches, f);
 
-    WRITE_LONG(detail_level, f);
+    fwrite_u32(detail_level, f);
 
-    WRITE_DATA(team_a, f);
-    WRITE_DATA(team_b, f);
-    WRITE_DATA(field, f);
-    WRITE_DATA(strictness, f);
-    WRITE_DATA(player_type, f);
-    WRITE_DATA(current_field, f);
+    fwrite_u8(team_a, f);
+    fwrite_u8(team_b, f);
+    fwrite_u8(field, f);
+    fwrite_u8(strictness, f);
+    fwrite_data(&player_type, sizeof(player_type), f);
+    fwrite_u8(current_field, f);
 
-    WRITE_DATA(shirt, f);
+    fwrite_data(&shirt, sizeof(shirt), f);
 
-    WRITE_DATA(palette, f);
-    WRITE_DATA(fieldname, f);
+    fwrite_data(&palette, sizeof(palette), f);
+    fwrite_data(&fieldname, sizeof(fieldname), f);
 
-    WRITE_LONG(time_length, f);
+    fwrite_u32(time_length, f);
 }
 
 void ReadGameConfig(FILE *f)
 {
-    READ_BOOL(use_offside, f);
-    READ_BOOL(training, f); 
-    READ_BOOL(arcade, f); 
-    READ_BOOL(arcade_teams, f); 
-    READ_BOOL(free_longpass, f);
+    use_offside = fread_u8(f);
+    training = fread_u8(f); 
+    arcade = fread_u8(f); 
+    arcade_teams = fread_u8(f); 
+    free_longpass = fread_u8(f);
     
-    READ_BOOL(injuries, f);
-    READ_BOOL(bookings, f);
-    READ_BOOL(substitutions, f);
-    READ_BOOL(newchange, f);
-    READ_BOOL(newpitches, f);
+    injuries = fread_u8(f);
+    bookings = fread_u8(f);
+    substitutions = fread_u8(f);
+    newchange = fread_u8(f);
+    newpitches = fread_u8(f);
 
-    READ_LONG(detail_level, f);
+    detail_level = fread_u32(f);
     
-    READ_DATA(team_a, f);
-    READ_DATA(team_b, f);
-    READ_DATA(field, f);
-    READ_DATA(strictness, f);
-    READ_DATA(player_type, f);
-    READ_DATA(current_field, f);
+    team_a = fread_u8(f);
+    team_b = fread_u8(f);
+    field = fread_u8(f);
+    strictness = fread_u8(f);
+    fread_data(&player_type, sizeof(player_type), f);
+    current_field = fread_u8(f);
 
-    READ_DATA(shirt, f);
+    fread_data(&shirt, sizeof(shirt), f);
 
-    READ_DATA(palette, f);
-    READ_DATA(fieldname, f);
+    fread_data(&palette, sizeof(palette), f);
+    fread_data(&fieldname, sizeof(fieldname), f);
 
-    READ_LONG(time_length, f);
+    time_length = fread_u32(f);
 }
 
 BOOL StartGame(void)
@@ -711,7 +711,7 @@ void LoadHigh(char *file)
 		ReadTeam(f, &leftteam_dk);
 		ReadTeam(f, &rightteam_dk);
 
-		READ_WORD(highsize, f);
+		highsize = fread_u16(f);
         
 // Here we handle the REAL highlight...
 

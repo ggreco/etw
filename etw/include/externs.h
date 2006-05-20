@@ -6,7 +6,7 @@ extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,
 extern char team_name[2][16],fieldname[24],palette[24],shirt[2][24];
 extern Oggetto *pezzi_porte[4],*bonus[MAX_ARCADE_ON_FIELD];
 extern BYTE need_release[MAX_PLAYERS],arcade_team[2],starting_team;
-extern BYTE Table[],strictness,current_field,slowdown[];
+extern int8_t Table[],strictness,current_field,slowdown[];
 extern struct RastPort Sq1RP,Sq2RP,PallaRP,*ProgressRP,ArcadeRP;
 extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,killer,
 	start_replay,replay_mode,use_replay,allow_replay,nocpu,teams_swapped,first_kickoff,

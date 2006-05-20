@@ -1,50 +1,53 @@
 #ifndef FILES_H
 #define FILES_H
 
-/* use on boolean to handle them as bytes */
-#define WRITE_BOOL(var, file) { \
-    uint8_t c = var; \
-    fwrite(&c, sizeof(c), 1, file); \
+static inline void fwrite_u8(uint8_t var, FILE *f)
+{
+    fwrite(&var, sizeof(uint8_t), 1, f);
 }
 
-#define READ_BOOL(var, file) { \
-    uint8_t c; \
-    fread(&c, sizeof(c), 1, file); \
-    var = c; \
+static inline uint8_t fread_u8(FILE *f)
+{
+    uint8_t c;
+    fread(&c, sizeof(uint8_t), 1, f);
+    return c;
 }
 
-/* use on data that needs swapping */
-#define WRITE_LONG(var, file) { \
-    uint32_t c = var; \
-    SWAP_LONG(c); \
-    fwrite(&c, sizeof(c), 1, file); \
+static inline void fwrite_u16(uint16_t var, FILE *f)
+{
+    var = SDL_Swap16(var);
+    fwrite(&var, sizeof(uint16_t), 1, f);
 }
 
-#define WRITE_WORD(var, file) { \
-    uint16_t c = var; \
-    SWAP_WORD(c); \
-    fwrite(&c, sizeof(c), 1, file); \
+static inline uint16_t fread_u16(FILE *f)
+{
+    uint16_t c;
+    fread(&c, sizeof(uint16_t), 1, f);
+    return SDL_Swap16(c);
 }
 
-#define READ_WORD(var, file) { \
-    uint16_t c; \
-    fread(&c, sizeof(c), 1, file); \
-    SWAP_WORD(c); \
-    var = c; \
+static inline void fwrite_u32(uint32_t var, FILE *f)
+{
+    var = SDL_Swap32(var);
+    fwrite(&var, sizeof(uint32_t), 1, f);
 }
 
-#define READ_LONG(var, file) { \
-    uint32_t c; \
-    fread(&c, sizeof(c), 1, file); \
-    SWAP_LONG(c); \
-    var = c; \
+static inline uint32_t fread_u32(FILE *f)
+{
+    uint32_t c;
+    fread(&c, sizeof(uint32_t), 1, f);
+    return SDL_Swap32(c);
 }
 
-/* these can be used for data that doesn't need swapping */
-#define WRITE_DATA(var, file) \
-    fwrite(&var, sizeof(var), 1, file)
+/* These can be used for data that doesn't need byteswap, eg. strings */
+static inline void fwrite_data(void *addr, unsigned int size, FILE *f)
+{
+    fwrite(addr, size, 1, f);
+}
 
-#define READ_DATA(var, file) \
-    fread(&var, sizeof(var), 1, file)
+static inline void fread_data(void *addr, unsigned int size, FILE *f)
+{
+    fread(addr, size, 1, f);
+}
 
 #endif
