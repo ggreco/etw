@@ -140,7 +140,7 @@ void bltbitmap_x(bitmap src, int xs, int ys, bitmap dest, int xd, int yd,
 }
 
 void do_p2c(unsigned char **p, bitmap b, int width, int height, int depth,
-            long *pens)
+            LONG *pens)
 {
     register int k, i, source_color, current_bit;
 
@@ -288,7 +288,7 @@ void free_mchunky(struct MChunky *c)
 
 #ifdef SMART_MCHUNKY
 BOOL create_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
-                    unsigned char *t_data, long *Pens)
+                    unsigned char *t_data, LONG *Pens)
 {
     unsigned char *c;
     int i;
@@ -471,7 +471,7 @@ void save_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
     fwrite(t_data, m->buffers, 1, f);
 }
 
-struct MChunky *load_mchunky(FILE *f, int height, long *Pens)
+struct MChunky *load_mchunky(FILE *f, int height, LONG *Pens)
 {
     unsigned char *t_data;
     unsigned short *blks;
@@ -517,7 +517,7 @@ struct MChunky *load_mchunky(FILE *f, int height, long *Pens)
 
 
 struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
-                                int depth, long *Pens)
+                                int depth, LONG *Pens)
 {
     int planesize=BITRASSIZE(width, height), i, k;
     unsigned char *temp, *planes[9];

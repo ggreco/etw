@@ -13,10 +13,10 @@ extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,k
 	arcade,situation,training,use_crowd,slow_motion,use_speaker,replay_looped,highlight,
 	substitutions,bookings,injuries,window_opened,screen_opened,nopari,free_longpass,
 	no_record,penalties,free_kicks,arcade_teams,first_half,extratime,left_sel,right_sel,
-	friendly,golden_gol,use_key0,use_key1,use_ahi,joyonly,audio2fast,use_offside,
+	friendly,golden_gol,use_key0,use_key1,joyonly,audio2fast,use_offside,
 	newpitches,network_game, game_start;
 extern char control[4],*controls[CONTROLS],tipo_porta, spk_basename[64];
-extern uint32_t Pens[256];
+extern LONG Pens[256];
 extern long framerate, time_length, t_l, game_status, urgent_status, situation_time, basepri;
 extern WORD velocita_x[3][10][8],cambio_x[8],inversione_x[8][8],arcade_frame_sequence[];
 extern WORD velocita_y[3][10][8],cambio_y[8],inversione_y[8][8];

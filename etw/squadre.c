@@ -1346,7 +1346,9 @@ void MakeResult(void)
 	if(!p->result)
 		return;
 
-	p->result_len=sprintf(buffer," %s %ld-%ld %s",p->squadra[1]->Nome,(LONG)p->squadra[1]->Reti,(LONG)p->squadra[0]->Reti,p->squadra[0]->Nome);
+	p->result_len=sprintf(buffer," %s %d-%d %s",
+            p->squadra[1]->Nome, (int) p->squadra[1]->Reti,
+            (int) p->squadra[0]->Reti, p->squadra[0]->Nome);
 
 	rectfill(p->result,0,0,result_width-1, VS_CHAR_Y,Pens[P_VERDE2],result_width);
 

@@ -1,4 +1,4 @@
-#include "etw_locale.h"
+// #include "etw_locale.h"
 #include "menu.h"
 
 struct myfont *bigfont,*smallfont,*titlefont;

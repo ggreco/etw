@@ -7,6 +7,7 @@
 
 #if defined(LINUX) || defined(SOLARIS_X86)
 #include <gtk/gtk.h>
+#include <unistd.h>
 #endif
 
 // char versione[]="\0$VER: ETW-Menu " ETW_VERSION " " __AMIGADATE__ " by Gabriele Greco - Hurricane Studios";
@@ -389,11 +390,7 @@ int errno;
 #include "prefix.h"
 #endif
 
-#ifndef DEMOVERSION
 int main(int argc, char *argv[])
-#else
-int disabled_main(int argc, char *argv[])
-#endif
 {
 	/* AC: Why if I include externs.h I obtain 55 compilation error? */
 	extern void LoadKeyDef(int, char *);
@@ -403,7 +400,7 @@ int disabled_main(int argc, char *argv[])
     /* LINUX programs aren't relocatable, except with this trick
      */
 #ifdef linux
-    if (l = opendir("gfx")) {
+    if ((l = opendir("gfx"))) {
         closedir(l);
     }
     else {
@@ -425,7 +422,7 @@ int disabled_main(int argc, char *argv[])
 	extern FILE *logfile;
 
 #ifdef AMIGA
-	logfile = fopen("dh2:etw.log", "w");
+	logfile = fopen("t:etw.log", "w");
 #elif defined(WIN)
 	logfile = fopen("etw.log", "w");
 #else
