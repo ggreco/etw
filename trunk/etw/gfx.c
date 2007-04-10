@@ -326,7 +326,7 @@ void ClearAnimObj(void)
 	}
 }
 
-GfxObj *LoadGfxObject(char *name, long * pens, bitmap dest)
+GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
 {
 	GfxObj *obj;
 	FILE *fh;

@@ -16,7 +16,7 @@ BOOL wb_game=FALSE,use_replay=TRUE,allow_replay=TRUE,nocpu=FALSE,arcade=FALSE,su
 	situation=FALSE,use_crowd=TRUE,use_speaker=FALSE,free_longpass=FALSE,injuries=TRUE,	
 	bookings=TRUE,nopari=FALSE,id_change=FALSE,window_opened=FALSE,newchange=FALSE,
 	penalties=FALSE,free_kicks=FALSE,cgxmode=FALSE,nointro=FALSE,killer=FALSE,warp=FALSE,
-	music_playing=FALSE,golden_gol=FALSE,audio_to_fast=FALSE,use_ahi=FALSE,
+	music_playing=FALSE,golden_gol=FALSE,audio_to_fast=FALSE,
 	newpitches=FALSE,offside=FALSE,screen_opened=TRUE,network_game=FALSE,
 #ifndef CD_VERSION
 	menu_music=FALSE;
@@ -229,14 +229,6 @@ void load_config(FILE *f)
 			{
 				if((value=atol(&buffer[10]))>0)
 					display_id=value;
-			}
-			else if(!strnicmp(buffer,"ahimode="/*-*/,8) )
-			{
-				if((value=atol(&buffer[8]))>0)
-				{
-					ahimode=value;
-					use_ahi=TRUE;
-				}
 			}
 			else if(!strnicmp(buffer,"radar="/*-*/,6) )
 			{
@@ -458,9 +450,6 @@ void write_config(char *dest)
 			fprintf(f,"penalties\n"/*-*/);
 		else if(free_kicks)
 			fprintf(f,"freekicks\n"/*-*/);
-
-		if(use_ahi)
-			fprintf(f,"ahimode=%ld\n"/*-*/,ahimode);
 
 		if(golden_gol)
 			fprintf(f,"golden\n"/*-*/);

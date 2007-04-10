@@ -50,9 +50,9 @@ static void ReadATeam(FILE *f, Squadra *s)
     s->Schema = fread_u8(f);
     s->Joystick = fread_u8(f);
 
-    s->tattica = fread_u32(f);
+    s->tattica = (Tactic *)fread_u32(f); // must be converted in a pointer!
     s->TempoPossesso = fread_u32(f);
-    s->attivo = fread_u32(f);
+    s->attivo = (Player *)fread_u32(f); // must be converted in a pointer!
 
 // goalkeeper
     s->portiere.world_x = fread_u16(f); 
@@ -65,7 +65,7 @@ static void ReadATeam(FILE *f, Squadra *s)
     s->portiere.ActualSpeed = fread_u8(f); 
     s->portiere.FrameLen = fread_u8(f); 
     s->portiere.Tick = fread_u16(f); 
-    s->portiere.squadra = fread_u32(f); 
+    s->portiere.squadra = (Team *) fread_u32(f);  // must be converted in a pointeR!
     s->portiere.NameLen = fread_u8(f); 
     s->portiere.SNum = fread_u8(f); 
     s->portiere.Ammonito = fread_u8(f); 
@@ -92,7 +92,7 @@ static void ReadATeam(FILE *f, Squadra *s)
         g->ActualSpeed = fread_u8(f);
         g->FrameLen = fread_u8(f);
         g->Tick = fread_u16(f);
-        g->squadra = fread_u32(f);
+        g->squadra = (Team *)fread_u32(f);  // must be converted in a pointeR!
         g->NameLen = fread_u8(f);
         g->GNum = fread_u8(f);
         g->Ammonito = fread_u8(f);
@@ -141,8 +141,8 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
 {
     int i;
 // write ball related data 
-    m->partita.palla.gioc_palla = fread_u32(f);
-    m->partita.palla.sq_palla = fread_u32(f);
+    m->partita.palla.gioc_palla = (Player *)fread_u32(f);
+    m->partita.palla.sq_palla = (Team *)fread_u32(f);
     m->partita.palla.world_x = fread_u16(f);
     m->partita.palla.world_y = fread_u16(f);
     m->partita.palla.delta_x = fread_u16(f);
@@ -186,8 +186,8 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
     m->partita.TempoPassato = fread_u32(f);
     m->partita.show_panel = fread_u32(f);
     m->partita.show_time = fread_u32(f);
-    m->partita.possesso = fread_u32(f);
-    m->partita.player_injuried = fread_u32(f);
+    m->partita.possesso = (Team *) fread_u32(f);
+    m->partita.player_injuried = (Player *)fread_u32(f);
     m->partita.check_sector = fread_u16(f);
 
     for (i = 0; i < SHOT_LENGTH; i++)
@@ -328,6 +328,7 @@ static void WriteATeam(FILE *f, Squadra *s)
     fwrite_u16(s->ArcadeCounter, f);
 }
 
+// WARNING: gioc_palla, sq_palla, possesso, player_injured are pointers
 void WriteMatch(FILE *f, struct MatchStatus *m)
 {
     int i;
@@ -441,7 +442,7 @@ void StoreReplay(UBYTE Set)
 {
     register LONG i;
 
-// Arbitro e palla
+// Refree and ball
 
     match[Set].partita=*p;
 
@@ -642,6 +643,7 @@ void LoadReplay(UBYTE Set)
         p->extras->node.mln_Succ =
             p->extras->node.mln_Pred = NULL;
 
+        // setting serialized "match" pointers: possesso, player_injuried, sq_palla, gioc_palla
         p->possesso = p->squadra[(LONG)p->possesso];
 
         if(p->player_injuried) {

@@ -36,7 +36,7 @@ struct AnimObject
 	unsigned char *Palette;         /* Puntatore alla palette, organizzata come RGB */
 	long *Widths;        /* Dimensioni dei singoli frames */
 	long *Heights;
-	uint32_t *Pens;       /* Nel caso di remapping conservo le penne che alloco */
+	LONG *Pens;       /* Nel caso di remapping conservo le penne che alloco */
 	bitmap bg;           /* Sfondo, grande max_width*max_height */
 	WORD max_width,max_height; /* Dimensioni massime dei frames */
 	WORD num_frames,current_frame;  /* Frame corrente e numero di frames */
@@ -67,7 +67,7 @@ struct GfxObject
 {
 	bitmap bmap;
 	unsigned char *Palette;
-	uint32_t *Pens;
+	LONG *Pens;
 	int width,height,realdepth;
 };
 
@@ -128,7 +128,7 @@ extern int bitmap_width,bitmap_height;
 extern void FreeGfxObj(GfxObj *);
 extern void FreeGraphics(void);
 extern void DrawObject(GfxObj *, WORD , WORD );
-extern GfxObj *LoadGfxObject(char *,long *,bitmap );
+extern GfxObj *LoadGfxObject(char *, LONG *, bitmap );
 extern AnimObj *LoadAnimObject(char * ,LONG *);
 extern void RemapAnimObjColor(AnimObj *,UBYTE, UBYTE);
 extern void ClearAnimObj(void);

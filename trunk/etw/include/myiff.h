@@ -33,7 +33,7 @@ struct IFFHandle
 {
     FILE *iff_Stream;
     unsigned long iff_Flags, iff_Stops;
-    unsigned long *stops;
+    LONG *stops;
     struct ContextNode Current;
 };
 

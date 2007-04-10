@@ -1,10 +1,10 @@
 CC = gcc
 
 CFLAGS = -Wall -Wno-char-subscripts -g \
-	`sdl-config --cflags` `pkg-config gtk+-2.0 --cflags` \
+	`sdl-config --cflags` `gtk-config --cflags` \
 	-fsigned-char -Iinclude
 
-LDFLAGS = `sdl-config --libs` `pkg-config gtk+-2.0 --libs`
+LDFLAGS = `sdl-config --libs` `gtk-config --libs`
 DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H
 
 OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \

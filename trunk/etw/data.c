@@ -243,7 +243,7 @@ struct Animazione GLAnim[]=
 	{50,1,&Guardalinee[3]}, // GL_FUORI_0
 };
 
-uint32_t Pens[256];
+LONG Pens[256];
 
 /* Le velocita' sono in pixel * 8, in questo modo e' possibile differenziarle
    in modo migliore.

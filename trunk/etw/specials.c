@@ -2193,16 +2193,6 @@ void UpdatePrefs(BYTE set)
 	else
 		m->Bottone[7].Testo=disabled;
 
-	if(audio_to_fast)
-		m->Bottone[9].Testo=enabled;
-	else
-		m->Bottone[9].Testo=disabled;
-
-   /* AC: I had an access overrun here. */
-	if(!use_ahi)
-		m->Bottone[11].Testo=disabled;
-	else
-		m->Bottone[11].Testo=enabled;
 	break;
     case MENU_VIDEO_PREFS:
 	if(wb_game)
@@ -2284,10 +2274,6 @@ void UpdatePrefs(BYTE set)
 	m->Bottone[5].Testo=controls[control[0]];
 	m->Bottone[7].Testo=controls[control[1]];
 
-	if(use_ahi)
-		m->Bottone[9].Testo=enabled;
-	else
-		m->Bottone[9].Testo=disabled;
 	break;
   }
 }

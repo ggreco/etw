@@ -404,7 +404,7 @@ void ShowPanel(void)
 		}
 
 		if (!penalties && !free_kicks) {
-			sprintf(buffer, "%3ld:%02ld", mins + situation_time, secs);
+			sprintf(buffer, "%3ld:%02d", mins + situation_time, (int) secs);
 
 			mins = WINDOW_WIDTH - (font_width * 6) - 2;
 			secs = font_height + 2;

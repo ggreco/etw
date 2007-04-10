@@ -244,9 +244,19 @@ typedef struct Pallone Pallone;
 typedef struct Tactic Tattica;
 typedef struct Elemento Oggetto;
 
+// new defines used for better internationalization...
+typedef struct Arbitro Refree;
+typedef struct GuardaLinee Linesman;
+typedef struct Giocatore Player;
+typedef struct Squadra Team;
+typedef struct Partita Match;
+typedef struct Elemento Object;
+typedef struct Pallone Ball;
+typedef struct Tactic Tactic;
+
 #include "externs.h"
 
-// Definizioni del compilatore
+// compiler defines... this is a bit a mess ATM
 
 
 #if defined(__SASC) && !defined(__PPC__)
