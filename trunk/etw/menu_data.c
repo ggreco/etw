@@ -666,7 +666,7 @@ struct GfxMenu menu[]=
 	{msg_154,teamsettings,pannelli,43 /* Era 44 */,51,-1,202,31,5,6,8,(APTR)TeamSettings},
 	{msg_168,gprefs_bottoni,NULL,27,0,-1,190,38,0,3,0,(APTR)GamePrefs},
 	{msg_169,vprefs_bottoni,NULL,27,0,-1,190,38,0,3,0,(APTR)VideoPrefs},
-	{msg_170,aprefs_bottoni,NULL,7,0,-1,190,38,0,3,0,(APTR)AudioPrefs},
+	{msg_170,aprefs_bottoni,NULL,9,0,-1,190,38,0,3,0,(APTR)AudioPrefs},
 	{msg_171,wcb,wcp,3,5*40,-1,0,0,-1,7,9,NULL},
 	{NULL,mb,mp,3,16*4,-1,0,0,-1,7,9,NULL},
 	{msg_172,lb,league,3,8*21,-1,0,0,-1,7,9,NULL},
