@@ -178,8 +178,7 @@ struct Bottone aprefs_bottoni[]=
 	{10,75,100,82,-1,0,3,msg_136},{101,75,184,82,-1,3,0,NULL},
 	{10,86,100,93,-1,0,3,msg_137},{101,86,184,93,-1,3,0,NULL},
 	{10,97,100,104,-1,0,3,msg_138},{101,97,184,104,-1,3,0,NULL},
-	{10,108,100,115,-1,0,3,msg_185},{101,108,184,115,-1,3,0,NULL},
-	{72,210,246,222,MENU_PREFS,14,13,msg_108},
+	{72,210,246,222,MENU_PREFS,14,13,msg_108}
 };
 
 struct Bottone seltype_bottoni[]=
@@ -667,7 +666,7 @@ struct GfxMenu menu[]=
 	{msg_154,teamsettings,pannelli,43 /* Era 44 */,51,-1,202,31,5,6,8,(APTR)TeamSettings},
 	{msg_168,gprefs_bottoni,NULL,27,0,-1,190,38,0,3,0,(APTR)GamePrefs},
 	{msg_169,vprefs_bottoni,NULL,27,0,-1,190,38,0,3,0,(APTR)VideoPrefs},
-	{msg_170,aprefs_bottoni,NULL,11,0,-1,190,38,0,3,0,(APTR)AudioPrefs},
+	{msg_170,aprefs_bottoni,NULL,7,0,-1,190,38,0,3,0,(APTR)AudioPrefs},
 	{msg_171,wcb,wcp,3,5*40,-1,0,0,-1,7,9,NULL},
 	{NULL,mb,mp,3,16*4,-1,0,0,-1,7,9,NULL},
 	{msg_172,lb,league,3,8*21,-1,0,0,-1,7,9,NULL},
