@@ -257,7 +257,8 @@ BOOL InitSoundSystem(void)
 // for linux the correct value is U8
 // for OSX it seems S8
 // for win32? (test)
-#ifdef MACOSX
+//#ifdef MACOSX
+#if 0
     fmt.format = AUDIO_U16;
 #else
     fmt.format = AUDIO_U8; // signed o unsigned?!?!?

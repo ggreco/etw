@@ -56,8 +56,8 @@
 #   define SMALLGAME_FONT  NEWGFX_DIR "smallgame.font"
 #endif
 
-#define SWAP_WORD(x) (x=SDL_Swap16(x))
-#define SWAP_LONG(x) (x=SDL_Swap32(x))
+#define SWAP_WORD(x) (x=SDL_SwapBE16(x))
+#define SWAP_LONG(x) (x=SDL_SwapBE32(x))
 
 #ifdef WIN
 #   if !defined( __GNUC__)
