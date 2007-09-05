@@ -2,7 +2,7 @@
 
 #include "highdirent.h"
 
-char team_name[2][16]={"brazil","england"};
+char team_name[2][16]={0};
 int result_width,scivolate_modificate=0;
 GuardaLinee *guardalinee;
 
