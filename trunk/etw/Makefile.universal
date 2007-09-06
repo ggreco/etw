@@ -53,4 +53,4 @@ install: etw
 	strip $(BUNDLE_CONTENTS)/MacOS/etw
 
 clean:
-	rm -rf *.o
+	rm -rf *.o ppc x86

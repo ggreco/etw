@@ -411,7 +411,7 @@ typedef void * APTR;
 #endif
 #include <string.h>
 
-struct Library *LocaleBase;
+struct LocaleBase *LocaleBase;
 
 #ifndef AMIGA
 
@@ -694,7 +694,7 @@ char *GetCatalogStr(APTR *Ctg, long num, char *def)
 #endif
 
 #ifdef AMIGA
-#ifdef __SASC
+#if defined(__SASC) || defined(AROS)
 #include <proto/exec.h>
 #include <proto/locale.h>
 #else

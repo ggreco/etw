@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Eat The Whistle
+GenericName=soccer game
+Encoding=UTF-8
+Comment=A very playable and feature rich arcade 2d soccer game.
+Exec=etw
+Icon=etw.png
+Categories=Game;

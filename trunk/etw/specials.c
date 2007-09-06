@@ -1492,7 +1492,7 @@ changetactic:
 			freq.Title=msg_34;
 			freq.Dir="tct/"/*-*/;
 
-			if(AslRequest(&freq))
+			if(FileRequest(&freq))
 			{
 				char *c;
 
@@ -1886,9 +1886,9 @@ BOOL VideoPrefs(WORD bottone)
 			{
 			    struct ScreenModeRequester *Req;
 
-			    if(Req=AllocAslRequest(ASL_ScreenModeRequest,NULL))
+			    if(Req=AllocFileRequest(ASL_ScreenModeRequest,NULL))
 			    {
-				if(!AslRequestTags(Req,ASLSM_InitialDisplayWidth,WINDOW_WIDTH,
+				if(!FileRequestTags(Req,ASLSM_InitialDisplayWidth,WINDOW_WIDTH,
 					ASLSM_InitialDisplayHeight,WINDOW_HEIGHT,
 					ASLSM_InitialDisplayDepth,4,
 					ASLSM_InitialOverscanType,OSCAN_TEXT,
@@ -1938,7 +1938,7 @@ BOOL VideoPrefs(WORD bottone)
 					actual_menu->Bottone[bottone].Testo=ni.Name;
 				}
 
-				FreeAslRequest(Req);
+				FreeFileRequest(Req);
 			    }
 			}
 #endif
@@ -2793,7 +2793,7 @@ BOOL HighSelection(WORD bottone)
 				freq.Title="Save highlight...";
 				freq.Save=TRUE;
 
-				if (AslRequest(&freq)) {
+				if (FileRequest(&freq)) {
 					char buffer[130];
 					APTR a;
 

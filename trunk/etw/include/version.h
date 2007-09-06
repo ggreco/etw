@@ -1,5 +1,5 @@
 
 #ifndef ETW_VERSION
-	#define ETW_VERSION "3.3"
+	#define ETW_VERSION "3.5"
 #endif
 

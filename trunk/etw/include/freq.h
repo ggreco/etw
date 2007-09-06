@@ -1,6 +1,8 @@
 #ifndef MYFREQ
 
-
+#ifndef MACOSX
+#include "mytypes.h"
+#endif
 
 #define MYFREQ
 
@@ -18,7 +20,7 @@ struct MyFileRequest
 
 	char *File;
 #ifdef MACOSX
-	/*: Il tipo BOOL in MacOS X esiste già ed è un char, purtroppo */
+// OSX used a signed char for bool, we use int, so we have to change this
 	int Save;
 #else
 	BOOL Save;
