@@ -399,18 +399,24 @@ int main(int argc, char *argv[])
 
     /* LINUX programs aren't relocatable, except with this trick
      */
-#ifdef linux
-    if ((l = opendir("gfx"))) {
+#if defined(linux)
+    if ((l = opendir("newgfx"))) {
         closedir(l);
     }
     else {
         char *dir = strdup(SELFPATH), *d;
 
         if ((d = strrchr(dir, '/'))) {
+            char buff[512];
             *d = 0;
-            D(bug("Setting default directory to %s", d));
+#ifdef AUTOPACKAGED
+            sprintf(buff, "%s/../share/etwdata", dir);
+#else
+            strcpy(buff, dir);
+#endif
+            D(bug("Setting default directory to %s", buff));
 
-            chdir(d);
+            chdir(buff);
         }
         
         free(dir);

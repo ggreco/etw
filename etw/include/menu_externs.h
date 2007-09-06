@@ -40,7 +40,7 @@ extern void ClearScores(void);
 extern void LoadScores(void);
 extern void ShowCredits(void);
 extern void AddScore(UBYTE);
-extern BOOL AslRequest(struct MyFileRequest *);
+extern BOOL FileRequest(struct MyFileRequest *);
 /*
 extern void FreeFrames(struct AnimInstData *);
 extern struct AnimInstData *LoadFrames( FILE * );

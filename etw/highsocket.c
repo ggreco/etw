@@ -19,7 +19,10 @@
 #include <assert.h>
 #endif /* !WIN32 */
 
-#if defined(AMIGA) || defined(MORPHOS)
+#if defined(AROS)
+// per ora non definisco nulla
+#warning "Socket implementation not yet available on AROS!"
+#elif defined(AMIGA) || defined(MORPHOS)
 
 #ifdef __SASC
 #include <ios1.h>
@@ -191,6 +194,7 @@ void SockNonBlock(int Socket)
     perror( "Fatal error executing nonblock" );
     exit( 1 );
   }
+#elif defined(AROS)
 
 #else
 
@@ -203,20 +207,3 @@ void SockNonBlock(int Socket)
  
 }
 
-#ifdef FAKENET
-
-int socket(int a,int b,int c)
-{
-	return -1;
-}
-
-int connect (int a, const struct sockaddr *b,int c)
-{
-	return -1;
-}
-
-unsigned long inet_addr(char *a)
-{
-	return 0;
-}
-#endif

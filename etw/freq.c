@@ -9,7 +9,7 @@ void SHFullScreen(void) {}
 
 
 // TODO
-BOOL AslRequest(struct MyFileRequest *fr)
+BOOL FileRequest(struct MyFileRequest *fr)
 {
 	return FALSE;
 }
@@ -25,7 +25,7 @@ BOOL AslRequest(struct MyFileRequest *fr)
 #include "highdirent.h"
 #include "freq.h"
 
-BOOL AslRequest(struct MyFileRequest *fr)
+BOOL FileRequest(struct MyFileRequest *fr)
 {
 	BOOL res;
 	OPENFILENAME f;
@@ -138,7 +138,7 @@ void fw_ok(GtkWidget * w, fsdatas * fs)
 	gtk_main_quit();
 }
 
-BOOL AslRequest(struct MyFileRequest *fr)
+BOOL FileRequest(struct MyFileRequest *fr)
 {
 	char buffer[200];
 	fsdatas fs;
@@ -197,7 +197,7 @@ BOOL AslRequest(struct MyFileRequest *fr)
 #include "mytypes.h"
 #include "freq.h"
 
-BOOL AslRequest(struct MyFileRequest *fr)
+BOOL FileRequest(struct MyFileRequest *fr)
 {
 	extern int MacRequester(struct MyFileRequest *);
 	*szFileName = 0;
@@ -212,7 +212,7 @@ BOOL AslRequest(struct MyFileRequest *fr)
 #include <proto/asl.h>
 #include <proto/dos.h>
 
-int Request(struct MyFileRequest *fr)
+BOOL FileRequest(struct MyFileRequest *fr)
 {
     struct FileRequester *f;
     
@@ -249,19 +249,19 @@ int Request(struct MyFileRequest *fr)
 
             FreeAslRequest(f);
 
-            return 1;
+            return TRUE;
         }
 
         FreeAslRequest(f);
     }
-	return 0;
+	return FALSE;
 }
 #else
 
 #include "mytypes.h"
 #include "freq.h"
 
-BOOL AslRequest(struct MyFileRequest *fr)
+BOOL FileRequest(struct MyFileRequest *fr)
 {
 	return FALSE;
 }

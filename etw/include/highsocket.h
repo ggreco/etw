@@ -22,7 +22,7 @@
 
 extern struct Library *SockBase;
 
-#elif defined(AMIGA) || defined(MORPHOS)
+#elif (defined(AMIGA) || defined(MORPHOS)) && !defined(AROS)
 
 #define BSDSOCKET_H
 
@@ -50,7 +50,7 @@ extern struct Library *SockBase;
 
 extern struct Library *SocketBase;
 
-#else
+#elif !defined(AROS)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -64,6 +64,37 @@ int SockWrite(int Socket,void *Buffer,long Size);
 void SockNonBlock(int Socket);
 
 #if defined(FAKENET)
+
+#ifndef SOCK_STREAM
+#define SOCK_STREAM 1
+#endif
+
+#ifndef AF_INET
+#define AF_INET 0
+#endif
+
+#ifndef INADDR_NONE
+#define INADDR_NONE -1
+#endif
+#define inet_addr(x) INADDR_NONE
+#define socket(x, y, z) -1
+#define connect(x,y,z) -1
+#define ntohl(x) x
+#define htonl(x) x
+#define ntohs(x) x
+#define htons(x) x
+
+struct test
+{
+    int s_addr;
+};
+
+struct sockaddr_in
+{
+    struct test sin_addr;
+    int sin_family;
+    short sin_port;
+};
 
 #define SockClose(s)
 

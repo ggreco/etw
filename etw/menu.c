@@ -786,7 +786,7 @@ BOOL DoAction(WORD bottone)
 			freq.Save = TRUE;
 			freq.Filter = "Career files|*.car";
 
-			if (AslRequest(&freq)) {
+			if (FileRequest(&freq)) {
 				strcpy(career_file, freq.File);
 
 				SaveLeague();
@@ -834,7 +834,7 @@ BOOL DoAction(WORD bottone)
 				freq.Title = msg_71;
 				freq.Dir = "teams/";
 
-				if (AslRequest(&freq)) {
+				if (FileRequest(&freq)) {
 					strcpy(buffer, freq.File);
 
 					D(bug("Loading teams <%s>...\n" /*-*/ , buffer));
@@ -850,7 +850,7 @@ BOOL DoAction(WORD bottone)
 				freq.Save = TRUE;
 				freq.Dir = "teams/";
 
-				if (AslRequest(&freq)) {
+				if (FileRequest(&freq)) {
 					strcpy(buffer, freq.File);
 
 					competition = MENU_TEAMS;
@@ -888,7 +888,7 @@ BOOL DoAction(WORD bottone)
 
 				freq.Title = msg_74;
 
-				if (AslRequest(&freq)) {
+				if (FileRequest(&freq)) {
 					strcpy(buffer, freq.File);
 
 					LoadHigh(buffer);
@@ -920,7 +920,7 @@ BOOL DoAction(WORD bottone)
 				freq.Dir = "saves/" /*-*/ ;
 				freq.Filter = "Career files|*.car";
 
-				if (AslRequest(&freq)) {
+				if (FileRequest(&freq)) {
 					strcpy(career_file, freq.File);
 
 					LoadLeague();
@@ -945,7 +945,7 @@ BOOL DoAction(WORD bottone)
 					freq.Filter = "Career files|*.car";
 					freq.Save = TRUE;
 
-					if (AslRequest(&freq)) {
+					if (FileRequest(&freq)) {
 						strcpy(career_file, freq.File);
 
 						SaveLeague();

@@ -13,7 +13,7 @@
 Name "Eat The Whistle"
 
 ; The file to write
-OutFile "etwsetup.exe"
+OutFile "ETW-win32.exe"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\EatTheWhistle
@@ -47,20 +47,21 @@ Section "ETW (required)"
   
   ; Put file there
   File "..\ETW.exe"
+  File "..\README-SDL.txt"
   File "..\SDL.dll"
-  File /r "..\arcadesnd"
-  File /r "..\catalogs"
-  File /r "..\crowd"
-  File /r "..\gfx"
-  File /r "..\intro"
-  File /r "..\menugfx"
-  File /r "..\music"
-  File /r "..\newgfx"
-  File /r "..\saves"
-  File /r "..\snd"
-  File /r "..\t"
-  File /r "..\tct"
-  File /r "..\teams"
+  File /r /x CVS "..\arcadesnd"
+  File /r /x CVS "..\catalogs"
+  File /r /x CVS "..\crowd"
+  File /r /x CVS "..\gfx"
+  File /r /x CVS "..\intro"
+  File /r /x CVS "..\menugfx"
+  File /r /x CVS "..\music"
+  File /r /x CVS "..\newgfx"
+  File /r /x CVS "..\saves"
+  File /r /x CVS "..\snd"
+  File /r /x CVS "..\t"
+  File /r /x CVS "..\tct"
+  File /r /x CVS "..\teams"
 
   IfFileExists "$INSTDIR\etw.cfg" 0 skipcheck
 
