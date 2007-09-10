@@ -4,7 +4,7 @@ DEBUG =
 CFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL \
          -O2 -fwritable-strings -Wall -fsigned-char -Wno-char-subscripts
 LFLAGS = -lmingw32 -lSDLmain -lSDL -mwindows -lwsock32 -lcomdlg32 
-DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER
+DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER -DDEBUG_DISABLED
 
 OBJECTS = icon.o highdirent.o	  cpu.o		   human.o	  myiff.o	specials.o \
 	anim.o		  crowd.o	   intro.o	  os_control.o	squadre.o \

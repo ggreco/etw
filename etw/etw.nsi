@@ -46,22 +46,22 @@ Section "ETW (required)"
   SetOverwrite ifnewer ; NOT AN INSTRUCTION, NOT COUNTED IN SKIPPINGS
   
   ; Put file there
-  File "..\ETW.exe"
-  File "..\README-SDL.txt"
-  File "..\SDL.dll"
-  File /r /x CVS "..\arcadesnd"
-  File /r /x CVS "..\catalogs"
-  File /r /x CVS "..\crowd"
-  File /r /x CVS "..\gfx"
-  File /r /x CVS "..\intro"
-  File /r /x CVS "..\menugfx"
-  File /r /x CVS "..\music"
-  File /r /x CVS "..\newgfx"
-  File /r /x CVS "..\saves"
-  File /r /x CVS "..\snd"
-  File /r /x CVS "..\t"
-  File /r /x CVS "..\tct"
-  File /r /x CVS "..\teams"
+  File "ETW.exe"
+  File "..\data\README-SDL.txt"
+  File "..\data\SDL.dll"
+  File /r /x .svn "..\data\arcadesnd"
+  File /r /x .svn "..\data\catalogs"
+  File /r /x .svn "..\data\crowd"
+  File /r /x .svn "..\data\gfx"
+  File /r /x .svn "..\data\intro"
+  File /r /x .svn "..\data\menugfx"
+  File /r /x .svn "..\data\music"
+  File /r /x .svn "..\data\newgfx"
+  File /r /x .svn "..\data\saves"
+  File /r /x .svn "..\data\snd"
+  File /r /x .svn "..\data\t"
+  File /r /x .svn "..\data\tct"
+  File /r /x .svn "..\data\teams"
 
   IfFileExists "$INSTDIR\etw.cfg" 0 skipcheck
 
@@ -72,7 +72,7 @@ Section "ETW (required)"
 
   NoOverwrite:
 
-  File "..\etw.cfg" ; skipped if answered no
+  File "..\data\etw.cfg" ; skipped if answered no
   SetOverwrite try ; NOT AN INSTRUCTION, NOT COUNTED IN SKIPPINGS
 
 
@@ -114,6 +114,7 @@ Section "Uninstall"
   ; Remove files and uninstaller
   Delete $INSTDIR\ETW.exe
   Delete $INSTDIR\SDL.dll
+  Delete $INSTDIR\README-SDL.txt
   Delete $INSTDIR\uninstall.exe
 
   ; Removing data files

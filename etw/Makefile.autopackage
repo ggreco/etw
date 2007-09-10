@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wno-char-subscripts -Os \
 	-fsigned-char -Iinclude -DAUTOPACKAGED
 
 LDFLAGS = `sdl-config --libs` `gtk-config --libs`
-DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H
+DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H -DDEBUG_DISABLED
 
 OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
 	anim.o crowd.o intro.o os_control.o squadre.o \
