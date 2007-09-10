@@ -202,6 +202,7 @@ void set_controls(void)
 	if(p->squadra[0]->Joystick>=0)
 	{
 		if(control[p->squadra[0]->Joystick]<CTRL_KEY_1)	{
+joy_try_again:
 			D(bug("Opening joystick %ld\n",p->squadra[0]->Joystick));
 
 			if ((joy[p->squadra[0]->Joystick]=SDL_JoystickOpen(p->squadra[0]->Joystick))) {
@@ -224,7 +225,13 @@ void set_controls(void)
 
 				joybuttons[p->squadra[0]->Joystick]=SDL_JoystickNumButtons(joy[p->squadra[0]->Joystick]);
 			}
-			else {
+			else if (player_type[1] == TYPE_COMPUTER && player_type[0] == 1) {
+                // if we are playing single player and we have a single joystick installed
+                // let the player use it anyway
+                p->squadra[0]->Joystick = 0;
+                goto joy_try_again;
+            }
+            else {
 				// Prevedo fallback a tastiera o ritorno un errore?
 				D(bug(" ->Error opening joystick!\n"));
                 has_joystick = FALSE;

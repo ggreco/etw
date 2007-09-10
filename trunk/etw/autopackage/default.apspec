@@ -41,10 +41,11 @@ AutopackageTarget: 1.2
 #prepareBuild --with-some-feature
 make CC=apgcc APBUILD_NO_STATIC_X=1 -f Makefile.autopackage
 cp etw etw.desktop $build_root
-cd ..
+cd ../data
 mkdir -p $build_root/etwdata
 cp -r arcadesnd crowd gfx menugfx newgfx snd tct catalogs etw.cfg intro music saves t teams $build_root/etwdata/
-cd src
+find $build_root | grep .svn | xargs rm -rf 
+cd ../etw
 mkdir -p $build_root/share/icons/hicolor/48x48/apps
 cp etw.png $build_root/share/icons/hicolor/48x48/apps 
 
