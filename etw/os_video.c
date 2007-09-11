@@ -189,9 +189,12 @@ void OpenTheScreen(void)
 		// metto due false qui x evitare problemi
 	}
 	else {
+        // osx fullscreen is already double buffered by default
+#ifndef __APPLE__
 		if(!force_single)
 			double_buffering=TRUE;
 		else
+#endif
 			double_buffering=FALSE;
 
 		if(double_buffering)
