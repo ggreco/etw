@@ -29,67 +29,65 @@ void ReadTeam(FILE *fh, struct Squadra_Disk *s)
 {
     int i;
 
-    fread(&s->disponibilita, sizeof(long), 1, fh);
+    fread(&s->disponibilita, sizeof(uint32_t), 1, fh);
     SWAP_LONG(s->disponibilita);
-    fread(&s->NumeroGiocatori, sizeof(char), 1, fh);
-    fread(&s->NumeroPortieri, sizeof(char), 1, fh);
-    fread(&s->Nazione, sizeof(char), 1, fh);
-    fread(&s->Flags, sizeof(char), 1, fh);
+    fread(&s->NumeroGiocatori, sizeof(uint8_t), 1, fh);
+    fread(&s->NumeroPortieri, sizeof(uint8_t), 1, fh);
+    fread(&s->Nazione, sizeof(uint8_t), 1, fh);
+    fread(&s->Flags, sizeof(uint8_t), 1, fh);
 
-    for(i=0; i<2; i++)
+    for(i = 0; i < 2; i++)
     {
-        fread(&s->maglie[i].Tipo, sizeof(char), 1, fh);
-        fread(&s->maglie[i].Colore0, sizeof(char), 1, fh);
-        fread(&s->maglie[i].Colore1, sizeof(char), 1, fh);
-        fread(&s->maglie[i].Colore2, sizeof(char), 1, fh);
+        fread(&s->maglie[i].Tipo, sizeof(uint8_t), 1, fh);
+        fread(&s->maglie[i].Colore0, sizeof(uint8_t), 1, fh);
+        fread(&s->maglie[i].Colore1, sizeof(uint8_t), 1, fh);
+        fread(&s->maglie[i].Colore2, sizeof(uint8_t), 1, fh);
     }
 
-    for(i=0; i<3; i++)
+    for(i = 0; i < 3; i++)
         fread(&s->Tattiche[i], sizeof(char), 16, fh);
 
     fread(s->nome, sizeof(char), 52, fh);
     fread(s->allenatore, sizeof(char), 52, fh);
 
+    // Teams always have 3 keepers and 21 players because their size is fixed!
 
-    // le squadre han sempre 3 portieri e 21 giocatori perche' sono files di dimensione fissa!
-
-
-    for(i=0; i<3; i++)
+    for(i = 0; i < 3; i++)
     {
         fread(s->portiere[i].Nome, sizeof(char), 20, fh);
         fread(s->portiere[i].Cognome, sizeof(char), 20, fh);
-        fread(&s->portiere[i].valore, sizeof(long), 1, fh);
+        fread(&s->portiere[i].valore, sizeof(uint32_t), 1, fh);
         SWAP_LONG(s->portiere[i].valore);
-        fread(&s->portiere[i].Numero, sizeof(char), 1, fh);
-        fread(&s->portiere[i].Velocita, sizeof(char), 1, fh);
-        fread(&s->portiere[i].Parata, sizeof(char), 1, fh);
-        fread(&s->portiere[i].Attenzione, sizeof(char), 1, fh);
-        fread(&s->portiere[i].Nazionalita, sizeof(char), 1, fh);
-        fread(&s->portiere[i].Eta, sizeof(char), 1, fh);
-        fread(&s->portiere[i].Infortuni, sizeof(char), 1, fh);
-        fread(&s->portiere[i].Flags, sizeof(char), 1, fh);
+        fread(&s->portiere[i].Numero, sizeof(uint8_t), 1, fh);
+        fread(&s->portiere[i].Velocita, sizeof(uint8_t), 1, fh);
+        fread(&s->portiere[i].Parata, sizeof(uint8_t), 1, fh);
+        fread(&s->portiere[i].Attenzione, sizeof(uint8_t), 1, fh);
+        fread(&s->portiere[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fread(&s->portiere[i].Eta, sizeof(uint8_t), 1, fh);
+        fread(&s->portiere[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fread(&s->portiere[i].Flags, sizeof(uint8_t), 1, fh);
     }
 
-    for(i=0; i<21; i++)
+    for(i = 0; i < 21; i++)
     {
         fread(s->giocatore[i].Nome, sizeof(char), 20, fh);
         fread(s->giocatore[i].Cognome, sizeof(char), 20, fh);
-        fread(&s->giocatore[i].valore, sizeof(long), 1, fh);
+        fread(&s->giocatore[i].valore, sizeof(uint32_t), 1, fh);
         SWAP_LONG(s->giocatore[i].valore);
-        fread(&s->giocatore[i].Numero, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Velocita, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Contrasto, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Tiro, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Durata, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Resistenza, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Prontezza, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Nazionalita, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Creativita, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Tecnica, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Eta, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Infortuni, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Ammonizioni, sizeof(char), 1, fh);
-        fread(&s->giocatore[i].Posizioni, sizeof(char), 1, fh);
+        fread(&s->giocatore[i].Numero, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Velocita, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Contrasto, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Tiro, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Durata, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Resistenza, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Prontezza, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Creativita, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Tecnica, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Eta, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Ammonizioni, sizeof(uint8_t), 1, fh);
+        fread(&s->giocatore[i].Posizioni, sizeof(uint8_t), 1, fh);
     }
 }
 
@@ -99,69 +97,67 @@ void WriteTeam(FILE *fh, struct Squadra_Disk *s)
     int i;
 
     SWAP_LONG(s->disponibilita);
-    fwrite(&s->disponibilita, sizeof(long), 1, fh);
+    fwrite(&s->disponibilita, sizeof(uint32_t), 1, fh);
     SWAP_LONG(s->disponibilita);
-    fwrite(&s->NumeroGiocatori, sizeof(char), 1, fh);
-    fwrite(&s->NumeroPortieri, sizeof(char), 1, fh);
-    fwrite(&s->Nazione, sizeof(char), 1, fh);
-    fwrite(&s->Flags, sizeof(char), 1, fh);
+    fwrite(&s->NumeroGiocatori, sizeof(uint8_t), 1, fh);
+    fwrite(&s->NumeroPortieri, sizeof(uint8_t), 1, fh);
+    fwrite(&s->Nazione, sizeof(uint8_t), 1, fh);
+    fwrite(&s->Flags, sizeof(uint8_t), 1, fh);
 
-    for(i=0; i<2; i++)
+    for(i = 0; i < 2; i++)
     {
-        fwrite(&s->maglie[i].Tipo, sizeof(char), 1, fh);
-        fwrite(&s->maglie[i].Colore0, sizeof(char), 1, fh);
-        fwrite(&s->maglie[i].Colore1, sizeof(char), 1, fh);
-        fwrite(&s->maglie[i].Colore2, sizeof(char), 1, fh);
+        fwrite(&s->maglie[i].Tipo, sizeof(uint8_t), 1, fh);
+        fwrite(&s->maglie[i].Colore0, sizeof(uint8_t), 1, fh);
+        fwrite(&s->maglie[i].Colore1, sizeof(uint8_t), 1, fh);
+        fwrite(&s->maglie[i].Colore2, sizeof(uint8_t), 1, fh);
     }
 
-    for(i=0; i<3; i++)
+    for(i = 0; i < 3; i++)
         fwrite(&s->Tattiche[i], sizeof(char), 16, fh);
 
     fwrite(s->nome, sizeof(char), 52, fh);
     fwrite(s->allenatore, sizeof(char), 52, fh);
 
-    for(i=0; i<3; i++)
+    // The number of keepers and players written is always the same
+
+    for(i = 0; i < 3; i++)
     {
         fwrite(s->portiere[i].Nome, sizeof(char), 20, fh);
         fwrite(s->portiere[i].Cognome, sizeof(char), 20, fh);
         SWAP_LONG(s->portiere[i].valore);
-        fwrite(&s->portiere[i].valore, sizeof(long), 1, fh);
+        fwrite(&s->portiere[i].valore, sizeof(uint32_t), 1, fh);
         SWAP_LONG(s->portiere[i].valore);
-        fwrite(&s->portiere[i].Numero, sizeof(char), 1, fh);
-        fwrite(&s->portiere[i].Velocita, sizeof(char), 1, fh);
-        fwrite(&s->portiere[i].Parata, sizeof(char), 1, fh);
-        fwrite(&s->portiere[i].Attenzione, sizeof(char), 1, fh);
-        fwrite(&s->portiere[i].Nazionalita, sizeof(char), 1, fh);
-        fwrite(&s->portiere[i].Eta, sizeof(char), 1, fh);
-        fwrite(&s->portiere[i].Infortuni, sizeof(char), 1, fh);
-        fwrite(&s->portiere[i].Flags, sizeof(char), 1, fh);
+        fwrite(&s->portiere[i].Numero, sizeof(uint8_t), 1, fh);
+        fwrite(&s->portiere[i].Velocita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->portiere[i].Parata, sizeof(uint8_t), 1, fh);
+        fwrite(&s->portiere[i].Attenzione, sizeof(uint8_t), 1, fh);
+        fwrite(&s->portiere[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->portiere[i].Eta, sizeof(uint8_t), 1, fh);
+        fwrite(&s->portiere[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->portiere[i].Flags, sizeof(uint8_t), 1, fh);
     }
 
-
-    // portieri e giocatori da scrivere son sempre fissi
-
-
-    for(i=0; i<21; i++)
+    for(i = 0; i < 21; i++)
     {
         fwrite(s->giocatore[i].Nome, sizeof(char), 20, fh);
         fwrite(s->giocatore[i].Cognome, sizeof(char), 20, fh);
         SWAP_LONG(s->giocatore[i].valore);
-        fwrite(&s->giocatore[i].valore, sizeof(long), 1, fh);
+        fwrite(&s->giocatore[i].valore, sizeof(uint32_t), 1, fh);
         SWAP_LONG(s->giocatore[i].valore);
-        fwrite(&s->giocatore[i].Numero, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Velocita, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Contrasto, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Tiro, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Durata, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Resistenza, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Prontezza, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Nazionalita, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Creativita, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Tecnica, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Eta, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Infortuni, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Ammonizioni, sizeof(char), 1, fh);
-        fwrite(&s->giocatore[i].Posizioni, sizeof(char), 1, fh);
+        fwrite(&s->giocatore[i].Numero, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Velocita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Contrasto, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Tiro, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Durata, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Resistenza, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Prontezza, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Creativita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Tecnica, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Eta, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Ammonizioni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->giocatore[i].Posizioni, sizeof(uint8_t), 1, fh);
     }
 }
 
