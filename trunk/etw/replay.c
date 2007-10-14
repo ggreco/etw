@@ -18,12 +18,12 @@ UWORD real_counter, counter = 0, CounterLimit;
 
 extern BOOL draw_r;
 extern void WriteGameConfig(FILE *);
-struct Pos *arcade_buf;
+struct pos *arcade_buf;
 
 struct MatchStatus
 {
-    struct Partita partita;
-    struct Team team[2];
+    game_t game;
+    team_t team[2];
     UWORD ReplayCounter;
     WORD field_x,field_y;
     uint8_t need_release[MAX_PLAYERS];
@@ -33,7 +33,7 @@ struct MatchStatus *match, InitialStatus;
 mytimer StartReplayTime, StopTimeVal;
 int matchstatus_size = sizeof(struct MatchStatus);
 
-static void ReadATeam(FILE *f, Team *s)
+static void ReadATeam(FILE *f, team_t *s)
 {
     int i;
     
@@ -50,9 +50,9 @@ static void ReadATeam(FILE *f, Team *s)
     s->Schema = fread_u8(f);
     s->Joystick = fread_u8(f);
 
-    s->tattica = (Tactic *)fread_u32(f); // must be converted in a pointer!
+    s->tactic = (tactic_t *)fread_u32(f); // must be converted in a pointer!
     s->TempoPossesso = fread_u32(f);
-    s->attivo = (Player *)fread_u32(f); // must be converted in a pointer!
+    s->attivo = (player_t *)fread_u32(f); // must be converted in a pointer!
 
 // goalkeeper
     s->keepers.world_x = fread_u16(f); 
@@ -60,12 +60,12 @@ static void ReadATeam(FILE *f, Team *s)
     s->keepers.OnScreen = fread_u8(f); 
     s->keepers.AnimType = fread_u16(f); 
     s->keepers.AnimFrame = fread_u16(f); 
-    s->keepers.ObjectType = fread_u8(f); 
-    s->keepers.Direzione = fread_u8(f); 
+    s->keepers.otype = fread_u8(f); 
+    s->keepers.dir = fread_u8(f); 
     s->keepers.ActualSpeed = fread_u8(f); 
     s->keepers.FrameLen = fread_u8(f); 
     s->keepers.Tick = fread_u16(f); 
-    s->keepers.team = (Team *) fread_u32(f);  // must be converted in a pointeR!
+    s->keepers.team = (team_t *) fread_u32(f);  // must be converted in a pointeR!
     s->keepers.NameLen = fread_u8(f); 
     s->keepers.SNum = fread_u8(f); 
     s->keepers.Ammonito = fread_u8(f); 
@@ -80,19 +80,19 @@ static void ReadATeam(FILE *f, Team *s)
 
 // field players
     for (i = 0; i < 10; i++) {
-        Giocatore *g = &s->players[i];
+        player_t *g = &s->players[i];
 
         g->world_x = fread_u16(f);
         g->world_y = fread_u16(f);
         g->OnScreen = fread_u8(f);
         g->AnimType = fread_u16(f);
         g->AnimFrame = fread_u16(f);
-        g->ObjectType = fread_u8(f);
-        g->Direzione = fread_u8(f);
+        g->otype = fread_u8(f);
+        g->dir = fread_u8(f);
         g->ActualSpeed = fread_u8(f);
         g->FrameLen = fread_u8(f);
         g->Tick = fread_u16(f);
-        g->team = (Team *)fread_u32(f);  // must be converted in a pointeR!
+        g->team = (team_t *)fread_u32(f);  // must be converted in a pointeR!
         g->NameLen = fread_u8(f);
         g->GNum = fread_u8(f);
         g->Ammonito = fread_u8(f);
@@ -101,15 +101,15 @@ static void ReadATeam(FILE *f, Team *s)
         g->SpecialData = fread_u16(f);
         g->TimePress = fread_u16(f);
         g->number = fread_u8(f);
-        g->Velocita = fread_u8(f);
-        g->Contrasto = fread_u8(f);
+        g->speed = fread_u8(f);
+        g->tackle = fread_u8(f);
         g->Tiro = fread_u8(f);
         g->Durata = fread_u8(f);
-        g->Resistenza = fread_u8(f);
-        g->Prontezza = fread_u8(f);
+        g->stamina = fread_u8(f);
+        g->quickness = fread_u8(f);
         g->settore = fread_u8(f);
-        g->Creativita = fread_u8(f);
-        g->Tecnica = fread_u8(f);
+        g->creativity = fread_u8(f);
+        g->technique = fread_u8(f);
         g->Posizioni = fread_u8(f);
         g->SNum = fread_u8(f);
         g->Controlled = fread_u8(f);
@@ -141,77 +141,77 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
 {
     int i;
 // write ball related data 
-    m->partita.palla.gioc_palla = (Player *)fread_u32(f);
-    m->partita.palla.sq_palla = (Team *)fread_u32(f);
-    m->partita.palla.world_x = fread_u16(f);
-    m->partita.palla.world_y = fread_u16(f);
-    m->partita.palla.delta_x = fread_u16(f);
-    m->partita.palla.delta_y = fread_u16(f);
-    m->partita.palla.InGioco = fread_u8(f);
-    m->partita.palla.Hide = fread_u8(f);
-    m->partita.palla.ToTheTop = fread_u8(f);
-    m->partita.palla.ThisQuota = fread_u8(f);
-    m->partita.palla.Stage = fread_u8(f);
-    m->partita.palla.TipoTiro = fread_u8(f);
-    m->partita.palla.ActualFrame = fread_u8(f);
-    m->partita.palla.MaxQuota = fread_u8(f);
-    m->partita.palla.SpeedUp = fread_u8(f);
-    m->partita.palla.Rimbalzi = fread_u8(f);
-    m->partita.palla.velocita = fread_u8(f);
-    m->partita.palla.Direzione = fread_u8(f);
-    m->partita.palla.quota = fread_u8(f);
-    m->partita.palla.settore = fread_u8(f);
+    m->game.ball.gioc_palla = (player_t *)fread_u32(f);
+    m->game.ball.sq_palla = (team_t *)fread_u32(f);
+    m->game.ball.world_x = fread_u16(f);
+    m->game.ball.world_y = fread_u16(f);
+    m->game.ball.delta_x = fread_u16(f);
+    m->game.ball.delta_y = fread_u16(f);
+    m->game.ball.InGioco = fread_u8(f);
+    m->game.ball.Hide = fread_u8(f);
+    m->game.ball.ToTheTop = fread_u8(f);
+    m->game.ball.ThisQuota = fread_u8(f);
+    m->game.ball.Stage = fread_u8(f);
+    m->game.ball.TipoTiro = fread_u8(f);
+    m->game.ball.ActualFrame = fread_u8(f);
+    m->game.ball.MaxQuota = fread_u8(f);
+    m->game.ball.SpeedUp = fread_u8(f);
+    m->game.ball.Rimbalzi = fread_u8(f);
+    m->game.ball.velocita = fread_u8(f);
+    m->game.ball.dir = fread_u8(f);
+    m->game.ball.quota = fread_u8(f);
+    m->game.ball.settore = fread_u8(f);
 
 // write refree related datas
-    m->partita.arbitro.world_x = fread_u16(f);    
-    m->partita.arbitro.world_y = fread_u16(f);    
-    m->partita.arbitro.AnimType = fread_u16(f);    
-    m->partita.arbitro.AnimFrame = fread_u16(f);    
-    m->partita.arbitro.Tick = fread_u16(f);    
-    m->partita.arbitro.Argomento = fread_u16(f);    
-    m->partita.arbitro.OnScreen = fread_u8(f);
-    m->partita.arbitro.Special = fread_u8(f);
-    m->partita.arbitro.ObjectType = fread_u8(f);
-    m->partita.arbitro.Direzione = fread_u8(f);
-    m->partita.arbitro.ActualSpeed = fread_u8(f);
-    m->partita.arbitro.FrameLen = fread_u8(f);
-    m->partita.arbitro.NameLen = fread_u8(f);
-    m->partita.arbitro.Comando = fread_u8(f);
-    m->partita.arbitro.velocita = fread_u8(f);
-    m->partita.arbitro.abilita = fread_u8(f);
-    m->partita.arbitro.recupero = fread_u8(f);
-    m->partita.arbitro.cattiveria = fread_u8(f);
+    m->game.referee.world_x = fread_u16(f);    
+    m->game.referee.world_y = fread_u16(f);    
+    m->game.referee.AnimType = fread_u16(f);    
+    m->game.referee.AnimFrame = fread_u16(f);    
+    m->game.referee.Tick = fread_u16(f);    
+    m->game.referee.Argomento = fread_u16(f);    
+    m->game.referee.OnScreen = fread_u8(f);
+    m->game.referee.Special = fread_u8(f);
+    m->game.referee.otype = fread_u8(f);
+    m->game.referee.dir = fread_u8(f);
+    m->game.referee.ActualSpeed = fread_u8(f);
+    m->game.referee.FrameLen = fread_u8(f);
+    m->game.referee.NameLen = fread_u8(f);
+    m->game.referee.Comando = fread_u8(f);
+    m->game.referee.velocita = fread_u8(f);
+    m->game.referee.abilita = fread_u8(f);
+    m->game.referee.recupero = fread_u8(f);
+    m->game.referee.cattiveria = fread_u8(f);
     
 // write generic datas
-    m->partita.TempoPassato = fread_u32(f);
-    m->partita.show_panel = fread_u32(f);
-    m->partita.show_time = fread_u32(f);
-    m->partita.possesso = (Team *) fread_u32(f);
-    m->partita.player_injuried = (Player *)fread_u32(f);
-    m->partita.check_sector = fread_u16(f);
+    m->game.TempoPassato = fread_u32(f);
+    m->game.show_panel = fread_u32(f);
+    m->game.show_time = fread_u32(f);
+    m->game.possesso = (team_t *) fread_u32(f);
+    m->game.player_injuried = (player_t *)fread_u32(f);
+    m->game.check_sector = fread_u16(f);
 
     for (i = 0; i < SHOT_LENGTH; i++)
-        m->partita.shotheight[i] = fread_u16(f);
+        m->game.shotheight[i] = fread_u16(f);
     
-    m->partita.flash_pos = fread_u16(f);
-    m->partita.goal = fread_u8(f);
-    m->partita.sopra_rete = fread_u8(f);
-    m->partita.flash_mode = fread_u8(f);
-    m->partita.doing_shot = fread_u8(f);
-    m->partita.mantieni_distanza = fread_u8(f);
-    m->partita.penalty_onscreen = fread_u8(f);
+    m->game.flash_pos = fread_u16(f);
+    m->game.goal = fread_u8(f);
+    m->game.sopra_rete = fread_u8(f);
+    m->game.flash_mode = fread_u8(f);
+    m->game.doing_shot = fread_u8(f);
+    m->game.mantieni_distanza = fread_u8(f);
+    m->game.penalty_onscreen = fread_u8(f);
 
-    m->partita.arcade_counter = fread_u16(f);
-    m->partita.marker_x = fread_u16(f);
-    m->partita.marker_y = fread_u16(f);
-    m->partita.penalty_counter = fread_u16(f);
-    m->partita.adder = fread_u16(f);
+    m->game.arcade_counter = fread_u16(f);
+    m->game.marker_x = fread_u16(f);
+    m->game.marker_y = fread_u16(f);
+    m->game.penalty_counter = fread_u16(f);
+    m->game.adder = fread_u16(f);
 
-    m->partita.TabCounter = fread_u8(f);
-    m->partita.result_len = fread_u8(f);
-    m->partita.last_touch = fread_u8(f);
-    m->partita.arcade_on_field = fread_u8(f);
-    m->partita.RiservaAttuale = fread_u8(f);
+    m->game.TabCounter = fread_u8(f);
+    m->game.result_len = fread_u8(f);
+    m->game.last_touch = fread_u8(f);
+    m->game.arcade_on_field = fread_u8(f);
+    m->game.RiservaAttuale = fread_u8(f);
     
     ReadATeam(f, &m->team[0]);
     ReadATeam(f, &m->team[1]);
@@ -224,7 +224,7 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
     fread_data(&m->need_release, sizeof(m->need_release), f);
 }
 
-static void WriteATeam(FILE *f, Team *s)
+static void WriteATeam(FILE *f, team_t *s)
 {
     int i;
     
@@ -241,7 +241,7 @@ static void WriteATeam(FILE *f, Team *s)
     fwrite_u8(s->Schema, f);
     fwrite_u8(s->Joystick, f);
     
-    fwrite_u32((int32_t)s->tattica, f);
+    fwrite_u32((int32_t)s->tactic, f);
     fwrite_u32(s->TempoPossesso, f);
     fwrite_u32((int32_t)s->attivo, f);
 
@@ -251,8 +251,8 @@ static void WriteATeam(FILE *f, Team *s)
     fwrite_u8(s->keepers.OnScreen, f); 
     fwrite_u16(s->keepers.AnimType, f); 
     fwrite_u16(s->keepers.AnimFrame, f); 
-    fwrite_u8(s->keepers.ObjectType, f); 
-    fwrite_u8(s->keepers.Direzione, f); 
+    fwrite_u8(s->keepers.otype, f); 
+    fwrite_u8(s->keepers.dir, f); 
     fwrite_u8(s->keepers.ActualSpeed, f); 
     fwrite_u8(s->keepers.FrameLen, f); 
     fwrite_u16(s->keepers.Tick, f); 
@@ -271,15 +271,15 @@ static void WriteATeam(FILE *f, Team *s)
 
 // field players
     for (i = 0; i < 10; i++) {
-        Giocatore *g = &s->players[i];
+        player_t *g = &s->players[i];
 
         fwrite_u16(g->world_x, f);
         fwrite_u16(g->world_y, f);
         fwrite_u8(g->OnScreen, f);
         fwrite_u16(g->AnimType, f);
         fwrite_u16(g->AnimFrame, f);
-        fwrite_u8(g->ObjectType , f);
-        fwrite_u8(g->Direzione , f);
+        fwrite_u8(g->otype , f);
+        fwrite_u8(g->dir , f);
         fwrite_u8(g->ActualSpeed , f);
         fwrite_u8(g->FrameLen , f);
         fwrite_u16(g->Tick, f);
@@ -292,15 +292,15 @@ static void WriteATeam(FILE *f, Team *s)
         fwrite_u16(g->SpecialData, f);
         fwrite_u16(g->TimePress, f);
         fwrite_u8(g->number , f);
-        fwrite_u8(g->Velocita , f);
-        fwrite_u8(g->Contrasto , f);
+        fwrite_u8(g->speed , f);
+        fwrite_u8(g->tackle , f);
         fwrite_u8(g->Tiro , f);
         fwrite_u8(g->Durata , f);
-        fwrite_u8(g->Resistenza , f);
-        fwrite_u8(g->Prontezza , f);
+        fwrite_u8(g->stamina , f);
+        fwrite_u8(g->quickness , f);
         fwrite_u8(g->settore , f);
-        fwrite_u8(g->Creativita , f);
-        fwrite_u8(g->Tecnica , f);
+        fwrite_u8(g->creativity , f);
+        fwrite_u8(g->technique , f);
         fwrite_u8(g->Posizioni , f);
         fwrite_u8(g->SNum , f);
         fwrite_u8(g->Controlled, f);
@@ -333,77 +333,77 @@ void WriteMatch(FILE *f, struct MatchStatus *m)
 {
     int i;
 // write ball related data 
-    fwrite_u32((int32_t)m->partita.palla.gioc_palla, f);
-    fwrite_u32((int32_t)m->partita.palla.sq_palla, f);
-    fwrite_u16(m->partita.palla.world_x, f);
-    fwrite_u16(m->partita.palla.world_y, f);
-    fwrite_u16(m->partita.palla.delta_x, f);
-    fwrite_u16(m->partita.palla.delta_y, f);
-    fwrite_u8(m->partita.palla.InGioco, f);
-    fwrite_u8(m->partita.palla.Hide, f);
-    fwrite_u8(m->partita.palla.ToTheTop, f);
-    fwrite_u8(m->partita.palla.ThisQuota, f);
-    fwrite_u8(m->partita.palla.Stage, f);
-    fwrite_u8(m->partita.palla.TipoTiro, f);
-    fwrite_u8(m->partita.palla.ActualFrame, f);
-    fwrite_u8(m->partita.palla.MaxQuota, f);
-    fwrite_u8(m->partita.palla.SpeedUp, f);
-    fwrite_u8(m->partita.palla.Rimbalzi, f);
-    fwrite_u8(m->partita.palla.velocita, f);
-    fwrite_u8(m->partita.palla.Direzione, f);
-    fwrite_u8(m->partita.palla.quota, f);
-    fwrite_u8(m->partita.palla.settore, f);
+    fwrite_u32((int32_t)m->game.ball.gioc_palla, f);
+    fwrite_u32((int32_t)m->game.ball.sq_palla, f);
+    fwrite_u16(m->game.ball.world_x, f);
+    fwrite_u16(m->game.ball.world_y, f);
+    fwrite_u16(m->game.ball.delta_x, f);
+    fwrite_u16(m->game.ball.delta_y, f);
+    fwrite_u8(m->game.ball.InGioco, f);
+    fwrite_u8(m->game.ball.Hide, f);
+    fwrite_u8(m->game.ball.ToTheTop, f);
+    fwrite_u8(m->game.ball.ThisQuota, f);
+    fwrite_u8(m->game.ball.Stage, f);
+    fwrite_u8(m->game.ball.TipoTiro, f);
+    fwrite_u8(m->game.ball.ActualFrame, f);
+    fwrite_u8(m->game.ball.MaxQuota, f);
+    fwrite_u8(m->game.ball.SpeedUp, f);
+    fwrite_u8(m->game.ball.Rimbalzi, f);
+    fwrite_u8(m->game.ball.velocita, f);
+    fwrite_u8(m->game.ball.dir, f);
+    fwrite_u8(m->game.ball.quota, f);
+    fwrite_u8(m->game.ball.settore, f);
 
 // write refree related datas
-    fwrite_u16(m->partita.arbitro.world_x, f);    
-    fwrite_u16(m->partita.arbitro.world_y, f);    
-    fwrite_u16(m->partita.arbitro.AnimType, f);    
-    fwrite_u16(m->partita.arbitro.AnimFrame, f);    
-    fwrite_u16(m->partita.arbitro.Tick, f);    
-    fwrite_u16(m->partita.arbitro.Argomento, f);    
-    fwrite_u8(m->partita.arbitro.OnScreen, f);
-    fwrite_u8(m->partita.arbitro.Special, f);
-    fwrite_u8(m->partita.arbitro.ObjectType, f);
-    fwrite_u8(m->partita.arbitro.Direzione, f);
-    fwrite_u8(m->partita.arbitro.ActualSpeed, f);
-    fwrite_u8(m->partita.arbitro.FrameLen, f);
-    fwrite_u8(m->partita.arbitro.NameLen, f);
-    fwrite_u8(m->partita.arbitro.Comando, f);
-    fwrite_u8(m->partita.arbitro.velocita, f);
-    fwrite_u8(m->partita.arbitro.abilita, f);
-    fwrite_u8(m->partita.arbitro.recupero, f);
-    fwrite_u8(m->partita.arbitro.cattiveria, f);
+    fwrite_u16(m->game.referee.world_x, f);    
+    fwrite_u16(m->game.referee.world_y, f);    
+    fwrite_u16(m->game.referee.AnimType, f);    
+    fwrite_u16(m->game.referee.AnimFrame, f);    
+    fwrite_u16(m->game.referee.Tick, f);    
+    fwrite_u16(m->game.referee.Argomento, f);    
+    fwrite_u8(m->game.referee.OnScreen, f);
+    fwrite_u8(m->game.referee.Special, f);
+    fwrite_u8(m->game.referee.otype, f);
+    fwrite_u8(m->game.referee.dir, f);
+    fwrite_u8(m->game.referee.ActualSpeed, f);
+    fwrite_u8(m->game.referee.FrameLen, f);
+    fwrite_u8(m->game.referee.NameLen, f);
+    fwrite_u8(m->game.referee.Comando, f);
+    fwrite_u8(m->game.referee.velocita, f);
+    fwrite_u8(m->game.referee.abilita, f);
+    fwrite_u8(m->game.referee.recupero, f);
+    fwrite_u8(m->game.referee.cattiveria, f);
     
 // write generic datas
-    fwrite_u32(m->partita.TempoPassato, f);
-    fwrite_u32(m->partita.show_panel, f);
-    fwrite_u32(m->partita.show_time, f);
-    fwrite_u32((int32_t)m->partita.possesso, f);
-    fwrite_u32((int32_t)m->partita.player_injuried, f);
-    fwrite_u16(m->partita.check_sector, f);
+    fwrite_u32(m->game.TempoPassato, f);
+    fwrite_u32(m->game.show_panel, f);
+    fwrite_u32(m->game.show_time, f);
+    fwrite_u32((int32_t)m->game.possesso, f);
+    fwrite_u32((int32_t)m->game.player_injuried, f);
+    fwrite_u16(m->game.check_sector, f);
 
     for (i = 0; i < SHOT_LENGTH; i++)
-        fwrite_u16(m->partita.shotheight[i], f);
+        fwrite_u16(m->game.shotheight[i], f);
     
-    fwrite_u16(m->partita.flash_pos, f);
-    fwrite_u8(m->partita.goal, f);
-    fwrite_u8(m->partita.sopra_rete, f);
-    fwrite_u8(m->partita.flash_mode, f);
-    fwrite_u8(m->partita.doing_shot, f);
-    fwrite_u8(m->partita.mantieni_distanza, f);
-    fwrite_u8(m->partita.penalty_onscreen, f);
+    fwrite_u16(m->game.flash_pos, f);
+    fwrite_u8(m->game.goal, f);
+    fwrite_u8(m->game.sopra_rete, f);
+    fwrite_u8(m->game.flash_mode, f);
+    fwrite_u8(m->game.doing_shot, f);
+    fwrite_u8(m->game.mantieni_distanza, f);
+    fwrite_u8(m->game.penalty_onscreen, f);
 
-    fwrite_u16(m->partita.arcade_counter, f);
-    fwrite_u16(m->partita.marker_x, f);
-    fwrite_u16(m->partita.marker_y, f);
-    fwrite_u16(m->partita.penalty_counter, f);
-    fwrite_u16(m->partita.adder, f);
+    fwrite_u16(m->game.arcade_counter, f);
+    fwrite_u16(m->game.marker_x, f);
+    fwrite_u16(m->game.marker_y, f);
+    fwrite_u16(m->game.penalty_counter, f);
+    fwrite_u16(m->game.adder, f);
 
-    fwrite_u8(m->partita.TabCounter, f);
-    fwrite_u8(m->partita.result_len, f);
-    fwrite_u8(m->partita.last_touch, f);
-    fwrite_u8(m->partita.arcade_on_field, f);
-    fwrite_u8(m->partita.RiservaAttuale, f);
+    fwrite_u8(m->game.TabCounter, f);
+    fwrite_u8(m->game.result_len, f);
+    fwrite_u8(m->game.last_touch, f);
+    fwrite_u8(m->game.arcade_on_field, f);
+    fwrite_u8(m->game.RiservaAttuale, f);
     
     WriteATeam(f, &m->team[0]);
     WriteATeam(f, &m->team[1]);
@@ -444,7 +444,7 @@ void StoreReplay(UBYTE Set)
 
 // Refree and ball
 
-    match[Set].partita=*p;
+    match[Set].game=*p;
 
     match[Set].team[0] = *p->team[0];
     match[Set].team[1] = *p->team[1];
@@ -489,7 +489,7 @@ void LoadReplay(UBYTE Set)
     StartReplayTime = Timer();
 
     if(!pl->Hide)
-        RemAnimObj(pl->immagine);
+        RemAnimObj(pl->anim);
 
     if(p->penalty_onscreen)
         RemAnimObj(p->extras);
@@ -509,7 +509,7 @@ void LoadReplay(UBYTE Set)
 
     while (object_list[i]) {
         if (object_list[i]->OnScreen) {
-            RemAnimObj(object_list[i]->immagine);
+            RemAnimObj(object_list[i]->anim);
             object_list[i]->OnScreen=FALSE;
         }
 
@@ -525,8 +525,8 @@ void LoadReplay(UBYTE Set)
             RemAnimObj(p->team[i]->Marker);
 
         if (a) {
-            a[i * SQ_PTR]      = p->team[i]->keepers.immagine;
-            a[i * SQ_PTR + 11] = p->team[i]->tattica;
+            a[i * SQ_PTR]      = p->team[i]->keepers.anim;
+            a[i * SQ_PTR + 11] = p->team[i]->tactic;
             a[i * SQ_PTR + 12] = p->team[i]->Marker;
             a[i * SQ_PTR + 13] = p->team[i]->NomeAttivo;
             a[i * SQ_PTR + 34] = p->team[i]->keepers.name;
@@ -535,10 +535,10 @@ void LoadReplay(UBYTE Set)
         
         for (j = 0; j < 10; j++) {
             if (p->team[i]->players[j].OnScreen)
-                RemAnimObj(p->team[i]->players[j].immagine);
+                RemAnimObj(p->team[i]->players[j].anim);
 
             if (a) {
-                a[j+i*SQ_PTR+1]  = p->team[i]->players[j].immagine;
+                a[j+i*SQ_PTR+1]  = p->team[i]->players[j].anim;
                 a[j+i*SQ_PTR+14] = p->team[i]->players[j].name;
                 a[j+i*SQ_PTR+24] = p->team[i]->players[j].surname;
             }
@@ -551,19 +551,19 @@ void LoadReplay(UBYTE Set)
 
         if (a) {
             char *c;
-            ULONG d = (ULONG)p->team[i]->tattica, e;
+            ULONG d = (ULONG)p->team[i]->tactic, e;
 // first fix the pointers then the reference INSIDE them!
-            p->team[i]->keepers.immagine = a[i * SQ_PTR];
+            p->team[i]->keepers.anim = a[i * SQ_PTR];
             p->team[i]->Marker = a[i * SQ_PTR + 12];
 
-            p->team[i]->keepers.immagine->node.mln_Succ = 
-                p->team[i]->keepers.immagine->node.mln_Pred = NULL;
+            p->team[i]->keepers.anim->node.mln_Succ = 
+                p->team[i]->keepers.anim->node.mln_Pred = NULL;
 
             p->team[i]->keepers.team  = p->team[i];
             p->team[i]->keepers.name     = a[i * SQ_PTR + 34];
             p->team[i]->keepers.surname  = a[i * SQ_PTR + 35];
 
-            p->team[i]->tattica = a[i * SQ_PTR + 11];
+            p->team[i]->tactic = a[i * SQ_PTR + 11];
             p->team[i]->Marker->node.mln_Succ = 
                 p->team[i]->Marker->node.mln_Pred = NULL;
 
@@ -572,7 +572,7 @@ void LoadReplay(UBYTE Set)
 
             p->team[i]->attivo = &p->team[i]->players[(ULONG)p->team[i]->attivo];
 
-            c = p->team[i]->tattica->Name;
+            c = p->team[i]->tactic->Name;
 
             e = (c[0] << 24) | (c[1] << 16) | (c[2] << 8) | c[4];
 
@@ -585,12 +585,12 @@ void LoadReplay(UBYTE Set)
                         (char)((d & 0xff00) >> 8),
                         (char)(d & 0xff) );
 
-                if(!(p->team[i]->tattica=LoadTactic(buffer))) {
+                if(!(p->team[i]->tactic=LoadTactic(buffer))) {
                     quit_game = TRUE;
-                    p->team[i]->tattica = a[i * SQ_PTR + 11];
+                    p->team[i]->tactic = a[i * SQ_PTR + 11];
                 }
                 else
-                    FreeTactic(p->team[i]->tattica);
+                    FreeTactic(p->team[i]->tactic);
             }
         }
 
@@ -599,12 +599,12 @@ void LoadReplay(UBYTE Set)
 
             if (a) {
                 p->team[i]->players[j].team  = p->team[i];
-                p->team[i]->players[j].immagine = a[j + i * SQ_PTR + 1];
+                p->team[i]->players[j].anim = a[j + i * SQ_PTR + 1];
                 p->team[i]->players[j].name     = a[j + 14 + i * SQ_PTR];
                 p->team[i]->players[j].surname  = a[j + 24 + i * SQ_PTR];
 
-                p->team[i]->players[j].immagine->node.mln_Succ = 
-                   p->team[i]->players[j].immagine->node.mln_Pred = NULL;
+                p->team[i]->players[j].anim->node.mln_Succ = 
+                   p->team[i]->players[j].anim->node.mln_Pred = NULL;
             }
         }
         
@@ -617,29 +617,29 @@ void LoadReplay(UBYTE Set)
     old_tc = p->TabCounter;
 
     if (a) {
-        a[SQ_PTR * 2]     = p->arbitro.immagine;
-        a[SQ_PTR * 2 + 1] = pl->immagine;
+        a[SQ_PTR * 2]     = p->referee.anim;
+        a[SQ_PTR * 2 + 1] = pl->anim;
         a[SQ_PTR * 2 + 2] = p->result;
         a[SQ_PTR * 2 + 3] = p->extras;
         a[SQ_PTR * 2 + 4] = p->team[0];
         a[SQ_PTR * 2 + 5] = p->team[1];
     }
     
-    *p = match[Set].partita;
+    *p = match[Set].game;
 
     if (a) {
 
-        p->arbitro.immagine = a[SQ_PTR * 2];
-        p->palla.immagine   = a[SQ_PTR * 2 + 1];
-        p->result           = a[SQ_PTR * 2 + 2];
-        p->extras           = a[SQ_PTR * 2 + 3];
-        p->team[0]       = a[SQ_PTR * 2 + 4];
-        p->team[1]       = a[SQ_PTR * 2 + 5];
+        p->referee.anim = a[SQ_PTR * 2];
+        p->ball.anim    = a[SQ_PTR * 2 + 1];
+        p->result       = a[SQ_PTR * 2 + 2];
+        p->extras       = a[SQ_PTR * 2 + 3];
+        p->team[0]      = a[SQ_PTR * 2 + 4];
+        p->team[1]      = a[SQ_PTR * 2 + 5];
     
-        p->arbitro.immagine->node.mln_Succ =
-            p->arbitro.immagine->node.mln_Pred = NULL;
-        p->palla.immagine->node.mln_Succ =
-            p->palla.immagine->node.mln_Pred = NULL;
+        p->referee.anim->node.mln_Succ =
+            p->referee.anim->node.mln_Pred = NULL;
+        p->ball.anim->node.mln_Succ =
+            p->ball.anim->node.mln_Pred = NULL;
         p->extras->node.mln_Succ =
             p->extras->node.mln_Pred = NULL;
 
@@ -668,10 +668,10 @@ void LoadReplay(UBYTE Set)
 
 // Era questa la causa del bug!!!
 
-    p->arbitro.OnScreen = FALSE;
+    p->referee.OnScreen = FALSE;
 
     if(!pl->Hide) {
-        AddAnimObj(pl->immagine, 10, 10, 0);
+        AddAnimObj(pl->anim, 10, 10, 0);
     }
 
     if(p->penalty_onscreen)
@@ -948,24 +948,24 @@ void SaveReplay(void)
 
     *m = match[StartReplaySet];
 
-    if(m->partita.player_injuried)
-        m->partita.player_injuried=(Giocatore *)(1+m->partita.player_injuried->SNum*11+m->partita.player_injuried->GNum);
+    if(m->game.player_injuried)
+        m->game.player_injuried=(player_t *)(1+m->game.player_injuried->SNum*11+m->game.player_injuried->GNum);
 
-    m->partita.possesso=(Team *)(m->partita.possesso==p->team[0] ? 0 : 1);
+    m->game.possesso=(team_t *)(m->game.possesso==p->team[0] ? 0 : 1);
     
-    if(m->partita.palla.sq_palla)
-        m->partita.palla.sq_palla=(Team *)(m->partita.palla.sq_palla==p->team[0] ? 1 : 2);
+    if(m->game.ball.sq_palla)
+        m->game.ball.sq_palla=(team_t *)(m->game.ball.sq_palla==p->team[0] ? 1 : 2);
 
     for(i = 0; i < 2; i++) {
-        char *c = m->team[i].tattica->Name;
+        char *c = m->team[i].tactic->Name;
 
-        m->team[i].attivo=(Giocatore *)((int)m->team[i].attivo->GNum);
+        m->team[i].attivo=(player_t *)((int)m->team[i].attivo->GNum);
 
-        m->team[i].tattica=(struct Tactic *)( (c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4]);
+        m->team[i].tactic=(tactic_t *)( (c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4]);
     }
 
-    if(m->partita.palla.gioc_palla)
-        m->partita.palla.gioc_palla = (Giocatore *)(m->partita.palla.gioc_palla->SNum * 11 + m->partita.palla.gioc_palla->GNum + 1);
+    if(m->game.ball.gioc_palla)
+        m->game.ball.gioc_palla = (player_t *)(m->game.ball.gioc_palla->SNum * 11 + m->game.ball.gioc_palla->GNum + 1);
 
     WriteMatch(f, m);
 
@@ -1014,7 +1014,7 @@ BOOL AllocReplayBuffers(void)
     }
 
     if(arcade) {
-        if(!(arcade_buf = malloc(size * sizeof(struct Pos) * MAX_ARCADE_ON_FIELD))) {
+        if(!(arcade_buf = malloc(size * sizeof(struct pos) * MAX_ARCADE_ON_FIELD))) {
             D(bug("Non ho memoria per allocare gli arcade buffer!\n"));
             return FALSE;
         }

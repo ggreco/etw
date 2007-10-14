@@ -31,15 +31,15 @@ static BOOL played = FALSE;
 
 void free_crowd()
 {
-	if (use_crowd && audio2fast) {
-		int i;
+    if (use_crowd && audio2fast) {
+        int i;
 
-		for (i = 0; i < (NUMERO_CORI - 1); i++) {
-			if (Cori[i])
-				FreeSound(Cori[i]);
-		}
-		sound[FONDO] = Cori[NUMERO_CORI - 1];
-	}
+        for (i = 0; i < (NUMERO_CORI - 1); i++) {
+            if (Cori[i])
+                FreeSound(Cori[i]);
+        }
+        sound[FONDO] = Cori[NUMERO_CORI - 1];
+    }
 }
 
 // preload crowd samples, may help on slower machines.
@@ -69,81 +69,81 @@ BOOL crowd2memory()
 
 void init_crowd(void)
 {
-	played = FALSE;
-	playing = -1;
-	last_looped = FONDO;
-	wanted_sound = FONDO;
+    played = FALSE;
+    playing = -1;
+    last_looped = FONDO;
+    wanted_sound = FONDO;
 
-	if (audio2fast) {
-		D(bug("A2F: init crowd...\n"));
-		FreeSound(sound[FONDO]);
-		sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
-		numero_loops = 128 / (sound[FONDO]->Length / 3600);
-		D(bug
-		  ("CT: Using audio2fast L: %ld B: %lx NL: %ld...\n",
-		   sound[FONDO]->Length, sound[FONDO]->SoundData, numero_loops));
-	} else {
-		numero_loops = -1;
+    if (audio2fast) {
+        D(bug("A2F: init crowd...\n"));
+        FreeSound(sound[FONDO]);
+        sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
+        numero_loops = 128 / (sound[FONDO]->Length / 3600);
+        D(bug
+          ("CT: Using audio2fast L: %ld B: %lx NL: %ld...\n",
+           sound[FONDO]->Length, sound[FONDO]->SoundData, numero_loops));
+    } else {
+        numero_loops = -1;
 
-    	if(sound[FONDO])
-			FreeSound(sound[FONDO]);
+        if(sound[FONDO])
+            FreeSound(sound[FONDO]);
         
-		sound[FONDO] = LoadSound(RandomCrowdName());
-	}
+        sound[FONDO] = LoadSound(RandomCrowdName());
+    }
 
-	busy[AUDIO_CROWD] = sound[FONDO];
+    busy[AUDIO_CROWD] = sound[FONDO];
 
     if (busy[AUDIO_CROWD])
-    	busy[AUDIO_CROWD]->Offset = 0;
+        busy[AUDIO_CROWD]->Offset = 0;
     D(else bug("*** busy[CROWD] NULL in init_crowd()!"));
 }
 
 struct SoundInfo *handle_crowd(void)
 {
-	BOOL newloop = FALSE;
+    BOOL newloop = FALSE;
 
     if (highlight)
         return NULL;
 
-	if (wanted_sound != playing) {
-		if (wanted_sound < 0)
-			return NULL;
+    if (wanted_sound != playing) {
+        if (wanted_sound < 0)
+            return NULL;
 
-		if (playing >= 0)
-			if (sound[playing]->Flags & SOUND_LOOP)
-				last_looped = playing;
+        if (playing >= 0)
+            if (sound[playing]->Flags & SOUND_LOOP)
+                last_looped = playing;
 
-		newloop = TRUE;
-		playing = wanted_sound;
-	}
+        newloop = TRUE;
+        playing = wanted_sound;
+    }
 
-	if (playing >= 0) {
-		if (playing == FONDO)
-			numero_loops--;
+    if (playing >= 0) {
+        if (playing == FONDO)
+            numero_loops--;
 
-		if (numero_loops < 0) {
-			if (audio2fast) {
-				sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
-				numero_loops = 128 / (sound[FONDO]->Length / 3600);
-			} else {
+        if (numero_loops < 0) {
+            if (audio2fast) {
+                sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
+                numero_loops = 128 / (sound[FONDO]->Length / 3600);
+            } else {
                 FreeSound(sound[FONDO]);
 
                 sound[FONDO] = LoadSound(RandomCrowdName());
                 
-				if (sound[FONDO]) {
-					numero_loops = 128 / (sound[FONDO]->Length / 3600);
-				} else {
-					playing = -1;
-					return FALSE;
-				}
-			}
-		}
+                if (sound[FONDO]) {
+                    numero_loops = 128 / (sound[FONDO]->Length / 3600);
+                } else {
+                    playing = -1;
+                    return FALSE;
+                }
+            }
+        }
 
-		if (!(sound[playing]->Flags & SOUND_LOOP) && !newloop) {
-			wanted_sound = playing = last_looped;
-		}
+        if (!(sound[playing]->Flags & SOUND_LOOP) && !newloop) {
+            wanted_sound = playing = last_looped;
+        }
 
-		return sound[playing];
-	}
-	return NULL;
+        return sound[playing];
+    }
+    return NULL;
 }

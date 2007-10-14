@@ -145,7 +145,7 @@ void CheckStatus(void)
             }
             else if(pl->InGioco&&!replay_mode&&!pause_mode&&!quit_game)
             {
-                Giocatore *g;
+                player_t *g;
 
                 switch(MyRangeRand(45))
                 {
@@ -202,7 +202,7 @@ void CheckStatus(void)
                                 case 1:
                                     special_status=S_TEAM_B;
                                     frase=E_IN_BALIA_DELL_AVVERSARIO;
-                                    break;	
+                                    break;    
                             }
                         }
                         else if(p->team[1]->Reti>p->team[0]->Reti+1)
@@ -218,7 +218,7 @@ void CheckStatus(void)
                                 case 1:
                                     special_status=S_TEAM_A;
                                     frase=E_IN_BALIA_DELL_AVVERSARIO;
-                                    break;	
+                                    break;    
                             }
                         }
                         else if(MyRangeRand(4)==2)
@@ -261,72 +261,72 @@ BOOL speaker2memory(void)
 
 void init_speaker(void)
 {
-	FILE *f;
-	int i;
-	char buffer[120];
+    FILE *f;
+    int i;
+    char buffer[120];
 
-	strcpy(buffer,spk_basename);
-	strcat(buffer,".spk");
+    strcpy(buffer,spk_basename);
+    strcat(buffer,".spk");
 
-	if(!audio2fast)
-		if(!(commento=fopen(buffer,"rb")))
-			use_speaker=FALSE;
+    if(!audio2fast)
+        if(!(commento=fopen(buffer,"rb")))
+            use_speaker=FALSE;
 
-	strcpy(buffer,spk_basename);
-	strcat(buffer,".sdf");
+    strcpy(buffer,spk_basename);
+    strcat(buffer,".sdf");
 
-	if(!(f=fopen(buffer,"rb")))
-	{
-		if(!audio2fast)
-			fclose(commento);
-		use_speaker=FALSE;
-	}
+    if(!(f=fopen(buffer,"rb")))
+    {
+        if(!audio2fast)
+            fclose(commento);
+        use_speaker=FALSE;
+    }
 
-	fread(&NumeroCommenti,sizeof(LONG),1,f);
+    fread(&NumeroCommenti,sizeof(LONG),1,f);
 
-	SWAP_LONG(NumeroCommenti);
+    SWAP_LONG(NumeroCommenti);
 
-	D(bug("Alloco indice per %d frasi.\n", NumeroCommenti));
+    D(bug("Alloco indice per %d frasi.\n", NumeroCommenti));
 
-	if(NumeroCommenti<1 || NumeroCommenti>300)
-	{
-		D(bug("Errore nel file .sdf, disattivo lo speaker!\n"));
-		use_speaker=FALSE;
+    if(NumeroCommenti<1 || NumeroCommenti>300)
+    {
+        D(bug("Errore nel file .sdf, disattivo lo speaker!\n"));
+        use_speaker=FALSE;
 
-		fclose(f);
-		if(!audio2fast)
-			fclose(commento);
+        fclose(f);
+        if(!audio2fast)
+            fclose(commento);
 
-		commento = NULL;
-		return;
-	}
+        commento = NULL;
+        return;
+    }
 
 // Faccio solo un'allocazione, per semplicita'.
 
-	if(!(Lengths=malloc(NumeroCommenti*sizeof(LONG)*2))) {
-		fclose(f);
-		if(!audio2fast)
-			fclose(commento);
+    if(!(Lengths=malloc(NumeroCommenti*sizeof(LONG)*2))) {
+        fclose(f);
+        if(!audio2fast)
+            fclose(commento);
 
-		use_speaker=FALSE;
-		commento = NULL;
+        use_speaker=FALSE;
+        commento = NULL;
 
-		return;
-	}
+        return;
+    }
 
 
-	Offsets=&Lengths[NumeroCommenti];
+    Offsets=&Lengths[NumeroCommenti];
 
-	fread(Lengths,sizeof(LONG),NumeroCommenti,f);
-	fread(Offsets,sizeof(LONG),NumeroCommenti,f);
+    fread(Lengths,sizeof(LONG),NumeroCommenti,f);
+    fread(Offsets,sizeof(LONG),NumeroCommenti,f);
 
-	for(i=0; i<NumeroCommenti; i++) {
-		SWAP_LONG(Lengths[i]);
-		SWAP_LONG(Offsets[i]);
+    for(i=0; i<NumeroCommenti; i++) {
+        SWAP_LONG(Lengths[i]);
+        SWAP_LONG(Offsets[i]);
 //        D(bug("Commento %d: L:%ld O:%ld\n", i, Lengths[i], Offsets[i]));
-	}
+    }
 
-	fclose(f);
+    fclose(f);
 }
 
 void free_speaker(void)
@@ -361,62 +361,62 @@ void free_speaker(void)
 
 struct SoundInfo *handle_speaker(void)
 {
-	if (!commento)
-		return NULL;
+    if (!commento)
+        return NULL;
 
-	if(frase == NON_DECISA)
-	{
-		CheckStatus();
-		previous_status = game_status;
-	}
+    if(frase == NON_DECISA)
+    {
+        CheckStatus();
+        previous_status = game_status;
+    }
 
-	if(frase == NON_DECISA)
-	{
-		LONG Length, Size = fondolen - FondoOffset;
+    if(frase == NON_DECISA)
+    {
+        LONG Length, Size = fondolen - FondoOffset;
 
-		if(Size < 0)
-			FondoOffset=0;
+        if(Size < 0)
+            FondoOffset=0;
 
-		Length=min(FONDO_CHUNK,Size);
+        Length=min(FONDO_CHUNK,Size);
 
-		// Qui suono il fondo
+        // Qui suono il fondo
         sound[FONDO]->SoundData = fondobase + FondoOffset;
         sound[FONDO]->Length = Length;
         
-		FondoOffset += Length;
+        FondoOffset += Length;
 
-		c_played=TRUE;
+        c_played=TRUE;
 
         return sound[FONDO];
-	}
-	else
-	{
-//		D(bug("Frase %ld (%ld len, %ld off)...\n",frase,Lengths[frase],Offsets[frase]));
+    }
+    else
+    {
+//        D(bug("Frase %ld (%ld len, %ld off)...\n",frase,Lengths[frase],Offsets[frase]));
 
-		switch(special_status)
-		{
-			case S_TEAM_A:
-				special_status=S_NOMESQUADRA;
-				previous_status=frase;
-				frase=team_a;
-				break;
-			case S_TEAM_B:
-				special_status=S_NOMESQUADRA;
-				previous_status=frase;
-				frase=team_b;
-				break;
-			case S_NOMESQUADRA:
-				special_status=S_RESET;
+        switch(special_status)
+        {
+            case S_TEAM_A:
+                special_status=S_NOMESQUADRA;
+                previous_status=frase;
+                frase=team_a;
+                break;
+            case S_TEAM_B:
+                special_status=S_NOMESQUADRA;
+                previous_status=frase;
+                frase=team_b;
+                break;
+            case S_NOMESQUADRA:
+                special_status=S_RESET;
             default:
                 break;
-		}
+        }
 
-		game_status=S_RESET;
+        game_status=S_RESET;
 
-		if(!audio2fast)
-			fseek(commento,Offsets[frase],SEEK_SET);
+        if(!audio2fast)
+            fseek(commento,Offsets[frase],SEEK_SET);
 
-		// Qui la frase...
+        // Qui la frase...
 
         sound[COMMENTO]->Length = Lengths[frase];
 
@@ -428,30 +428,30 @@ struct SoundInfo *handle_speaker(void)
             sound[COMMENTO]->SoundData = commento;
             sound[COMMENTO]->Flags = 0L;                        
         }
-		if(special_status != S_NOMESQUADRA)
-			frase=NON_DECISA;
-		else
-			frase=previous_status;
+        if(special_status != S_NOMESQUADRA)
+            frase=NON_DECISA;
+        else
+            frase=previous_status;
 
-		urgent_status=S_RESET;
+        urgent_status=S_RESET;
 
         return sound[COMMENTO];
-	}
+    }
 
-	return NULL;
+    return NULL;
 }
 
 #ifdef CD_VERSION
 
 void UrgentSpeaker(int x)
 {
-	if(use_speaker&&!no_sound&&urgent_status!=(x)) 
-	{
+    if(use_speaker&&!no_sound&&urgent_status!=(x)) 
+    {
 // qui c'era un'AbortIO
         urgent_status=x;
-		special_status=S_RESET;
-		game_status=urgent_status;
-		CheckStatus();
-	}
+        special_status=S_RESET;
+        game_status=urgent_status;
+        CheckStatus();
+    }
 }
 #endif

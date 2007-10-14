@@ -30,18 +30,18 @@
 #define SUB_LOCAL_QUIT 'Q'
 
 typedef struct {
-	char hdr[4];
-	unsigned char type,subtype;
-	unsigned short size;
+    char hdr[4];
+    unsigned char type,subtype;
+    unsigned short size;
 } simplemsg;
 
 typedef struct _player {
-	int socket;
-	int num;
-	int controltype;
-	int packetoffset;
-	char playername[40];
-	char packetbuffer[SOCKETBUFFERSIZE];
+    int socket;
+    int num;
+    int controltype;
+    int packetoffset;
+    char playername[40];
+    char packetbuffer[SOCKETBUFFERSIZE];
 } player;
 
 void free_network(void);

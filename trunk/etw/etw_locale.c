@@ -418,24 +418,24 @@ struct LocaleBase *LocaleBase;
 #include "os_defs.h"
 #include "mydebug.h"
 
-#define L10N_ITALIAN	"italiano"
-#define L10N_GERMAN	"deutsch"
-#define L10N_ENGLISH	"english"
-#define L10N_FRENCH	"francais"
-#define L10N_SPANISH	"espanol"
+#define L10N_ITALIAN    "italiano"
+#define L10N_GERMAN    "deutsch"
+#define L10N_ENGLISH    "english"
+#define L10N_FRENCH    "francais"
+#define L10N_SPANISH    "espanol"
 
 struct MyString
 {
-	long offset,id,len;
-	char *string;
+    long offset,id,len;
+    char *string;
 };
 
 struct MyCatalog
 {
-	FILE *handle;
-	int strings;
-	int offsetfirst;
-	struct MyString *strings_ptr;
+    FILE *handle;
+    int strings;
+    int offsetfirst;
+    struct MyString *strings_ptr;
 };
 
 #define CAT_DIR "catalogs/"
@@ -447,249 +447,249 @@ struct MyCatalog
 char *GetLanguage(void)
 {
 
-	WORD langid;
+    WORD langid;
 
-	if ((langid=GetSystemDefaultLangID()))	{
-		switch(PRIMARYLANGID(langid)) {
-			case LANG_ITALIAN:
-				return L10N_ITALIAN;
-			case LANG_GERMAN:
-				return L10N_GERMAN;
-			default:
-				return L10N_ENGLISH;
-		}
-	}
-	else
-		return L10N_ENGLISH;
+    if ((langid=GetSystemDefaultLangID()))    {
+        switch(PRIMARYLANGID(langid)) {
+            case LANG_ITALIAN:
+                return L10N_ITALIAN;
+            case LANG_GERMAN:
+                return L10N_GERMAN;
+            default:
+                return L10N_ENGLISH;
+        }
+    }
+    else
+        return L10N_ENGLISH;
 }
 #elif defined(MACOSX)
 char *GetLanguage(void)
 {
-	extern int MacGetLanguage(void);
-	int langid;
-	if((langid = MacGetLanguage()))
-	{
-		switch(langid)
-		{
-			case 1:
-				return L10N_ITALIAN;
-			case 2:
-				return L10N_GERMAN;
-			default:
-				return L10N_ENGLISH;
-		}
-	}
-	else
-		return L10N_ENGLISH;
+    extern int MacGetLanguage(void);
+    int langid;
+    if((langid = MacGetLanguage()))
+    {
+        switch(langid)
+        {
+            case 1:
+                return L10N_ITALIAN;
+            case 2:
+                return L10N_GERMAN;
+            default:
+                return L10N_ENGLISH;
+        }
+    }
+    else
+        return L10N_ENGLISH;
 }
 #else
 char *GetLanguage(void)
 {
-	char *lang;
-	if((lang = getenv("LANG")) != NULL)
-	{
-		if(strstr(lang,"it"))
-			return L10N_ITALIAN;
-		else if(strstr(lang,"de"))
-			return L10N_GERMAN;
-		else
-			return L10N_ENGLISH;
-	}
-	else
-		return L10N_ENGLISH;
+    char *lang;
+    if((lang = getenv("LANG")) != NULL)
+    {
+        if(strstr(lang,"it"))
+            return L10N_ITALIAN;
+        else if(strstr(lang,"de"))
+            return L10N_GERMAN;
+        else
+            return L10N_ENGLISH;
+    }
+    else
+        return L10N_ENGLISH;
 }
 
 #endif
 
 void AddCtgString(struct MyCatalog *cat,long id,long offset,long len)
 {
-	static long poolsize=0;
+    static long poolsize=0;
 
-	if(poolsize==0)
-	{
-		cat->strings_ptr=(struct MyString *)malloc(sizeof(struct MyString)*5);
-		poolsize=5;
-	}
-	else if(poolsize<=(cat->strings+1))
-	{
-		poolsize*=3;
-		poolsize/=2;
+    if(poolsize==0)
+    {
+        cat->strings_ptr=(struct MyString *)malloc(sizeof(struct MyString)*5);
+        poolsize=5;
+    }
+    else if(poolsize<=(cat->strings+1))
+    {
+        poolsize*=3;
+        poolsize/=2;
 
-		cat->strings_ptr=(struct MyString *)realloc((char *)cat->strings_ptr,sizeof(struct MyString)*poolsize);
-	}
+        cat->strings_ptr=(struct MyString *)realloc((char *)cat->strings_ptr,sizeof(struct MyString)*poolsize);
+    }
 
-	if(cat->strings_ptr)
-	{
-		cat->strings_ptr[cat->strings].id=id;
-		cat->strings_ptr[cat->strings].offset=offset;
-		cat->strings_ptr[cat->strings].len=len;
-		cat->strings_ptr[cat->strings].string=NULL;
-		cat->strings++;
-	}
+    if(cat->strings_ptr)
+    {
+        cat->strings_ptr[cat->strings].id=id;
+        cat->strings_ptr[cat->strings].offset=offset;
+        cat->strings_ptr[cat->strings].len=len;
+        cat->strings_ptr[cat->strings].string=NULL;
+        cat->strings++;
+    }
 }
 
 APTR OpenCatalog(char *catalog)
 {
-	char buffer[100],*lang=GetLanguage(); // debug, dovrebbe essere la lingua di sistema
-	FILE *f;
-	struct MyCatalog *cat;
+    char buffer[100],*lang=GetLanguage(); // debug, dovrebbe essere la lingua di sistema
+    FILE *f;
+    struct MyCatalog *cat;
 
-	strcpy(buffer,CAT_DIR);
-	strcat(buffer,lang); 
-	strcat(buffer,"/");
-	strcat(buffer,catalog);
+    strcpy(buffer,CAT_DIR);
+    strcat(buffer,lang); 
+    strcat(buffer,"/");
+    strcat(buffer,catalog);
 
-	if((f=fopen(buffer,"rb"))) 	{
-		D(bug("Found language file %s...\n",buffer));
+    if((f=fopen(buffer,"rb")))     {
+        D(bug("Found language file %s...\n",buffer));
 
-		if ((cat=(struct MyCatalog *)malloc(sizeof(struct MyCatalog))))	{
-			int l,offset=0,t;
-			long clen,id,slen;
+        if ((cat=(struct MyCatalog *)malloc(sizeof(struct MyCatalog))))    {
+            int l,offset=0,t;
+            long clen,id,slen;
 
-			cat->handle=f;
-			cat->strings=0;
-			cat->strings_ptr=NULL;
+            cat->handle=f;
+            cat->strings=0;
+            cat->strings_ptr=NULL;
 
-			fread(buffer,4,1,f);
+            fread(buffer,4,1,f);
 
-			if(strncmp(buffer,"FORM",4))
-				goto fallback;
+            if(strncmp(buffer,"FORM",4))
+                goto fallback;
 
-			fseek(f,4,SEEK_CUR);
-			fread(buffer,4,1,f);
+            fseek(f,4,SEEK_CUR);
+            fread(buffer,4,1,f);
 
-			if(strncmp(buffer,"CTLG",4))
-				goto fallback;
-
-
-			while (strncmp(buffer,"LANG",4)&&!feof(f)) {
-				fseek(f,-3,SEEK_CUR);
-				fread(buffer,4,1,f);
-			}
-
-			if (feof(f))	{
-				D(bug("Chunk not found!\n"));
-				goto fallback;
-			}
-
-			fseek(f,3,SEEK_CUR);
-			l=fgetc(f);
-			fread(buffer,l,1,f);
-
-			if (stricmp(lang,buffer)) {
-				D(bug("Error, language and catalog don't match!\n"));
-				goto fallback;
-			}
-
-			while(strncmp(buffer,"STRS",4)&&!feof(f))	{
-				fseek(f,-3,SEEK_CUR);
-				fread(buffer,4,1,f);
-			}
-
-			if(feof(f))	{
-				D(bug("Chunk non trovato!\n"));
-				goto fallback;
-			}
+            if(strncmp(buffer,"CTLG",4))
+                goto fallback;
 
 
-			fread(&clen,sizeof(long),1,f);
+            while (strncmp(buffer,"LANG",4)&&!feof(f)) {
+                fseek(f,-3,SEEK_CUR);
+                fread(buffer,4,1,f);
+            }
 
-			SWAP_LONG(clen);
+            if (feof(f))    {
+                D(bug("Chunk not found!\n"));
+                goto fallback;
+            }
 
-			cat->offsetfirst=ftell(f);
+            fseek(f,3,SEEK_CUR);
+            l=fgetc(f);
+            fread(buffer,l,1,f);
 
-			D(bug("Catalog length: %ld bytes\n",clen));
+            if (stricmp(lang,buffer)) {
+                D(bug("Error, language and catalog don't match!\n"));
+                goto fallback;
+            }
 
-			while(clen>offset&&!feof(f)) {
-				fread(&id,sizeof(long),1,f);
-				SWAP_LONG(id);
+            while(strncmp(buffer,"STRS",4)&&!feof(f))    {
+                fseek(f,-3,SEEK_CUR);
+                fread(buffer,4,1,f);
+            }
 
-				fread(&slen,sizeof(long),1,f);
-				SWAP_LONG(slen);
+            if(feof(f))    {
+                D(bug("Chunk non trovato!\n"));
+                goto fallback;
+            }
 
-				offset+=8;
 
-				
-				AddCtgString(cat,id,offset,slen);
+            fread(&clen,sizeof(long),1,f);
 
-				fseek(f,slen,SEEK_CUR);
-				offset+=slen;
+            SWAP_LONG(clen);
 
-				t=(offset>>2)<<2;
+            cat->offsetfirst=ftell(f);
 
-				if(t!=offset) {
-					t+=4;
-					t>>=2;
-					t<<=2;
-					fseek(f,t-offset,SEEK_CUR);
-					offset=t;
-				}
-			}
+            D(bug("Catalog length: %ld bytes\n",clen));
 
-			D(bug("Found %ld language strings in catalog...\n",cat->strings));
+            while(clen>offset&&!feof(f)) {
+                fread(&id,sizeof(long),1,f);
+                SWAP_LONG(id);
 
-			return cat;
-		}
-		else {
+                fread(&slen,sizeof(long),1,f);
+                SWAP_LONG(slen);
+
+                offset+=8;
+
+                
+                AddCtgString(cat,id,offset,slen);
+
+                fseek(f,slen,SEEK_CUR);
+                offset+=slen;
+
+                t=(offset>>2)<<2;
+
+                if(t!=offset) {
+                    t+=4;
+                    t>>=2;
+                    t<<=2;
+                    fseek(f,t-offset,SEEK_CUR);
+                    offset=t;
+                }
+            }
+
+            D(bug("Found %ld language strings in catalog...\n",cat->strings));
+
+            return cat;
+        }
+        else {
 fallback:
-			D(bug("Not an IFF catalog!\n"));
-			fclose(f);
-			return NULL;
-		}
-	}
-	else {
-		D(bug("*** %s not found, using builtin language.\n",buffer));
-		return NULL;
-	}
+            D(bug("Not an IFF catalog!\n"));
+            fclose(f);
+            return NULL;
+        }
+    }
+    else {
+        D(bug("*** %s not found, using builtin language.\n",buffer));
+        return NULL;
+    }
 }
 
 void CloseCatalog(APTR ctg)
 {
-	if(ctg)	{
-		struct MyCatalog *c=ctg;
-		int i;
+    if(ctg)    {
+        struct MyCatalog *c=ctg;
+        int i;
 
-		fclose(c->handle);
+        fclose(c->handle);
 
-		if(c->strings_ptr) {
-			for(i=0;i<c->strings;i++) {
-				if(c->strings_ptr[i].string)
-					free(c->strings_ptr[i].string);
-			}
+        if(c->strings_ptr) {
+            for(i=0;i<c->strings;i++) {
+                if(c->strings_ptr[i].string)
+                    free(c->strings_ptr[i].string);
+            }
 
-			free(c->strings_ptr);
-		}
+            free(c->strings_ptr);
+        }
 
-		free(c);
-	}
+        free(c);
+    }
 }
 
 char *GetCatalogStr(APTR *Ctg, long num, char *def)
 {
-	struct MyCatalog *cat=(struct MyCatalog *)Ctg;
+    struct MyCatalog *cat=(struct MyCatalog *)Ctg;
 
-	if(cat!=NULL && cat->strings_ptr) {
-		int i;
+    if(cat!=NULL && cat->strings_ptr) {
+        int i;
 
-		for(i=0;i<cat->strings;i++)
-			if(cat->strings_ptr[i].id==num) {
-				if(cat->strings_ptr[i].string)
-					return cat->strings_ptr[i].string;
-				else {
-					cat->strings_ptr[i].string=(char *)malloc(cat->strings_ptr[i].len+1);
+        for(i=0;i<cat->strings;i++)
+            if(cat->strings_ptr[i].id==num) {
+                if(cat->strings_ptr[i].string)
+                    return cat->strings_ptr[i].string;
+                else {
+                    cat->strings_ptr[i].string=(char *)malloc(cat->strings_ptr[i].len+1);
 
-					if(cat->strings_ptr[i].string) {
-						fseek(cat->handle,cat->offsetfirst+cat->strings_ptr[i].offset,SEEK_SET);
-						fread(cat->strings_ptr[i].string,cat->strings_ptr[i].len,1,cat->handle);
-						cat->strings_ptr[i].string[cat->strings_ptr[i].len]=0;
-							
-						return cat->strings_ptr[i].string;
-					}
-				}
-			}
+                    if(cat->strings_ptr[i].string) {
+                        fseek(cat->handle,cat->offsetfirst+cat->strings_ptr[i].offset,SEEK_SET);
+                        fread(cat->strings_ptr[i].string,cat->strings_ptr[i].len,1,cat->handle);
+                        cat->strings_ptr[i].string[cat->strings_ptr[i].len]=0;
+                            
+                        return cat->strings_ptr[i].string;
+                    }
+                }
+            }
 
-	}
-	return def;
+    }
+    return def;
 }
 #endif
 

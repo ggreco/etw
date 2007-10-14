@@ -36,11 +36,11 @@
 #define ARCADE_TEAMS 10
 
 #ifndef CD_VERSION
-	#define NUMERO_INTRO 4
-	#define NUMERO_SUONI_MENU ARCADE_TEAMS+1+FIRST_ARCADE
+    #define NUMERO_INTRO 4
+    #define NUMERO_SUONI_MENU ARCADE_TEAMS+1+FIRST_ARCADE
 #else
-	#define NUMERO_SUONI_MENU ARCADE_TEAMS+5+FIRST_ARCADE
-	#define NUMERO_INTRO 6
+    #define NUMERO_SUONI_MENU ARCADE_TEAMS+5+FIRST_ARCADE
+    #define NUMERO_INTRO 6
 #endif
 
 
@@ -51,17 +51,17 @@
 #define MAX_PLAYERS 2
 
 /* AC: some day we need to reorder this figures. */
-#define MENU_MAIN_MENU	0
-#define MENU_PREFS	1
-#define MENU_HIGHLIGHT	2
+#define MENU_MAIN_MENU    0
+#define MENU_PREFS    1
+#define MENU_HIGHLIGHT    2
 #define MENU_GAME_START 4
-#define MENU_TEAMS	3
-#define MENU_ARCADE	5
+#define MENU_TEAMS    3
+#define MENU_ARCADE    5
 #define MENU_SIMULATION 6
-#define MENU_CAREER	7
-#define MENU_TRAINING	8
+#define MENU_CAREER    7
+#define MENU_TRAINING    8
 #define MENU_TEAM_SELECTION 9
-#define MENU_SCORES	10
+#define MENU_SCORES    10
 #define MENU_TEAM_SETTINGS 11
 #define MENU_GAME_PREFS 12
 #define MENU_VIDEO_PREFS 13
@@ -85,38 +85,38 @@
 
 // Defines per teamselection
 
-#define TS_RIGHE	16
-#define TS_COLONNE	4
+#define TS_RIGHE    16
+#define TS_COLONNE    4
 
 
 struct EasyStruct
 {
-	int es_Size, es_Flags;
-	char *es_Title,*es_TextFormat,*es_GadgetFormat;
+    int es_Size, es_Flags;
+    char *es_Title,*es_TextFormat,*es_GadgetFormat;
 };
 
 struct Bottone
 {
-	WORD X1,Y1,X2,Y2,ID;
-	UBYTE Colore,Highlight;
-	char *Testo;
+    WORD X1,Y1,X2,Y2,ID;
+    UBYTE Colore,Highlight;
+    char *Testo;
 };
 
 struct Match
 {
-	UBYTE t1,t2;
+    UBYTE t1,t2;
 };
 
 struct GfxMenu
 {
-	char *Titolo;
-	struct Bottone *Bottone;
-	struct Bottone *Pannello;
-	WORD NumeroBottoni,NumeroPannelli,ID;
-	WORD X,Y;
-	BYTE Immagine;
-	UBYTE Colore,Highlight;
-	APTR SpecialFunction;
+    char *Titolo;
+    struct Bottone *Bottone;
+    struct Bottone *Pannello;
+    WORD NumeroBottoni,NumeroPannelli,ID;
+    WORD X,Y;
+    BYTE Immagine;
+    UBYTE Colore,Highlight;
+    APTR SpecialFunction;
 };
 
 // Penne
@@ -152,43 +152,43 @@ struct GfxMenu
 
 // Tipi di controlli
 
-#define CTRL_JOY	0
-#define CTRL_JOYPAD	1
-#define CTRL_JOY2B	2
-#define CTRL_KEY_1	3
-#define CTRL_KEY_2	4
+#define CTRL_JOY    0
+#define CTRL_JOYPAD    1
+#define CTRL_JOY2B    2
+#define CTRL_KEY_1    3
+#define CTRL_KEY_2    4
 
-#define CONTROLS	(CTRL_KEY_2+2)
+#define CONTROLS    (CTRL_KEY_2+2)
 
 // Per detail_level (bits)
 
-#define USA_RADAR	1
-#define USA_ARBITRO	2
-#define USA_POLIZIOTTI	4
-#define USA_FOTOGRAFI	8
-#define USA_NOMI	16
-#define USA_RISULTATO	32
-#define USA_GUARDALINEE	64
+#define USA_RADAR    1
+#define USA_ARBITRO    2
+#define USA_POLIZIOTTI    4
+#define USA_FOTOGRAFI    8
+#define USA_NOMI    16
+#define USA_RISULTATO    32
+#define USA_GUARDALINEE    64
 
 #ifdef __SASC
-	#define min(a,b) __builtin_min(a,b)
-	#define max(a,b) __builtin_max(a,b)
+    #define min(a,b) __builtin_min(a,b)
+    #define max(a,b) __builtin_max(a,b)
 #else
-	#ifndef min
-		#define min(a,b) ((a)>(b) ? (b) : (a))
-	#endif
+    #ifndef min
+        #define min(a,b) ((a)>(b) ? (b) : (a))
+    #endif
 
-	#ifndef MIN
-		#define MIN(a,b) min(a,b)
-	#endif
+    #ifndef MIN
+        #define MIN(a,b) min(a,b)
+    #endif
 
-	#ifndef max
-		#define max(a,b) ((a)<(b) ? (b) : (a) )
-	#endif
+    #ifndef max
+        #define max(a,b) ((a)<(b) ? (b) : (a) )
+    #endif
 
-	#ifndef MAX
-		#define MAX(a,b) max(a,b)
-	#endif
+    #ifndef MAX
+        #define MAX(a,b) max(a,b)
+    #endif
 #endif
 
 #include "menu_externs.h"

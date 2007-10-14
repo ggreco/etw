@@ -23,7 +23,7 @@
 #define BestRotation(x,y) (CambioDirezione[(x)][(y)]>0)
 
 #ifdef DEMOVERSION
-	#define Progress() os_delay(4)
+    #define Progress() os_delay(4)
 #else
 void Progress();
 #endif
@@ -34,27 +34,27 @@ void Progress();
 #define IsVeryNear(x1,y1,x2,y2) (SimpleDistance(x1,y1,x2,y2)<130)
 #define IsVeryVeryNear(x1,y1,x2,y2) (SimpleDistance(x1,y1,x2,y2)<60)
 
-#define InAreaPalla( g )	( (g)->world_x>(pl->world_x-400) && \
-	                (g)->world_x<(pl->world_x+480) && \
-        	        (g)->world_y>(pl->world_y-400 ) && \
-                	(g)->world_y<(pl->world_y+330 ) )
+#define InAreaPalla( g )    ( (g)->world_x>(pl->world_x-400) && \
+                    (g)->world_x<(pl->world_x+480) && \
+                    (g)->world_y>(pl->world_y-400 ) && \
+                    (g)->world_y<(pl->world_y+330 ) )
 
-#define InAreaGrandePalla( g )	( (g)->world_x>(pl->world_x-600) && \
-	                (g)->world_x<(pl->world_x+680) && \
-        	        (g)->world_y>(pl->world_y-500 ) && \
-                	(g)->world_y<(pl->world_y+450 ) )
+#define InAreaGrandePalla( g )    ( (g)->world_x>(pl->world_x-600) && \
+                    (g)->world_x<(pl->world_x+680) && \
+                    (g)->world_y>(pl->world_y-500 ) && \
+                    (g)->world_y<(pl->world_y+450 ) )
 
-#define InAreaPortierePalla( g )	( (g)->world_x>(pl->world_x-700) && \
-	       		         	(g)->world_x<(pl->world_x+780) && \
-        	        		(g)->world_y>(pl->world_y-600 ) && \
-		                	(g)->world_y<(pl->world_y+550 ) )
+#define InAreaPortierePalla( g )    ( (g)->world_x>(pl->world_x-700) && \
+                                (g)->world_x<(pl->world_x+780) && \
+                            (g)->world_y>(pl->world_y-600 ) && \
+                            (g)->world_y<(pl->world_y+550 ) )
 
-#define NeiPressiPalla( g )	( pl->world_x>(g->world_x-110)     && \
+#define NeiPressiPalla( g )    ( pl->world_x>(g->world_x-110)     && \
                                 pl->world_x<(g->world_x+190)    && \
                                 pl->world_y>(g->world_y+50)     && \
                                 pl->world_y<(g->world_y+160) )
 
-#define NeiPressiPallaPortiere( g )	( pl->world_x>(g->world_x-80)     && \
+#define NeiPressiPallaPortiere( g )    ( pl->world_x>(g->world_x-80)     && \
                                 pl->world_x<(g->world_x+150)    && \
                                 pl->world_y>(g->world_y+15)     && \
                                 pl->world_y<(g->world_y+190) )
@@ -79,34 +79,34 @@ void Progress();
 #define DoSpecialAnim(g,x) g->AnimType=(x);g->FrameLen=0;g->AnimFrame=-1;g->Special=TRUE
 #define DoAnim(g,x) g->AnimType=x;g->FrameLen=0;g->AnimFrame=-1
 
-#define TogliPalla() if(pl->gioc_palla){if(pl->gioc_palla->Velocita<7) pl->gioc_palla->Velocita+=3;	\
-					pl->gioc_palla->Comando=NESSUN_COMANDO; p->last_touch=pl->gioc_palla->number+(pl->gioc_palla->SNum<<5); \
-					if(pl->gioc_palla->ArcadeEffect) RemoveArcadeEffect(pl->gioc_palla,pl->gioc_palla->ArcadeEffect); \
-					pl->gioc_palla=NULL;pl->sq_palla=NULL;  }
-					
+#define TogliPalla() if(pl->gioc_palla){if(pl->gioc_palla->speed<7) pl->gioc_palla->speed+=3;    \
+                    pl->gioc_palla->Comando=NESSUN_COMANDO; p->last_touch=pl->gioc_palla->number+(pl->gioc_palla->SNum<<5); \
+                    if(pl->gioc_palla->ArcadeEffect) RemoveArcadeEffect(pl->gioc_palla,pl->gioc_palla->ArcadeEffect); \
+                    pl->gioc_palla=NULL;pl->sq_palla=NULL;  }
+                    
 
 #define TogliPallaMod() if(pl->gioc_palla){  \
-					int i;  p->last_touch=pl->gioc_palla->number+(pl->gioc_palla->SNum<<5); \
-					pl->velocita=(pl->gioc_palla->ActualSpeed<<2);	\
-					pl->Direzione=(pl->gioc_palla->Direzione<<5);if(pl->gioc_palla->Velocita<7) pl->gioc_palla->Velocita+=3;\
-					if(pl->gioc_palla->ArcadeEffect) RemoveArcadeEffect(pl->gioc_palla,pl->gioc_palla->ArcadeEffect); \
-					pl->gioc_palla->Comando=NESSUN_COMANDO; pl->gioc_palla=NULL;pl->sq_palla=NULL;	\
-					pl->MaxQuota=0;for(i=1;i<SHOT_LENGTH;i++) p->shotheight[i]=0;UpdateBallSpeed();}
+                    int i;  p->last_touch=pl->gioc_palla->number+(pl->gioc_palla->SNum<<5); \
+                    pl->velocita=(pl->gioc_palla->ActualSpeed<<2);    \
+                    pl->dir=(pl->gioc_palla->dir<<5);if(pl->gioc_palla->speed<7) pl->gioc_palla->speed+=3;\
+                    if(pl->gioc_palla->ArcadeEffect) RemoveArcadeEffect(pl->gioc_palla,pl->gioc_palla->ArcadeEffect); \
+                    pl->gioc_palla->Comando=NESSUN_COMANDO; pl->gioc_palla=NULL;pl->sq_palla=NULL;    \
+                    pl->MaxQuota=0;for(i=1;i<SHOT_LENGTH;i++) p->shotheight[i]=0;UpdateBallSpeed();}
 
-#define DaiPalla(g) pl->gioc_palla=g;if(g->Velocita>2)g->Velocita-=3;pl->sq_palla=g->team; \
-			pl->sq_palla->Possesso=1;p->team[g->SNum^1]->Possesso=0;
+#define DaiPalla(g) pl->gioc_palla=g;if(g->speed>2)g->speed-=3;pl->sq_palla=g->team; \
+            pl->sq_palla->Possesso=1;p->team[g->SNum^1]->Possesso=0;
 
-#define HideBall()	if(!pl->Hide) \
-			{	\
-				pl->Hide=TRUE;	\
-        		        RemAnimObj(pl->immagine); \
-			}
+#define HideBall()    if(!pl->Hide) \
+            {    \
+                pl->Hide=TRUE;    \
+                        RemAnimObj(pl->anim); \
+            }
 
 #define ShowBall()      if(pl->Hide) \
-			{	\
-				AddAnimObj(pl->immagine,(pl->world_x>>3)-field_x,(pl->world_y>>3)-field_y,pl->ActualFrame);	\
-				pl->Hide=FALSE;	\
-			}
+            {    \
+                AddAnimObj(pl->anim,(pl->world_x>>3)-field_x,(pl->world_y>>3)-field_y,pl->ActualFrame);    \
+                pl->Hide=FALSE;    \
+            }
 
 #define FindDistance(xs,ys,xd,yd,angle) (xd!=xs&&sin_table[angle]!=0 ? ((WORD)(abs( (abs(xd-xs)<<7)/sin_table[angle]) )) : abs(yd-ys) )
 

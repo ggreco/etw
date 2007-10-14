@@ -63,11 +63,11 @@
 // #include <libraries/iffparse.h>
 
 #ifdef __PPC__
-	#include <powerup/ppclib/interface.h>
-	#include <powerup/ppclib/message.h>
-	#include <powerup/ppclib/tasks.h>
-	#include <powerup/ppclib/memory.h>
-	#include <powerup/gcclib/powerup_protos.h>
+    #include <powerup/ppclib/interface.h>
+    #include <powerup/ppclib/message.h>
+    #include <powerup/ppclib/tasks.h>
+    #include <powerup/ppclib/memory.h>
+    #include <powerup/gcclib/powerup_protos.h>
 #endif
 #else
 #include "SDL.h"

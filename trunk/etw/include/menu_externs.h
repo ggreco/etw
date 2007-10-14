@@ -81,11 +81,11 @@ extern BOOL KeyCfg(WORD);
 
 extern void SetTeamSettings(WORD, BOOL);
 extern void DisplayTactic(int, int);
-extern void AddGiocatore(struct player_disk *, int);
+extern void AddPlayer(struct player_disk *, int);
 extern void AddName(struct player_disk *, int);
 extern void SetPlayerStatus(int, char, char, long);
 extern WORD StartMatch(BYTE, BYTE);
-extern void ScaleGfxObj(GfxObj *, uint8_t *);
+extern void ScaleGfxObj(gfx_t *, uint8_t *);
 extern void UpdateButtonList(void);
 
 extern void StoreButtonList(void);
@@ -110,13 +110,13 @@ extern void SetHighSelection(void);
 
 extern player *network_player;
 extern struct Bottone teamselection[], teamsettings[], pannelli[], wcp[], league[], mp[], mb[], lb[],
-	asb[], cb[], cp[], wcfp[], mr[], scores[], hl[], sprefs_bottoni[];
+    asb[], cb[], cp[], wcfp[], mr[], scores[], hl[], sprefs_bottoni[];
 extern BOOL no_sound, nosync, allow_replay, nocpu, saved, wb_game, big, injuries, substitutions,
-	arcade, situation, training, use_crowd, use_speaker, use_replay, bookings, free_longpass, offside,
-	menu_music, use_speaker, no_sound, use_crowd, special, random_draw, nopari, make_setup, id_change,
-	window_opened, game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams, newpitches,
-	cgxmode, final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
-	audio_to_fast, use_gfx_scaling, wpa8, triple, force_single, chunky_version;
+    arcade, situation, training, use_crowd, use_speaker, use_replay, bookings, free_longpass, offside,
+    menu_music, use_speaker, no_sound, use_crowd, special, random_draw, nopari, make_setup, id_change,
+    window_opened, game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams, newpitches,
+    cgxmode, final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
+    audio_to_fast, use_gfx_scaling, wpa8, triple, force_single, chunky_version;
 extern int32_t Pens[256];
 extern long framerate, t_l, display_id, situation_time, framerate, overscan;
 extern ULONG detail_level, ahimode;
@@ -124,7 +124,7 @@ extern struct Match turni[64][32];
 extern int arcade_score;
 
 extern int8_t competition, selected_number, wanted_number, actual_team, controllo[], p_control[],
-	situation_result[2], strictness, field, duration, field_type, ruolo[];
+    situation_result[2], strictness, field, duration, field_type, ruolo[];
 extern UBYTE totale_giornate;
 extern BYTE teamarray[], turno, nteams, daytime, league_pos[64], ppp, ppv, pps;
 
@@ -133,8 +133,8 @@ extern WORD radar_position, players, current_menu;
 extern char control[], career_file[], *menu_soundname[], localename[], scontri, i_scontri;
 extern struct myfont *bigfont, *smallfont, *titlefont;
 extern struct GfxMenu menu[];
-extern AnimObj *logos, *symbols;
-extern GfxObj *arcade_gfx[], *last_obj;
+extern anim_t *logos, *symbols;
+extern gfx_t *arcade_gfx[], *last_obj;
 extern struct MyFileRequest freq;
 extern uint8_t *back;
 extern char numero[17][3], *controls[];

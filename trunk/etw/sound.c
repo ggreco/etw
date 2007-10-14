@@ -29,38 +29,38 @@ static SDL_AudioSpec obt;
 
 void handle_sound(void *unused, Uint8 * stream, int len)
 {
-	int i, amount;
+    int i, amount;
 
 // il +2 e' xche' riservo un canale per il commento e uno per il tifo
     
-	for (i = 0; i < (AVAILABLE_CHANNELS + 2); i++) {
+    for (i = 0; i < (AVAILABLE_CHANNELS + 2); i++) {
         amount = 0;
 
-		if (busy[i]) {
+        if (busy[i]) {
 
-			amount = busy[i]->Length - busy[i]->Offset;
+            amount = busy[i]->Length - busy[i]->Offset;
 
-			if (amount > len)
-				amount = len;
+            if (amount > len)
+                amount = len;
 
-			if (amount > 0) {
+            if (amount > 0) {
 //              D(bug("Mixxo canale %ld, %ld bytes (st: %lx)\n",i,amount,stream));
 
-				if (busy[i]->Flags & SOUND_DISK) {
-					unsigned char buffer[BUFFER_SIZE];
+                if (busy[i]->Flags & SOUND_DISK) {
+                    unsigned char buffer[BUFFER_SIZE];
 
-					fread(buffer, amount, 1, (FILE *) busy[i]->SoundData);
-					SDL_MixAudio(stream, buffer, amount,
-								 SDL_MIX_MAXVOLUME);
-				} else
-					SDL_MixAudio(stream,
-								 ((unsigned char *) busy[i]->SoundData) +
-								 busy[i]->Offset, amount,
-								 SDL_MIX_MAXVOLUME);
+                    fread(buffer, amount, 1, (FILE *) busy[i]->SoundData);
+                    SDL_MixAudio(stream, buffer, amount,
+                                 SDL_MIX_MAXVOLUME);
+                } else
+                    SDL_MixAudio(stream,
+                                 ((unsigned char *) busy[i]->SoundData) +
+                                 busy[i]->Offset, amount,
+                                 SDL_MIX_MAXVOLUME);
 
-				busy[i]->Offset += amount;
-			}
-		}
+                busy[i]->Offset += amount;
+            }
+        }
 
 /*
  * spostato all'esterno dell'if su busy[i] per evitare il blocco
@@ -70,16 +70,16 @@ void handle_sound(void *unused, Uint8 * stream, int len)
                 (!busy[i] || busy[i]->Offset >= busy[i]->Length) ) {
 
             if (i == AUDIO_CROWD) {
-				if (use_crowd && game_start)
-					busy[i] = handle_crowd();
-			} else {
-				if (use_speaker && game_start)
-					busy[i] = handle_speaker();
-			}
+                if (use_crowd && game_start)
+                    busy[i] = handle_crowd();
+            } else {
+                if (use_speaker && game_start)
+                    busy[i] = handle_speaker();
+            }
 
             if (busy[i]) // metto un goto per non ripetere due volte il codice.
-				goto reinit_sound;
-		}
+                goto reinit_sound;
+        }
 
 /*
  * In questo loop gestisco i suoni in loop e l'eventuale stop
@@ -88,56 +88,56 @@ void handle_sound(void *unused, Uint8 * stream, int len)
  * all'interno anche per reinizializzare i dati relativi a
  * cori & commenti.
  */
-   		if (busy[i] && busy[i]->Offset >= busy[i]->Length) {                
-			if (busy[i]->Flags & SOUND_LOOP) {
+           if (busy[i] && busy[i]->Offset >= busy[i]->Length) {                
+            if (busy[i]->Flags & SOUND_LOOP) {
 reinit_sound:
-				busy[i]->Offset = 0;
+                busy[i]->Offset = 0;
 
                 if (busy[i]->Flags & SOUND_DISK) {
-					fseek((FILE *) busy[i]->SoundData,
-						  busy[i]->FileOffset, SEEK_SET);
-				} else if (amount < len) {
-					len -= amount;
-					SDL_MixAudio(stream + amount, busy[i]->SoundData,
-								 len, SDL_MIX_MAXVOLUME);
-					busy[i]->Offset += len;
-				}
-			} else
-				busy[i] = NULL;
-		}
+                    fseek((FILE *) busy[i]->SoundData,
+                          busy[i]->FileOffset, SEEK_SET);
+                } else if (amount < len) {
+                    len -= amount;
+                    SDL_MixAudio(stream + amount, busy[i]->SoundData,
+                                 len, SDL_MIX_MAXVOLUME);
+                    busy[i]->Offset += len;
+                }
+            } else
+                busy[i] = NULL;
+        }
     }
 }
 
 void SetCrowd(int s)
 {
-	if (use_crowd && !no_sound) {
-		SDL_LockAudio();
+    if (use_crowd && !no_sound) {
+        SDL_LockAudio();
 
 /*
-		if(s<0)
-			busy[AUDIO_CROWD]=NULL;
-		else
+        if(s<0)
+            busy[AUDIO_CROWD]=NULL;
+        else
 */
-		if (busy[AUDIO_CROWD])
-			busy[AUDIO_CROWD]->Offset = busy[AUDIO_CROWD]->Length - 2;
-		else if (s >= 0) {
-			extern int playing;
+        if (busy[AUDIO_CROWD])
+            busy[AUDIO_CROWD]->Offset = busy[AUDIO_CROWD]->Length - 2;
+        else if (s >= 0) {
+            extern int playing;
 
-			playing = s;
-			busy[AUDIO_CROWD] = sound[s];
-			sound[s]->Offset = 0;
-		}
+            playing = s;
+            busy[AUDIO_CROWD] = sound[s];
+            sound[s]->Offset = 0;
+        }
 
-		wanted_sound = s;
-		SDL_UnlockAudio();
-	}
+        wanted_sound = s;
+        SDL_UnlockAudio();
+    }
 }
 
 LONG __saveds ETW_DiskPlay(void)
 {
-	D(bug("Warning called UNIMPLEMENTED DiskPlay!!!\n"));
+    D(bug("Warning called UNIMPLEMENTED DiskPlay!!!\n"));
 
-	return 0;
+    return 0;
 }
 
 /*
@@ -149,40 +149,40 @@ LONG __saveds ETW_DiskPlay(void)
 
 LONG PlayBackSound(struct SoundInfo * si)
 {
-	register int i;
+    register int i;
 
-	if (no_sound)
-		return -1;
+    if (no_sound)
+        return -1;
 
-	for (i = 0; i < AVAILABLE_CHANNELS; i++) {
-		if (!busy[i]) {
-			SDL_LockAudio();
-			busy[i] = si;
+    for (i = 0; i < AVAILABLE_CHANNELS; i++) {
+        if (!busy[i]) {
+            SDL_LockAudio();
+            busy[i] = si;
 
-			if (si->Flags & SOUND_DISK)
-				fseek((FILE *) si->SoundData, si->FileOffset, SEEK_SET);
+            if (si->Flags & SOUND_DISK)
+                fseek((FILE *) si->SoundData, si->FileOffset, SEEK_SET);
 
-			si->Offset = 0;
-			SDL_UnlockAudio();
-			return i;
-		}
-	}
+            si->Offset = 0;
+            SDL_UnlockAudio();
+            return i;
+        }
+    }
 
-	D(bug("All virtual channels busy!\n"));
+    D(bug("All virtual channels busy!\n"));
 
-	return -1;
+    return -1;
 }
 
 void PlayIfNotPlaying(int s)
 {
-	register int i;
-	struct SoundInfo *si = sound[s];
+    register int i;
+    struct SoundInfo *si = sound[s];
 
-	for (i = 0; i < AVAILABLE_CHANNELS; i++)
-		if (busy[i] == si)
-			return;
+    for (i = 0; i < AVAILABLE_CHANNELS; i++)
+        if (busy[i] == si)
+            return;
 
-	PlayBackSound(si);
+    PlayBackSound(si);
 }
 
 #ifndef MACOSX
@@ -244,11 +244,11 @@ static void convert_sound(struct SoundInfo *s)
 
 BOOL InitSoundSystem(void)
 {
-	SDL_AudioSpec fmt;
+    SDL_AudioSpec fmt;
 
-	D(bug("Initializing audio channels...\n"));
+    D(bug("Initializing audio channels...\n"));
 
-	fmt.freq = samplerate;
+    fmt.freq = samplerate;
 
 /* AC: I don't know under other system (I think that it is a currently bug of the SDL version)
  * but under X, when using 8bit format, the audio is distorced.
@@ -264,14 +264,14 @@ BOOL InitSoundSystem(void)
     fmt.format = AUDIO_U8; // signed o unsigned?!?!?
 #endif
     fmt.samples = BUFFER_SIZE;
-	fmt.callback = handle_sound;
-	fmt.channels = 1;
-	fmt.userdata = NULL;
+    fmt.callback = handle_sound;
+    fmt.channels = 1;
+    fmt.userdata = NULL;
 
-	if (SDL_OpenAudio(&fmt, &obt) < 0) {
-		D(bug("Unable to open audio: %s\n", SDL_GetError()));
-		return FALSE;
-	}
+    if (SDL_OpenAudio(&fmt, &obt) < 0) {
+        D(bug("Unable to open audio: %s\n", SDL_GetError()));
+        return FALSE;
+    }
 
 /*
  * MacOSX ha problemi a convertirsi l'audio da solo, al contrario 
@@ -296,17 +296,17 @@ BOOL InitSoundSystem(void)
         samplerate = obt.freq;
     }
     
-	sound_started = 1;
-	return TRUE;
+    sound_started = 1;
+    return TRUE;
 }
 
 void FreeSoundSystem(void)
 {
-	SDL_CloseAudio();
+    SDL_CloseAudio();
 
-	sound_started = 0;
+    sound_started = 0;
 
-	D(bug("Done.\n"));
+    D(bug("Done.\n"));
 }
 
 void FreeSound(struct SoundInfo *s)
@@ -316,79 +316,79 @@ void FreeSound(struct SoundInfo *s)
     else
         SDL_FreeWAV(s->SoundData);
 
-	free(s);
+    free(s);
 }
 
 struct SoundInfo *LoadSound(char const *Name)
 {
-	BOOL loop = FALSE;
+    BOOL loop = FALSE;
     Uint8 *buffer;
     Uint32 len;
     SDL_AudioSpec spec;
 
 // this version of ETW doesn't support anymore DISK or FILE samples
-	if (*Name == '+' || *Name == '-')
-		Name++;
+    if (*Name == '+' || *Name == '-')
+        Name++;
 
-	if (*Name == '.') {
-		Name++;
-		loop = TRUE;
-	}
+    if (*Name == '.') {
+        Name++;
+        loop = TRUE;
+    }
 
-	D(bug("Loading a WAV sample... [%s]", Name));
+    D(bug("Loading a WAV sample... [%s]", Name));
 
 
     if ( SDL_LoadWAV(Name, &spec, &buffer, &len)) {
-    	struct SoundInfo *s;
+        struct SoundInfo *s;
         
         if ( (s = (struct SoundInfo *) calloc(sizeof(struct SoundInfo), 1))) {
-    		s->Flags = SOUND_FAST;
+            s->Flags = SOUND_FAST;
 
             if (loop)
-				s->Flags |=	SOUND_LOOP;
+                s->Flags |=    SOUND_LOOP;
 
-			s->Volume = 63; // unused
-			s->Rate = spec.freq; // unused
-			s->Length = len;
+            s->Volume = 63; // unused
+            s->Rate = spec.freq; // unused
+            s->Length = len;
             s->SoundData = s->LeftData = buffer;
 
             D(bug(" length: %d rate: %d\n", len, spec.freq));
 
-			/* AC: I don't know if this conversion is needed for the other system, but is strongly
-			 * necessary under OS X. ^_^
-			 */
+            /* AC: I don't know if this conversion is needed for the other system, but is strongly
+             * necessary under OS X. ^_^
+             */
 #ifdef MACOSX
-			/* 12/07/04 - If sound isn't started, obt is an invalid structure! */
-			if(sound_started && (spec.format != obt.format || spec.freq != obt.freq))
-			{
-				SDL_AudioCVT  wav_cvt;
-				
-				D(bug("Convert sound: original format %x, needed format %x\n",
-					spec.format,obt.format));
+            /* 12/07/04 - If sound isn't started, obt is an invalid structure! */
+            if(sound_started && (spec.format != obt.format || spec.freq != obt.freq))
+            {
+                SDL_AudioCVT  wav_cvt;
+                
+                D(bug("Convert sound: original format %x, needed format %x\n",
+                    spec.format,obt.format));
 
-				/* Build AudioCVT */
-				if(SDL_BuildAudioCVT(&wav_cvt,
+                /* Build AudioCVT */
+                if(SDL_BuildAudioCVT(&wav_cvt,
                         spec.format,spec.channels,spec.freq,
                         obt.format, obt.channels,obt.freq) != -1) 
-				{
-					/* Setup for conversion */
-					if((wav_cvt.buf = malloc(len * wav_cvt.len_mult)) != NULL)
-					{
-						wav_cvt.len = len;
-						memcpy(wav_cvt.buf,buffer,len);
+                {
+                    /* Setup for conversion */
+                    if((wav_cvt.buf = malloc(len * wav_cvt.len_mult)) != NULL)
+                    {
+                        wav_cvt.len = len;
+                        memcpy(wav_cvt.buf,buffer,len);
 
-						/* We can delete the original WAV data now */
-						SDL_FreeWAV(buffer);
+                        /* We can delete the original WAV data now */
+                        SDL_FreeWAV(buffer);
 
-						/* And now we're ready to convert */
-						SDL_ConvertAudio(&wav_cvt);
-						s->Flags |= SOUND_CONVERTED;
-						s->Length = wav_cvt.len*wav_cvt.len_ratio;
-						s->SoundData = s->LeftData = wav_cvt.buf;
-					}			
-				}
-			}	
-			/* The default is returning the unconverted sound? */
+                        /* And now we're ready to convert */
+                        SDL_ConvertAudio(&wav_cvt);
+                        s->Flags |= SOUND_CONVERTED;
+                        s->Length = wav_cvt.len*wav_cvt.len_ratio;
+                        s->SoundData = s->LeftData = wav_cvt.buf;
+                    }            
+                }
+            }    
+            /* The default is returning the unconverted sound? */
 #else
             if (s->Rate < (samplerate-1000) || s->Rate > (samplerate+1000))
                 convert_sound(s); // convert sample if needed
@@ -406,144 +406,144 @@ struct SoundInfo *LoadSound(char const *Name)
 
 BOOL CaricaSuoni(void)
 {
-	BOOL ok = TRUE;
-	int i;
+    BOOL ok = TRUE;
+    int i;
 
-	for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
-		busy[i] = NULL;
+    for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
+        busy[i] = NULL;
 
-	for (i = 0; i <= NUMERO_SUONI; i++)
-		sound[i] = NULL;
+    for (i = 0; i <= NUMERO_SUONI; i++)
+        sound[i] = NULL;
 
-	i = 0;
+    i = 0;
 
-	while (soundname[i]) {
-		if (!arcade)
-			if (i >= FIRST_ARCADE_SOUND) {
-				for (i = FIRST_ARCADE_SOUND; i < NUMERO_SUONI; i++)
-					sound[i] = NULL;
+    while (soundname[i]) {
+        if (!arcade)
+            if (i >= FIRST_ARCADE_SOUND) {
+                for (i = FIRST_ARCADE_SOUND; i < NUMERO_SUONI; i++)
+                    sound[i] = NULL;
 
-				break;
-			}
+                break;
+            }
 
-		if (!(sound[i] = LoadSound(soundname[i]))) {
-			ok = FALSE;
-			D(bug("Unable to find sample %s!\n", soundname[i]));
-		}
+        if (!(sound[i] = LoadSound(soundname[i]))) {
+            ok = FALSE;
+            D(bug("Unable to find sample %s!\n", soundname[i]));
+        }
 
-		if (ok == FALSE) {
-			int j;
+        if (ok == FALSE) {
+            int j;
 
-			for (j = 0; j < i; j++)
-				FreeSound(sound[j]);
+            for (j = 0; j < i; j++)
+                FreeSound(sound[j]);
 
-			//                      CloseLibrary(IFFParseBase);
+            //                      CloseLibrary(IFFParseBase);
 
-			return FALSE;
-		} else
-			i++;
-	}
+            return FALSE;
+        } else
+            i++;
+    }
 
-	sound[COMMENTO] = calloc(sizeof(struct SoundInfo), 1);
+    sound[COMMENTO] = calloc(sizeof(struct SoundInfo), 1);
 
-	return TRUE;
+    return TRUE;
 
 }
 
 
 void LiberaSuoni(void)
 {
-	int i = 0;
+    int i = 0;
 
-	os_stop_audio();
+    os_stop_audio();
 
-	D(bug("Freeing sounds...\n"));
+    D(bug("Freeing sounds...\n"));
 
-	while (soundname[i]) {
-		if (sound[i])
-			FreeSound(sound[i]);
-		i++;
-	}
+    while (soundname[i]) {
+        if (sound[i])
+            FreeSound(sound[i]);
+        i++;
+    }
 
-	if (sound[NUMERO_SUONI + 1])
-		free(sound[NUMERO_SUONI + 1]);
+    if (sound[NUMERO_SUONI + 1])
+        free(sound[NUMERO_SUONI + 1]);
 
-	for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
-		busy[i] = NULL;
+    for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
+        busy[i] = NULL;
 
-	D(bug("Ok.\n"));
+    D(bug("Ok.\n"));
 }
 
 BOOL SoundStarted(void)
 {
-	return sound_started;
+    return sound_started;
 }
 
 void os_start_audio(void)
 {
-	if (!no_sound)
-		SDL_PauseAudio(0);
+    if (!no_sound)
+        SDL_PauseAudio(0);
 }
 
 void os_stop_audio(void)
 {
-	if (!no_sound)
-		SDL_PauseAudio(1);
+    if (!no_sound)
+        SDL_PauseAudio(1);
 }
 
 
 BOOL CaricaSuoniMenu(void)
 {
-	BOOL ok = TRUE;
-	int i;
+    BOOL ok = TRUE;
+    int i;
 
-	for (i = 0; i < (NUMERO_SUONI_MENU); i++)
-		menusound[i] = NULL;
+    for (i = 0; i < (NUMERO_SUONI_MENU); i++)
+        menusound[i] = NULL;
 
-	i = 0;
+    i = 0;
 
-	while (menu_soundname[i]) {
-		if (!(menusound[i] = LoadSound(menu_soundname[i]))) {
-			ok = FALSE;
-			D(bug("Unable to find sample %s!\n", menu_soundname[i]));
-		}
+    while (menu_soundname[i]) {
+        if (!(menusound[i] = LoadSound(menu_soundname[i]))) {
+            ok = FALSE;
+            D(bug("Unable to find sample %s!\n", menu_soundname[i]));
+        }
 
-		if (ok == FALSE) {
-			int j;
+        if (ok == FALSE) {
+            int j;
 
-			for (j = 0; j < i; j++)
-				FreeSound(menusound[j]);
+            for (j = 0; j < i; j++)
+                FreeSound(menusound[j]);
 
-			return FALSE;
-		} else
-			i++;
-	}
+            return FALSE;
+        } else
+            i++;
+    }
 
     sound_loaded = TRUE;
 
-	return TRUE;
+    return TRUE;
 
 }
 
 void LiberaSuoniMenu(void)
 {
-	int i = 0;
+    int i = 0;
 
-	os_stop_audio();
+    os_stop_audio();
 
-	if(!sound_loaded)
-		return;
+    if(!sound_loaded)
+        return;
 
-	while (menu_soundname[i]) {
-		if (menusound[i]) {
-			FreeSound(menusound[i]);
-			menusound[i] = NULL;
-		}
-		i++;
-	}
+    while (menu_soundname[i]) {
+        if (menusound[i]) {
+            FreeSound(menusound[i]);
+            menusound[i] = NULL;
+        }
+        i++;
+    }
 
-	for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
-		busy[i] = NULL;
+    for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
+        busy[i] = NULL;
 
-	sound_loaded = FALSE;
+    sound_loaded = FALSE;
 }

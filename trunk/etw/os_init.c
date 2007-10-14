@@ -44,7 +44,7 @@ void init_system(void)
 
     if (training && !penalties && !free_kicks) {
         int i;
-        struct Team *s = p->team[1];
+        team_t *s = p->team[1];
 
         D(bug("*** TRAINING mode settings"));
         s->Joystick = -1;

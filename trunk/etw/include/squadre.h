@@ -40,10 +40,10 @@ struct player_disk
     char name[20];
     char surname[20];
     uint32_t value; /* unused? */
-    uint8_t number, Velocita, Contrasto, Tiro;
-    uint8_t Durata, Resistenza, Prontezza, Nazionalita;
-    uint8_t Creativita, Tecnica;
-    uint8_t Eta, Infortuni, Ammonizioni, Posizioni;
+    uint8_t number, speed, tackle, Tiro;
+    uint8_t Durata, stamina, quickness, nation;
+    uint8_t creativity, technique;
+    uint8_t Eta, injury, Ammonizioni, Posizioni;
 };
 
 struct keeper_disk
@@ -51,14 +51,14 @@ struct keeper_disk
     char name[20];
     char surname[20];
     uint32_t value; /* unused? */
-    uint8_t number, Velocita, Parata, Attenzione;
-    uint8_t Nazionalita, Eta, Infortuni, Flags;
+    uint8_t number, speed, Parata, Attenzione;
+    uint8_t nation, Eta, injury, Flags;
 };
 
 struct team_disk
 {
     uint32_t disponibilita;
-    uint8_t nplayers, nkeepers, Nazione, Flags;
+    uint8_t nplayers, nkeepers, nation, Flags;
     struct jersey jerseys[2];
     char tactics[3][16];
     char name[52];

@@ -1,53 +1,53 @@
 #include "eat.h"
 
-void CheckInfortuni(Giocatore *g)
+void CheckInfortuni(player_t *g)
 {
-	if( (injuries&&GetTable()>3) || killer)
-	{
-		char t;
+    if( (injuries&&GetTable()>3) || killer)
+    {
+        char t;
 
-		if(!g)
-			return;
+        if(!g)
+            return;
 
-		g->Resistenza--;
+        g->stamina--;
 
-		if(GetTable()>g->Resistenza || killer)
-		{
-			g->Resistenza=0;
+        if(GetTable()>g->stamina || killer)
+        {
+            g->stamina=0;
 
-			TogliPalla();
+            TogliPalla();
 
-			g->Velocita=2;
-			t=GetTable()-2;
-			g->Contrasto=max(1,t);
-			g->Tiro=max(1,t);
-			g->Creativita=max(1,t);
+            g->speed=2;
+            t=GetTable()-2;
+            g->tackle=max(1,t);
+            g->Tiro=max(1,t);
+            g->creativity=max(1,t);
 
-			g->ActualSpeed=0;
+            g->ActualSpeed=0;
 
-			DoSpecialAnim(g,GIOCATORE_INFORTUNIO);
+            DoSpecialAnim(g,GIOCATORE_INFORTUNIO);
 
-			if(injuries)
-			{
-				StopTime();
+            if(injuries)
+            {
+                StopTime();
 
-				p->player_injuried=g;
+                p->player_injuried=g;
 
-				if(g->team->Joystick>=0)
-					p->show_panel=PANEL_INJURIED;
+                if(g->team->Joystick>=0)
+                    p->show_panel=PANEL_INJURIED;
 
-				p->show_time=200;
-			}
-		}
-	}
+                p->show_time=200;
+            }
+        }
+    }
 }
 
 void MoveNonControlled(void)
 {
     register int i;
     register WORD xg,yg;
-    register Giocatore *g;
-    register Team *s;
+    register player_t *g;
+    register team_t *s;
     WORD xlimit_e,ylimit_s,xlimit_o,ylimit_n,j;
 
     // Cacho un paio di cose :)
@@ -92,13 +92,13 @@ void MoveNonControlled(void)
                         *a=0;
                     }
 #endif
-                    AddAnimObj(g->immagine,xg-field_x,yg-field_y,Animation[g->AnimType].Frame[0]+g->Direzione);
+                    AddAnimObj(g->anim,xg-field_x,yg-field_y,Animation[g->AnimType].Frame[0]+g->dir);
 
                     g->OnScreen=TRUE;
                 }
                 else
                 {
-                    MoveAnimObj(g->immagine,xg-field_x,yg-field_y);
+                    MoveAnimObj(g->anim,xg-field_x,yg-field_y);
                 }
 
                 /* aggiungere qui il check sulle collisioni, le controllo solo se onscreen */
@@ -114,7 +114,7 @@ void MoveNonControlled(void)
                     s->MarkerOnScreen=FALSE;
                 }
 
-                RemAnimObj(g->immagine);
+                RemAnimObj(g->anim);
                 g->OnScreen=FALSE;
             }
 
@@ -126,7 +126,7 @@ void MoveNonControlled(void)
                     pl->world_y>(g->world_y+96)     &&
                     pl->world_y<(g->world_y+190)    &&
                     pl->InGioco     &&
-                    !pl->Hide	&&
+                    !pl->Hide    &&
                     (!g->Special || g->AnimType==GIOCATORE_SCIVOLATA)
               )
             {
@@ -136,7 +136,7 @@ void MoveNonControlled(void)
                         goto skipchange;
 
                     if (g->AnimType != GIOCATORE_SCIVOLATA) {
-                        if (pl->gioc_palla->Tecnica > (g->Contrasto+2+GetTable())) {
+                        if (pl->gioc_palla->technique > (g->tackle+2+GetTable())) {
                             g->ActualSpeed=0;
                             DoSpecialAnim(g,GIOCATORE_CONTRASTO);
                             goto skipchange;
@@ -157,7 +157,7 @@ void MoveNonControlled(void)
                             switch (GetTable()) {
                                 case 4:
                                 case 5:
-                                    //								PlayIfNotPlaying(BOOU);
+                                    //                                PlayIfNotPlaying(BOOU);
                                     SetCrowd(BOOU);
                                     break;
                                 case 1:
@@ -186,7 +186,7 @@ void MoveNonControlled(void)
 
                             if(!arcade && GetTable()>2) // arbitro abilita' (da aggiungere)
                             {
-                                p->arbitro.Comando=FISCHIA_FALLO;
+                                p->referee.Comando=FISCHIA_FALLO;
 
                                 StopTime();
 
@@ -212,30 +212,30 @@ void MoveNonControlled(void)
                                 {
                                     if(GetTable()<4)
                                     {
-                                        if(GetTable()>((11-p->arbitro.cattiveria)>>1))
+                                        if(GetTable()>((11-p->referee.cattiveria)>>1))
                                         {
                                             if(!g->Ammonito)
                                             {
                                                 p->team[g->SNum]->Ammonizioni++;
-                                                p->arbitro.Comando=AMMONIZIONE;
+                                                p->referee.Comando=AMMONIZIONE;
                                             }
                                             else
                                             {
                                                 p->team[g->SNum]->Espulsioni++;
-                                                p->arbitro.Comando=ESPULSIONE;
+                                                p->referee.Comando=ESPULSIONE;
                                             }
 
-                                            p->arbitro.Tick=-50;
+                                            p->referee.Tick=-50;
                                             p->show_panel|=PANEL_TIME|PANEL_CARD;
-                                            p->arbitro.Argomento=g->GNum+g->SNum*10;
+                                            p->referee.Argomento=g->GNum+g->SNum*10;
                                         }
                                     }
-                                    else if(GetTable()>((12-p->arbitro.cattiveria)>>1))
+                                    else if(GetTable()>((12-p->referee.cattiveria)>>1))
                                     {
                                         p->team[g->SNum]->Espulsioni++;
-                                        p->arbitro.Comando=ESPULSIONE;
-                                        p->arbitro.Argomento=g->GNum+g->SNum*10;
-                                        p->arbitro.Tick=-50;
+                                        p->referee.Comando=ESPULSIONE;
+                                        p->referee.Argomento=g->GNum+g->SNum*10;
+                                        p->referee.Tick=-50;
                                         p->show_panel|=PANEL_TIME|PANEL_CARD;
                                     }
                                 }
@@ -278,14 +278,14 @@ void MoveNonControlled(void)
 
                     ChangeControlled(s, i);
 
-                    pl->world_x = avanzamento_x[g->Direzione]+g->world_x;
-                    pl->world_y = avanzamento_y[g->Direzione]+g->world_y;
+                    pl->world_x = avanzamento_x[g->dir]+g->world_x;
+                    pl->world_y = avanzamento_y[g->dir]+g->world_y;
 
 skipchange:
                     PlayIfNotPlaying(CONTRASTO);
                 }
                 else { // if the ball is not owned by a player
-                    if (pl->velocita < (g->Tecnica + 12 - g->ActualSpeed - pl->quota)) { // changed to be more difficult with the quota
+                    if (pl->velocita < (g->technique + 12 - g->ActualSpeed - pl->quota)) { // changed to be more difficult with the quota
                         if (!g->ActualSpeed && 
                              g->AnimType != GIOCATORE_SCIVOLATA) {
                             if (pl->quota < 3) {
@@ -305,9 +305,9 @@ skipchange:
                             DoSpecialAnim(g, GIOCATORE_ALZATI);
                             pl->MaxQuota = 1+GetTable();
                             pl->velocita += (GetTable()-2);
-                            pl->Direzione = (g->SpecialData<<3);
+                            pl->dir = (g->SpecialData<<3);
 
-                            pl->Direzione += 2;
+                            pl->dir += 2;
 
                             s->Possesso = 1;
                             p->team[g->SNum^1]->Possesso = 0;
@@ -322,8 +322,8 @@ skipchange:
                         else {
                             DaiPalla(g);
                             g->WaitForControl = 0;
-                            pl->world_x = avanzamento_x[g->Direzione]+g->world_x;
-                            pl->world_y = avanzamento_y[g->Direzione]+g->world_y;
+                            pl->world_x = avanzamento_x[g->dir]+g->world_x;
+                            pl->world_y = avanzamento_y[g->dir]+g->world_y;
                         }
 
                         ChangeControlled(s,i);
@@ -366,7 +366,7 @@ skipchange:
             {
                 if(g->world_y<(RIMESSA_Y_N-200))
                 {
-                    g->Direzione=opposto[g->Direzione];
+                    g->dir=opposto[g->dir];
                     g->ActualSpeed=0;
                     g->world_y=RIMESSA_Y_N-199;
                 }
@@ -374,7 +374,7 @@ skipchange:
                 {
                     // Qui si presume che un giocatore con un comando sappia cosa fare!
 
-                    g->Direzione=opposto[g->Direzione];
+                    g->dir=opposto[g->dir];
                     g->ActualSpeed=0;
                     g->world_y=RIMESSA_Y_S+19;
                 }
@@ -388,18 +388,18 @@ skipchange:
                     g->ArcadeCounter--;
 
                     if(g->ArcadeCounter==0)
-                        RemoveArcadeEffect(g,g->ArcadeEffect);	
+                        RemoveArcadeEffect(g,g->ArcadeEffect);    
                 }
 
                 if(g->world_y<(RIMESSA_Y_N-132))
                 {
-                    g->Direzione=opposto[g->Direzione];
+                    g->dir=opposto[g->dir];
                     g->ActualSpeed=0;
                     g->world_y=RIMESSA_Y_N-132;
                 }
                 else if(g->world_y>(RIMESSA_Y_S-70))
                 {
-                    g->Direzione=opposto[g->Direzione];
+                    g->dir=opposto[g->dir];
                     g->ActualSpeed=0;
                     g->world_y=RIMESSA_Y_S-70;
                 }
@@ -413,7 +413,7 @@ skipchange:
                 {
                     HandleRealCPU(g);
                 }
-                else if(g->Tick>prontezza[g->Prontezza]&&!g->Special&&g->Comando==NESSUN_COMANDO)
+                else if(g->Tick>prontezza[g->quickness]&&!g->Special&&g->Comando==NESSUN_COMANDO)
                 {
                     /*
                        if(s!=pl->sq_palla)
@@ -422,18 +422,18 @@ skipchange:
 
                     if(g->world_x<80)
                     {
-                        g->Direzione=opposto[g->Direzione];
+                        g->dir=opposto[g->dir];
                         g->ActualSpeed=0;
                         g->world_x=80;
                     }
                     else if(g->world_x>(1270*8))
                     {
-                        g->Direzione=opposto[g->Direzione];
+                        g->dir=opposto[g->dir];
                         g->ActualSpeed=0;
                         g->world_x=1270*8;
                     }
 
-                    g->settore=s->tattica->Position[s->Possesso][i][p->palla.settore].settore;
+                    g->settore=s->tactic->Position[s->Possesso][i][p->ball.settore].settore;
 
                     g->Tick=0;
 
@@ -441,15 +441,15 @@ skipchange:
                     {
                         // Qui avevo messo degli 0 al posto di p->team[j]->Possesso, chissa' come mai...
 
-                        if(!IsNear(g->world_x,g->world_y,s->tattica->Position[s->Possesso][i][p->palla.settore].x,s->tattica->Position[s->Possesso][i][p->palla.settore].y) || !pl->InGioco)
+                        if(!IsNear(g->world_x,g->world_y,s->tactic->Position[s->Possesso][i][p->ball.settore].x,s->tactic->Position[s->Possesso][i][p->ball.settore].y) || !pl->InGioco)
                         {
-                            MoveTo(g,s->tattica->Position[s->Possesso][i][pl->settore].x,s->tattica->Position[s->Possesso][i][pl->settore].y);
+                            MoveTo(g,s->tactic->Position[s->Possesso][i][pl->settore].x,s->tactic->Position[s->Possesso][i][pl->settore].y);
                         }
                         else
                         {
                             if(g->AnimType!=GIOCATORE_RESPIRA&&(!g->Special))
                             {
-                                g->Direzione=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
+                                g->dir=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
                                 DoAnim(g,GIOCATORE_RESPIRA);
                                 g->ActualSpeed=0;
                             }
@@ -460,7 +460,7 @@ skipchange:
 
                         // If he is following the ball is TWICE quicker
 
-                        g->Tick=(prontezza[g->Prontezza]>>2);
+                        g->Tick=(prontezza[g->quickness]>>2);
 
                         if(!IsVeryNear(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y)))
                             MoveTo(g,G2P_X(pl->world_x),G2P_Y(pl->world_y));
@@ -477,7 +477,7 @@ skipchange:
 
                     for(kk=0;kk<MAX_ARCADE_ON_FIELD;kk++)
                     {
-                        if(	bonus[kk]->world_x>(g->world_x-96) &&
+                        if(    bonus[kk]->world_x>(g->world_x-96) &&
                                 bonus[kk]->world_x<(g->world_x+96) &&
                                 bonus[kk]->world_y>(g->world_y+32 ) &&
                                 bonus[kk]->world_y<(g->world_y+144 )
@@ -547,8 +547,8 @@ skipchange:
                     {
                         g->world_x=496-g->world_y/10; // con 610 era 488
 
-                        if(g->ActualSpeed&&velocita_x[g->ActualSpeed-1][g->Velocita][g->Direzione]<0)
-                            g->world_x-=velocita_x[g->ActualSpeed-1][g->Velocita][g->Direzione];
+                        if(g->ActualSpeed&&velocita_x[g->ActualSpeed-1][g->speed][g->dir]<0)
+                            g->world_x-=velocita_x[g->ActualSpeed-1][g->speed][g->dir];
                     }
                 }
                 else if(g->world_x>(1210*8))
@@ -557,8 +557,8 @@ skipchange:
                     {
                         g->world_x=g->world_y/10+(12051/5*4);
 
-                        if(g->ActualSpeed&&velocita_x[g->ActualSpeed-1][g->Velocita][g->Direzione]>0)
-                            g->world_x-=velocita_x[g->ActualSpeed-1][g->Velocita][g->Direzione];
+                        if(g->ActualSpeed&&velocita_x[g->ActualSpeed-1][g->speed][g->dir]>0)
+                            g->world_x-=velocita_x[g->ActualSpeed-1][g->speed][g->dir];
                     }
                 }
             }
@@ -599,7 +599,7 @@ skipchange:
 
                             if(!IsVeryVeryNear(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y)))
                             {
-                                g->Direzione=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
+                                g->dir=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
                             }
                             else
                             {
@@ -616,12 +616,12 @@ skipchange:
 
                             // Let's wait red card refree animation completion.
 
-                            if(p->arbitro.Tick>240)
+                            if(p->referee.Tick>240)
                                 break;
 
                             if(SimpleDistance(g->world_x,g->world_y,CENTROCAMPO_X,RIMESSA_Y_S+300)>200)
                             {
-                                g->Direzione=FindDirection(g->world_x,g->world_y,CENTROCAMPO_X,RIMESSA_Y_S+300);
+                                g->dir=FindDirection(g->world_x,g->world_y,CENTROCAMPO_X,RIMESSA_Y_S+300);
 
                                 if(g->AnimType!=GIOCATORE_CORSA_LENTA)
                                 {
@@ -631,11 +631,11 @@ skipchange:
                             }
                             else if(p->player_injuried!=g) // It's a red card
                             {
-                                //							D(bug("Fine ESCI_CAMPO, giocatore a destinazione!\n"));
+                                //                            D(bug("Fine ESCI_CAMPO, giocatore a destinazione!\n"));
                                 g->Comando=STAI_FERMO;
                                 g->ActualSpeed=0;
                                 DoSpecialAnim(g,GIOCATORE_ESPULSO);
-                                g->Direzione=0;
+                                g->dir=0;
                             }
                             else
                             {
@@ -646,7 +646,7 @@ skipchange:
                                  */
                                 if(g->CA[0]>0)
                                 {
-                                    D(bug("Effettuo la sostutuzione...(s:%ld go:%ld gi:%ld)\n",j,g->number,Riserve[j][g->CA[0]-1].number));								
+                                    D(bug("Effettuo la sostutuzione...(s:%ld go:%ld gi:%ld)\n",j,g->number,Riserve[j][g->CA[0]-1].number));                                
                                     ChangePlayer(&Riserve[j][g->CA[0]-1],g);
 
                                     // Il giocatore sostituito potrebbe essere quello attivo!
@@ -671,13 +671,13 @@ skipchange:
 
                             if(SimpleDistance(pl->world_x,pl->world_y,P2G_X(g->world_x),P2G_Y(g->world_y))<700)
                             {
-                                g->Direzione=opposto[FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x), G2P_Y(pl->world_y))];
+                                g->dir=opposto[FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x), G2P_Y(pl->world_y))];
 
                                 if(g->world_x>(RIGORE_X_E-100))
-                                    g->Direzione=6;
+                                    g->dir=6;
 
                                 if(g->world_x<(RIGORE_X_O+100))
-                                    g->Direzione=2;
+                                    g->dir=2;
 
                                 if(g->AnimType!=GIOCATORE_CORSA_VELOCE)
                                 {
@@ -689,7 +689,7 @@ skipchange:
                             else
                             {
                                 g->Comando=NESSUN_COMANDO;
-                                g->Direzione=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x), G2P_Y(pl->world_y));
+                                g->dir=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x), G2P_Y(pl->world_y));
                                 g->ActualSpeed=0;
                                 DoSpecialAnim(g,GIOCATORE_RESPIRA);
                             }
@@ -704,7 +704,7 @@ skipchange:
 
                             if(InAnyArea(P2G_X(g->world_x),P2G_Y(g->world_y)))
                             {
-                                g->Direzione=FindDirection(g->world_x,g->world_y,CENTROCAMPO_X, CENTROCAMPO_Y);
+                                g->dir=FindDirection(g->world_x,g->world_y,CENTROCAMPO_X, CENTROCAMPO_Y);
 
                                 if(g->AnimType!=GIOCATORE_CORSA_VELOCE)
                                 {
@@ -755,9 +755,9 @@ skipchange:
                                 if(IsOffside(g))
                                 {
                                     pl->InGioco=FALSE;
-                                    p->arbitro.Tick=5;
-                                    p->arbitro.Comando=FISCHIA_OFFSIDE;
-                                    p->arbitro.Argomento=g->SNum*10+g->SpecialData;
+                                    p->referee.Tick=5;
+                                    p->referee.Comando=FISCHIA_OFFSIDE;
+                                    p->referee.Argomento=g->SNum*10+g->SpecialData;
                                 }
                             }
 
@@ -770,7 +770,7 @@ skipchange:
                             {
                                 s->attivo->ActualSpeed=0;
                                 s->attivo->WaitForControl=24;
-                                s->attivo->Direzione=FindDirection(s->attivo->world_x,s->attivo->world_y,g->world_x,g->world_y);
+                                s->attivo->dir=FindDirection(s->attivo->world_x,s->attivo->world_y,g->world_x,g->world_y);
                             }
                         }
                         else if(use_speaker && GetTable()>1)
@@ -839,7 +839,7 @@ skipchange:
 
                             case GIOCATORE_GIRATA_SINISTRA:
                             case GIOCATORE_GIRATA_DESTRA:
-                                g->Direzione=opposto[g->Direzione];
+                                g->dir=opposto[g->dir];
                             case GIOCATORE_TUFFO_TESTA:
                             case GIOCATORE_CADUTA_FERMO:
                             case GIOCATORE_CADUTA:
@@ -874,39 +874,39 @@ skipchange:
                                 g->AnimType=GIOCATORE_PREPARA_RIMESSA;
                                 break;
                             case GIOCATORE_ESPULSO:
-                                //							D(bug("Giocatore %ld: C:%ld S:%ld\n",g->GNum,g->Comando,g->Special));
+                                //                            D(bug("Giocatore %ld: C:%ld S:%ld\n",g->GNum,g->Comando,g->Special));
                                 g->Comando=STAI_FERMO;
                                 g->world_x=CENTROCAMPO_X;
                                 g->world_y=RIMESSA_Y_S+160;
                                 break;
                             case GIOCATORE_CAMBIO_ORARIO:
-                                g->Direzione+=2;
+                                g->dir+=2;
 
-                                if(g->Direzione>8)
-                                    g->Direzione-=8;
+                                if(g->dir>8)
+                                    g->dir-=8;
                             case GIOCATORE_CAMBIO_ANTI:
-                                g->Direzione--;
+                                g->dir--;
 
-                                if(g->Direzione<0)
-                                    g->Direzione+=8;
+                                if(g->dir<0)
+                                    g->dir+=8;
 
                                 g->Special=FALSE;
                                 g->AnimType=GIOCATORE_CORSA_LENTA;
 
                                 if(g==pl->gioc_palla)
                                 {
-                                    pl->world_x=avanzamento_x[g->Direzione]+g->world_x;
-                                    pl->world_y=avanzamento_y[g->Direzione]+g->world_y;
+                                    pl->world_x=avanzamento_x[g->dir]+g->world_x;
+                                    pl->world_y=avanzamento_y[g->dir]+g->world_y;
                                 }
                                 break;
                             case GIOCATORE_INVERSIONE_MARCIA:
                             case GIOCATORE_INVERSIONE_MARCIA_PALLA:
-                                g->Direzione=opposto[g->Direzione];
+                                g->dir=opposto[g->dir];
 
                                 if(g==pl->gioc_palla)
                                 {
-                                    pl->world_x=avanzamento_x[g->Direzione]+g->world_x;
-                                    pl->world_y=avanzamento_y[g->Direzione]+g->world_y;
+                                    pl->world_x=avanzamento_x[g->dir]+g->world_x;
+                                    pl->world_y=avanzamento_y[g->dir]+g->world_y;
                                 }
 
                                 /*
@@ -928,15 +928,15 @@ skipchange:
                     /* I had an access underrun here. The conditions was:
                      * g->AnimType = 18
                      * g->AnimFrame = -1
-                     * g->Direzione = 2
+                     * g->dir = 2
                      */
-                    ChangeAnimObj(g->immagine,Animation[g->AnimType].Frame[g->AnimFrame]+g->Direzione);
+                    ChangeAnimObj(g->anim,Animation[g->AnimType].Frame[g->AnimFrame]+g->dir);
             }
 
             if(g->ActualSpeed>0)
             {
-                g->world_x+=velocita_x[g->ActualSpeed-1][g->Velocita][g->Direzione];
-                g->world_y+=velocita_y[g->ActualSpeed-1][g->Velocita][g->Direzione];
+                g->world_x+=velocita_x[g->ActualSpeed-1][g->speed][g->dir];
+                g->world_y+=velocita_y[g->ActualSpeed-1][g->speed][g->dir];
             }
 
             if(g->Special)
@@ -970,12 +970,12 @@ skipchange:
 }
 
 
-void ChangeControlled(Team *s,WORD i)
+void ChangeControlled(team_t *s,WORD i)
 {
 // Occhio qui, potrebbe dar problemi.
 
-	if(s->gioco_ruolo||s->players[i].Comando||s->players[i].AnimType==GIOCATORE_ESPULSO)
-		return;
+    if(s->gioco_ruolo||s->players[i].Comando||s->players[i].AnimType==GIOCATORE_ESPULSO)
+        return;
 
         if(s->attivo->Controlled && s->MarkerOnScreen)
         {
@@ -983,28 +983,28 @@ void ChangeControlled(Team *s,WORD i)
                 RemAnimObj(s->Marker);
         }
 
-	if(s->attivo->ArcadeEffect)
-	{
-		if(s->attivo->ArcadeEffect!=ARCADE_FREEZE)
-			RemoveArcadeEffect(s->attivo,s->attivo->ArcadeEffect);
-	}
+    if(s->attivo->ArcadeEffect)
+    {
+        if(s->attivo->ArcadeEffect!=ARCADE_FREEZE)
+            RemoveArcadeEffect(s->attivo,s->attivo->ArcadeEffect);
+    }
 
         s->attivo->Controlled=FALSE;
 
         s->attivo=&s->players[i];
         s->attivo->Controlled=TRUE;
 
-	if(detail_level&USA_NOMI)
-		PrintSmall(s->NomeAttivo,s->attivo->surname,s->attivo->NameLen);
+    if(detail_level&USA_NOMI)
+        PrintSmall(s->NomeAttivo,s->attivo->surname,s->attivo->NameLen);
 
-	if(s->Joystick>=0)
-		need_release[s->Joystick]=TRUE;
+    if(s->Joystick>=0)
+        need_release[s->Joystick]=TRUE;
 }
 
 void HandleExtras(void)
 {
     register int i=0;
-    register Oggetto *g;
+    register object_t *g;
     register WORD xg;
     register WORD yg;
 
@@ -1013,19 +1013,19 @@ void HandleExtras(void)
         xg=g->world_x>>3;
         yg=g->world_y>>3;
 
-        if( xg>(field_x-g->immagine->Widths[g->AnimType]) &&
+        if( xg>(field_x-g->anim->Widths[g->AnimType]) &&
                 xg<(field_x+WINDOW_WIDTH) &&
-                yg>(field_y-g->immagine->Heights[g->AnimType]) &&
+                yg>(field_y-g->anim->Heights[g->AnimType]) &&
                 yg<(field_y+WINDOW_HEIGHT) 
           ) {
-            struct Rect *r=&ingombri[g->ObjectType];
+            struct Rect *r=&ingombri[g->otype];
 
             if(!g->OnScreen) {
-                AddAnimObj(g->immagine,xg-field_x,yg-field_y,g->AnimType);
+                AddAnimObj(g->anim,xg-field_x,yg-field_y,g->AnimType);
                 g->OnScreen=TRUE;
             }
-            else { /* move the ALSO the nets if(g->ObjectType!=TIPO_PORTA || nosync) */
-                MoveAnimObj(g->immagine,xg-field_x,yg-field_y);
+            else { /* move the ALSO the nets if(g->otype!=TIPO_PORTA || nosync) */
+                MoveAnimObj(g->anim,xg-field_x,yg-field_y);
             }
 
 
@@ -1033,8 +1033,8 @@ void HandleExtras(void)
                     pl->world_x<(g->world_x+r->MaxX)    &&
                     pl->world_y>(g->world_y+r->MinY)    &&
                     pl->world_y<(g->world_y+r->MaxY)    &&
-                    pl->quota<6	) {
-                if(g->ObjectType==TIPO_ARBITRO) {
+                    pl->quota<6    ) {
+                if(g->otype==TIPO_ARBITRO) {
                     PlayIfNotPlaying(CONTRASTO);
                     TogliPallaMod();
 
@@ -1047,7 +1047,7 @@ void HandleExtras(void)
                 }
 
                 /*
-                   switch(g->ObjectType)
+                   switch(g->otype)
                    {
                    case TIPO_ARBITRO:
                    PlayIfNotPlaying(CONTRASTO);
@@ -1066,14 +1066,14 @@ void HandleExtras(void)
             }
         }
         else if(g->OnScreen) {
-            RemAnimObj(g->immagine);
+            RemAnimObj(g->anim);
             g->OnScreen=FALSE;
         }
 
         i++;
     }
 
-    if(*c_list)	{
+    if(*c_list)    {
         register struct Rect *r;
         register struct DOggetto *g;
         register WORD px=pl->world_x,py=pl->world_y;
@@ -1084,11 +1084,11 @@ void HandleExtras(void)
             // Range is used to find the object type!
             r=&ingombri[g->Range];
 
-            if(	pl->quota<6		&&
-                    px >(g->X+r->MinX)	&&
-                    px <(g->X+r->MaxX)	&&
-                    py >(g->Y+r->MinY)	&&
-                    py <(g->Y+r->MaxY)	
+            if(    pl->quota<6        &&
+                    px >(g->X+r->MinX)    &&
+                    px <(g->X+r->MaxX)    &&
+                    py >(g->Y+r->MinY)    &&
+                    py <(g->Y+r->MaxY)    
               ) {
                 switch(g->Range)
                 {
@@ -1099,7 +1099,7 @@ void HandleExtras(void)
                         PlayIfNotPlaying(CONTRASTO);
                         break;
                     default:
-                        PlayIfNotPlaying(CRASH);						
+                        PlayIfNotPlaying(CRASH);                        
                 }
 
                 TogliPallaMod();
@@ -1117,60 +1117,60 @@ void HandleExtras(void)
     }
 }
 
-void CheckChange(Giocatore *g)
+void CheckChange(player_t *g)
 {
-	if(substitutions && !arcade && !(p->show_panel&0xff00) )
-	{
-		if(r_controls[g->team->Joystick][counter]&(JPF_JOY_DOWN|JPF_JOY_UP))
-		{
-			g->team->ArcadeCounter++;
+    if(substitutions && !arcade && !(p->show_panel&0xff00) )
+    {
+        if(r_controls[g->team->Joystick][counter]&(JPF_JOY_DOWN|JPF_JOY_UP))
+        {
+            g->team->ArcadeCounter++;
 
-			if(g->team->ArcadeCounter>70)
-			{
-				if(r_controls[g->team->Joystick][counter]&JPF_JOY_DOWN)
-				{
-					if(g->team->NumeroRiserve>0&&g->team->Sostituzioni<3)
-					{
-						StopTime();
-						p->player_injuried=g;
-						p->RiservaAttuale=-1;
-						p->show_panel=PANEL_SUBSTITUTION;
-					}
-				}
-				else
-				{
-					StopTime();
-					p->player_injuried=g;
-					p->RiservaAttuale=0;
-					p->show_panel=PANEL_CHANGE_TACTIC;
-				}
-				g->team->ArcadeCounter=0;
-			}
-		}
-		else g->team->ArcadeCounter=0;
-	}
+            if(g->team->ArcadeCounter>70)
+            {
+                if(r_controls[g->team->Joystick][counter]&JPF_JOY_DOWN)
+                {
+                    if(g->team->NumeroRiserve>0&&g->team->Sostituzioni<3)
+                    {
+                        StopTime();
+                        p->player_injuried=g;
+                        p->RiservaAttuale=-1;
+                        p->show_panel=PANEL_SUBSTITUTION;
+                    }
+                }
+                else
+                {
+                    StopTime();
+                    p->player_injuried=g;
+                    p->RiservaAttuale=0;
+                    p->show_panel=PANEL_CHANGE_TACTIC;
+                }
+                g->team->ArcadeCounter=0;
+            }
+        }
+        else g->team->ArcadeCounter=0;
+    }
 }
 
-void NoPlayerControl(Giocatore *g)
+void NoPlayerControl(player_t *g)
 {
-	g->Tick++;
+    g->Tick++;
 
-	if(g->Tick>36)
-	{
-		g->Tick=0;
+    if(g->Tick>36)
+    {
+        g->Tick=0;
 
-		if(!IsNear(g->world_x,g->world_y,g->team->tattica->Position[g->team->Possesso][g->GNum][p->palla.settore].x,g->team->tattica->Position[g->team->Possesso][g->GNum][p->palla.settore].y) )
-		{
-			MoveTo(g,g->team->tattica->Position[g->team->Possesso][g->GNum][pl->settore].x,g->team->tattica->Position[g->team->Possesso][g->GNum][pl->settore].y);
-		}
-		else
-		{
-			if(g->AnimType!=GIOCATORE_RESPIRA&&(!g->Special))
-			{
-				g->Direzione=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
-				DoAnim(g,GIOCATORE_RESPIRA);
-				g->ActualSpeed=0;
-			}
-		}
-	}
+        if(!IsNear(g->world_x,g->world_y,g->team->tactic->Position[g->team->Possesso][g->GNum][p->ball.settore].x,g->team->tactic->Position[g->team->Possesso][g->GNum][p->ball.settore].y) )
+        {
+            MoveTo(g,g->team->tactic->Position[g->team->Possesso][g->GNum][pl->settore].x,g->team->tactic->Position[g->team->Possesso][g->GNum][pl->settore].y);
+        }
+        else
+        {
+            if(g->AnimType!=GIOCATORE_RESPIRA&&(!g->Special))
+            {
+                g->dir=FindDirection(g->world_x,g->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
+                DoAnim(g,GIOCATORE_RESPIRA);
+                g->ActualSpeed=0;
+            }
+        }
+    }
 }

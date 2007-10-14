@@ -75,11 +75,11 @@ struct MyNode *InAList(struct MyList *l, APTR ptr)
 
 void DrawAnimObj(void)
 {
-    register AnimObj *obj;
+    register anim_t *obj;
     register WORD cf;
 
-    for (obj = (AnimObj *) DrawList.lh_Head; obj->node.mln_Succ;
-         obj = (AnimObj *) obj->node.mln_Succ) {
+    for (obj = (anim_t *) DrawList.lh_Head; obj->node.mln_Succ;
+         obj = (anim_t *) obj->node.mln_Succ) {
         cf = obj->current_frame;
 
         if (!use_clipping) {
@@ -161,7 +161,7 @@ void DrawAnimObj(void)
  * Find an anim object in the drawlist
  */
 
-BOOL InAnimList(AnimObj *obj)
+BOOL InAnimList(anim_t *obj)
 {
     struct MyNode *n;
     
@@ -178,7 +178,7 @@ BOOL InAnimList(AnimObj *obj)
  *  and frame.
  */
 
-void AddAnimObj(AnimObj * obj, WORD x, WORD y, WORD frame)
+void AddAnimObj(anim_t * obj, WORD x, WORD y, WORD frame)
 {
     MyAddTail(&DrawList, (struct MyNode *) obj);
 
@@ -205,7 +205,7 @@ void AddAnimObj(AnimObj * obj, WORD x, WORD y, WORD frame)
 
 void SortDrawList(void)
 {
-    register AnimObj *o, *best;
+    register anim_t *o, *best;
     register WORD best_bottom;
 
 // Non uso NewList per la velocita'!
@@ -218,8 +218,8 @@ void SortDrawList(void)
         best = NULL;
         best_bottom = 30000;
 
-        for (o = (AnimObj *) DrawList.lh_Head; o->node.mln_Succ;
-             o = (AnimObj *) o->node.mln_Succ) {
+        for (o = (anim_t *) DrawList.lh_Head; o->node.mln_Succ;
+             o = (anim_t *) o->node.mln_Succ) {
             if (o->Flags & AOBJ_BEHIND) {
                 best = o;
                 break;
@@ -254,7 +254,7 @@ void SortDrawList(void)
 // Non c'e' best, quindi probabilmente sono finiti i nodi della lista o ci sono solo nodi OVER
 
             while (DrawList.lh_TailPred != (struct MyNode *) &DrawList) {
-                best = (AnimObj *) DrawList.lh_Head;
+                best = (anim_t *) DrawList.lh_Head;
 
 // Stacco il nodo dalla list
 
@@ -298,17 +298,17 @@ void SortDrawList(void)
 
 
 
-/* Remove all AnimObj from the display */
+/* Remove all anim_t from the display */
 
 
 void ClearAnimObj(void)
 {
-    register AnimObj *obj;
+    register anim_t *obj;
 
     /* Leggo la lista al contrario per cancellare correttamente tutto */
 
-    for (obj = (AnimObj *) DrawList.lh_TailPred; obj->node.mln_Pred;
-         obj = (AnimObj *) obj->node.mln_Pred) {
+    for (obj = (anim_t *) DrawList.lh_TailPred; obj->node.mln_Pred;
+         obj = (anim_t *) obj->node.mln_Pred) {
         if (obj->bg) {
             bltchunkybitmap(obj->bg, 0, 0, main_bitmap, obj->x_back,
                             obj->y_back, obj->max_width, obj->max_height,
@@ -325,9 +325,9 @@ void ClearAnimObj(void)
     }
 }
 
-GfxObj *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
+gfx_t *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
 {
-    GfxObj *obj;
+    gfx_t *obj;
     FILE *fh;
     int i;
     uint16_t temp;
@@ -336,7 +336,7 @@ GfxObj *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
 
     D(bug("Loading %s...", name));
 
-    if ((obj = calloc(1, sizeof(struct GfxObject)))) {
+    if ((obj = calloc(1, sizeof(gfx_t)))) {
         if ((fh = fopen(name, "rb"))) {
             char buffer[4];
 
@@ -344,7 +344,7 @@ GfxObj *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
 
             if (strncmp(buffer, "GGFX" /*-*/ , 4)) {
                 fclose(fh);
-                D(bug("File is not a GfxObj!\n"));
+                D(bug("File is not a gfx_t!\n"));
                 free(obj);
                 return NULL;
             }
@@ -447,15 +447,15 @@ GfxObj *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
     return NULL;
 }
 
-AnimObj *LoadAnimObject(char *name, int32_t * pens)
+anim_t *LoadAnimObject(char *name, int32_t * pens)
 {
     char buffer[4];
-    AnimObj *obj;
+    anim_t *obj;
     FILE *fh, *fo = NULL;
     BOOL convert = FALSE;
     LONG i;
 
-    obj = calloc(1, sizeof(struct AnimObject));
+    obj = calloc(1, sizeof(anim_t));
     if(!obj)
         return NULL;
 
@@ -500,7 +500,7 @@ AnimObj *LoadAnimObject(char *name, int32_t * pens)
     fread(buffer, 4, 1, fh);
     if(strncmp(buffer, "GOBJ", 4) && strncmp(buffer, "GOBC", 4))
     {
-        D(bug("File is not an AnimObj!\n"));
+        D(bug("File is not an anim_t!\n"));
         fclose(fh);
         free(obj);
         return NULL;
@@ -701,7 +701,7 @@ AnimObj *LoadAnimObject(char *name, int32_t * pens)
     return NULL;
 }
 
-void FreeGfxObj(GfxObj * obj)
+void FreeGfxObj(gfx_t * obj)
 {
     struct MyNode *n;
 
@@ -730,7 +730,7 @@ void FreeGfxObj(GfxObj * obj)
     free(obj);
 }
 
-void FreeAnimObj(AnimObj * obj)
+void FreeAnimObj(anim_t * obj)
 {
     int i;
     struct MyNode *n;
@@ -804,12 +804,12 @@ void FreeGraphics(void)
 
         switch (n->ln_Type) {
         case TYPE_GFXOBJ:
-            D(bug("Freeing a GfxObj.\n"));
-            FreeGfxObj((GfxObj *) n->ln_Name);
+            D(bug("Freeing a gfx_t.\n"));
+            FreeGfxObj((gfx_t *) n->ln_Name);
             break;
         case TYPE_ANIMOBJ:
-            D(bug("Freeing a AnimObj.\n"));
-            FreeAnimObj((AnimObj *) n->ln_Name);
+            D(bug("Freeing a anim_t.\n"));
+            FreeAnimObj((anim_t *) n->ln_Name);
             break;
         case TYPE_RASTPORT:
             D(bug("Freeing a RastPort.\n"));
@@ -832,7 +832,7 @@ void FreeGraphics(void)
     }
 }
 
-void RemapAnimObjColor(AnimObj * o, UBYTE source_color, UBYTE dest_color)
+void RemapAnimObjColor(anim_t * o, UBYTE source_color, UBYTE dest_color)
 {
     int k;
     unsigned char pens[256];
@@ -948,12 +948,12 @@ BOOL LoadIFFPalette(char *filename)
     return rc;
 }
 
-AnimObj *CloneAnimObj(AnimObj * obj)
+anim_t *CloneAnimObj(anim_t * obj)
 {
-    AnimObj *o;
+    anim_t *o;
 
-    if ((o = malloc(sizeof(struct AnimObject)))) {
-        memcpy(o, obj, sizeof(struct AnimObject));
+    if ((o = malloc(sizeof(anim_t)))) {
+        memcpy(o, obj, sizeof(anim_t));
         o->Flags |= AOBJ_CLONED;
         o->node.mln_Succ = o->node.mln_Pred = NULL;
 
@@ -971,15 +971,15 @@ AnimObj *CloneAnimObj(AnimObj * obj)
     return NULL;
 }
 
-AnimObj *CopyAnimObj(AnimObj * obj)
+anim_t *CopyAnimObj(anim_t * obj)
 {
-    AnimObj *o;
+    anim_t *o;
 
-    if ((o = malloc(sizeof(struct AnimObject)))) {
+    if ((o = malloc(sizeof(anim_t)))) {
         BOOL ok = TRUE;
         register int i;
 
-        memcpy(o, obj, sizeof(struct AnimObject));
+        memcpy(o, obj, sizeof(anim_t));
         o->node.mln_Succ = o->node.mln_Pred = NULL;
 
 
@@ -1128,7 +1128,7 @@ void LoadGfxObjPalette(char *name)
         palette[depth * 3 + 1] = 0;
         os_load_palette(palette);
 
-        D(bug("Loading %ld colors from GfxObj %s\n", depth, name));
+        D(bug("Loading %ld colors from gfx_t %s\n", depth, name));
 
         for (i = 0; i < depth; i++)
             lock_pen(i);

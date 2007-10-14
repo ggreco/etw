@@ -7,7 +7,7 @@ them in the sources, but it's not as easy for variable and function names so I'l
 describe in this document a few translation that may help to understand the code
 if you are not an italian speaker.
 
-Arbitro - REFREE
+Arbitro - REFEREE
 Giocatore - PLAYER
 Portiere - GOALKEEPER
 Squadra - TEAM
@@ -15,7 +15,7 @@ Infortunio - INJURY
 Resistenza - STAMINA
 Velocita - SPEED
 Palla - BALL
-Creativita - TECNIC
+Creativita - TECHNIQUE
 Contrasto - TACKLE
 Immagine - PICTURE
 Comando - COMMAND

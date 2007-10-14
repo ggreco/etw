@@ -33,35 +33,35 @@
 #pragma options align=mac68k
 #endif
 
-struct Elemento
+struct object
 {
-    AnimObj *immagine;
+    anim_t *anim;
     WORD world_x, world_y;
     BOOL OnScreen;
     WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    int8_t ObjectType;  // Tipo di oggetto, fin qui ci devo arrivare!
+    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
 };
 
-struct ElementoMobile
+struct movingobject
 {
-    AnimObj *immagine;
+    anim_t *anim;
     WORD world_x, world_y;
     BOOL OnScreen;
     WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    int8_t ObjectType;  // Tipo di oggetto, fin qui ci devo arrivare!
-    int8_t Direzione;   // Direzione di movimento
+    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
+    int8_t dir;   // Direzione di movimento
     int8_t ActualSpeed; // Velocita' del tipo
     int8_t FrameLen; // Quando e' 0 posso cambiare frame
 };
 
-struct Arbitro
+struct referee
 {
-    AnimObj *immagine;
+    anim_t *anim;
     WORD world_x, world_y;
     BOOL OnScreen;
     WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    int8_t ObjectType;  // Tipo di oggetto, fin qui ci devo arrivare!
-    int8_t Direzione;   // Direzione di movimento
+    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
+    int8_t dir;   // Direzione di movimento
     int8_t ActualSpeed; // Velocita' del tipo
     int8_t FrameLen; // Quando e' 0 posso cambiare frame
     WORD Tick, Argomento;
@@ -78,14 +78,14 @@ struct Arbitro
 
 // Molto simile all'arbitro...
 
-struct GuardaLinee
+struct linesman
 {
-    AnimObj *immagine;
+    anim_t *anim;
     WORD world_x, world_y;
     BOOL OnScreen;
     WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    char ObjectType;  // Tipo di oggetto, fin qui ci devo arrivare!
-    char Direzione;   // Direzione di movimento
+    char otype;  // Tipo di oggetto, fin qui ci devo arrivare!
+    char dir;   // Direzione di movimento
     char ActualSpeed; // Velocita' del tipo
     char FrameLen; // Quando e' 0 posso cambiare frame
     WORD Tick, Argomento;
@@ -96,36 +96,36 @@ struct GuardaLinee
     char Comando;  // Se ci sono falli o simili...
 };
 
-struct Pallone
+struct ball
 {
-    AnimObj *immagine;
-    struct Giocatore *gioc_palla;
-    struct Team *sq_palla;
+    anim_t *anim;
+    struct player *gioc_palla;
+    struct team *sq_palla;
     WORD world_x, world_y;
     WORD delta_x, delta_y;
     int8_t ToTheTop, ThisQuota, Stage, TipoTiro;
     int8_t ActualFrame, MaxQuota, SpeedUp, Rimbalzi;
     int8_t InGioco, Hide;
     int8_t velocita;
-    uint8_t Direzione;
+    uint8_t dir;
     int8_t quota;
     int8_t settore;
 };
 
-struct Portiere
+struct keeper
 {
-    AnimObj *immagine;
+    anim_t *anim;
     WORD world_x, world_y;
     BOOL OnScreen;
     WORD AnimType, AnimFrame;
-    int8_t ObjectType;  // Tipo di oggetto, fin qui ci devo arrivare!
-    int8_t Direzione;   // Direzione di movimento
+    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
+    int8_t dir;   // Direzione di movimento
     int8_t ActualSpeed; // Velocita' del tipo
     int8_t FrameLen; // Quando e' 0 posso cambiare frame
     WORD Tick; 
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    struct Team *team;
+    struct team *team;
     int8_t NameLen; // Lunghezza in chars del cognome (per text) 
     int8_t SNum;
     BOOL Ammonito, Special, FirePressed;
@@ -136,36 +136,27 @@ struct Portiere
     int8_t Attenzione;
 };
 
-struct Giocatore
+struct player
 {
-    AnimObj *immagine;
+    anim_t *anim;
     WORD world_x, world_y;
     BOOL OnScreen;
     WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    int8_t ObjectType;  // Tipo di oggetto, fin qui ci devo arrivare!
-    int8_t Direzione;   // Direzione di movimento
+    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
+    int8_t dir;   // Direzione di movimento
     int8_t ActualSpeed; // Velocita' del tipo
     int8_t FrameLen; // Quando e' 0 posso cambiare frame
     WORD Tick; 
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    struct Team *team;
+    struct team *team;
     int8_t NameLen; // Lunghezza in chars del cognome (per text) 
     int8_t GNum;
     BOOL Ammonito, Special, FirePressed;
     WORD SpecialData, TimePress;
-    int8_t number;
-    int8_t Velocita;
-    int8_t Contrasto;
-    int8_t Tiro;
-    int8_t Durata;
-    int8_t Resistenza;
-    int8_t Prontezza;
-    int8_t settore;
-    int8_t Creativita;
-    int8_t Tecnica;
-    int8_t Posizioni;
-    int8_t SNum;
+    int8_t number, speed, tackle, Tiro;
+    int8_t Durata, stamina, quickness, settore;
+    int8_t creativity, technique, Posizioni, SNum;
     BOOL Controlled, Marker;
     WORD WaitForControl;
     int8_t Comando, Argomento, CA[6];  // Relativi ai comandi
@@ -173,7 +164,7 @@ struct Giocatore
     WORD ArcadeCounter; // Per la gestione dell'arcade
 };
 
-struct Team
+struct team
 {
     int8_t TPossesso;
     int8_t Reti;
@@ -187,12 +178,12 @@ struct Team
     int8_t Possesso;
     int8_t Schema;
     int8_t Joystick;
-    struct Portiere keepers;
-    struct Giocatore players[10];
-    struct Tactic *tattica;
+    struct keeper keepers;
+    struct player players[10];
+    struct tactic *tactic;
     ULONG TempoPossesso;
-    struct Giocatore *attivo;
-    AnimObj *Marker;
+    struct player *attivo;
+    anim_t *Marker;
     WORD Marker_X, Marker_Y, MarkerFrame;
     BOOL MarkerOnScreen;
     bitmap NomeAttivo;
@@ -210,15 +201,15 @@ struct Animazione
     WORD *Frame;
 };
 
-struct Partita
+struct game
 {
-    struct Pallone palla;
-    struct Arbitro arbitro;
-    struct Team *team[2];
+    struct ball ball;
+    struct referee referee;
+    struct team *team[2];
     bitmap result;
-    struct Giocatore *player_injuried;
-    AnimObj *extras; // Ci metto bandierine, fotografi, poliziotti...
-    struct Team *possesso;
+    struct player *player_injuried;
+    anim_t *extras; // Ci metto bandierine, fotografi, poliziotti...
+    struct team *possesso;
     ULONG TempoPassato;
     LONG show_panel, show_time;
     WORD check_sector, shotheight[SHOT_LENGTH], flash_pos;
@@ -226,7 +217,7 @@ struct Partita
     WORD arcade_counter, marker_x, marker_y, penalty_counter, adder;
     uint8_t TabCounter, result_len, last_touch;
     int8_t arcade_on_field, RiservaAttuale;
-//    struct GuardaLinee guardalinee[2]; tolti per non modificare la struttura
+//    struct linesman linesman[2]; tolti per non modificare la struttura
 };
 
 struct DOggetto
@@ -236,22 +227,17 @@ struct DOggetto
     BYTE *Frame;
 };
 
-typedef struct GuardaLinee GuardaLinee;
-typedef struct Partita Partita;
-typedef struct Giocatore Giocatore;
-typedef struct Pallone Pallone;
-typedef struct Tactic Tattica;
-typedef struct Elemento Oggetto;
-
 // new defines used for better internationalization...
-typedef struct Arbitro Refree;
-typedef struct GuardaLinee Linesman;
-typedef struct Giocatore Player;
-typedef struct Team Team;
-typedef struct Partita Match;
-typedef struct Elemento Object;
-typedef struct Pallone Ball;
-typedef struct Tactic Tactic;
+typedef struct referee referee_t;
+typedef struct linesman linesman_t;
+typedef struct player player_t;
+typedef struct keeper keeper_t;
+typedef struct team team_t;
+typedef struct game game_t;
+typedef struct object object_t;
+typedef struct movingobject movingobject_t;
+typedef struct ball ball_t;
+typedef struct tactic tactic_t;
 
 #include "externs.h"
 

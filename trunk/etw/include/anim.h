@@ -115,7 +115,7 @@ struct FrameNode
     ULONG              fn_TimeStamp;
     ULONG              fn_Frame;
     ULONG              fn_Duration;
-    ULONG	       Clock;
+    ULONG           Clock;
 
 /* Animation info */
     struct AnimHeader  fn_AH;
@@ -124,7 +124,7 @@ struct FrameNode
     struct BitMap     *fn_BitMap;
 
 /* BitMap loading section */
-    UBYTE	      *delta;
+    UBYTE          *delta;
 
 // Per la gestione via disco...
 

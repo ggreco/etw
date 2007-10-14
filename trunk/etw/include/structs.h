@@ -12,30 +12,30 @@ typedef uint8_t *bitmap;
 
 struct Rect
 {
-	WORD MinX,MinY,MaxX,MaxY;
+    WORD MinX,MinY,MaxX,MaxY;
 };
 
 struct myfont
 {
-	uint8_t * bm;
-	int width,height;
+    uint8_t * bm;
+    int width,height;
 };
 
 struct MyScaleArgs
 {
-	int SrcX,SrcY;
-	int SrcSpan,DestSpan;
-	int DestX,DestY;
-	int SrcWidth,SrcHeight,DestWidth,DestHeight;
-	uint8_t *Src, *Dest;
+    int SrcX,SrcY;
+    int SrcSpan,DestSpan;
+    int DestX,DestY;
+    int SrcWidth,SrcHeight,DestWidth,DestHeight;
+    uint8_t *Src, *Dest;
 };
 
 struct MyFastScaleArgs
 {
-	int SrcSpan,DestSpan;
-	int SrcWidth,SrcHeight,DestWidth,DestHeight;
-	UBYTE *XRef,*YRef;
-	uint8_t *Src, *Dest;
+    int SrcSpan,DestSpan;
+    int SrcWidth,SrcHeight,DestWidth,DestHeight;
+    UBYTE *XRef,*YRef;
+    uint8_t *Src, *Dest;
 };
 
 // Da generic_video.c

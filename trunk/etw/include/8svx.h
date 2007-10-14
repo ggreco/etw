@@ -31,23 +31,23 @@
 #define ID_BODY      MAKE_ID('B', 'O', 'D', 'Y')
 
 
-#define Unity 0x10000L	/* Unity = Fixed 1.0 = maximum volume */
+#define Unity 0x10000L    /* Unity = Fixed 1.0 = maximum volume */
 
 /* sCompression: Choice of compression algorithm applied to the samples. */
-#define sCmpNone       0	/* not compressed */
-#define sCmpFibDelta   1	/* Fibonacci-delta encoding (Appendix C) */
-				/* Could be more kinds in the future. */
+#define sCmpNone       0    /* not compressed */
+#define sCmpFibDelta   1    /* Fibonacci-delta encoding (Appendix C) */
+                /* Could be more kinds in the future. */
 typedef struct {
-    ULONG oneShotHiSamples,	/* # samples in the high octave 1-shot part */
-          repeatHiSamples,	/* # samples in the high octave repeat part */
-          samplesPerHiCycle;	/* # samples/cycle in high octave, else 0 */
-    UWORD samplesPerSec;	/* data sampling rate */
-    UBYTE ctOctave,		/* # of octaves of waveforms */
-          sCompression;		/* data compression technique used */
-    ULONG  volume;		/* playback nominal volume from 0 to Unity
-				 * (full volume). Map this value into
-				 * the output hardware's dynamic range.
-				 */
+    ULONG oneShotHiSamples,    /* # samples in the high octave 1-shot part */
+          repeatHiSamples,    /* # samples in the high octave repeat part */
+          samplesPerHiCycle;    /* # samples/cycle in high octave, else 0 */
+    UWORD samplesPerSec;    /* data sampling rate */
+    UBYTE ctOctave,        /* # of octaves of waveforms */
+          sCompression;        /* data compression technique used */
+    ULONG  volume;        /* playback nominal volume from 0 to Unity
+                 * (full volume). Map this value into
+                 * the output hardware's dynamic range.
+                 */
     } Voice8Header;
 
 /* ---------- NAME -----------------------------------------------------*/
@@ -65,8 +65,8 @@ typedef struct {
 /* ---------- Envelope ATAK & RLSE -------------------------------------*/
 
 typedef struct {
-    UWORD duration;	/* segment duration in milliseconds, > 0 */
-    ULONG dest;		/* destination volume factor */
+    UWORD duration;    /* segment duration in milliseconds, > 0 */
+    ULONG dest;        /* destination volume factor */
     } EGPoint;
 
 /* ATAK and RLSE chunks contain an EGPoint[], piecewise-linear envelope. */
