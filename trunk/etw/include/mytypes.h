@@ -69,7 +69,7 @@ typedef unsigned int    uint32_t;
 #   define FALSE 0
 #endif
 #ifndef NULL
-#   define NULL 0L
+#   define NULL ((void *)0L)
 #endif
 
 #endif

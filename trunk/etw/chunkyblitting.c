@@ -56,9 +56,9 @@ void bltanimobjscale(struct scaleAnimObjArgs *args)
 {
     register struct ALine *line = args->src->FirstLine;
     struct ABlock *block;
-    char *dest = args->dest + args->xd; 
+    uint8_t *dest = args->dest + args->xd; 
     register int line_offset, i;
-    char x_ref[800], y_ref[600]; // XXX this is a limit to the animobj size!
+    uint8_t x_ref[800], y_ref[600]; // XXX this is a limit to the animobj size!
     dest += (args->yd*args->destmod);
   
     if (args->ws > sizeof(x_ref) ||
@@ -80,7 +80,7 @@ void bltanimobjscale(struct scaleAnimObjArgs *args)
         args->hs--;
 
         while (y_ref[args->hs]--) {
-            register char *d = dest;
+            uint8_t *d = dest;
             block = line->FirstBlock;
             line_offset = -args->xs;
 
@@ -88,7 +88,7 @@ void bltanimobjscale(struct scaleAnimObjArgs *args)
                 if (block->Buffer) {
                     for (i = 0; i < block->Length; i++, line_offset++)
                         if (line_offset >= 0 && line_offset < args->ws) {
-                            int k = x_ref[line_offset];
+                            uint8_t k = x_ref[line_offset];
 
                             while (k--) 
                                 *d++ = block->Buffer[i];
@@ -287,10 +287,10 @@ void free_mchunky(struct MChunky *c)
 // #define SUPER_DEBUG
 
 #ifdef SMART_MCHUNKY
-BOOL create_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
-                    unsigned char *t_data, LONG *Pens)
+BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
+                    uint8_t *t_data, LONG *Pens)
 {
-    unsigned char *c;
+    uint8_t *c;
     int i;
 
     if(Pens)
@@ -364,8 +364,8 @@ BOOL create_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
 
 #else
 
-BOOL create_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
-                    unsigned char *t_data, long *Pens)
+BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
+                    uint8_t *t_data, int32_t *Pens)
 {
     int i, k = 0;
     struct ALine *pl = NULL, *l;
@@ -433,8 +433,8 @@ BOOL create_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
 }
 #endif
 
-void save_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
-                  unsigned char *t_data, FILE *f)
+void save_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
+                  uint8_t *t_data, FILE *f)
 {
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
@@ -442,11 +442,11 @@ void save_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
 #endif
 
 //    SWAP_WORD(m->blocks);
-    fwrite(&m->blocks, sizeof(short),1, f);
+    fwrite(&m->blocks, sizeof(int16_t), 1, f);
 //    SWAP_WORD(m->blocks);
 
 //    SWAP_LONG(m->buffers);
-    fwrite(&m->buffers, sizeof(long),1, f);
+    fwrite(&m->buffers, sizeof(int32_t), 1, f);
 //    SWAP_LONG(m->buffers);
 /*
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
@@ -457,8 +457,8 @@ void save_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
         SWAP_WORD(bufs[i]);
 #endif
 */
-    fwrite(blks, m->lines, sizeof(short), f);
-    fwrite(bufs, m->blocks, sizeof(short), f);
+    fwrite(blks, m->lines, sizeof(int16_t), f);
+    fwrite(bufs, m->blocks, sizeof(int16_t), f);
 /*
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
     for(i=0;i<m->lines;i++)
@@ -473,45 +473,51 @@ void save_mchunky(struct MChunky *m, unsigned short *blks, short *bufs,
 
 struct MChunky *load_mchunky(FILE *f, int height, LONG *Pens)
 {
-    unsigned char *t_data;
-    unsigned short *blks;
-    short *bufs;
     struct MChunky *m;
+    uint8_t *tmp, *t_data;
+    uint16_t *blks;
+    int16_t *bufs;
+    int size;
 
-    if ((m=malloc(sizeof(struct MChunky)))) {
-        m->lines = height;
-        fread(&m->blocks, sizeof(short),1, f);
-//        SWAP_WORD(m->blocks);
-        fread(&m->buffers, sizeof(long),1, f);
-//        SWAP_LONG(m->buffers);
+    m = malloc(sizeof(struct MChunky));
+    if(!m)
+        goto error;
 
-        if ((blks = malloc( (m->lines + m->blocks) * sizeof(short) + m->buffers)) ) {
-            bufs = &blks[m->lines];
+    m->lines = height;
+    fread(&m->blocks, sizeof(int16_t), 1, f);
+//  SWAP_WORD(m->blocks);
+    fread(&m->buffers, sizeof(int32_t), 1, f);
+//  SWAP_LONG(m->buffers);
 
-            t_data = (unsigned char *)&blks[m->lines + m->blocks];
-
-            fread(blks,(m->lines + m->blocks) * sizeof(short) + m->buffers * sizeof(char), 1, f);
-/*
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-            {
-                int i;
-
-                for(i=0;i<(m->lines+m->blocks);i++)
-                    SWAP_WORD(blks[i]);
-            }
-#endif
-*/
-            if(create_mchunky(m, blks, bufs, t_data, Pens))    {
-                free(blks);
-                return m;
-            }
-
-            free(blks);
-        }
+    size = (m->lines + m->blocks) * sizeof(int16_t) + m->buffers;
+    tmp = malloc(size);
+    if(!tmp)
+    {
         free(m);
+        goto error;
     }
-    D(bug("Problemi di memoria in load_mchunky!\n"));
+    fread(tmp, size, 1, f);
 
+    blks = (uint16_t *)tmp;
+    bufs = (int16_t *)(tmp + m->lines * sizeof(int16_t));
+    t_data = tmp + (m->lines + m->blocks) * sizeof(int16_t);
+
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+    // Swap m->lines+m->blocks items in tmp
+#endif
+
+    if(!create_mchunky(m, blks, bufs, t_data, Pens))
+    {
+        free(tmp);
+        free(m);
+        goto error;
+    }
+
+    free(tmp);
+    return m;
+
+error:
+    D(bug("Memory error in load_mchunky!\n"));
     return NULL;
 }
 
@@ -525,9 +531,9 @@ struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
     int start_blocks = 200;
     int start_datas = 500;
     struct MChunky *m;
-    unsigned char *t_data;
-    unsigned short *blks;
-    short *bufs;
+    uint8_t *t_data;
+    uint16_t *blks;
+    int16_t *bufs;
 
     width = (((width + 15) >> 4) << 4);
     
@@ -554,10 +560,10 @@ struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
     do_p2c(planes, chunky, width, height, depth, NULL);
 
 
-    if ((blks = calloc(sizeof(short), height))) {
-        if ((t_data = malloc(start_datas * sizeof(char)))) {
-            if ((bufs = malloc(start_blocks * sizeof(short)))) {
-                char linebuffer[640], *chunky_line = chunky;
+    if ((blks = calloc(sizeof(int16_t), height))) {
+        if ((t_data = malloc(start_datas * sizeof(uint8_t)))) {
+            if ((bufs = malloc(start_blocks * sizeof(int16_t)))) {
+                uint8_t linebuffer[640], *chunky_line = chunky;
                 int s;
                 bitmap linea = planes[8];
 
@@ -616,7 +622,7 @@ struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
 #endif
                                 if(m->blocks >= (start_blocks - 1)) {
                                     start_blocks <<= 1;
-                                    bufs=realloc(bufs, start_blocks * sizeof(short));
+                                    bufs=realloc(bufs, start_blocks * sizeof(int16_t));
                                 }
 
                                 bufs[m->blocks] = -k;
@@ -638,7 +644,7 @@ struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
 #endif
                                 if(m->blocks >= (start_blocks - 1)) {
                                     start_blocks <<= 1;
-                                    bufs = realloc(bufs, start_blocks * sizeof(short));
+                                    bufs = realloc(bufs, start_blocks * sizeof(int16_t));
                                 }
 
                                 bufs[m->blocks] = k;

@@ -34,8 +34,7 @@ struct AnimObject
 	struct MyMinNode node;    /* Per attaccarlo alla drawlist */
 	struct MChunky **Frames;    /* Le bitmap dei vari frames */
 	unsigned char *Palette;         /* Puntatore alla palette, organizzata come RGB */
-	long *Widths;        /* Dimensioni dei singoli frames */
-	long *Heights;
+	int *Widths, *Heights;        /* Dimensioni dei singoli frames */
 	LONG *Pens;       /* Nel caso di remapping conservo le penne che alloco */
 	bitmap bg;           /* Sfondo, grande max_width*max_height */
 	WORD max_width,max_height; /* Dimensioni massime dei frames */

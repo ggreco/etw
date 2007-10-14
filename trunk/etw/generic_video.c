@@ -17,7 +17,7 @@ int font_span;
 
 /* I use fixed point math for speed */
 
-void MakeRef(UBYTE *ref,int source_size, int dest_size)
+void MakeRef(uint8_t *ref, int source_size, int dest_size)
 {
 
 	int i,t,r,m;

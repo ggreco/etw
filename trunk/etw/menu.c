@@ -974,11 +974,9 @@ void PrintButtonType(struct Bottone *b, WORD bl, WORD bt,
 	char *c;
 
 	if ((current_menu != MENU_TEAM_SELECTION
-		 || (ULONG) (b) > (ULONG) (&actual_menu->Bottone[63]))
+		 || b > &actual_menu->Bottone[63])
 		&& (current_menu != MENU_ARCADE_SELECTION
-			|| (ULONG) (b) >
-			(ULONG) (&actual_menu->Bottone[ARCADE_TEAMS - 1]))
-		)
+			|| b > &actual_menu->Bottone[ARCADE_TEAMS - 1]))
 		return;
 
 	switch (b->Colore) {

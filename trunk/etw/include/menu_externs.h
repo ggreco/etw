@@ -85,7 +85,7 @@ extern void AddGiocatore(struct Giocatore_Disk *, int);
 extern void AddName(struct Giocatore_Disk *, int);
 extern void SetPlayerStatus(int, char, char, long);
 extern WORD StartMatch(BYTE, BYTE);
-extern void ScaleGfxObj(GfxObj *, char *);
+extern void ScaleGfxObj(GfxObj *, uint8_t *);
 extern void UpdateButtonList(void);
 
 extern void StoreButtonList(void);
@@ -117,7 +117,7 @@ extern BOOL no_sound, nosync, allow_replay, nocpu, saved, wb_game, big, injuries
 	window_opened, game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams, newpitches,
 	cgxmode, final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
 	audio_to_fast, use_gfx_scaling, wpa8, triple, force_single, chunky_version;
-extern LONG Pens[256];
+extern int32_t Pens[256];
 extern long framerate, t_l, display_id, situation_time, framerate, overscan;
 extern ULONG detail_level, ahimode;
 extern struct Match turni[64][32];

@@ -11,15 +11,15 @@ struct ALine
 struct ABlock
 {
     struct ABlock *Next;
-    unsigned char *Buffer;
-    short Length;
+    uint8_t *Buffer;
+    int16_t Length;
 };
 
 struct MChunky
 {
     struct ALine *FirstLine;
-    unsigned short lines, blocks;
-    unsigned long buffers;
+    uint16_t lines, blocks;
+    uint32_t buffers;
 };
 
 struct scaleAnimObjArgs
