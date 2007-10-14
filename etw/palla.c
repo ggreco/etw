@@ -1059,7 +1059,7 @@ void PostHandleBall(void)
 
 	ChangeAnimObj(pl->immagine,pl->ActualFrame+(pl->quota<<2));
 
-	D(if(pl->immagine->current_frame>=pl->immagine->num_frames){ bug("Errore sulla palla: AF: %ld quota: %ld\n",pl->ActualFrame,pl->quota); pl->immagine->current_frame=pl->immagine->num_frames-1;} );
+	D(if(pl->immagine->current_frame>=pl->immagine->nframes){ bug("Errore sulla palla: AF: %ld quota: %ld\n",pl->ActualFrame,pl->quota); pl->immagine->current_frame=pl->immagine->nframes-1;} );
 
 
 	if(x>=WINDOW_WIDTH)

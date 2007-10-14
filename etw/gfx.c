@@ -4,7 +4,7 @@
  * Contains function to load and manage static and moving objects.
  */
 
-void AddNode(struct MyList *l, APTR ptr, BYTE type);
+static void AddNode(struct MyList *l, APTR ptr, BYTE type);
 
 int ClipX = 0, ClipY = 0;
 int screen_depth;
@@ -325,12 +325,12 @@ void ClearAnimObj(void)
     }
 }
 
-GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
+GfxObj *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
 {
     GfxObj *obj;
     FILE *fh;
     int i;
-    unsigned short temp;
+    uint16_t temp;
     UBYTE *planes[8];
     BOOL ok = TRUE;
 
@@ -349,13 +349,13 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
                 return NULL;
             }
 
-            fread(&temp, sizeof(WORD), 1, fh);
+            fread(&temp, sizeof(uint16_t), 1, fh);
             SWAP_WORD(temp);
             obj->width = temp;
-            fread(&temp, sizeof(WORD), 1, fh);
+            fread(&temp, sizeof(uint16_t), 1, fh);
             SWAP_WORD(temp);
             obj->height = temp;
-            fread(&temp, sizeof(WORD), 1, fh);
+            fread(&temp, sizeof(uint16_t), 1, fh);
             SWAP_WORD(temp);
             obj->realdepth = temp;
 
@@ -447,251 +447,256 @@ GfxObj *LoadGfxObject(char *name, LONG * pens, bitmap dest)
     return NULL;
 }
 
-AnimObj *LoadAnimObject(char *name, LONG * pens)
+AnimObj *LoadAnimObject(char *name, int32_t * pens)
 {
+    char buffer[4];
     AnimObj *obj;
     FILE *fh, *fo = NULL;
     BOOL convert = FALSE;
+    LONG i;
 
-    if ((obj = calloc(1, sizeof(struct AnimObject)))) {
+    obj = calloc(1, sizeof(struct AnimObject));
+    if(!obj)
+        return NULL;
+
 // Routine che cambia dir/name.obj in newgfx/name.objc e vede se esiste gia'
 // l'oggetto convertito.
 
-        {
-            char bb[100], *c;
+    {
+        char bb[100], *c;
 
-            c = name + strlen(name) - 1;
+        c = name + strlen(name) - 1;
 
-            while (*(c - 1) != '/')
-                c--;
+        while (*(c - 1) != '/')
+            c--;
 
-            sprintf(bb, NEWGFX_DIR "%s", c);
+        sprintf(bb, NEWGFX_DIR "%s", c);
 
-            bb[strlen(bb) - 1] = 'c';
+        bb[strlen(bb) - 1] = 'c';
 
-            if (!(fh = fopen(bb, "rb"))) {
-                D(bug("chunky animobj %s not found...\n",  bb));
+        if (!(fh = fopen(bb, "rb"))) {
+            D(bug("chunky animobj %s not found...\n",  bb));
 
-                if ((fh = fopen(name, "rb"))) {
-                    convert = TRUE;
+            if ((fh = fopen(name, "rb"))) {
+                convert = TRUE;
 
 #ifndef WINCE
-                    if (!(fo = fopen(bb, "wb")))
-                        D(bug("*** Unable to write to %s\n", bb));
+                if (!(fo = fopen(bb, "wb")))
+                    D(bug("*** Unable to write to %s\n", bb));
 #endif
-                }
             }
         }
+    }
 
-        if (fh) {
-            char buffer[4];
-            LONG i;
+    if(!fh)
+    {
+        D(bug("Unable to open file...\n"));
+        free(obj);
+        return NULL;
+    }
 
-            D(bug("Loading %s...", name));
+    D(bug("Loading %s...", name));
 
+    fread(buffer, 4, 1, fh);
+    if(strncmp(buffer, "GOBJ", 4) && strncmp(buffer, "GOBC", 4))
+    {
+        D(bug("File is not an AnimObj!\n"));
+        fclose(fh);
+        free(obj);
+        return NULL;
+    }
 
-            fread(buffer, 4, 1, fh);
+    if(fo)
+        fwrite("GOBC", 4, 1, fo);
 
-            if (strncmp(buffer, "GOBJ" /*-*/ , 4)
-                && strncmp(buffer, "GOBC" /*-*/ , 4)) {
-                fclose(fh);
-                D(bug("File is not an AnimObj!\n"));
-                free(obj);
-                return NULL;
-            }
+    fread(&obj->nframes, sizeof(uint16_t), 1, fh);
+    fread(&obj->max_width, sizeof(uint16_t), 1, fh);
+    fread(&obj->max_height, sizeof(uint16_t), 1, fh);
+    fread(&obj->real_depth, sizeof(uint16_t), 1, fh);
+    if (fo)
+    {
+        fwrite(&obj->nframes, sizeof(uint16_t), 1, fo);
+        fwrite(&obj->max_width, sizeof(uint16_t), 1, fo);
+        fwrite(&obj->max_height, sizeof(uint16_t), 1, fo);
+        fwrite(&obj->real_depth, sizeof(uint16_t), 1, fo);
+    }
+    SWAP_WORD(obj->nframes);
+    SWAP_WORD(obj->max_width);
+    SWAP_WORD(obj->max_height);
+    SWAP_WORD(obj->real_depth);
 
-            if (fo)
-                fwrite("GOBC", 4, 1, fo);
+    obj->bg = NULL;
 
-            fread(&obj->num_frames, sizeof(WORD), 1, fh);
-            if (fo)
-                fwrite(&obj->num_frames, sizeof(WORD), 1, fo);
-            SWAP_WORD(obj->num_frames);
-
-            fread(&obj->max_width, sizeof(WORD), 1, fh);
-            if (fo)
-                fwrite(&obj->max_width, sizeof(WORD), 1, fo);
-            SWAP_WORD(obj->max_width);
-
-            fread(&obj->max_height, sizeof(WORD), 1, fh);
-            if (fo)
-                fwrite(&obj->max_height, sizeof(WORD), 1, fo);
-            SWAP_WORD(obj->max_height);
-
-            fread(&obj->RealDepth, sizeof(WORD), 1, fh);
-            if (fo)
-                fwrite(&obj->RealDepth, sizeof(WORD), 1, fo);
-            SWAP_WORD(obj->RealDepth);
-
-            obj->bg = NULL;
-
-            if (save_back) {
-                if (!(obj->bg = malloc(obj->max_width * obj->max_height))) {
-                    D(bug("Non riesco ad allocare il saveback...\n"));
-                    free(obj);
-                    fclose(fh);
-                    return NULL;
-                }
-            }
+    if (save_back)
+    {
+        obj->bg = malloc(obj->max_width * obj->max_height);
+        if(!obj->bg)
+        {
+            D(bug("Non riesco ad allocare il saveback...\n"));
+            fclose(fh);
+            free(obj);
+            return NULL;
+        }
+    }
 
 // this code is out of date with the current ETW game
 #ifdef undef
-            if (use_scaling) {
-                if (!(obj->sb = malloc(obj->max_width * obj->max_height))) {
-                    if (obj->bg)
-                        free(obj->bg);
+    if (use_scaling)
+    {
+        obj->sb = malloc(obj->max_width * obj->max_height);
+        if(!obj->sb)
+        {
+            if(obj->bg)
+                free(obj->bg);
 
-                    D(bug("Non riesco ad allocare lo scale buffer..\n"));
-                    free(obj);
-                    fclose(fh);
+            D(bug("Non riesco ad allocare lo scale buffer..\n"));
+            fclose(fh);
+            free(obj);
+            return NULL;
+        }
+    }
+#endif
+
+    if (use_remapping && !pens)
+    {
+        if ((obj->Palette = malloc((1 << obj->real_depth) * 3)))
+        {
+            fread(obj->Palette, sizeof(char) * 3,
+                  (1 << obj->real_depth), fh);
+            if (fo)
+                fwrite(obj->Palette, sizeof(char) * 3,
+                       (1 << obj->real_depth), fo);
+
+            if ((obj->Pens =
+                malloc((1 << obj->real_depth) * sizeof(int32_t)))) {
+                for (i = 0; i < (1 << obj->real_depth); i++) {
+                    obj->Pens[i] =
+                        obtain_pen(obj->Palette[i * 3],
+                                   obj->Palette[i * 3 + 1],
+                                   obj->Palette[i * 3 + 2]);
+                }
+            } else {
+                use_remapping = FALSE;
+                D(bug
+                  ("Remapping disabilitato per problemi di memoria.\n"));
+            }
+        } else {
+            use_remapping = FALSE;
+            D(bug
+              ("Remapping disabilitato per problemi di memoria.\n"));
+        }
+    } else {
+        if (!fo)
+            fseek(fh, (1 << obj->real_depth) * 3, SEEK_CUR);
+        else {
+            char *c = malloc((1 << obj->real_depth) * 3);
+
+            if (c) {
+                fread(c, sizeof(char) * 3, (1 << obj->real_depth),
+                      fh);
+                if (fo)
+                    fwrite(c, sizeof(char) * 3,
+                           (1 << obj->real_depth), fo);
+                free(c);
+            }
+        }
+    }
+
+    if (use_remapping && pens) {
+        obj->Flags |= AOBJ_SHAREPENS;
+        obj->Pens = pens;
+    }
+
+    if ((obj->Frames = calloc(obj->nframes, sizeof(APTR)))) {
+        if ((obj->Widths = malloc(obj->nframes * sizeof(int)))) {
+            if ((obj->Heights =
+                malloc(obj->nframes * sizeof(int)))) {
+                BOOL ok = TRUE;
+                unsigned short tempw;
+
+                D(bug
+                  ("Loading frames (%ld), mh: %ld mw: %ld rd: %ld\n",
+                   obj->nframes, obj->max_width,
+                   obj->max_height, obj->real_depth));
+
+                for (i = 0; i < obj->nframes; i++) {
+                    fread(&tempw, sizeof(WORD), 1, fh);
+                    if (fo)
+                        fwrite(&tempw, sizeof(WORD), 1, fo);
+                    SWAP_WORD(tempw);
+                    obj->Widths[i] = tempw;
+
+                    fread(&tempw, sizeof(WORD), 1, fh);
+                    if (fo)
+                        fwrite(&tempw, sizeof(WORD), 1, fo);
+                    SWAP_WORD(tempw);
+                    obj->Heights[i] = tempw;
+
+                    if (convert) {
+//                        D(bug("Conversion to mchunky of %s/%d...", name, i));
+                        if (!
+                            (obj->Frames[i] =
+                             convert_mchunky(fh, fo,
+                                             obj->Widths[i],
+                                             obj->Heights[i],
+                                             obj->real_depth,
+                                             obj->Pens))) {
+                            ok = FALSE;
+                            D(bug
+                              ("Non c'e' memoria per le bitmap!\n"));
+                            break;
+                        }
+//                                D(bug("OK\n"));
+                    } else {
+                        if (!
+                            (obj->Frames[i] =
+                             load_mchunky(fh, obj->Heights[i],
+                                          obj->Pens))) {
+                            ok = FALSE;
+                            D(bug
+                              ("Non c'e' memoria per le bitmap!\n"));
+                            break;
+                        }
+                    }
+                }
+
+                if (fo)
+                    fclose(fo);
+
+                fclose(fh);
+
+                if (!ok) {
+                    FreeAnimObj(obj);
                     return NULL;
                 }
-            }
-#endif
-            if (use_remapping && !pens) {
-                if ((obj->Palette = malloc((1 << obj->RealDepth) * 3))) {
-                    fread(obj->Palette, sizeof(char) * 3,
-                          (1 << obj->RealDepth), fh);
-                    if (fo)
-                        fwrite(obj->Palette, sizeof(char) * 3,
-                               (1 << obj->RealDepth), fo);
 
-                    if ((obj->Pens =
-                        malloc((1 << obj->RealDepth) * sizeof(LONG)))) {
-                        for (i = 0; i < (1 << obj->RealDepth); i++) {
-                            obj->Pens[i] =
-                                obtain_pen(obj->Palette[i * 3],
-                                           obj->Palette[i * 3 + 1],
-                                           obj->Palette[i * 3 + 2]);
-                        }
-                    } else {
-                        use_remapping = FALSE;
-                        D(bug
-                          ("Remapping disabilitato per problemi di memoria.\n"));
-                    }
-                } else {
-                    use_remapping = FALSE;
-                    D(bug
-                      ("Remapping disabilitato per problemi di memoria.\n"));
-                }
+                D(bug
+                  ("Anim Object %s: %ld x %ld / %ld (%ld frames)\n",
+                   name, obj->max_width, obj->max_height,
+                   obj->real_depth, obj->nframes));
+
+                AddNode(&GfxList, obj, TYPE_ANIMOBJ);
+
+                return obj;
+
             } else {
-                if (!fo)
-                    fseek(fh, (1 << obj->RealDepth) * 3, SEEK_CUR);
-                else {
-                    char *c = malloc((1 << obj->RealDepth) * 3);
-
-                    if (c) {
-                        fread(c, sizeof(char) * 3, (1 << obj->RealDepth),
-                              fh);
-                        if (fo)
-                            fwrite(c, sizeof(char) * 3,
-                                   (1 << obj->RealDepth), fo);
-                        free(c);
-                    }
-                }
+                D(bug("Non c'e' memoria per obj->Heights.\n"));
             }
 
-            if (use_remapping && pens) {
-                obj->Flags |= AOBJ_SHAREPENS;
-                obj->Pens = pens;
-            }
-
-            if ((obj->Frames = calloc(obj->num_frames, sizeof(APTR)))) {
-                if ((obj->Widths = malloc(obj->num_frames * sizeof(int)))) {
-                    if ((obj->Heights =
-                        malloc(obj->num_frames * sizeof(int)))) {
-                        BOOL ok = TRUE;
-                        unsigned short tempw;
-
-                        D(bug
-                          ("Loading frames (%ld), mh: %ld mw: %ld rd: %ld\n",
-                           obj->num_frames, obj->max_width,
-                           obj->max_height, obj->RealDepth));
-
-                        for (i = 0; i < obj->num_frames; i++) {
-                            fread(&tempw, sizeof(WORD), 1, fh);
-                            if (fo)
-                                fwrite(&tempw, sizeof(WORD), 1, fo);
-                            SWAP_WORD(tempw);
-                            obj->Widths[i] = tempw;
-
-                            fread(&tempw, sizeof(WORD), 1, fh);
-                            if (fo)
-                                fwrite(&tempw, sizeof(WORD), 1, fo);
-                            SWAP_WORD(tempw);
-                            obj->Heights[i] = tempw;
-
-                            if (convert) {
-//                                D(bug("Conversion to mchunky of %s/%d...", name, i));
-                                if (!
-                                    (obj->Frames[i] =
-                                     convert_mchunky(fh, fo,
-                                                     obj->Widths[i],
-                                                     obj->Heights[i],
-                                                     obj->RealDepth,
-                                                     obj->Pens))) {
-                                    ok = FALSE;
-                                    D(bug
-                                      ("Non c'e' memoria per le bitmap!\n"));
-                                    break;
-                                }
-//                                D(bug("OK\n"));
-                            } else {
-                                if (!
-                                    (obj->Frames[i] =
-                                     load_mchunky(fh, obj->Heights[i],
-                                                  obj->Pens))) {
-                                    ok = FALSE;
-                                    D(bug
-                                      ("Non c'e' memoria per le bitmap!\n"));
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (fo)
-                            fclose(fo);
-
-                        fclose(fh);
-
-                        if (!ok) {
-                            FreeAnimObj(obj);
-                            return NULL;
-                        }
-
-                        D(bug
-                          ("Anim Object %s: %ld x %ld / %ld (%ld frames)\n",
-                           name, obj->max_width, obj->max_height,
-                           obj->RealDepth, obj->num_frames));
-
-                        AddNode(&GfxList, obj, TYPE_ANIMOBJ);
-
-                        return obj;
-
-                    } else {
-                        D(bug("Non c'e' memoria per obj->Heights.\n"));
-                    }
-
-                    free(obj->Widths);
-                } else {
-                    D(bug("Non c'e' memoria per obj->Widths.\n"));
-                }
-
-                free(obj->Frames);
-            } else {
-                D(bug("Non c'e' memoria per obj->Frames.\n"));
-            }
-
-            if (fo)
-                fclose(fo);
-
-            fclose(fh);
+            free(obj->Widths);
         } else {
-            D(bug("Unable to open file...\n"));
+            D(bug("Non c'e' memoria per obj->Widths.\n"));
         }
 
-        free(obj);
+        free(obj->Frames);
+    } else {
+        D(bug("Non c'e' memoria per obj->Frames.\n"));
     }
+
+    if (fo)
+        fclose(fo);
+
+    fclose(fh);
 
     return NULL;
 }
@@ -731,7 +736,7 @@ void FreeAnimObj(AnimObj * obj)
     struct MyNode *n;
 
     D(bug
-      ("FreeAnimObj - frames:%ld flags:%ld\n", obj->num_frames,
+      ("FreeAnimObj - frames:%ld flags:%ld\n", obj->nframes,
        obj->Flags));
 
     if (InList(&DrawList, obj))
@@ -748,7 +753,7 @@ void FreeAnimObj(AnimObj * obj)
     if ((obj->Flags & AOBJ_CLONED) != 0)
         goto fine;
 
-    for (i = 0; i < obj->num_frames; i++)
+    for (i = 0; i < obj->nframes; i++)
         if (obj->Frames[i])
             free_mchunky(obj->Frames[i]);
 
@@ -763,7 +768,7 @@ void FreeAnimObj(AnimObj * obj)
     }
 
     if (obj->Pens && ((obj->Flags & AOBJ_SHAREPENS) == 0)) {
-        for (i = 0; i < (1 << obj->RealDepth); i++)
+        for (i = 0; i < (1 << obj->real_depth); i++)
             release_pen(obj->Pens[i]);
 
         free(obj->Pens);
@@ -838,7 +843,7 @@ void RemapAnimObjColor(AnimObj * o, UBYTE source_color, UBYTE dest_color)
 
     pens[source_color] = dest_color;
 
-    for (k = 0; k < o->num_frames; k++) {
+    for (k = 0; k < o->nframes; k++) {
         RemapMChunkyColors(o->Frames[k], pens);
     }
 }
@@ -871,12 +876,12 @@ void AddNode(struct MyList *l, APTR ptr, BYTE type)
 BOOL LoadIFFPalette(char *filename)
 {
     FILE *fh;
-    ULONG palette[256 * 3 + 2];
+    uint32_t palette[256 * 3 + 2];
     char buffer[8];
     BOOL rc = FALSE;
 
     if ((fh = fopen(filename, "rb"))) {
-        long cmap_len;
+        uint32_t cmap_len;
         int i, j, c, colors = 256;
         long l;
 
@@ -895,7 +900,7 @@ BOOL LoadIFFPalette(char *filename)
                     fread(buffer, 4, 1, fh);
 
                     if (!strncmp(buffer, "CMAP" /*-*/ , 4)) {
-                        fread(&cmap_len, sizeof(long), 1, fh);
+                        fread(&cmap_len, sizeof(uint32_t), 1, fh);
                         SWAP_LONG(cmap_len);
                         cmap_len /= 3;
 
@@ -913,10 +918,10 @@ BOOL LoadIFFPalette(char *filename)
                             unsigned char cc;
 
                             fread(&cc, sizeof(char), 1, fh);
-                            palette[j + 1] = cc << 24;
+                            palette[j + 1] = (uint32_t)cc << 24;
                         }
 
-                        palette[0] = c << 16;
+                        palette[0] = (uint32_t)c << 16;
                         palette[c * 3 + 1] = 0;
                         os_load_palette(palette);
 
@@ -986,7 +991,7 @@ AnimObj *CopyAnimObj(AnimObj * obj)
 
         if (!
             (o->Frames =
-             malloc(o->num_frames * sizeof(struct MChunky *)))) {
+             malloc(o->nframes * sizeof(struct MChunky *)))) {
             free(o);
             return NULL;
         }
@@ -998,7 +1003,7 @@ AnimObj *CopyAnimObj(AnimObj * obj)
                 return NULL;
             }
 
-        for (i = 0; i < o->num_frames; i++) {
+        for (i = 0; i < o->nframes; i++) {
             if (!(o->Frames[i] = CloneMChunky(obj->Frames[i])))
                 ok = FALSE;
 
@@ -1027,12 +1032,12 @@ AnimObj *CopyAnimObj(AnimObj * obj)
     return NULL;
 }
 
-LONG RemapIFFPalette(char *filename, LONG * Pens)
+LONG RemapIFFPalette(char *filename, int32_t *Pens)
 {
     FILE *fh;
     char buffer[8];
     unsigned char r, g, b;
-    LONG cmap_len = 0;
+    uint32_t cmap_len = 0;
 
     if ((fh = fopen(filename, "rb"))) {
         long i, j, colors = 256;
@@ -1053,7 +1058,7 @@ LONG RemapIFFPalette(char *filename, LONG * Pens)
                     fread(buffer, 4, 1, fh);
 
                     if (!strncmp(buffer, "CMAP" /*-*/ , 4)) {
-                        fread(&cmap_len, sizeof(long), 1, fh);
+                        fread(&cmap_len, sizeof(uint32_t), 1, fh);
                         SWAP_LONG(cmap_len);
 
                         cmap_len /= 3;
@@ -1095,32 +1100,31 @@ LONG RemapIFFPalette(char *filename, LONG * Pens)
 
 void LoadGfxObjPalette(char *name)
 {
+    uint32_t palette[256 * 3 + 2];
     FILE *fh;
-    LONG i;
-    ULONG palette[256 * 3 + 2];
-    unsigned short temp, depth;
+    uint32_t i;
+    uint16_t temp, depth;
 
     if ((fh = fopen(name, "rb"))) {
-        fread(&i, sizeof(LONG), 1, fh);
-        fread(&temp, sizeof(WORD), 1, fh);
-        fread(&temp, sizeof(WORD), 1, fh);
-        fread(&temp, sizeof(WORD), 1, fh);    // Questa e' realdepth
+        fread(&i, sizeof(uint32_t), 1, fh);
+        fread(&temp, sizeof(uint16_t), 1, fh);
+        fread(&temp, sizeof(uint16_t), 1, fh);
+        fread(&temp, sizeof(uint16_t), 1, fh);    // Questa e' realdepth
         SWAP_WORD(temp);
 
         depth = min(screen_depth, temp);
 
         depth = (1 << depth);
 
-        for (i = 0; i < depth * 3; i++) {
-
+        for (i = 0; i < depth * 3; i++)
+        {
             unsigned char c;
 
-
             fread(&c, sizeof(char), 1, fh);
-            palette[i + 1] = c << 24;
+            palette[i + 1] = (uint32_t)c << 24;
         }
 
-        palette[0] = depth << 16;
+        palette[0] = (uint32_t)depth << 16;
         palette[depth * 3 + 1] = 0;
         os_load_palette(palette);
 
@@ -1139,31 +1143,29 @@ void FreeIFFPalette(void)
 
     depth = (1 << screen_depth);
 
-    D(bug("Freeed %ld colors...\n", depth));
+    D(bug("Freed %ld colors...\n", depth));
 
-    for (i = 0; i < depth; i++)
+    for(i = 0; i < depth; i++)
         release_pen(i);
 }
 
-void RemapColor(bitmap b, UBYTE old, UBYTE new, int size)
+void RemapColor(uint8_t *b, uint8_t old, uint8_t new, int size)
 {
-    while (size) {
-        if (*b == old)
+    while(size--)
+    {
+        if(*b == old)
             *b = new;
-
         b++;
-        size--;
     }
 }
 
-void RemapColors(bitmap b, long *pens, int size)
+void RemapColors(uint8_t *b, int32_t *pens, int size)
 {
-    while (size) {
-        *b = (unsigned char) pens[*b];
+    while(size--)
+    {
+        *b = (uint8_t)pens[*b];
         b++;
-        size--;
     }
 }
-
 
 // ScreenSwap spostata in os_video.c perche' troppo os_dependent!
