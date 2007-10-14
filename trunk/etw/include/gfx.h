@@ -35,13 +35,13 @@ struct AnimObject
 	struct MChunky **Frames;    /* Le bitmap dei vari frames */
 	unsigned char *Palette;         /* Puntatore alla palette, organizzata come RGB */
 	int *Widths, *Heights;        /* Dimensioni dei singoli frames */
-	LONG *Pens;       /* Nel caso di remapping conservo le penne che alloco */
-	bitmap bg;           /* Sfondo, grande max_width*max_height */
-	WORD max_width,max_height; /* Dimensioni massime dei frames */
-	WORD num_frames,current_frame;  /* Frame corrente e numero di frames */
-	WORD RealDepth;
+	int32_t *Pens;       /* Nel caso di remapping conservo le penne che alloco */
+	uint8_t *bg;           /* Sfondo, grande max_width*max_height */
+	uint16_t max_width, max_height; /* Dimensioni massime dei frames */
+	uint16_t nframes, current_frame;  /* Frame corrente e numero di frames */
+	uint16_t real_depth;
 	BOOL moved;
-	int x_pos,y_pos,x_back,y_back; /* Coordinate dell'angolo sinistro dell'immagine
+	int x_pos, y_pos, x_back, y_back; /* Coordinate dell'angolo sinistro dell'immagine
 						visualizzata e del "cut" dello sfondo */
 	int bottom;         /* Coordinata y del pixel piu' basso dell'immagine,
 						usata per fare il sorting */
@@ -66,7 +66,7 @@ struct GfxObject
 {
 	bitmap bmap;
 	unsigned char *Palette;
-	LONG *Pens;
+	int32_t *Pens;
 	int width,height,realdepth;
 };
 
@@ -126,10 +126,10 @@ extern int bitmap_width,bitmap_height;
 
 extern void FreeGfxObj(GfxObj *);
 extern void FreeGraphics(void);
-extern void DrawObject(GfxObj *, WORD , WORD );
-extern GfxObj *LoadGfxObject(char *, LONG *, bitmap );
-extern AnimObj *LoadAnimObject(char * ,LONG *);
-extern void RemapAnimObjColor(AnimObj *,UBYTE, UBYTE);
+extern void DrawObject(GfxObj *, WORD, WORD);
+extern GfxObj *LoadGfxObject(char *, int32_t *, uint8_t *);
+extern AnimObj *LoadAnimObject(char *, int32_t *);
+extern void RemapAnimObjColor(AnimObj *, UBYTE, UBYTE);
 extern void ClearAnimObj(void);
 extern void SortDrawList(void);
 extern void DrawAnimObj(void);
@@ -140,13 +140,13 @@ extern BOOL InAnimList(AnimObj *);
 extern void AddAnimObj(AnimObj *,WORD, WORD, WORD);
 extern void FreeAnimObj(AnimObj *);
 extern BOOL LoadIFFPalette(char *);
-extern void RemapMColor(struct MChunky *,UBYTE ,UBYTE );
-extern void RemapMChunkyColors(struct MChunky *,UBYTE *);
-extern void RemapColor(bitmap,UBYTE,UBYTE, int );
-extern void RemapColors(bitmap,long *, int );
+extern void RemapMColor(struct MChunky *,UBYTE, UBYTE);
+extern void RemapMChunkyColors(struct MChunky *, UBYTE *);
+extern void RemapColor(uint8_t *, uint8_t, uint8_t, int);
+extern void RemapColors(uint8_t *, int32_t *, int);
 extern AnimObj *CloneAnimObj(AnimObj *);
 extern AnimObj *CopyAnimObj(AnimObj *);
-extern LONG RemapIFFPalette(char *,LONG *);
+extern LONG RemapIFFPalette(char *, int32_t *);
 extern void FreeIFFPalette(void);
 extern void LoadGfxObjPalette(char *);
 #endif
