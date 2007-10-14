@@ -16,10 +16,18 @@ OBJECTS = highdirent.o	  cpu.o		   human.o	  myiff.o	specials.o \
 .c.o: etw.h menu.h
 	$(CC) $(CFLAGS) $(DEFINES) -c $<
 
-
-etw: *.c
-	@echo "Usa il makefile per la piattaforma apposita!"
-#	$(CC) -o ../etw $(OBJECTS) $(LFLAGS)
+all etw:
+	@case "`uname -s 2>/dev/null`" in \
+	  "Linux") \
+	    $(MAKE) -f Makefile.linux $@ \
+	    ;; \
+	  *) \
+	    echo "Error: please use the makefile for your platform:" \
+	    exit 1 \
+	    ;; \
+	esac
 
 clean:
-	rm -rf *.o
+	rm -rf etw etw.exe *.o
+
+.FORCE:
