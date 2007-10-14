@@ -1,13 +1,13 @@
 #if !defined(HIGHSOCKET_H)
-	#define HIGHSOCKET_H
+    #define HIGHSOCKET_H
 
 #if defined(WINCE)
 
-	#include <winsock.h>
+    #include <winsock.h>
 #elif defined(WIN32)
-	#include <winsock.h>
-	#define EWOULDBLOCK 10000
-	extern struct Library *SockBase;
+    #include <winsock.h>
+    #define EWOULDBLOCK 10000
+    extern struct Library *SockBase;
 
 #elif defined(__SASC)
 
@@ -38,15 +38,15 @@ extern struct Library *SockBase;
 #include <inline/socket.h>
 
 
-#define	IOCPARM_MASK	0x1fff		/* parameter length, at most 13 bits */
-#define	IOC_IN		0x80000000	               /* copy in parameters */
+#define    IOCPARM_MASK    0x1fff        /* parameter length, at most 13 bits */
+#define    IOC_IN        0x80000000                   /* copy in parameters */
 
 #define _IOC(inout,group,num,len) \
-	(inout | ((len & IOCPARM_MASK) << 16) | ((group) << 8) | (num))
-#define	_IOW(g,n,t)	_IOC(IOC_IN,	(g), (n), sizeof(t))
+    (inout | ((len & IOCPARM_MASK) << 16) | ((group) << 8) | (num))
+#define    _IOW(g,n,t)    _IOC(IOC_IN,    (g), (n), sizeof(t))
 
-#define	FIOASYNC	_IOW('f', 125, long)
-#define	FIONBIO		_IOW('f', 126, long)
+#define    FIOASYNC    _IOW('f', 125, long)
+#define    FIONBIO        _IOW('f', 126, long)
 
 extern struct Library *SocketBase;
 

@@ -20,366 +20,366 @@ long oldwidth = 320, oldheight = 256;
 WORD music_channel = -1;
 BOOL quit_game = FALSE, no_sound = FALSE;
 BOOL training = FALSE, nosync = FALSE, firsttime = TRUE, arcade_back =
-	FALSE;
+    FALSE;
 char control[4] = { CTRL_JOY, CTRL_JOY, CTRL_JOY, CTRL_JOY };
-AnimObj *logos = NULL, *symbols = NULL;
-GfxObj *arcade_gfx[ARCADE_TEAMS + 1];
+anim_t *logos = NULL, *symbols = NULL;
+gfx_t *arcade_gfx[ARCADE_TEAMS + 1];
 uint8_t *back;
 int bitmap_width, bitmap_height;
 struct SoundInfo *music = NULL;
 
 void PlayMenuMusic(void)
 {
-	char buffer[120];
+    char buffer[120];
 
-	if (!menu_music || music_playing || no_sound)
-		return;
+    if (!menu_music || music_playing || no_sound)
+        return;
 
 
-	sprintf(buffer, "+.music/back%d.wav" /*-*/ , RangeRand(NUMERO_LOOPS));
+    sprintf(buffer, "+.music/back%d.wav" /*-*/ , RangeRand(NUMERO_LOOPS));
 
-	D(bug("Loading %s as menu music...\n" /*-*/ , buffer));
+    D(bug("Loading %s as menu music...\n" /*-*/ , buffer));
 
-	if (music) {
-		FreeSound(music);
-		music = NULL;
-	}
+    if (music) {
+        FreeSound(music);
+        music = NULL;
+    }
 
-	if ((music = LoadSound(buffer))) {
-		music_channel = PlayBackSound(music);
+    if ((music = LoadSound(buffer))) {
+        music_channel = PlayBackSound(music);
 
-		if (music_channel >= 0)
-			music_playing = TRUE;
-	}
+        if (music_channel >= 0)
+            music_playing = TRUE;
+    }
 }
 
 void StopMenuMusic(void)
 {
-	if (music_playing && music_channel >= 0 && !no_sound) {
-		extern struct SoundInfo *busy[];
+    if (music_playing && music_channel >= 0 && !no_sound) {
+        extern struct SoundInfo *busy[];
 
-		D(bug("Stopping menu music on channel %d...\n" /*-*/, music_channel ));
-		SDL_LockAudio();
-		busy[music_channel] = NULL;
+        D(bug("Stopping menu music on channel %d...\n" /*-*/, music_channel ));
+        SDL_LockAudio();
+        busy[music_channel] = NULL;
 // sblocco il canale            
-		SDL_UnlockAudio();
-		music_playing = FALSE;
-		music_channel = -1;
-	}
+        SDL_UnlockAudio();
+        music_playing = FALSE;
+        music_channel = -1;
+    }
 }
 
 BOOL LoadBack(void)
 {
-	GfxObj *background;
-	char buffer[120];
+    gfx_t *background;
+    char buffer[120];
 
-	sprintf(buffer, "menugfx/back%d.gfx" /*-*/ ,
-			RangeRand(NUMERO_SFONDI));
+    sprintf(buffer, "menugfx/back%d.gfx" /*-*/ ,
+            RangeRand(NUMERO_SFONDI));
 
-	if ((background = LoadGfxObject(buffer, Pens, NULL))) {
-		if (background->width != WINDOW_WIDTH
-			|| background->height != WINDOW_HEIGHT)
-			ScaleGfxObj(background, back);
-		else
-			BltGfxObj(background, 0, 0, back, 0, 0, WINDOW_WIDTH,
-					  WINDOW_HEIGHT, bitmap_width);
+    if ((background = LoadGfxObject(buffer, Pens, NULL))) {
+        if (background->width != WINDOW_WIDTH
+            || background->height != WINDOW_HEIGHT)
+            ScaleGfxObj(background, back);
+        else
+            BltGfxObj(background, 0, 0, back, 0, 0, WINDOW_WIDTH,
+                      WINDOW_HEIGHT, bitmap_width);
 
-		FreeGfxObj(background);
-		arcade_back = FALSE;
-		return TRUE;
-	}
+        FreeGfxObj(background);
+        arcade_back = FALSE;
+        return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 void LoadArcadeGfx(void)
 {
-	int i;
-	char buffer[50];
+    int i;
+    char buffer[50];
 
-	for (i = 0; i < ARCADE_TEAMS + 1; i++) {
-		sprintf(buffer, "menugfx/arcade%d.gfx", i);
-		arcade_gfx[i] = LoadGfxObject(buffer, Pens, NULL);
-	}
+    for (i = 0; i < ARCADE_TEAMS + 1; i++) {
+        sprintf(buffer, "menugfx/arcade%d.gfx", i);
+        arcade_gfx[i] = LoadGfxObject(buffer, Pens, NULL);
+    }
 }
 
 
 BOOL LoadArcadeBack(void)
 {
-	GfxObj *background;
+    gfx_t *background;
 
-	if ((background =
-		LoadGfxObject("menugfx/worldmap.gfx" /*-*/ , Pens, NULL))) {
-		if (background->width != WINDOW_WIDTH
-			|| background->height != WINDOW_HEIGHT)
-			ScaleGfxObj(background, back);
-		else
-			BltGfxObj(background, 0, 0, back, 0, 0, WINDOW_WIDTH,
-					  WINDOW_HEIGHT, bitmap_width);
+    if ((background =
+        LoadGfxObject("menugfx/worldmap.gfx" /*-*/ , Pens, NULL))) {
+        if (background->width != WINDOW_WIDTH
+            || background->height != WINDOW_HEIGHT)
+            ScaleGfxObj(background, back);
+        else
+            BltGfxObj(background, 0, 0, back, 0, 0, WINDOW_WIDTH,
+                      WINDOW_HEIGHT, bitmap_width);
 
-		FreeGfxObj(background);
-		arcade_back = TRUE;
-		return TRUE;
-	}
+        FreeGfxObj(background);
+        arcade_back = TRUE;
+        return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 void FreeMenuStuff(void)
 {
-	D(bug("Freeing logos...\n"));
+    D(bug("Freeing logos...\n"));
 
 /*
-	Non dovrebbe servire...
+    Non dovrebbe servire...
 
-	.... e invece sembra esser necessario...
+    .... e invece sembra esser necessario...
 */
-	if (menu_music && music_playing)
-		StopMenuMusic();
+    if (menu_music && music_playing)
+        StopMenuMusic();
 
-	if (logos) {
-		FreeAnimObj(logos);
-		logos = NULL;
-	}
+    if (logos) {
+        FreeAnimObj(logos);
+        logos = NULL;
+    }
 
-	if (symbols) {
-		FreeAnimObj(symbols);
-		symbols = NULL;
-	}
+    if (symbols) {
+        FreeAnimObj(symbols);
+        symbols = NULL;
+    }
 
-	D(bug("Freeing background picture...\n"));
+    D(bug("Freeing background picture...\n"));
 
-	if (back) {
-		free(back);
-		back = NULL;
-	}
+    if (back) {
+        free(back);
+        back = NULL;
+    }
 
-	D(bug("Freeing main bitmap...\n"));
+    D(bug("Freeing main bitmap...\n"));
 
-	free(main_bitmap);
+    free(main_bitmap);
 
-	D(bug("Freeing fonts...\n"));
-	FreeMenuFonts();
+    D(bug("Freeing fonts...\n"));
+    FreeMenuFonts();
 
-	D(bug("Freeing sounds...\n"));
-	LiberaSuoniMenu();
+    D(bug("Freeing sounds...\n"));
+    LiberaSuoniMenu();
 
-	D(bug("Begin: FreeGraphics()!\n"));
-	FreeGraphics();
-	D(bug("End: FreeGraphics()!\n"));
+    D(bug("Begin: FreeGraphics()!\n"));
+    FreeGraphics();
+    D(bug("End: FreeGraphics()!\n"));
 
-	if (public_screen && Colors > 0) {
+    if (public_screen && Colors > 0) {
 //              int i;
 
-		D(bug("Freeing pens!\n"));
+        D(bug("Freeing pens!\n"));
 
-/*		for(i=0;i<Colors;i++)
-			os_releasepen(Pens[i]);
-		*/
+/*        for(i=0;i<Colors;i++)
+            os_releasepen(Pens[i]);
+        */
 
-	} else
-		FreeIFFPalette();
+    } else
+        FreeIFFPalette();
 
-	if (music) {
-		FreeSound(music);
-		music = NULL;
-	}
+    if (music) {
+        FreeSound(music);
+        music = NULL;
+    }
 }
 
 BOOL LoadMenuStuff(void)
 {
-	if (firsttime) {
-		save_back = FALSE;		/* Non mi interessa conservare gli sfondi */
-		use_clipping = FALSE;	/* Voglio vedere gli omini parzialmente fuori dallo schermo */
-		use_window = TRUE;
+    if (firsttime) {
+        save_back = FALSE;        /* Non mi interessa conservare gli sfondi */
+        use_clipping = FALSE;    /* Voglio vedere gli omini parzialmente fuori dallo schermo */
+        use_window = TRUE;
 
-	}
+    }
 
-	D(bug("Palette allocation...\n"));
+    D(bug("Palette allocation...\n"));
 
-	{
-		int i;
+    {
+        int i;
 
-		wanted_width = bitmap_width = WINDOW_WIDTH;
-		wanted_height = bitmap_height = WINDOW_HEIGHT;
+        wanted_width = bitmap_width = WINDOW_WIDTH;
+        wanted_height = bitmap_height = WINDOW_HEIGHT;
 
-		use_remapping = FALSE;
+        use_remapping = FALSE;
 
-		for (i = 0; i < 16; i++)
-			Pens[i] = i;
-	}
+        for (i = 0; i < 16; i++)
+            Pens[i] = i;
+    }
 
-	D(bug("Menu palette remapped.\n" /*-*/ ));
+    D(bug("Menu palette remapped.\n" /*-*/ ));
 
 // ModifyIDCMP
 
-	D(bug("Opening game window...\n"));
+    D(bug("Opening game window...\n"));
 
-	ClipX = WINDOW_WIDTH - 1;
-	ClipY = WINDOW_HEIGHT - 1;
+    ClipX = WINDOW_WIDTH - 1;
+    ClipY = WINDOW_HEIGHT - 1;
 
-	D(bug("Anim System initialization...\n" /*-*/ ));
+    D(bug("Anim System initialization...\n" /*-*/ ));
 
-	if (!InitAnimSystem()) {
-		D(bug("Error in InitAnimSystem!\n" /*-*/ ));
-		return FALSE;
-	}
+    if (!InitAnimSystem()) {
+        D(bug("Error in InitAnimSystem!\n" /*-*/ ));
+        return FALSE;
+    }
 
-	if (!(main_bitmap = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
-		FreeGraphics();
-	} else
-		bitmap_width = WINDOW_WIDTH;
+    if (!(main_bitmap = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
+        FreeGraphics();
+    } else
+        bitmap_width = WINDOW_WIDTH;
 
-	if (firsttime) {
-		LoadPLogo("newgfx/hurricane" /*-*/ );
-		os_delay(50);
+    if (firsttime) {
+        LoadPLogo("newgfx/hurricane" /*-*/ );
+        os_delay(50);
 
-		if (!public_screen)
-			os_delay(40);
-	}
+        if (!public_screen)
+            os_delay(40);
+    }
 
-	D(bug("Opening fonts...\n" /*-*/ ));
+    D(bug("Opening fonts...\n" /*-*/ ));
 
-	if (!InitMenuFonts()) {
-		free(main_bitmap);
-		FreeGraphics();
-		return FALSE;
-	}
+    if (!InitMenuFonts()) {
+        free(main_bitmap);
+        FreeGraphics();
+        return FALSE;
+    }
 
-	D(bug("Sound system initialization...\n" /*-*/ ));
+    D(bug("Sound system initialization...\n" /*-*/ ));
 
-	if (!no_sound) {
-		FILE *fh;
+    if (!no_sound) {
+        FILE *fh;
 
-		if (firsttime) {
-			if (!(fh = fopen("intro/intro.anim" /*-*/ , "r")))
-				nointro = TRUE;
-			else
-				fclose(fh);
+        if (firsttime) {
+            if (!(fh = fopen("intro/intro.anim" /*-*/ , "r")))
+                nointro = TRUE;
+            else
+                fclose(fh);
 
-			if(!InitSoundSystem()) {
-				free(main_bitmap);
-				FreeMenuFonts();
-				FreeGraphics();
-				return FALSE;
-			}
-		}
+            if(!InitSoundSystem()) {
+                free(main_bitmap);
+                FreeMenuFonts();
+                FreeGraphics();
+                return FALSE;
+            }
+        }
 
-		if (!CaricaSuoniMenu()) {
+        if (!CaricaSuoniMenu()) {
             FreeSoundSystem();
-			free(main_bitmap);
-			FreeMenuFonts();
-			FreeGraphics();
-			return FALSE;
-		}
-	}
+            free(main_bitmap);
+            FreeMenuFonts();
+            FreeGraphics();
+            return FALSE;
+        }
+    }
 // Creo tre RP per evitare di usare SetAPen che e' molto lenta.
 
 
-	D(bug("Main bitmap creation\n" /*-*/ ));
+    D(bug("Main bitmap creation\n" /*-*/ ));
 
 
-	if (firsttime) {
-		D(bug("Loading logo...\n" /*-*/ ));
+    if (firsttime) {
+        D(bug("Loading logo...\n" /*-*/ ));
 
-		LoadPLogo("gfx/etwlogo" /*-*/ );
+        LoadPLogo("gfx/etwlogo" /*-*/ );
 
-		if (!nointro)
-			Intro();
-		else
-			os_delay(50);
+        if (!nointro)
+            Intro();
+        else
+            os_delay(50);
 
-		StoreButtonList();
-	}
+        StoreButtonList();
+    }
 
-	UpdateButtonList();
+    UpdateButtonList();
 
-	if (firsttime) {
-		init_joy_config();
+    if (firsttime) {
+        init_joy_config();
 
 #if 0
-		D(bug("Loading logo N.2\n" /*-*/ ));
+        D(bug("Loading logo N.2\n" /*-*/ ));
 
-		if (nointro)
-			rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
-					 WINDOW_HEIGHT - 1, Pens[P_NERO], bitmap_width);
+        if (nointro)
+            rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
+                     WINDOW_HEIGHT - 1, Pens[P_NERO], bitmap_width);
 
-		ScreenSwap();
+        ScreenSwap();
 
-		LoadMenuLogo("gfx/etwlogo" /*-*/ );
+        LoadMenuLogo("gfx/etwlogo" /*-*/ );
 #endif
-		D(bug("Updating scores...\n"));
-		LoadScores();
+        D(bug("Updating scores...\n"));
+        LoadScores();
 
-		os_delay(50);
+        os_delay(50);
 
-		if (!public_screen)
-			os_delay(50);
+        if (!public_screen)
+            os_delay(50);
 
 //              GriddedWipe(0,NULL);
 
-		rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1,
-				 Pens[P_NERO], bitmap_width);
+        rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1,
+                 Pens[P_NERO], bitmap_width);
 
-		ScreenSwap();
+        ScreenSwap();
 
-		if (last_obj)
-			FreeGfxObj(last_obj);
-	}
+        if (last_obj)
+            FreeGfxObj(last_obj);
+    }
 
-	if (!(back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
-		free(main_bitmap);
-		FreeMenuFonts();
-		FreeGraphics();
-	}
+    if (!(back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
+        free(main_bitmap);
+        FreeMenuFonts();
+        FreeGraphics();
+    }
 
-	D(bug("Palette reinitialization\n" /*-*/ ));
+    D(bug("Palette reinitialization\n" /*-*/ ));
 
-	if (!public_screen) {
-		int i;
+    if (!public_screen) {
+        int i;
 
-		if (firsttime) {
-			for (i = 0; i < 16; i++)
-				Pens[i] = i;
+        if (firsttime) {
+            for (i = 0; i < 16; i++)
+                Pens[i] = i;
 
-			Colors = 0;
+            Colors = 0;
 
-			FreeIFFPalette();
-		}
+            FreeIFFPalette();
+        }
 
-		if (!LoadIFFPalette("gfx/eat16menu.col" /*-*/ )) {
-			D(bug("Unable to load the menu palette!\n" /*-*/ ));
-			free(main_bitmap);
-			free(back);
-			FreeMenuFonts();
-			FreeGraphics();
-			return FALSE;
-		}
+        if (!LoadIFFPalette("gfx/eat16menu.col" /*-*/ )) {
+            D(bug("Unable to load the menu palette!\n" /*-*/ ));
+            free(main_bitmap);
+            free(back);
+            FreeMenuFonts();
+            FreeGraphics();
+            return FALSE;
+        }
 //      LoadGfxObjPalette("menugfx/arcade0.gfx"/*-*/); Prova x quando era buggata l'altra chiamata
 
-		D(bug("Loaded menu palette.\n" /*-*/ ));
-	}
+        D(bug("Loaded menu palette.\n" /*-*/ ));
+    }
 
-	if ((logos = LoadAnimObject("menugfx/clips.obj" /*-*/ , Pens))) {
-		if (LoadBack()) {
-			if ((symbols =
-				LoadAnimObject("menugfx/simboli.obj" /*-*/ , Pens))) {
+    if ((logos = LoadAnimObject("menugfx/clips.obj" /*-*/ , Pens))) {
+        if (LoadBack()) {
+            if ((symbols =
+                LoadAnimObject("menugfx/simboli.obj" /*-*/ , Pens))) {
 
-				D(bug
-				  ("InitStuff() OK...\n" /*-*/ ));
-				firsttime = FALSE;
+                D(bug
+                  ("InitStuff() OK...\n" /*-*/ ));
+                firsttime = FALSE;
 
-				PlayMenuMusic();
+                PlayMenuMusic();
 
-				return TRUE;
-			}
-			D(bug("Error in symbols loading...\n" /*-*/ ));
-		}
-	}
+                return TRUE;
+            }
+            D(bug("Error in symbols loading...\n" /*-*/ ));
+        }
+    }
 
-	FreeMenuStuff();
+    FreeMenuStuff();
 
-	return FALSE;
+    return FALSE;
 }
 
 // AC: Where is errno in Microsoft Visual C++? In which lib is contained?
@@ -393,10 +393,10 @@ int errno;
 
 int main(int argc, char *argv[])
 {
-	/* AC: Why if I include externs.h I obtain 55 compilation error? */
-	extern void LoadKeyDef(int, char *);
-	
-	DIR *l;
+    /* AC: Why if I include externs.h I obtain 55 compilation error? */
+    extern void LoadKeyDef(int, char *);
+    
+    DIR *l;
 
     /* LINUX programs aren't relocatable, except with this trick
      */
@@ -426,99 +426,99 @@ int main(int argc, char *argv[])
 #endif
     
 #ifdef USE_LOGFILE
-	extern FILE *logfile;
+    extern FILE *logfile;
 
 #ifdef AMIGA
-	logfile = fopen("t:etw.log", "w");
+    logfile = fopen("t:etw.log", "w");
 #elif defined(WIN)
-	logfile = fopen("etw.log", "w");
+    logfile = fopen("etw.log", "w");
 #else
-	logfile = fopen("/tmp/etw.log", "w");
+    logfile = fopen("/tmp/etw.log", "w");
 #endif
 #endif
 
 #ifdef MACOSX
     chdir("ETW.app/Contents/Resources/data");
 #endif
-//	srand(clock());
+//    srand(clock());
     
-	InitStrings();
+    InitStrings();
 
 #if defined(LINUX) || defined(SOLARIS_X86)
-	gtk_init(&argc, &argv);
+    gtk_init(&argc, &argv);
 #endif
 
 /* Fix of an old language catalog bug... */
 
-	{
-		int i;
+    {
+        int i;
 
-		for (i = 0; i < 8; i++) {
-			if (wcp[32 * 5 + 1 + i * 5].Testo == NULL)
-				wcp[32 * 5 + 1 + i * 5].Testo = "GC" /*-*/ ;
-		}
-	} 
+        for (i = 0; i < 8; i++) {
+            if (wcp[32 * 5 + 1 + i * 5].Testo == NULL)
+                wcp[32 * 5 + 1 + i * 5].Testo = "GC" /*-*/ ;
+        }
+    } 
     
-	read_menu_config();
+    read_menu_config();
 
-	if (!(l = opendir(TEMP_DIR))) {
-		printf("Unable to find temp directory %s!\n", TEMP_DIR);
-		return 20;
-	} else
-		closedir(l);
+    if (!(l = opendir(TEMP_DIR))) {
+        printf("Unable to find temp directory %s!\n", TEMP_DIR);
+        return 20;
+    } else
+        closedir(l);
 
-	LoadTeams(TEAMS_DIR "default" /*-*/ );
+    LoadTeams(TEAMS_DIR "default" /*-*/ );
 
-	/* AC: I put here the load of keyboard configuration files
-	 * 
-	 */
-	LoadKeyDef(0,KEY_RED_FILE);
-	LoadKeyDef(1,KEY_BLUE_FILE);
+    /* AC: I put here the load of keyboard configuration files
+     * 
+     */
+    LoadKeyDef(0,KEY_RED_FILE);
+    LoadKeyDef(1,KEY_BLUE_FILE);
 
 //      EnableReqs();
 
-	/* AC: Under MacOS X and SDL 1.2.7 seems that if there aren't any koystick connected to the
-	 * computer, the SDL_Init fails. 
-	 * Now I'm trying the fallback config.
-	 */
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) < 0)
-		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO /*| SDL_INIT_NOPARACHUTE */) < 0)
-		{
-			fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
-			exit(1);
-		}
+    /* AC: Under MacOS X and SDL 1.2.7 seems that if there aren't any koystick connected to the
+     * computer, the SDL_Init fails. 
+     * Now I'm trying the fallback config.
+     */
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) < 0)
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO /*| SDL_INIT_NOPARACHUTE */) < 0)
+        {
+            fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+            exit(1);
+        }
 
-	atexit(SDL_Quit);
+    atexit(SDL_Quit);
 
-	OpenMenuScreen();
+    OpenMenuScreen();
 
-	if (screen) {
-		if (LoadMenuStuff()) {
+    if (screen) {
+        if (LoadMenuStuff()) {
             
-			D(bug("Starting ChangeMenu...\n"));
+            D(bug("Starting ChangeMenu...\n"));
 
-			os_start_audio();
+            os_start_audio();
 
-			ChangeMenu(0);
+            ChangeMenu(0);
 
-			D(bug("Entering main loop...\n"));
-			while (HandleMenuIDCMP());
+            D(bug("Entering main loop...\n"));
+            while (HandleMenuIDCMP());
 
-			if (audio_to_fast) {
-				D(bug("Delete Audio2Fast...\n" /*-*/ ));
-				DeleteAudio2Fast();
-			}
+            if (audio_to_fast) {
+                D(bug("Delete Audio2Fast...\n" /*-*/ ));
+                DeleteAudio2Fast();
+            }
 
-			D(bug("Start: FreeMenuStuff...\n" /*-*/ ));
-			FreeMenuStuff();
-			D(bug("End: FreeMenuStuff()...\n" /*-*/ ));
-		}
+            D(bug("Start: FreeMenuStuff...\n" /*-*/ ));
+            FreeMenuStuff();
+            D(bug("End: FreeMenuStuff()...\n" /*-*/ ));
+        }
 
-		if(SoundStarted())
-			FreeSoundSystem();
-	}
+        if(SoundStarted())
+            FreeSoundSystem();
+    }
 
-	D(bug("Program exited cleanly!\n"));
+    D(bug("Program exited cleanly!\n"));
 
-	return 0;
+    return 0;
 }

@@ -8,12 +8,12 @@
 
 struct MyNode 
 {
-    struct  MyNode *ln_Succ;	/* Pointer to next (successor) */
-    struct  MyNode *ln_Pred;	/* Pointer to previous (predecessor) */
+    struct  MyNode *ln_Succ;    /* Pointer to next (successor) */
+    struct  MyNode *ln_Pred;    /* Pointer to previous (predecessor) */
     unsigned char ln_Type;
-    char    ln_Pri;		/* Priority, for sorting */
-    char    *ln_Name;		/* ID string, null terminated */
-};	/* Note: word aligned */
+    char    ln_Pri;        /* Priority, for sorting */
+    char    *ln_Name;        /* ID string, null terminated */
+};    /* Note: word aligned */
 
 struct MyMinNode
 {
@@ -28,7 +28,7 @@ struct MyList
    struct  MyNode *lh_TailPred;
    UBYTE   lh_Type;
    UBYTE   l_pad;
-};	/* word aligned */
+};    /* word aligned */
 
 #define MY_LIST_H
 

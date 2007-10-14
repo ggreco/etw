@@ -1,3 +1,4 @@
+#include "eat.h"
 #include "etw_locale.h"
 #include <ctype.h>
 #include "menu.h"
@@ -33,7 +34,7 @@ void ReadTeam(FILE *fh, struct team_disk *s)
     SWAP_LONG(s->disponibilita);
     fread(&s->nplayers, sizeof(uint8_t), 1, fh);
     fread(&s->nkeepers, sizeof(uint8_t), 1, fh);
-    fread(&s->Nazione, sizeof(uint8_t), 1, fh);
+    fread(&s->nation, sizeof(uint8_t), 1, fh);
     fread(&s->Flags, sizeof(uint8_t), 1, fh);
 
     for(i = 0; i < 2; i++)
@@ -59,12 +60,12 @@ void ReadTeam(FILE *fh, struct team_disk *s)
         fread(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
         SWAP_LONG(s->keepers[i].value);
         fread(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
-        fread(&s->keepers[i].Velocita, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].speed, sizeof(uint8_t), 1, fh);
         fread(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
         fread(&s->keepers[i].Attenzione, sizeof(uint8_t), 1, fh);
-        fread(&s->keepers[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].nation, sizeof(uint8_t), 1, fh);
         fread(&s->keepers[i].Eta, sizeof(uint8_t), 1, fh);
-        fread(&s->keepers[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].injury, sizeof(uint8_t), 1, fh);
         fread(&s->keepers[i].Flags, sizeof(uint8_t), 1, fh);
     }
 
@@ -75,17 +76,17 @@ void ReadTeam(FILE *fh, struct team_disk *s)
         fread(&s->players[i].value, sizeof(uint32_t), 1, fh);
         SWAP_LONG(s->players[i].value);
         fread(&s->players[i].number, sizeof(uint8_t), 1, fh);
-        fread(&s->players[i].Velocita, sizeof(uint8_t), 1, fh);
-        fread(&s->players[i].Contrasto, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].speed, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].tackle, sizeof(uint8_t), 1, fh);
         fread(&s->players[i].Tiro, sizeof(uint8_t), 1, fh);
         fread(&s->players[i].Durata, sizeof(uint8_t), 1, fh);
-        fread(&s->players[i].Resistenza, sizeof(uint8_t), 1, fh);
-        fread(&s->players[i].Prontezza, sizeof(uint8_t), 1, fh);
-        fread(&s->players[i].Nazionalita, sizeof(uint8_t), 1, fh);
-        fread(&s->players[i].Creativita, sizeof(uint8_t), 1, fh);
-        fread(&s->players[i].Tecnica, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].stamina, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].quickness, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].nation, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].creativity, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].technique, sizeof(uint8_t), 1, fh);
         fread(&s->players[i].Eta, sizeof(uint8_t), 1, fh);
-        fread(&s->players[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].injury, sizeof(uint8_t), 1, fh);
         fread(&s->players[i].Ammonizioni, sizeof(uint8_t), 1, fh);
         fread(&s->players[i].Posizioni, sizeof(uint8_t), 1, fh);
     }
@@ -101,7 +102,7 @@ void WriteTeam(FILE *fh, struct team_disk *s)
     SWAP_LONG(s->disponibilita);
     fwrite(&s->nplayers, sizeof(uint8_t), 1, fh);
     fwrite(&s->nkeepers, sizeof(uint8_t), 1, fh);
-    fwrite(&s->Nazione, sizeof(uint8_t), 1, fh);
+    fwrite(&s->nation, sizeof(uint8_t), 1, fh);
     fwrite(&s->Flags, sizeof(uint8_t), 1, fh);
 
     for(i = 0; i < 2; i++)
@@ -128,12 +129,12 @@ void WriteTeam(FILE *fh, struct team_disk *s)
         fwrite(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
         SWAP_LONG(s->keepers[i].value);
         fwrite(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
-        fwrite(&s->keepers[i].Velocita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].speed, sizeof(uint8_t), 1, fh);
         fwrite(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
         fwrite(&s->keepers[i].Attenzione, sizeof(uint8_t), 1, fh);
-        fwrite(&s->keepers[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].nation, sizeof(uint8_t), 1, fh);
         fwrite(&s->keepers[i].Eta, sizeof(uint8_t), 1, fh);
-        fwrite(&s->keepers[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].injury, sizeof(uint8_t), 1, fh);
         fwrite(&s->keepers[i].Flags, sizeof(uint8_t), 1, fh);
     }
 
@@ -145,17 +146,17 @@ void WriteTeam(FILE *fh, struct team_disk *s)
         fwrite(&s->players[i].value, sizeof(uint32_t), 1, fh);
         SWAP_LONG(s->players[i].value);
         fwrite(&s->players[i].number, sizeof(uint8_t), 1, fh);
-        fwrite(&s->players[i].Velocita, sizeof(uint8_t), 1, fh);
-        fwrite(&s->players[i].Contrasto, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].speed, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].tackle, sizeof(uint8_t), 1, fh);
         fwrite(&s->players[i].Tiro, sizeof(uint8_t), 1, fh);
         fwrite(&s->players[i].Durata, sizeof(uint8_t), 1, fh);
-        fwrite(&s->players[i].Resistenza, sizeof(uint8_t), 1, fh);
-        fwrite(&s->players[i].Prontezza, sizeof(uint8_t), 1, fh);
-        fwrite(&s->players[i].Nazionalita, sizeof(uint8_t), 1, fh);
-        fwrite(&s->players[i].Creativita, sizeof(uint8_t), 1, fh);
-        fwrite(&s->players[i].Tecnica, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].stamina, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].quickness, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].nation, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].creativity, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].technique, sizeof(uint8_t), 1, fh);
         fwrite(&s->players[i].Eta, sizeof(uint8_t), 1, fh);
-        fwrite(&s->players[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].injury, sizeof(uint8_t), 1, fh);
         fwrite(&s->players[i].Ammonizioni, sizeof(uint8_t), 1, fh);
         fwrite(&s->players[i].Posizioni, sizeof(uint8_t), 1, fh);
     }
@@ -327,7 +328,7 @@ void SetupSpecialEvent(struct Bottone *b)
     }
 }
 
-BOOL LoadMenuTactic(char *name, struct Tactic *t)
+BOOL LoadMenuTactic(char *name, tactic_t *t)
 {
     int i, j, k;
     FILE *fh;
@@ -358,7 +359,7 @@ void DisplayTactic(int xs, int ys)
 // Il campo e'    108*156, le tattiche 10240, 4352
 
     char buffer[120];
-    struct Tactic t;
+    tactic_t t;
 
     if(actual_team<0)
         return;
@@ -634,7 +635,7 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
     }
 }
 
-void AddGiocatore(struct player_disk *g, int posizione)
+void AddPlayer(struct player_disk *g, int posizione)
 {
     char buffer[8];
 
@@ -660,8 +661,8 @@ void AddGiocatore(struct player_disk *g, int posizione)
 
     pannelli[posizione*3+1].Testo=strdup(buffer);
 
-    SetPlayerStatus(posizione, g->Infortuni, g->Ammonizioni,
-        (((g->Tiro+g->Contrasto+g->Velocita*2+g->Tecnica+g->Creativita-2*6+3)*10)/7)/6 );
+    SetPlayerStatus(posizione, g->injury, g->Ammonizioni,
+        (((g->Tiro+g->tackle+g->speed*2+g->technique+g->creativity-2*6+3)*10)/7)/6 );
 }
 
 void SetTeamSettings(WORD team, BOOL starting)
@@ -695,7 +696,7 @@ void SetTeamSettings(WORD team, BOOL starting)
             k++;
         }
 
-        AddGiocatore(&teamlist[team].players[i], k);
+        AddPlayer(&teamlist[team].players[i], k);
 
         k++;
     }
@@ -743,7 +744,7 @@ void SetTeamSettings(WORD team, BOOL starting)
     }
 
     AddName((struct player_disk *)&teamlist[team].keepers[0], 0);
-    SetPlayerStatus(0, teamlist[team].keepers[0].Infortuni, 0, (((teamlist[team].keepers[0].Parata*2+teamlist[team].keepers[0].Attenzione-2*3+2)*10)/7)/3);
+    SetPlayerStatus(0, teamlist[team].keepers[0].injury, 0, (((teamlist[team].keepers[0].Parata*2+teamlist[team].keepers[0].Attenzione-2*3+2)*10)/7)/3);
 
     D(bug("SetTeamSettings after SetPlayerStatus, AddName"));
     
@@ -779,7 +780,7 @@ void SetTeamSettings(WORD team, BOOL starting)
     }
     else {
         AddName((struct player_disk *)&teamlist[team].keepers[1], 11);
-        SetPlayerStatus(11, teamlist[team].keepers[1].Infortuni, 0,
+        SetPlayerStatus(11, teamlist[team].keepers[1].injury, 0,
                         (teamlist[team].keepers[1].Parata*2+teamlist[team].keepers[1].Attenzione+2)/3);
     }
 

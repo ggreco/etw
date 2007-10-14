@@ -4,17 +4,17 @@
 extern struct player_disk Riserve[2][12];
 extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,team_b,TotaleRiserve[2],NumeroTattiche;
 extern char team_name[2][16],fieldname[24],palette[24],shirt[2][24];
-extern Oggetto *pezzi_porte[4],*bonus[MAX_ARCADE_ON_FIELD];
+extern object_t *pezzi_porte[4],*bonus[MAX_ARCADE_ON_FIELD];
 extern BYTE need_release[MAX_PLAYERS],arcade_team[2],starting_team;
 extern int8_t Table[],strictness,current_field,slowdown[];
 extern struct RastPort Sq1RP,Sq2RP,PallaRP,*ProgressRP,ArcadeRP;
 extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,killer,
-	start_replay,replay_mode,use_replay,allow_replay,nocpu,teams_swapped,first_kickoff,
-	arcade,situation,training,use_crowd,slow_motion,use_speaker,replay_looped,highlight,
-	substitutions,bookings,injuries,window_opened,screen_opened,nopari,free_longpass,
-	no_record,penalties,free_kicks,arcade_teams,first_half,extratime,left_sel,right_sel,
-	friendly,golden_gol,use_key0,use_key1,joyonly,audio2fast,use_offside,
-	newpitches,network_game, game_start;
+    start_replay,replay_mode,use_replay,allow_replay,nocpu,teams_swapped,first_kickoff,
+    arcade,situation,training,use_crowd,slow_motion,use_speaker,replay_looped,highlight,
+    substitutions,bookings,injuries,window_opened,screen_opened,nopari,free_longpass,
+    no_record,penalties,free_kicks,arcade_teams,first_half,extratime,left_sel,right_sel,
+    friendly,golden_gol,use_key0,use_key1,joyonly,audio2fast,use_offside,
+    newpitches,network_game, game_start;
 extern char control[4],*controls[CONTROLS],tipo_porta, spk_basename[64];
 extern int32_t Pens[256];
 extern long framerate, time_length, t_l, game_status, urgent_status, situation_time, basepri;
@@ -25,76 +25,76 @@ extern WORD avanzamento_x[],avanzamento_y[],quota_mod_x[],quota_mod_y[];
 extern WORD sin_table[256],cos_table[256],swaps;
 extern UWORD counter;
 extern WORD av_palla_x[8][12],av_palla_y[8][12],velocita_scivolata_x[],velocita_scivolata_y[];
-extern Partita *p;
-extern Pallone *pl;
+extern game_t *p;
+extern ball_t *pl;
 extern struct Animazione Animation[],ArbAnim[],PortAnim[],GLAnim[];
 extern WORD field_x,field_y,porte_x[],field_x_limit,field_y_limit;
 extern BYTE joy_opposto[],dir_pred[],dir_next[],CambioDirezione[8][8],player_type[4],role[4];
 extern long WINDOW_WIDTH, WINDOW_HEIGHT, wanted_sound;
 extern struct SoundInfo *sound[];
 extern char *soundname[],*tactics[];
-extern Oggetto *object_list[];
+extern object_t *object_list[];
 extern struct DOggetto *c_list[];
 extern int totale_lista,totale_lista_c;
 extern struct SignalSemaphore listsem;
 extern ULONG detail_level,*r_controls[MAX_PLAYERS],ahimode;
 extern struct Rect ingombri[];
 extern struct DOggetto peoples[];
-extern GfxObj *last_obj,*pause_gfx;
+extern gfx_t *last_obj,*pause_gfx;
 extern mytimer StartGameTime,EndTime,ideal;
-extern AnimObj *ports,*replay,*arcade_anim,*goal_banner;
-extern GuardaLinee *guardalinee;
+extern anim_t *ports,*replay,*arcade_anim,*goal_banner;
+extern linesman_t *linesman;
 extern struct MyFastScaleArgs *scaling;
 extern int font_width,font_height,result_width,FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
 
 extern void MakeRef(UBYTE *,int, int);
-extern Tattica *LoadTactic(char *);
-extern void FreeTactic(Tattica *);
-extern void InvertTactic(Tattica *);
-extern Partita *SetupSquadre(void);
-extern void LiberaPartita(Partita *);
+extern tactic_t *LoadTactic(char *);
+extern void FreeTactic(tactic_t *);
+extern void InvertTactic(tactic_t *);
+extern game_t *SetupSquadre(void);
+extern void LiberaPartita(game_t *);
 extern WORD FindDirection(WORD,WORD,WORD,WORD);
 extern ULONG ReadKeyPort(ULONG port);
 extern ULONG ReadNetworkPort(ULONG port);
-extern void ChangeControlled(Team *,WORD);
+extern void ChangeControlled(team_t *, WORD);
 extern void HandleControlled(int);
 extern void HandleControlledJ2B(int);
 extern void HandleControlledJoyPad(int);
 extern void HandleCPU(int);
-extern void HandleRealCPU(Giocatore *);
-extern void HandleArbitro(void);
+extern void HandleRealCPU(player_t *);
+extern void HandleReferee(void);
 extern void HandleGuardalinee(void);
 extern void HandleExtras(void);
 extern void PostHandleBall(void);
 extern void HandleBall(void);
-extern void HandlePortiere(int);
-extern void HandleRimessa(Giocatore *);
-extern void DoSpecials(Giocatore *);
+extern void HandleKeeper(int);
+extern void HandleRimessa(player_t *);
+extern void DoSpecials(player_t *);
 extern void CheckKeys(void);
 extern void CheckActive(void);
 
 // main
 
-extern void SetResult(char *,...);
+extern void SetResult(char *, ...);
 
 // squadre
 
-extern void ReadSquadra(FILE *,struct team_disk *);
-extern void DisponiSquadra(Team *,int ,BOOL );
-extern void DisponiPortiere(Team *,int ,BOOL );
+extern void ReadSquadra(FILE *, struct team_disk *);
+extern void DisponiSquadra(team_t *, int, BOOL );
+extern void DisponiPortiere(team_t *, int, BOOL );
 extern void MakeResult(void);
 extern FILE *OpenTeam(char *);
 extern void SwapTeams(void);
-extern void ChangePlayer(struct player_disk *,Giocatore *);
-extern BOOL NumeroDiverso(struct Team *,char);
+extern void ChangePlayer(struct player_disk *, player_t *);
+extern BOOL NumeroDiverso(team_t *, char);
 extern void GL_Fuori(int);
 
 // control
 
 extern void MoveNonControlled(void);
 extern WORD GetJoyDirection(ULONG );
-extern void NoPlayerControl(Giocatore *);
-extern void CheckChange(Giocatore *);
+extern void NoPlayerControl(player_t *);
+extern void CheckChange(player_t *);
 extern ULONG (*MyReadPort0)(ULONG);
 extern ULONG (*MyReadPort1)(ULONG);
 extern void UpdatePortStatus(void);
@@ -102,36 +102,36 @@ extern void UpdatePortStatus(void);
 // Special
 
 extern void EseguiEsultanza(int);
-extern void CPUShot(Giocatore *);
-extern void EseguiCross(Giocatore *);
-extern void (*LongPass)(Giocatore *,ULONG);
-extern void FreePass(Giocatore *,ULONG);
-extern void TargetedPass(Giocatore *,ULONG);
-extern void Tira(Giocatore *);
-extern void Passaggio(Giocatore *);
-extern void Passaggio2(Giocatore *,char);
-extern void PassaggioB(Giocatore *);
-extern void RimessaLaterale(Giocatore *);
-extern void PunizioneCorner(Giocatore *);
+extern void CPUShot(player_t *);
+extern void EseguiCross(player_t *);
+extern void (*LongPass)(player_t *,ULONG);
+extern void FreePass(player_t *,ULONG);
+extern void TargetedPass(player_t *,ULONG);
+extern void Tira(player_t *);
+extern void Passaggio(player_t *);
+extern void Passaggio2(player_t *,char);
+extern void PassaggioB(player_t *);
+extern void RimessaLaterale(player_t *);
+extern void PunizioneCorner(player_t *);
 extern void UpdateCornerLine(void);
-extern void ColpoDiTesta(Giocatore *);
+extern void ColpoDiTesta(player_t *);
 extern void PreparaBarriera(char);
-extern BOOL IsOffside(Giocatore *);
+extern BOOL IsOffside(player_t *);
 
 // Utils
 
 // Aggiungo e rimuovo oggetti alla lista degli oggetti presente sul campo
 
-extern Giocatore *TrovaPiuVicino(Team *s,WORD,WORD);
-extern void MoveTo(Giocatore *,WORD,WORD);
+extern player_t *FindNearest(team_t *s,WORD,WORD);
+extern void MoveTo(player_t *,WORD,WORD);
 extern WORD FindDirection32(WORD, WORD, WORD ,WORD );
-extern WORD CanScore(Giocatore *);
-extern Giocatore *TrovaPiuVicinoGiocatore(Giocatore *);
-extern Giocatore *TrovaPiuVicinoDirGiocatore(Giocatore *);
+extern WORD CanScore(player_t *);
+extern player_t *FindNearestPlayer(player_t *);
+extern player_t *FindNearestDirPlayer(player_t *);
 
 extern void LiberaListe(void);
-extern BOOL AggiungiLista(Oggetto *);
-extern void RimuoviLista(Oggetto *);
+extern BOOL AggiungiLista(object_t *);
+extern void RimuoviLista(object_t *);
 extern BOOL AggiungiCLista(struct DOggetto *);
 extern void RimuoviCLista(struct DOggetto *);
 extern void VuotaCLista(void);
@@ -145,14 +145,14 @@ extern void DoFlash(void);
 extern void UpdateBallSpeed(void);
 extern void UpdateShotHeight(void);
 extern UBYTE FindDirection256(WORD, WORD, WORD ,WORD );
-extern BOOL AllowRotation(Giocatore *,WORD);
+extern BOOL AllowRotation(player_t *,WORD);
 extern void RimuoviComandoSquadra(char , BYTE );
-extern void EseguiDopoComando(Giocatore *);
-extern void SetComando(Giocatore *,BYTE,BYTE,BYTE);
+extern void EseguiDopoComando(player_t *);
+extern void SetComando(player_t *,BYTE,BYTE,BYTE);
 extern BOOL InArea(BYTE,WORD,WORD);
 extern BOOL InAnyArea(WORD,WORD);
-extern WORD IndirizzaTiro(Giocatore *,ULONG );
-extern void SetShotSpeed(Giocatore *,WORD);
+extern WORD IndirizzaTiro(player_t *,ULONG );
+extern void SetShotSpeed(player_t *,WORD);
 
 extern void init_crowd(void);
 extern void free_crowd(void);
@@ -206,7 +206,7 @@ extern void OldMainLoop(void);
 extern void (*HandleTeam0)(int);
 extern void (*HandleTeam1)(int);
 extern void (*HandleRadar)(void);
-extern GfxObj *background;
+extern gfx_t *background;
 extern WORD n_limit,o_limit,s_limit,e_limit;
 
 // Config
@@ -227,12 +227,12 @@ extern void LoadHighlight(void);
 extern void RestartGame(void);
 
 
-#define SPrintf sprintf	
+#define SPrintf sprintf    
 
 // Arcade
 
-void RemoveArcadeEffect(Giocatore *,UBYTE);
-void GetArcadeEffect(Giocatore *,Oggetto *);
+void RemoveArcadeEffect(player_t *,UBYTE);
+void GetArcadeEffect(player_t *,object_t *);
 void HandleArcade(void);
 
 // Da os_video.c

@@ -25,8 +25,8 @@ struct ContextNode
     struct MyMinNode cn_Node;
     long cn_ID;
     long cn_Type;
-    long cn_Size;	/*  Size of this chunk		   */
-    long cn_Scan;	/*  # of bytes read/written so far */
+    long cn_Size;    /*  Size of this chunk           */
+    long cn_Scan;    /*  # of bytes read/written so far */
 };
 
 struct IFFHandle
@@ -38,16 +38,16 @@ struct IFFHandle
 };
 
 /* Control modes for ParseIFF() function */
-#define IFFPARSE_SCAN	 0L
-#define IFFPARSE_STEP	 1L
+#define IFFPARSE_SCAN     0L
+#define IFFPARSE_STEP     1L
 #define IFFPARSE_RAWSTEP 2L
 
-#define IFFF_READ	0L			 /* read mode - default    */
-#define IFFF_WRITE	1L			 /* write mode		   */
-#define IFFF_RWBITS	(IFFF_READ | IFFF_WRITE) /* read/write bits	   */
-#define IFFF_FSEEK	(1L<<1)		 /* forward seek only	   */
-#define IFFF_RSEEK	(1L<<2)		 /* random seek	   */
-#define IFFF_RESERVED	0xFFFF0000L		 /* Don't touch these bits */
+#define IFFF_READ    0L             /* read mode - default    */
+#define IFFF_WRITE    1L             /* write mode           */
+#define IFFF_RWBITS    (IFFF_READ | IFFF_WRITE) /* read/write bits       */
+#define IFFF_FSEEK    (1L<<1)         /* forward seek only       */
+#define IFFF_RSEEK    (1L<<2)         /* random seek       */
+#define IFFF_RESERVED    0xFFFF0000L         /* Don't touch these bits */
 
 /* Basic functions */
 

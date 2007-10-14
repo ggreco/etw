@@ -4,78 +4,78 @@ BYTE need_release[MAX_PLAYERS]={1,1};
 
 // Il primo deve esserci, il secondo no!
 
-void DoLongPass(Giocatore *g,LONG joystate)
+void DoLongPass(player_t *g,LONG joystate)
 {
-	LongPass(g,joystate);
+    LongPass(g,joystate);
 
-	if( abs(CambioDirezione[g->Direzione][(pl->Direzione>>5)])<2 )
-		Tira(g);
-	else
-		SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->Direzione>>5);
+    if( abs(CambioDirezione[g->dir][(pl->dir>>5)])<2 )
+        Tira(g);
+    else
+        SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->dir>>5);
 }
 
-void DoCross(Giocatore *g)
+void DoCross(player_t *g)
 {
-	EseguiCross(g);
+    EseguiCross(g);
 
-	if( abs(CambioDirezione[g->Direzione][(pl->Direzione>>5)])<2 )
-		Tira(g);
-	else
-		SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->Direzione>>5);
+    if( abs(CambioDirezione[g->dir][(pl->dir>>5)])<2 )
+        Tira(g);
+    else
+        SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->dir>>5);
 }
 
-void DoShot(Giocatore *g,LONG joystate)
+void DoShot(player_t *g,LONG joystate)
 {
-	if( (g->SNum&&(joystate&JPF_JOY_LEFT))||(g->SNum==0&&(joystate&JPF_JOY_RIGHT)) )
-	{
-//		D(bug("Pallonetto!\n"));
-		pl->TipoTiro=TIRO_PALLONETTO;
-	}
-	else if( (g->SNum&&(joystate&JPF_JOY_RIGHT))||(g->SNum==0&&(joystate&JPF_JOY_LEFT)) )
-	{
-//		D(bug("Tiro rasoterra!\n"));
-		pl->TipoTiro=TIRO_RASOTERRA;
-	}
-	else
-	{
-//		D(bug("Tiro alto!\n"));
-		pl->TipoTiro=TIRO_ALTO;
-	}
+    if( (g->SNum&&(joystate&JPF_JOY_LEFT))||(g->SNum==0&&(joystate&JPF_JOY_RIGHT)) )
+    {
+//        D(bug("Pallonetto!\n"));
+        pl->TipoTiro=TIRO_PALLONETTO;
+    }
+    else if( (g->SNum&&(joystate&JPF_JOY_RIGHT))||(g->SNum==0&&(joystate&JPF_JOY_LEFT)) )
+    {
+//        D(bug("Tiro rasoterra!\n"));
+        pl->TipoTiro=TIRO_RASOTERRA;
+    }
+    else
+    {
+//        D(bug("Tiro alto!\n"));
+        pl->TipoTiro=TIRO_ALTO;
+    }
 
-	SetShotSpeed(g,IndirizzaTiro(g,joystate));
+    SetShotSpeed(g,IndirizzaTiro(g,joystate));
 
-	if(CanScore(g)!=CS_SI)
-		pl->velocita-=(1+GetTable());
+    if(CanScore(g)!=CS_SI)
+        pl->velocita-=(1+GetTable());
 
-	CheckPortiere(g->SNum^1);
+    CheckPortiere(g->SNum^1);
 
-	if( abs(CambioDirezione[g->Direzione][(pl->Direzione>>5)])<2 )
-		Tira(g);
-	else
-		SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->Direzione>>5);
+    if( abs(CambioDirezione[g->dir][(pl->dir>>5)])<2 )
+        Tira(g);
+    else
+        SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->dir>>5);
 }
 
-void HumanShot(Giocatore *g, LONG joystate)
+void HumanShot(player_t *g, LONG joystate)
 {
-	switch(CanScore(g))
-	{
+    switch(CanScore(g))
+    {
 // Il tiro qui viene direzionato a seconda della direzione della porta
-	    case CS_SI:
-		DoShot(g,joystate);
-		break;
+        case CS_SI:
+        DoShot(g,joystate);
+        break;
 // Fissa per permettere i lanci.
-	    case CS_NO:
-		DoLongPass(g,joystate);
-		break;
-	    case CS_CROSS:
-		DoCross(g);
-	}
+        case CS_NO:
+        DoLongPass(g,joystate);
+        break;
+        case CS_CROSS:
+        DoCross(g);
+    }
 }
 
 void HandleControlled(int squadra)
 {
     register LONG joystate;
-    register Giocatore *g=p->team[squadra]->attivo;
+    register player_t *g=p->team[squadra]->attivo;
 
     //      g->WaitForControl++;
 
@@ -148,12 +148,12 @@ void HandleControlled(int squadra)
             {
                 WORD d=FindDirection(g->world_x,G2P_Y(g->world_y),(g->SNum ? PORTA_E_X : PORTA_O_X),PORTA_Y);
 
-                if(abs(CambioDirezione[g->Direzione][d])>1 || !InArea(g->SNum^1,g->world_x,g->world_y) )
+                if(abs(CambioDirezione[g->dir][d])>1 || !InArea(g->SNum^1,g->world_x,g->world_y) )
                 {
                     if(joystate&JP_DIRECTION_MASK)
                         Passaggio2(g,GetJoyDirection(joystate));
                     else
-                        Passaggio2(g,g->Direzione);
+                        Passaggio2(g,g->dir);
                 }
                 else
                 {
@@ -188,7 +188,7 @@ void HandleControlled(int squadra)
     {
         register WORD NewDir=GetJoyDirection(joystate);
 
-        if(g->Direzione == opposto[NewDir])
+        if(g->dir == opposto[NewDir])
         {
             if(g==pl->gioc_palla)
             {
@@ -210,11 +210,11 @@ void HandleControlled(int squadra)
 
             g->WaitForControl=0;
         }
-        else if(g->Direzione != NewDir)
+        else if(g->dir != NewDir)
         {
             if(g->ActualSpeed==3)
             {
-                WORD tv=abs(g->Direzione-NewDir);
+                WORD tv=abs(g->dir-NewDir);
 
                 if(tv>4)
                     tv=8-tv;
@@ -223,7 +223,7 @@ void HandleControlled(int squadra)
                 {
                     DoSpecialAnim(g,GIOCATORE_CORSA_PARZIALE);
 
-                    if(BestRotation(g->Direzione,NewDir))
+                    if(BestRotation(g->dir,NewDir))
                     {
                         NewDir--;
 
@@ -240,7 +240,7 @@ void HandleControlled(int squadra)
                 }
                 else if(tv>1)
                 {
-                    if(BestRotation(g->Direzione,NewDir))
+                    if(BestRotation(g->dir,NewDir))
                     {
                         NewDir--;
 
@@ -262,7 +262,7 @@ void HandleControlled(int squadra)
             {
                 if(g==pl->gioc_palla)
                 {
-                    WORD tv=abs(g->Direzione-NewDir);
+                    WORD tv=abs(g->dir-NewDir);
 
                     if(tv>4)
                         tv=8-tv;
@@ -271,7 +271,7 @@ void HandleControlled(int squadra)
 
                     if(tv>0)
                     {
-                        if(BestRotation(g->Direzione,NewDir))
+                        if(BestRotation(g->dir,NewDir))
                         {
                             NewDir-=tv;
 
@@ -292,7 +292,7 @@ void HandleControlled(int squadra)
             g->WaitForControl=0;
 
             if( !AllowRotation(g,NewDir) )
-                g->Direzione = NewDir;
+                g->dir = NewDir;
         }
         else                            
         {
@@ -346,7 +346,7 @@ void HandleControlled(int squadra)
 void HandleControlledJ2B(int squadra)
 {
     register LONG joystate;
-    register Giocatore *g=p->team[squadra]->attivo;
+    register player_t *g=p->team[squadra]->attivo;
 
     //      g->WaitForControl++;
 
@@ -436,7 +436,7 @@ void HandleControlledJ2B(int squadra)
                 if(joystate&JP_DIRECTION_MASK)
                     Passaggio2(g,GetJoyDirection(joystate));
                 else
-                    Passaggio2(g,g->Direzione);
+                    Passaggio2(g,g->dir);
             }
             else DoSpecials(g);
 
@@ -460,7 +460,7 @@ void HandleControlledJ2B(int squadra)
     {
         register WORD NewDir=GetJoyDirection(joystate);
 
-        if(g->Direzione == opposto[NewDir])
+        if(g->dir == opposto[NewDir])
         {
             if(g==pl->gioc_palla)
             {
@@ -482,11 +482,11 @@ void HandleControlledJ2B(int squadra)
 
             g->WaitForControl=0;
         }
-        else if(g->Direzione != NewDir)
+        else if(g->dir != NewDir)
         {
             if(g->ActualSpeed==3)
             {
-                WORD tv=abs(g->Direzione-NewDir);
+                WORD tv=abs(g->dir-NewDir);
 
                 if(tv>4)
                     tv=8-tv;
@@ -495,7 +495,7 @@ void HandleControlledJ2B(int squadra)
                 {
                     DoSpecialAnim(g,GIOCATORE_CORSA_PARZIALE);
 
-                    if(BestRotation(g->Direzione,NewDir))
+                    if(BestRotation(g->dir,NewDir))
                     {
                         NewDir--;
 
@@ -512,7 +512,7 @@ void HandleControlledJ2B(int squadra)
                 }
                 else if(tv>1)
                 {
-                    if(BestRotation(g->Direzione,NewDir))
+                    if(BestRotation(g->dir,NewDir))
                     {
                         NewDir--;
 
@@ -534,7 +534,7 @@ void HandleControlledJ2B(int squadra)
             {
                 if(g==pl->gioc_palla)
                 {
-                    WORD tv=abs(g->Direzione-NewDir);
+                    WORD tv=abs(g->dir-NewDir);
 
                     if(tv>4)
                         tv=8-tv;
@@ -543,7 +543,7 @@ void HandleControlledJ2B(int squadra)
 
                     if(tv>0)
                     {
-                        if(BestRotation(g->Direzione,NewDir))
+                        if(BestRotation(g->dir,NewDir))
                         {
                             NewDir-=tv;
 
@@ -564,7 +564,7 @@ void HandleControlledJ2B(int squadra)
             g->WaitForControl=0;
 
             if( !AllowRotation(g,NewDir) )
-                g->Direzione = NewDir;
+                g->dir = NewDir;
         }
         else                            
         {
@@ -618,7 +618,7 @@ void HandleControlledJ2B(int squadra)
 void HandleControlledJoyPad(int squadra)
 {
     register LONG joystate;
-    register Giocatore *g=p->team[squadra]->attivo;
+    register player_t *g=p->team[squadra]->attivo;
 
     if(g->Special || g->Comando)
     {
@@ -671,7 +671,7 @@ void HandleControlledJoyPad(int squadra)
                 if(joystate&JP_DIRECTION_MASK)
                     Passaggio2(g,GetJoyDirection(joystate));
                 else
-                    Passaggio2(g,g->Direzione);
+                    Passaggio2(g,g->dir);
             }
             else DoSpecials(g);
 
@@ -732,7 +732,7 @@ void HandleControlledJoyPad(int squadra)
     {
         register WORD NewDir=GetJoyDirection(joystate);
 
-        if(g->Direzione == opposto[NewDir])
+        if(g->dir == opposto[NewDir])
         {
             if(g==pl->gioc_palla)
             {
@@ -745,11 +745,11 @@ void HandleControlledJoyPad(int squadra)
 
             g->ActualSpeed=0;
         }
-        else if(g->Direzione != NewDir)
+        else if(g->dir != NewDir)
         {
             if(g->ActualSpeed==3)
             {
-                WORD tv=abs(g->Direzione-NewDir);
+                WORD tv=abs(g->dir-NewDir);
 
                 if(tv>4)
                     tv=8-tv;
@@ -758,7 +758,7 @@ void HandleControlledJoyPad(int squadra)
                 {
                     DoSpecialAnim(g,GIOCATORE_CORSA_PARZIALE);
 
-                    if(BestRotation(g->Direzione,NewDir))
+                    if(BestRotation(g->dir,NewDir))
                     {
                         NewDir--;
 
@@ -775,7 +775,7 @@ void HandleControlledJoyPad(int squadra)
                 }
                 else if(tv>1)
                 {
-                    if(BestRotation(g->Direzione,NewDir))
+                    if(BestRotation(g->dir,NewDir))
                     {
                         NewDir--;
 
@@ -797,7 +797,7 @@ void HandleControlledJoyPad(int squadra)
             {
                 if(g==pl->gioc_palla)
                 {
-                    WORD tv=abs(g->Direzione-NewDir);
+                    WORD tv=abs(g->dir-NewDir);
 
                     if(tv>4)
                         tv=8-tv;
@@ -806,7 +806,7 @@ void HandleControlledJoyPad(int squadra)
 
                     if(tv>0)
                     {
-                        if(BestRotation(g->Direzione,NewDir))
+                        if(BestRotation(g->dir,NewDir))
                         {
                             NewDir-=tv;
 
@@ -825,7 +825,7 @@ void HandleControlledJoyPad(int squadra)
             }
 
             if(!AllowRotation(g,NewDir))
-                g->Direzione = NewDir;
+                g->dir = NewDir;
         }
         else                            
         {

@@ -12,18 +12,18 @@ struct MyFileRequest
 
 {
 
-	char *Title;
+    char *Title;
 
-	char *Dir;
+    char *Dir;
 
-	char *Filter;
+    char *Filter;
 
-	char *File;
+    char *File;
 #ifdef MACOSX
 // OSX used a signed char for bool, we use int, so we have to change this
-	int Save;
+    int Save;
 #else
-	BOOL Save;
+    BOOL Save;
 #endif
 };
 

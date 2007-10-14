@@ -61,21 +61,21 @@ int SocketSystemBoot(void)
 
 /* GG: Codice di gestione dei socket su Amiga :) */
 #if defined(SOCKETLIB)
-	D(bug("Apro socket.library\n"));
+    D(bug("Apro socket.library\n"));
 
-	if(!(SockBase = OpenLibrary("socket.library"/*-*/,0L)))
-	    if (!(SockBase=OpenLibrary("amitcp:libs/socket.library"/*-*/,0L)))
-		if (!(SockBase=OpenLibrary("inet:libs/socket.library"/*-*/,0L)))
-		{
-			D(bug("Errore! Non riesco ad aprire la socket.library\n"));
-			return 0;
-		}
+    if(!(SockBase = OpenLibrary("socket.library"/*-*/,0L)))
+        if (!(SockBase=OpenLibrary("amitcp:libs/socket.library"/*-*/,0L)))
+        if (!(SockBase=OpenLibrary("inet:libs/socket.library"/*-*/,0L)))
+        {
+            D(bug("Errore! Non riesco ad aprire la socket.library\n"));
+            return 0;
+        }
 #elif defined(BSDSOCKETLIB)
-	D(bug("Apro bsdsocket.library\n"));
-	if(!(SocketBase = OpenLibrary("bsdsocket.library",3L))) {
-		D(bug("Non posso aprire la bsdsocket.library"));
-		return 0;
-	}
+    D(bug("Apro bsdsocket.library\n"));
+    if(!(SocketBase = OpenLibrary("bsdsocket.library",3L))) {
+        D(bug("Non posso aprire la bsdsocket.library"));
+        return 0;
+    }
 
 #elif defined(WIN32)
 
@@ -90,20 +90,20 @@ wVersionRequested = MAKEWORD(1, 1);
 err = WSAStartup(wVersionRequested, &wsaData); 
  
 if (err != 0) {
-	D(bug("Winsock.dll non trovata.\n"));
-	return 0;
+    D(bug("Winsock.dll non trovata.\n"));
+    return 0;
 }
 
 if ( LOBYTE( wsaData.wVersion ) != 1 || 
     HIBYTE( wsaData.wVersion ) != 1 ) { 
     WSACleanup(); 
-	D(bug("Winsock.dll 1.1 o superiore non trovata.\n"));
-	return 0;
+    D(bug("Winsock.dll 1.1 o superiore non trovata.\n"));
+    return 0;
 } 
 
 #endif
 
-	return 1;
+    return 1;
 }
 
 void SocketSystemShutDown(void)
@@ -122,20 +122,20 @@ int SockWrite(int Socket,void *Buffer,long Size)
 {
 #if defined(WIN32)
 
-	int n=send(Socket,Buffer,Size,0);
+    int n=send(Socket,Buffer,Size,0);
 
-	if (n==SOCKET_ERROR) {
-		n=-1;
-		if (WSAGetLastError()==WSAEWOULDBLOCK)
-			errno=EWOULDBLOCK;
-	}
-	return(n);
+    if (n==SOCKET_ERROR) {
+        n=-1;
+        if (WSAGetLastError()==WSAEWOULDBLOCK)
+            errno=EWOULDBLOCK;
+    }
+    return(n);
 
 #elif defined(FAKENET)
-	return -1;
+    return -1;
 #else
 
-	return(send(Socket,Buffer,Size,0));
+    return(send(Socket,Buffer,Size,0));
 
 #endif
 }
@@ -144,20 +144,20 @@ int SockRead(int Socket,void *Buffer,long Size)
 {
 #if defined(WIN32)
 
-	int n=recv(Socket,Buffer,Size,0);
+    int n=recv(Socket,Buffer,Size,0);
 
-	if (n==SOCKET_ERROR) {
-		n=-1;
-		if (WSAGetLastError()==WSAEWOULDBLOCK)
-			errno=EWOULDBLOCK;
-	}
-	return(n);
+    if (n==SOCKET_ERROR) {
+        n=-1;
+        if (WSAGetLastError()==WSAEWOULDBLOCK)
+            errno=EWOULDBLOCK;
+    }
+    return(n);
 
 #elif defined(FAKENET)
-	return -1;
+    return -1;
 #else
 
-	return(recv(Socket,Buffer,Size,0));
+    return(recv(Socket,Buffer,Size,0));
 
 #endif
 }
@@ -169,7 +169,7 @@ void SockNonBlock(int Socket)
     unsigned long onoff=1;
 
     if (ioctlsocket(Socket, FIONBIO, &onoff)==SOCKET_ERROR)
-		perror("ioctlsocket() fallita.");
+        perror("ioctlsocket() fallita.");
 
 #elif defined(SOCKETLIB)
     int onoff=1;
@@ -200,7 +200,7 @@ void SockNonBlock(int Socket)
 
   if (fcntl(Socket, F_SETFL, FNDELAY) == -1)    {
     perror("Noblock");
-	exit (1);
+    exit (1);
   }
 
 #endif

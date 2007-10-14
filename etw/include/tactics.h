@@ -14,17 +14,17 @@
 #define GOALKICK 15
 #define KICKOFF 16
 
-struct Pos
+struct pos
 {
-	unsigned short x,y;
-	unsigned short settore;
+    unsigned short x, y;
+    unsigned short settore;
 };
 
-struct Tactic
+struct tactic
 {
-	char *Name;
-	struct Pos Position[2][PLAYERS][SECTORS+SPECIALS];
-	char NameLen;
+    char *Name;
+    struct pos Position[2][PLAYERS][SECTORS+SPECIALS];
+    char NameLen;
 };
 
 

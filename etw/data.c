@@ -1,6 +1,6 @@
 #include "eat.h"
 
-Oggetto *object_list[DIMENSIONI_LISTA_OGGETTI] = {0};
+object_t *object_list[DIMENSIONI_LISTA_OGGETTI] = {0};
 struct DOggetto *c_list[NUMERO_OGGETTI+1] = {0};
 int totale_lista=0,totale_lista_c=0; // Numero di oggetti nelle liste
 
@@ -59,7 +59,7 @@ WORD TestaAvanti[]={224,248};
 WORD TestaSinistra[]={232,248};
 WORD TestaDestra[]={240,248};
 WORD PassaggioF=152,Tacco=304,CambioAnti=136,CambioOrario=144,
-	PreparaRimessa=272,StopPiede=464,NonPossibile=472,RialzaCarponi=192;
+    PreparaRimessa=272,StopPiede=464,NonPossibile=472,RialzaCarponi=192;
 WORD RecuperaPalla[]={256,264};
 WORD Rimessa[]={272,280,288,272};
 WORD Infortunio[]={504,176,184,176,184,176,184};
@@ -121,33 +121,33 @@ struct Animazione Animation[]=
         {2,1,&PreparaRimessa},
         {12,2,RecuperaPalla},
         {2,2,CorsaParziale},
-	{6,6,RialzaAvanti},
-	{1,1,Fermo}, // BATTUTA
+    {6,6,RialzaAvanti},
+    {1,1,Fermo}, // BATTUTA
         {2,2,InversioneMarcia},
         {3,5,Caduta2},
-	{5,1,&PassaggioF},
-	{2,3,Stacco},
-	{3,3,Atterra},
-	{50,1,Fermo},
-	{2,2,Rovesciata},
-	{6,1,Fermo},
-	{4,1,&NonPossibile},
-	{2,2,GirataSinistra},
-	{2,2,GirataDestra},
-	{3,2,Pregirata},
-	{6,1,PreTuffo},
+    {5,1,&PassaggioF},
+    {2,3,Stacco},
+    {3,3,Atterra},
+    {50,1,Fermo},
+    {2,2,Rovesciata},
+    {6,1,Fermo},
+    {4,1,&NonPossibile},
+    {2,2,GirataSinistra},
+    {2,2,GirataDestra},
+    {3,2,Pregirata},
+    {6,1,PreTuffo},
         {4,3,Caduta3},
-	{15,1,&RialzaCarponi},
-	{14,7,Infortunio},
-	{10,7,Esultanza1},
-	{10,7,Esultanza2},
-	{5,13,Esultanza3},
-	{7,10,Esultanza4},
-	{5,13,Esultanza5},
-	{5,13,Esultanza6},
-	{5,13,Esultanza7},
-	{10,7,DisperazioneEst},
-	{10,7,DisperazioneOvest},
+    {15,1,&RialzaCarponi},
+    {14,7,Infortunio},
+    {10,7,Esultanza1},
+    {10,7,Esultanza2},
+    {5,13,Esultanza3},
+    {7,10,Esultanza4},
+    {5,13,Esultanza5},
+    {5,13,Esultanza6},
+    {5,13,Esultanza7},
+    {10,7,DisperazioneEst},
+    {10,7,DisperazioneOvest},
 };
 
 // Animazioni del portiere
@@ -180,67 +180,67 @@ WORD PTerraPalla[]={64,64,64,128,128,216,216,8};
 
 struct Animazione PortAnim[]=
 {
-	{2,1,Fermo},
-	{2,1,&PFermoPalla},
-	{3,6,PCorsa},
-	{16,1,&PAttento},
-	{4,4,PRinvioPiede_E},
-	{4,4,PRinvioPiede_O},
-	{3,3,PRinvioManoPrima_E},
-	{4,4,PRinvioManoDopo_E},
-	{3,3,PRinvioManoPrima_O},
-	{4,4,PRinvioManoDopo_O},
-	{3,2,PRinvioLiberoPrima_E},
-	{3,2,PRinvioLiberoPrima_O},
-	{4,3,PRaccogliPalla},
-	{2,10,PTuffoUscitaPrendi},
-	{2,8,PTuffoUscitaManca},
-	{1,6,PSaltoPrendi},
-	{2,6,PSaltoManca},
-	{4,3,PPrendiMezzaria},
-	{6,1,PTuffoDestra},
-	{6,1,PTuffoSinistra},
-	{2,2,PTuffoDestraPrendi},
-	{2,2,PTuffoSinistraPrendi},
-	{2,2,PTuffoDestraManca},
-	{2,2,PTuffoSinistraManca},
-	{2,1,PTuffoDestraManca+1},
-	{2,1,PTuffoSinistraManca+1},
-	{3,1,PTuffoDestraPrendi+1},
-	{3,1,PTuffoSinistraPrendi+1},
-	{3,2,PTuffoDestra},
-	{3,2,PTuffoSinistra},
-	{6,8,PTerraPalla},
-	{6,8,PTerra},
-	{4,2,PCamminaLaterale},
-	{4,1,&PAttento},
+    {2,1,Fermo},
+    {2,1,&PFermoPalla},
+    {3,6,PCorsa},
+    {16,1,&PAttento},
+    {4,4,PRinvioPiede_E},
+    {4,4,PRinvioPiede_O},
+    {3,3,PRinvioManoPrima_E},
+    {4,4,PRinvioManoDopo_E},
+    {3,3,PRinvioManoPrima_O},
+    {4,4,PRinvioManoDopo_O},
+    {3,2,PRinvioLiberoPrima_E},
+    {3,2,PRinvioLiberoPrima_O},
+    {4,3,PRaccogliPalla},
+    {2,10,PTuffoUscitaPrendi},
+    {2,8,PTuffoUscitaManca},
+    {1,6,PSaltoPrendi},
+    {2,6,PSaltoManca},
+    {4,3,PPrendiMezzaria},
+    {6,1,PTuffoDestra},
+    {6,1,PTuffoSinistra},
+    {2,2,PTuffoDestraPrendi},
+    {2,2,PTuffoSinistraPrendi},
+    {2,2,PTuffoDestraManca},
+    {2,2,PTuffoSinistraManca},
+    {2,1,PTuffoDestraManca+1},
+    {2,1,PTuffoSinistraManca+1},
+    {3,1,PTuffoDestraPrendi+1},
+    {3,1,PTuffoSinistraPrendi+1},
+    {3,2,PTuffoDestra},
+    {3,2,PTuffoSinistra},
+    {6,8,PTerraPalla},
+    {6,8,PTerra},
+    {4,2,PCamminaLaterale},
+    {4,1,&PAttento},
 };
 
 // Animazioni dell'arbitro
 
-WORD Arbitro[]={/* fischia */56,/* Fallo */ 64,65,/* Cartellino*/ 72,80,80,80,80,80,72,
+WORD referee_list[]={/* fischia */56,/* Fallo */ 64,65,/* Cartellino*/ 72,80,80,80,80,80,72,
                 /* Corsa */ 8,16,24,32,40,48 };
 
 struct Animazione ArbAnim[]=
 {
         {15,1,Fermo},
-        {3,6,&Arbitro[10]},
-        {20,1,&Arbitro[0]},     
-        {15,2,&Arbitro[1]}, // 4 dir
-        {8,7,&Arbitro[3]} 
+        {3,6,&referee_list[10]},
+        {20,1,&referee_list[0]},     
+        {15,2,&referee_list[1]}, // 4 dir
+        {8,7,&referee_list[3]} 
 };
 
-WORD Guardalinee[]={/*Fermo*/0,/* Fuori 1*/ 2, /* Fallo */ 4, /*Fuori 0 */ 6, /* Inversione */ 8,
-	/* Corsa */ 10,12,14,16,18,20};
+WORD linesman_list[]={/*Fermo*/0,/* Fuori 1*/ 2, /* Fallo */ 4, /*Fuori 0 */ 6, /* Inversione */ 8,
+    /* Corsa */ 10,12,14,16,18,20};
 
 struct Animazione GLAnim[]=
 {
-	{15,1,Guardalinee}, // GL_FERMO
-	{4,6,&Guardalinee[5]}, // GL_CORSA
-	{10,1,&Guardalinee[4]}, // GL_INVERSIONE
-	{50,1,&Guardalinee[2]}, // GL_FALLO
-	{50,1,&Guardalinee[1]}, // GL_FUORI_1
-	{50,1,&Guardalinee[3]}, // GL_FUORI_0
+    {15,1,linesman_list}, // GL_FERMO
+    {4,6,&linesman_list[5]}, // GL_CORSA
+    {10,1,&linesman_list[4]}, // GL_INVERSIONE
+    {50,1,&linesman_list[2]}, // GL_FALLO
+    {50,1,&linesman_list[1]}, // GL_FUORI_1
+    {50,1,&linesman_list[3]}, // GL_FUORI_0
 };
 
 LONG Pens[256];
@@ -275,66 +275,66 @@ BYTE joy_opposto[]=
 
 BYTE dir_pred[]=
 {
-	7,
-	0,
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
+    7,
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
 };
 
 BYTE dir_next[]=
 {
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	0
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    0
 };
 
 WORD inversione_x[8][8]=
 {
-	{1,1,2,2,2,2,1,1},
-	{-1,-2,-3,-5,-6,-7,-9,-11},
-	{-2,-4,-6,-8,-10,-12,-14,-16},
-	{-1,-2,-3,-5,-6,-7,-9,-11},
-	{-1,-1,-2,-2,-2,-2,-1,-1},
-	{1,2,3,5,6,7,9,11},
-	{2,4,6,8,10,12,14,16},
-	{1,2,3,5,6,7,9,11},
+    {1,1,2,2,2,2,1,1},
+    {-1,-2,-3,-5,-6,-7,-9,-11},
+    {-2,-4,-6,-8,-10,-12,-14,-16},
+    {-1,-2,-3,-5,-6,-7,-9,-11},
+    {-1,-1,-2,-2,-2,-2,-1,-1},
+    {1,2,3,5,6,7,9,11},
+    {2,4,6,8,10,12,14,16},
+    {1,2,3,5,6,7,9,11},
 };
 
 WORD inversione_y[8][8]=
 {
-	{2,4,6,8,9,10,11,12},
-	{1,2,3,4,5,6,7,9},
-	{1,1,2,2,2,2,1,1},
-	{-1,-2,-3,-4,-5,-6,-7,-9},
-	{-2,-4,-6,-8,-9,-10,-11,-12},
-	{-1,-2,-3,-4,-5,-6,-7,-9},
-	{-1,-1,-2,-2,-2,-2,-1,-1},
-	{1,2,3,4,5,6,7,9},
+    {2,4,6,8,9,10,11,12},
+    {1,2,3,4,5,6,7,9},
+    {1,1,2,2,2,2,1,1},
+    {-1,-2,-3,-4,-5,-6,-7,-9},
+    {-2,-4,-6,-8,-9,-10,-11,-12},
+    {-1,-2,-3,-4,-5,-6,-7,-9},
+    {-1,-1,-2,-2,-2,-2,-1,-1},
+    {1,2,3,4,5,6,7,9},
 };
 
 WORD cambio_x[8]=
 {
-	-3,-3,-2,+2,+3,+3,+2,-2,
+    -3,-3,-2,+2,+3,+3,+2,-2,
 };
 
 WORD cambio_y[8]=
 {
-	2,-2,-3,-3,-2,+2,+3,+3,
+    2,-2,-3,-3,-2,+2,+3,+3,
 };
 
 
 WORD avanzamento_x[8]=
 {
-	32, 72, 96, 72, 40, 0, -24, 0,
+    32, 72, 96, 72, 40, 0, -24, 0,
 };
 
 WORD avanzamento_y[8]=
@@ -344,27 +344,27 @@ WORD avanzamento_y[8]=
 
 struct Rect ingombri[]=
 {
-	{0,0,0,0},  // Tipo 0 non definito 
-	{-48,+150,+100,+180}, // GIOCATORE
-	{-48,+150,+100,+180}, // PORTIERE
-	{-48,+150,+100,+190}, // ARBITRO
-	{-48,70,16,90}, // BANDIERINA
-	{-48,+150,+100,+180}, // MASSAGGIATORE
-	{-48,+150,+100,+180}, // ALLENATORE
-	{-48,+150,+100,+180}, // PORTA ...
-	{-48,+150,+100,+190}, // FOTOGRAFO
-	{-48,+150,+100,+190}, // POLIZIOTTO
-	{-48,+150,+250,+190}, // POLIZIOTTO_CANE
-	{-48,+150,+100,+180}, // TUTA
-	{0,0,0,0},  // LATTINA
-	{0,0,0,0},  // SCARPA
-	{-48,+150,+100,+180}, // CAMERAMEN
-	{-48,+150,+100,+180}, // PERSONA
-	{0,0,0,0},  // PALLA_RISERVA
-	{0,0,0,0},  // BORSA
-	{0,0,0,0},  // BONUS
-	{0,0,0,0},  // GUARDALINEE
-	{0,0,0,0},  // Tipo finale non definito 
+    {0,0,0,0},  // Tipo 0 non definito 
+    {-48,+150,+100,+180}, // GIOCATORE
+    {-48,+150,+100,+180}, // PORTIERE
+    {-48,+150,+100,+190}, // ARBITRO
+    {-48,70,16,90}, // BANDIERINA
+    {-48,+150,+100,+180}, // MASSAGGIATORE
+    {-48,+150,+100,+180}, // ALLENATORE
+    {-48,+150,+100,+180}, // PORTA ...
+    {-48,+150,+100,+190}, // FOTOGRAFO
+    {-48,+150,+100,+190}, // POLIZIOTTO
+    {-48,+150,+250,+190}, // POLIZIOTTO_CANE
+    {-48,+150,+100,+180}, // TUTA
+    {0,0,0,0},  // LATTINA
+    {0,0,0,0},  // SCARPA
+    {-48,+150,+100,+180}, // CAMERAMEN
+    {-48,+150,+100,+180}, // PERSONA
+    {0,0,0,0},  // PALLA_RISERVA
+    {0,0,0,0},  // BORSA
+    {0,0,0,0},  // BONUS
+    {0,0,0,0},  // GUARDALINEE
+    {0,0,0,0},  // Tipo finale non definito 
 };
 
 WORD porte_x[]={1,1236,8,1236};
@@ -400,27 +400,27 @@ WORD av_palla_x[8][12]=
 
 char *controls[CONTROLS]=
 {
-	"JOYSTICK",
-	"JOYPAD",
-	"2B JOYSTICK",
-	"KEYBOARD 1",
-	"KEYBOARD 2",
-	NULL,
-/*	"JOY+KEY",
-	"KEYBOARD",
+    "JOYSTICK",
+    "JOYPAD",
+    "2B JOYSTICK",
+    "KEYBOARD 1",
+    "KEYBOARD 2",
+    NULL,
+/*    "JOY+KEY",
+    "KEYBOARD",
 */
 };
 
 BYTE slowdown[]=
 {
-	1, // normal
-	2, // dry
-	1, // hard
-	2, // soft
-	1, // frozen
-	3, // muddy
-	1, // Wet
-	1, // snow
+    1, // normal
+    2, // dry
+    1, // hard
+    2, // soft
+    1, // frozen
+    3, // muddy
+    1, // Wet
+    1, // snow
 };
 
 BYTE dist1[]={0,1,2,3,-1,-1,-1};
@@ -522,107 +522,107 @@ struct DOggetto peoples[]=
 
 UBYTE people_type[]=
 {
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_TUTA,
-	TIPO_POLIZIOTTO, /* 16 */
-	TIPO_POLIZIOTTO,
-	TIPO_POLIZIOTTO,
-	TIPO_POLIZIOTTO,
-	TIPO_POLIZIOTTO_CANE, /* 20 */
-	TIPO_POLIZIOTTO_CANE,
-	TIPO_POLIZIOTTO_CANE,
-	TIPO_POLIZIOTTO_CANE,
-	TIPO_CAMERAMEN, /* 24 */
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_CAMERAMEN,
-	TIPO_FOTOGRAFO, /* 40 */
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_FOTOGRAFO,
-	TIPO_MASSAGGIATORE, /* 70 */
-	TIPO_MASSAGGIATORE,
-	TIPO_MASSAGGIATORE,
-	TIPO_MASSAGGIATORE,
-	TIPO_PERSONA, /* 74 */
-	TIPO_PERSONA,
-	TIPO_PERSONA,
-	TIPO_PERSONA,
-	TIPO_ALLENATORE, /* 78 */
-	TIPO_ALLENATORE,
-	TIPO_ALLENATORE,
-	TIPO_ALLENATORE,
-	TIPO_ALLENATORE,
-	TIPO_ALLENATORE,
-	TIPO_ALLENATORE,
-	TIPO_ALLENATORE,
-	TIPO_LATTINA, /* 86 */
-	TIPO_LATTINA,
-	TIPO_LATTINA,
-	TIPO_LATTINA,
-	TIPO_LATTINA,
-	TIPO_LATTINA,
-	TIPO_PALLA_RISERVA, /* 92 */
-	TIPO_PALLA_RISERVA,
-	TIPO_SCARPA,	/* 94 */
-	TIPO_SCARPA,
-	TIPO_SCARPA,
-	TIPO_SCARPA,
-	TIPO_BORSA,	/* 98 */
-	TIPO_BORSA,
-	TIPO_BORSA,	
-	TIPO_BORSA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_TUTA,
+    TIPO_POLIZIOTTO, /* 16 */
+    TIPO_POLIZIOTTO,
+    TIPO_POLIZIOTTO,
+    TIPO_POLIZIOTTO,
+    TIPO_POLIZIOTTO_CANE, /* 20 */
+    TIPO_POLIZIOTTO_CANE,
+    TIPO_POLIZIOTTO_CANE,
+    TIPO_POLIZIOTTO_CANE,
+    TIPO_CAMERAMEN, /* 24 */
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_CAMERAMEN,
+    TIPO_FOTOGRAFO, /* 40 */
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_FOTOGRAFO,
+    TIPO_MASSAGGIATORE, /* 70 */
+    TIPO_MASSAGGIATORE,
+    TIPO_MASSAGGIATORE,
+    TIPO_MASSAGGIATORE,
+    TIPO_PERSONA, /* 74 */
+    TIPO_PERSONA,
+    TIPO_PERSONA,
+    TIPO_PERSONA,
+    TIPO_ALLENATORE, /* 78 */
+    TIPO_ALLENATORE,
+    TIPO_ALLENATORE,
+    TIPO_ALLENATORE,
+    TIPO_ALLENATORE,
+    TIPO_ALLENATORE,
+    TIPO_ALLENATORE,
+    TIPO_ALLENATORE,
+    TIPO_LATTINA, /* 86 */
+    TIPO_LATTINA,
+    TIPO_LATTINA,
+    TIPO_LATTINA,
+    TIPO_LATTINA,
+    TIPO_LATTINA,
+    TIPO_PALLA_RISERVA, /* 92 */
+    TIPO_PALLA_RISERVA,
+    TIPO_SCARPA,    /* 94 */
+    TIPO_SCARPA,
+    TIPO_SCARPA,
+    TIPO_SCARPA,
+    TIPO_BORSA,    /* 98 */
+    TIPO_BORSA,
+    TIPO_BORSA,    
+    TIPO_BORSA,
 };
 

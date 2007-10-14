@@ -11,7 +11,7 @@ void SHFullScreen(void) {}
 // TODO
 BOOL FileRequest(struct MyFileRequest *fr)
 {
-	return FALSE;
+    return FALSE;
 }
 
 #elif defined(WIN)
@@ -27,83 +27,83 @@ BOOL FileRequest(struct MyFileRequest *fr)
 
 BOOL FileRequest(struct MyFileRequest *fr)
 {
-	BOOL res;
-	OPENFILENAME f;
-	char temp[200];
-	char dirbuf[256];
-	char olddirbuf[256];
-	
-	*szFileName = 0;
+    BOOL res;
+    OPENFILENAME f;
+    char temp[200];
+    char dirbuf[256];
+    char olddirbuf[256];
+    
+    *szFileName = 0;
 
-	strcpy(olddirbuf,".");
+    strcpy(olddirbuf,".");
 
-	ZeroMemory(&f, sizeof(OPENFILENAME));
-	f.lStructSize = sizeof(OPENFILENAME);
-	f.hwndOwner = NULL;			// da settare magari con la finestra attiva
-	f.hInstance = NULL;
-	f.lpstrFile = szFileName;
-	f.nMaxFile = sizeof(szFileName) - 1;
+    ZeroMemory(&f, sizeof(OPENFILENAME));
+    f.lStructSize = sizeof(OPENFILENAME);
+    f.hwndOwner = NULL;            // da settare magari con la finestra attiva
+    f.hInstance = NULL;
+    f.lpstrFile = szFileName;
+    f.nMaxFile = sizeof(szFileName) - 1;
 
-	if (!fr->Save)
-		f.Flags = OFN_FILEMUSTEXIST;
+    if (!fr->Save)
+        f.Flags = OFN_FILEMUSTEXIST;
 
-	if (fr->Filter) {
-		int i, l;
-		strcpy(temp, fr->Filter);
+    if (fr->Filter) {
+        int i, l;
+        strcpy(temp, fr->Filter);
 
-		l = strlen(temp);
-		temp[l + 1] = 0;
+        l = strlen(temp);
+        temp[l + 1] = 0;
 
-		for (i = 0; i < l; i++)
-			if (temp[i] == '|')
-				temp[i] = 0;
+        for (i = 0; i < l; i++)
+            if (temp[i] == '|')
+                temp[i] = 0;
 
-		f.lpstrFilter = temp;
-	}
+        f.lpstrFilter = temp;
+    }
 
-	f.lpstrTitle = fr->Title;
+    f.lpstrTitle = fr->Title;
 
-	*dirbuf = 0;
+    *dirbuf = 0;
 
-	if (GetCurrentDirectory(sizeof(dirbuf), dirbuf)) {
-		int i, l;
+    if (GetCurrentDirectory(sizeof(dirbuf), dirbuf)) {
+        int i, l;
 
-		strcpy(olddirbuf,dirbuf);
-		if (fr->Dir) {
-			l = strlen(dirbuf) - 1;
+        strcpy(olddirbuf,dirbuf);
+        if (fr->Dir) {
+            l = strlen(dirbuf) - 1;
 
-			if (dirbuf[l] != '/' && dirbuf[l] != '\\')
-				strcat(dirbuf, "/");
+            if (dirbuf[l] != '/' && dirbuf[l] != '\\')
+                strcat(dirbuf, "/");
 
-			strcat(dirbuf, fr->Dir);
-		}
+            strcat(dirbuf, fr->Dir);
+        }
 
-		f.lpstrInitialDir = dirbuf;
+        f.lpstrInitialDir = dirbuf;
 
-		l = strlen(dirbuf);
+        l = strlen(dirbuf);
 
-		for (i = 0; i < l; i++)
-			if (dirbuf[i] == '/')
-				dirbuf[i] = '\\';
-	}
+        for (i = 0; i < l; i++)
+            if (dirbuf[i] == '/')
+                dirbuf[i] = '\\';
+    }
 
-	fr->Title = NULL;
-	fr->Dir = NULL;
-	fr->Filter = NULL;
-	fr->File = szFileName;
+    fr->Title = NULL;
+    fr->Dir = NULL;
+    fr->Filter = NULL;
+    fr->File = szFileName;
 
-	/* AC: La GetOpenFileName, cambia la current dir del processo e non va bene */
-	/* La devo reimpostare */
-	if (!fr->Save)
-		res = GetOpenFileName(&f);
-	else {
-		fr->Save = FALSE;
-		res = GetSaveFileName(&f);
-	}
+    /* AC: La GetOpenFileName, cambia la current dir del processo e non va bene */
+    /* La devo reimpostare */
+    if (!fr->Save)
+        res = GetOpenFileName(&f);
+    else {
+        fr->Save = FALSE;
+        res = GetSaveFileName(&f);
+    }
 
-	/* AC: Prima di ritornare, reimposta la current DIR */
-	SetCurrentDirectory(olddirbuf);
-	return res;
+    /* AC: Prima di ritornare, reimposta la current DIR */
+    SetCurrentDirectory(olddirbuf);
+    return res;
 }
 
 #elif defined(LINUX) || defined(SOLARIS_X86)
@@ -116,80 +116,80 @@ BOOL FileRequest(struct MyFileRequest *fr)
 #include <unistd.h>
 
 typedef struct fdt {
-	GtkWidget *fs;
-	struct MyFileRequest *ofn;
-	int success;
+    GtkWidget *fs;
+    struct MyFileRequest *ofn;
+    int success;
 } fsdatas;
 
 void fw_cancel(GtkWidget * w, fsdatas * fs)
 {
-	fs->success = 0;
-	gtk_widget_destroy(fs->fs);
-	gtk_main_quit();
+    fs->success = 0;
+    gtk_widget_destroy(fs->fs);
+    gtk_main_quit();
 }
 
 void fw_ok(GtkWidget * w, fsdatas * fs)
 {
-	strcpy(fs->ofn->File,
-		   gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs->fs)));
-	D(bug("Selected: %s\n", fs->ofn->File));
-	gtk_widget_destroy(fs->fs);
-	fs->success = 1;
-	gtk_main_quit();
+    strcpy(fs->ofn->File,
+           gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs->fs)));
+    D(bug("Selected: %s\n", fs->ofn->File));
+    gtk_widget_destroy(fs->fs);
+    fs->success = 1;
+    gtk_main_quit();
 }
 
 BOOL FileRequest(struct MyFileRequest *fr)
 {
-	char buffer[200];
-	fsdatas fs;
-	fs.success = 0;
-	fs.ofn = fr;
-	fs.fs = gtk_file_selection_new(fr->Title);
+    char buffer[200];
+    fsdatas fs;
+    fs.success = 0;
+    fs.ofn = fr;
+    fs.fs = gtk_file_selection_new(fr->Title);
 
-	fr->File = szFileName;
+    fr->File = szFileName;
 
-	gtk_signal_connect(GTK_OBJECT
-					   (GTK_FILE_SELECTION(fs.fs)->cancel_button),
-					   "clicked", (GtkSignalFunc) fw_cancel, &fs);
-	gtk_signal_connect(GTK_OBJECT(fs.fs), "destroy",
-					   (GtkSignalFunc) fw_cancel, &fs);
-	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs.fs)->ok_button),
-					   "clicked", (GtkSignalFunc) fw_ok, &fs);
+    gtk_signal_connect(GTK_OBJECT
+                       (GTK_FILE_SELECTION(fs.fs)->cancel_button),
+                       "clicked", (GtkSignalFunc) fw_cancel, &fs);
+    gtk_signal_connect(GTK_OBJECT(fs.fs), "destroy",
+                       (GtkSignalFunc) fw_cancel, &fs);
+    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs.fs)->ok_button),
+                       "clicked", (GtkSignalFunc) fw_ok, &fs);
 
-/*	if(!fr->Save)
-	    f.Flags = OFN_FILEMUSTEXIST;
+/*    if(!fr->Save)
+        f.Flags = OFN_FILEMUSTEXIST;
  */
 
-	if (fr->Dir) {
-		if (getcwd(buffer, sizeof(buffer))) {
-			strcat(buffer, "/");
-			strcat(buffer, fr->Dir);
+    if (fr->Dir) {
+        if (getcwd(buffer, sizeof(buffer))) {
+            strcat(buffer, "/");
+            strcat(buffer, fr->Dir);
 
-			if (buffer[strlen(buffer) - 1] != '/')
-				strcat(buffer, "/");
+            if (buffer[strlen(buffer) - 1] != '/')
+                strcat(buffer, "/");
 
-			gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs.fs),
-											buffer);
-		}
-	}
+            gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs.fs),
+                                            buffer);
+        }
+    }
 
-	if (fr->Filter) {
-		char *temp = strrchr(fr->Filter, '|');
+    if (fr->Filter) {
+        char *temp = strrchr(fr->Filter, '|');
 
-		if (temp)
-			gtk_file_selection_complete(GTK_FILE_SELECTION(fs.fs),
-										temp + 1);
-	}
+        if (temp)
+            gtk_file_selection_complete(GTK_FILE_SELECTION(fs.fs),
+                                        temp + 1);
+    }
 //      f.lpstrTitle = fr->Title;
 
 
-	gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(fs.fs));
-	gtk_widget_show(fs.fs);
+    gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(fs.fs));
+    gtk_widget_show(fs.fs);
 
-	D(bug("Open freq...\n"));
-	gtk_main();
-	D(bug("Closed filereq...(%d)\n", fs.success));
-	return fs.success;
+    D(bug("Open freq...\n"));
+    gtk_main();
+    D(bug("Closed filereq...(%d)\n", fs.success));
+    return fs.success;
 }
 
 #elif defined(MACOSX)
@@ -199,10 +199,10 @@ BOOL FileRequest(struct MyFileRequest *fr)
 
 BOOL FileRequest(struct MyFileRequest *fr)
 {
-	extern int MacRequester(struct MyFileRequest *);
-	*szFileName = 0;
-	fr->File = szFileName;	
-	return MacRequester(fr);
+    extern int MacRequester(struct MyFileRequest *);
+    *szFileName = 0;
+    fr->File = szFileName;    
+    return MacRequester(fr);
 }
 
 #elif defined(AMIGA) || defined(AROS)
@@ -220,7 +220,7 @@ BOOL FileRequest(struct MyFileRequest *fr)
         char  *use_filter = NULL;
         
         if (fr->Filter) {
-    		use_filter = strrchr(fr->Filter, '|');
+            use_filter = strrchr(fr->Filter, '|');
     
             if (use_filter) {
                 use_filter[0] = '#';
@@ -238,7 +238,7 @@ BOOL FileRequest(struct MyFileRequest *fr)
                     TAG_DONE
                     )) {
 
-        	fr->File = szFileName;
+            fr->File = szFileName;
 
             if (f->fr_Drawer)
                 strcpy(szFileName, f->fr_Drawer);
@@ -254,7 +254,7 @@ BOOL FileRequest(struct MyFileRequest *fr)
 
         FreeAslRequest(f);
     }
-	return FALSE;
+    return FALSE;
 }
 #else
 
@@ -263,6 +263,6 @@ BOOL FileRequest(struct MyFileRequest *fr)
 
 BOOL FileRequest(struct MyFileRequest *fr)
 {
-	return FALSE;
+    return FALSE;
 }
-#endif							/* WIN */
+#endif                            /* WIN */

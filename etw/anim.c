@@ -60,8 +60,8 @@ void MakeYTable(short f_BytesPerRow);
 
 /*
 extern __asm void decode_plane(register __a0 UBYTE *,register __a5 UBYTE *,
-				register __a2 PLANEPTR,register __d2 LONG,
-				register __a3 short *,register __d0 LONG);
+                register __a2 PLANEPTR,register __d2 LONG,
+                register __a3 short *,register __d0 LONG);
 */
 
 void C_BdyUnpack(UBYTE *,PTR_RING *,LONG, LONG, LONG);
@@ -72,96 +72,96 @@ short  g_ytable[128];
 
 void FreeFrames(struct AnimInstData *a)
 {
-	register struct FrameNode *fn,*fnsucc;
+    register struct FrameNode *fn,*fnsucc;
 
-	for(fn=(struct FrameNode *)a->aid_FrameList.lh_Head;
-		fn->fn_Node.mln_Succ ; fn=fnsucc)
-	{
-			fnsucc=fn->fn_Node.mln_Succ;
-			free(fn->fn_BitMap);
-			free(fn);
-	}
-	free(aid);
+    for(fn=(struct FrameNode *)a->aid_FrameList.lh_Head;
+        fn->fn_Node.mln_Succ ; fn=fnsucc)
+    {
+            fnsucc=fn->fn_Node.mln_Succ;
+            free(fn->fn_BitMap);
+            free(fn);
+    }
+    free(aid);
 }
 
 struct FrameNode *GetFrameNode(struct AnimInstData *a,int n)
 {
-	register struct FrameNode *fn;
+    register struct FrameNode *fn;
 
-	for(fn=(struct FrameNode *)a->aid_FrameList.mlh_Head;
-		fn->fn_Node.mln_Succ && n>0; fn=(struct FrameNode *)fn->fn_Node.mln_Succ,n--);
+    for(fn=(struct FrameNode *)a->aid_FrameList.mlh_Head;
+        fn->fn_Node.mln_Succ && n>0; fn=(struct FrameNode *)fn->fn_Node.mln_Succ,n--);
 
-	return fn;
+    return fn;
 }
 
 void DisplayAnim(struct AnimInstData *a)
 {
-	LONG sclk,i=0,l=0,t,current=0,s=0;
-	register struct FrameNode *fn;
-	register struct BitMap *bm;
+    LONG sclk,i=0,l=0,t,current=0,s=0;
+    register struct FrameNode *fn;
+    register struct BitMap *bm;
 
-	sclk=clock()-20;
+    sclk=clock()-20;
 
-	CopyBitMap(((struct FrameNode *)a->aid_FrameList.mlh_Head)->fn_BitMap,Temp);
+    CopyBitMap(((struct FrameNode *)a->aid_FrameList.mlh_Head)->fn_BitMap,Temp);
 
-	for(fn=(struct FrameNode *)a->aid_FrameList.mlh_Head;
-		fn->fn_Node.mln_Succ;fn=(struct FrameNode *)fn->fn_Node.mln_Succ)
-	{
-		if(!fn->fn_BitMap)
-		{
-			DeltaUnpack(Temp,(LONG)fn->delta,0);
-			bm=Temp;
-		}
-		else bm=fn->fn_BitMap;
+    for(fn=(struct FrameNode *)a->aid_FrameList.mlh_Head;
+        fn->fn_Node.mln_Succ;fn=(struct FrameNode *)fn->fn_Node.mln_Succ)
+    {
+        if(!fn->fn_BitMap)
+        {
+            DeltaUnpack(Temp,(LONG)fn->delta,0);
+            bm=Temp;
+        }
+        else bm=fn->fn_BitMap;
 
-		l++;
+        l++;
 
-		if(fn->fn_Sample)
-		{
-			fn->fn_Sample->Rate=fn->fn_Rate;
-			fn->fn_Sample->Volume=fn->fn_Volume;
-			fn->fn_Sample->Loops=fn->fn_Loops;
-			PlayBackSound(fn->fn_Sample);
-		}
+        if(fn->fn_Sample)
+        {
+            fn->fn_Sample->Rate=fn->fn_Rate;
+            fn->fn_Sample->Volume=fn->fn_Volume;
+            fn->fn_Sample->Loops=fn->fn_Loops;
+            PlayBackSound(fn->fn_Sample);
+        }
 
-		t=(clock()-sclk);
+        t=(clock()-sclk);
 
-		if(fn->fn_Node.mln_Succ->mln_Succ && t>((struct FrameNode *)fn->fn_Node.mln_Succ)->Clock)
-		{
-			s++;
-			continue;
+        if(fn->fn_Node.mln_Succ->mln_Succ && t>((struct FrameNode *)fn->fn_Node.mln_Succ)->Clock)
+        {
+            s++;
+            continue;
 /*
-			fn=(struct FrameNode *)fn->fn_Node.mln_Succ;
-			DeltaUnpack(Temp,(LONG)fn->delta,0);
-			fn->fn_BitMap=Temp;
-	Proviamo cosi'...
+            fn=(struct FrameNode *)fn->fn_Node.mln_Succ;
+            DeltaUnpack(Temp,(LONG)fn->delta,0);
+            fn->fn_BitMap=Temp;
+    Proviamo cosi'...
 */
-		}
+        }
 
 // Inserire qui il plane2chunky e il blitting.
 
-		if( t<(fn->Clock) )
-		{
-			SDL_Delay(10);
-			i++;
-		}
+        if( t<(fn->Clock) )
+        {
+            SDL_Delay(10);
+            i++;
+        }
 
-		SDL_Flip();
+        SDL_Flip();
 
 /*
-		if( !(l&1) )
-		{
-			if( (ReadJoyPort(0)&JPF_BUTTON_RED) ||
-				(ReadJoyPort(1)&&JPF_BUTTON_RED) )
-				break;
-		}
+        if( !(l&1) )
+        {
+            if( (ReadJoyPort(0)&JPF_BUTTON_RED) ||
+                (ReadJoyPort(1)&&JPF_BUTTON_RED) )
+                break;
+        }
 */
-	}
+    }
 
-	t=clock();
+    t=clock();
 
 
-	D(bug("%ld attese su %ld frames. (Rate: %ld fps, skip: %ld)\n",i,l,l/((t-sclk+20)/CLOCKS_PER_SEC),s ));
+    D(bug("%ld attese su %ld frames. (Rate: %ld fps, skip: %ld)\n",i,l,l/((t-sclk+20)/CLOCKS_PER_SEC),s ));
 }
 
 
@@ -176,18 +176,18 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
 
       if(iff=AllocIFF())
       {
-	      ULONG                pos        = 0UL,curframe=0L;      /* current file pos in IFF stream  */
-	      ULONG                modeid     = (ULONG)INVALID_ID;  /* anim view mode                  */
-	      ULONG                animwidth  = 0UL,                /* anim width                      */
-                	           animheight = 0UL,                /* anim height                     */
-        	                   animdepth  = 0UL;                /* anim depth                      */
-	      ULONG                timestamp  = 0UL;                /* timestamp                       */
-	      ULONG                minreltime = 1UL,                /* Maximum ah_RelTime value        */
-        	                   maxreltime = 0UL;                /* Minimum ah_RelTime              */
-	      struct StoredProperty *bmhdprop       = NULL, /* ILBM BMHD (struct BitMapHeader)        */
-        	                          *camgprop       = NULL, /* ILBM CAMG (amiga view mode id)         */
-                	                  *dpanprop       = NULL; /* DPaint DPAN chunk                      */
-	      const LONG propchunks[ (NUM_PROPCHUNKS * 2) ] =
+          ULONG                pos        = 0UL,curframe=0L;      /* current file pos in IFF stream  */
+          ULONG                modeid     = (ULONG)INVALID_ID;  /* anim view mode                  */
+          ULONG                animwidth  = 0UL,                /* anim width                      */
+                               animheight = 0UL,                /* anim height                     */
+                               animdepth  = 0UL;                /* anim depth                      */
+          ULONG                timestamp  = 0UL;                /* timestamp                       */
+          ULONG                minreltime = 1UL,                /* Maximum ah_RelTime value        */
+                               maxreltime = 0UL;                /* Minimum ah_RelTime              */
+          struct StoredProperty *bmhdprop       = NULL, /* ILBM BMHD (struct BitMapHeader)        */
+                                      *camgprop       = NULL, /* ILBM CAMG (amiga view mode id)         */
+                                      *dpanprop       = NULL; /* DPaint DPAN chunk                      */
+          const LONG propchunks[ (NUM_PROPCHUNKS * 2) ] =
             {
               ID_ILBM, ID_BMHD,
               ID_ILBM, ID_CAMG,
@@ -200,12 +200,12 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
               ID_ILBM, ID_NAME
             };
 
-	iff->iff_Stream=fh;
+    iff->iff_Stream=fh;
 
-	InitIFFasDOS(iff);
+    InitIFFasDOS(iff);
 
-	if(!OpenIFF(iff,IFFF_READ))
-	{
+    if(!OpenIFF(iff,IFFF_READ))
+    {
             if( !(error = PropChunks( iff, (LONG *)propchunks, NUM_PROPCHUNKS )) )
             {
 #define NUM_STOPCHUNKS (5L)
@@ -255,7 +255,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                   {
                     if( bmhdprop = FindProp( iff, ID_ILBM, ID_BMHD ) )
                     {
-		      struct BitMapHeader *bmh=aid->aid_BMH;
+              struct BitMapHeader *bmh=aid->aid_BMH;
                       ULONG poolsize,
                             availmem;
 
@@ -266,17 +266,17 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                       animdepth  = bmh -> bmh_Depth;
 
 //                      availmem = AvailMem( MEMF_PUBLIC );
-						if(IsListEmpty(aid->aid_FrameList))
-						{
+                        if(IsListEmpty(aid->aid_FrameList))
+                        {
 // Questa roba mi serve solo se creo, non nel merge!
 
                       /* Create a seperate pool for frames:
                        * (((width + 7) / 8) * height * depth + struct BitMapHeader + Padding) * 4 frames
                        */
-							MakeYTable(animwidth>>3);
+                            MakeYTable(animwidth>>3);
 
                       /* Shrink pool to a fitting size */
-						}
+                        }
                     }
                   }
 
@@ -354,15 +354,15 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
 
                                   fn -> fn_TimeStamp = timestamp++;
 
-								  if(fn->fn_Node.mln_Pred)
-									fn -> Clock = ((struct FrameNode *)fn->fn_Node.mln_Pred)->Clock+(CLOCKS_PER_SEC/50);
-								  else
-									fn -> Clock = (CLOCKS_PER_SEC/50);
+                                  if(fn->fn_Node.mln_Pred)
+                                    fn -> Clock = ((struct FrameNode *)fn->fn_Node.mln_Pred)->Clock+(CLOCKS_PER_SEC/50);
+                                  else
+                                    fn -> Clock = (CLOCKS_PER_SEC/50);
 
                                   fn -> fn_Frame     = fn -> fn_TimeStamp;
                                   
                                   fn -> fn_PrevFrame = fn;
-				  curframe++;
+                  curframe++;
                                 }
                                 else
                                 {
@@ -422,20 +422,20 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
 
                                       if( timestamp == 1UL )
                                       {
-										UBYTE *rgb=buff;
-										int rgb_nc=cn->cn_Size/3,i;
+                                        UBYTE *rgb=buff;
+                                        int rgb_nc=cn->cn_Size/3,i;
 
-					// Qui se voglio carico la palette
-									    for( i = 0UL ; i < rgb_nc ; i++ )
-										{
-											SDL_Color c;
-									        c.r = *rgb++;
-										    c.g = *rgb++;
-										    c.b = *rgb++;
+                    // Qui se voglio carico la palette
+                                        for( i = 0UL ; i < rgb_nc ; i++ )
+                                        {
+                                            SDL_Color c;
+                                            c.r = *rgb++;
+                                            c.g = *rgb++;
+                                            c.b = *rgb++;
 
-					        /* Replicate color information (see CMAP2Object for details) and store them into colormap */
-											SDL_SetColors(screen,&c,i,1);
-										}
+                            /* Replicate color information (see CMAP2Object for details) and store them into colormap */
+                                            SDL_SetColors(screen,&c,i,1);
+                                        }
                                       }
                                     }
 
@@ -470,11 +470,11 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                         {
                                           UBYTE *buff;
 
-										  if(!new)
-										  {
-											new=TRUE;
-										  }
-										  else Temp=fn->fn_BitMap;
+                                          if(!new)
+                                          {
+                                            new=TRUE;
+                                          }
+                                          else Temp=fn->fn_BitMap;
 
                                           /* Allocate buffer */
                                           if( buff = (UBYTE *)malloc( (cn -> cn_Size) + 32UL ) )
@@ -495,7 +495,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                             {
                                               error = DrawDLTA( aid, /*(prevfn -> fn_BitMap)*/ Temp, (fn -> fn_BitMap), (&(fn -> fn_AH)), buff, (cn -> cn_Size) );
 
-					      D(bug("Processo il frame %ld\n",fn->fn_TimeStamp));
+                          D(bug("Processo il frame %ld\n",fn->fn_TimeStamp));
 
                                               if( error )
                                               {
@@ -523,18 +523,18 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                         error = DTERROR_NOT_ENOUGH_DATA;
                                       }
                                     }
-									else
-									{
+                                    else
+                                    {
                                         if( fn->delta = (UBYTE *)malloc(((cn -> cn_Size) + 32UL) ) )
                                         {
                                             error = ReadChunkBytes( iff, fn->delta, (cn -> cn_Size) );
 
                                             if( error == (cn -> cn_Size) )
-                                            	error=0;
+                                                error=0;
 
-										}
-										else error = ERROR_NO_FREE_STORE;
-									}
+                                        }
+                                        else error = ERROR_NO_FREE_STORE;
+                                    }
                                   }
                                   else
                                   {
@@ -565,14 +565,14 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
               if( bmhdprop == NULL )
               {
                 D(bug( "scan: no bmhd found\n" ));
-				error=1;
+                error=1;
               }
               else
               {
                 /* Any frames loaded ? */
                 if( timestamp == 0UL )
                 {
-					error=1;
+                    error=1;
                 }
               }
             }
@@ -670,37 +670,37 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                 (aid -> aid_FPS) ));
 
             }
-			CloseIFF(iff);
+            CloseIFF(iff);
           }
           else
           {
               error = ERROR_REQUIRED_ARG_MISSING;
           }
-		FreeIFF(iff);
+        FreeIFF(iff);
     }
 
-	return error;
+    return error;
 }
 
 #if 0
 
 void DisplayFrame(struct FrameNode *fn)
 {
-	if(!fn->fn_BitMap)
-	{
-		DeltaUnpack(Temp,(LONG)fn->delta,0);
-		fn->fn_BitMap=Temp;
-	}
+    if(!fn->fn_BitMap)
+    {
+        DeltaUnpack(Temp,(LONG)fn->delta,0);
+        fn->fn_BitMap=Temp;
+    }
 
-	if(!cgxmode)
-	{
-		WaitTOF();
-		CopyBitMap(fn->fn_BitMap,CurrentRP->BitMap);
-	}
-	else
-		BltBitMap(fn->fn_BitMap,0,0,CurrentRP->BitMap,0,0,
-				fn->fn_BitMap->BytesPerRow<<3,fn->fn_BitMap->Rows,
-				0xc0,0xff,NULL);
+    if(!cgxmode)
+    {
+        WaitTOF();
+        CopyBitMap(fn->fn_BitMap,CurrentRP->BitMap);
+    }
+    else
+        BltBitMap(fn->fn_BitMap,0,0,CurrentRP->BitMap,0,0,
+                fn->fn_BitMap->BytesPerRow<<3,fn->fn_BitMap->Rows,
+                0xc0,0xff,NULL);
 }
 
 void StartAnim(struct AnimInstData *aid)
@@ -741,7 +741,7 @@ void StartAnim(struct AnimInstData *aid)
                   D(bug( "ADTM_START load error %ld", IoErr() ));
 
                   /* Unload frame... */
-				  UnloadFrame(aid,fn);
+                  UnloadFrame(aid,fn);
                 }
               }
             }
@@ -759,10 +759,10 @@ struct FrameNode *LoadFrame(struct AnimInstData *aid,ULONG timestamp)
         /* Find frame by timestamp */
 
         if( fn = FindFrameNode( (&(aid -> aid_FrameList)), timestamp ) )
-		LoadFrameNode(aid,fn);
+        LoadFrameNode(aid,fn);
 
 
-	return fn;
+    return fn;
 }
 
 LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
@@ -866,7 +866,7 @@ LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
                             if( error = DrawDLTA( aid, (fn -> fn_BitMap), (fn -> fn_BitMap), (&(worknode -> fn_AH)), buff, (worknode -> fn_BMSize) ) )
                             {
                               D(bug( "dlta unpacking error %lu\n", error ));
-							}
+                            }
 
                             /* Bump file pos */
                             aid -> aid_CurrFilePos = ((worknode -> fn_BMOffset) + 8UL) + bytesread;
@@ -908,7 +908,7 @@ LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
 
             /* Store frame/context information */
 
-	    CopyBitMap(fn->fn_BitMap,CurrentRP->BitMap);
+        CopyBitMap(fn->fn_BitMap,CurrentRP->BitMap);
 
 /*
             alf -> alf_Frame    = fn -> fn_Frame;
@@ -941,13 +941,13 @@ LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
 
 //          ReleaseSemaphore( (&(aid -> aid_SigSem)) );
 
-	return error;
+    return error;
 }
 
 void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
 {
           /* Free bitmaps only if we don't cache the whole anim */
-	struct FrameNode *fn2=fn;
+    struct FrameNode *fn2=fn;
 
           if( (aid -> aid_LoadAll) == FALSE )
           {
@@ -1066,7 +1066,7 @@ struct AnimInstData *LoadFrames( FILE *fh )
       {
 // E' importante azzerarla!
 
-	memset(aid,0,sizeof(struct AnimInstData));
+    memset(aid,0,sizeof(struct AnimInstData));
 
 //    InitSemaphore( (&(aid -> aid_SigSem)) );
     MyNewList( (struct List *)(&(aid -> aid_FrameList)) );
@@ -1075,7 +1075,7 @@ struct AnimInstData *LoadFrames( FILE *fh )
       aid -> aid_FH = fh;
       aid -> aid_BMH = malloc(sizeof(struct BitMapHeader));
 
-	error=MergeAnim(aid,fh);
+    error=MergeAnim(aid,fh);
       }
     }
     else
@@ -1091,7 +1091,7 @@ struct AnimInstData *LoadFrames( FILE *fh )
     }
 
     if(error!=0)
-	D(bug("Errore: %ld\n",error));
+    D(bug("Errore: %ld\n",error));
 
     return( aid );
 }
@@ -1329,8 +1329,8 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
             /* unpack ILBM BODY */
 //            return( LoadILBMBody( unpackbm, bmh, dlta, dltasize ) );
 
-	      BodyToBitMap(unpackbm,bmh,dlta,dltasize);	      
-	      return 0;
+          BodyToBitMap(unpackbm,bmh,dlta,dltasize);          
+          return 0;
         }
 
         case acmpXORILBM: /*  1  */
@@ -1392,7 +1392,7 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
             D(bug( "\adlta: acmpanim2 disabled, call author immediately\n" ));
             return( ERROR_NOT_IMPLEMENTED );
         }
-	break;
+    break;
 
         case acmpShortDelta:        /* 3 */
         {
@@ -1426,7 +1426,7 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
         case acmpStereoByteDelta:   /* 6 */
         {
 //            error = unpackbytedelta( unpackbm, dlta, dltasize );
-		DeltaUnpack(unpackbm,(LONG)dlta,0);
+        DeltaUnpack(unpackbm,(LONG)dlta,0);
         }
             break;
 
@@ -1435,12 +1435,12 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
             if( (ah -> ah_Flags) & ahfLongData )
             {
 //              error = unpackanim7longdelta( unpackbm, dlta, dltasize );
-		DeltaUnpack(unpackbm,(LONG)dlta,2);
+        DeltaUnpack(unpackbm,(LONG)dlta,2);
             }
             else
             {
 //              error = unpackanim7worddelta( unpackbm, dlta, dltasize );
-		DeltaUnpack(unpackbm,(LONG)dlta,1);
+        DeltaUnpack(unpackbm,(LONG)dlta,1);
             }
         }
             break;
@@ -1581,10 +1581,10 @@ void BodyToBitMap(struct BitMap *f_bm,struct BitMapHeader *bmh,UBYTE *f_body,LON
     i += Height;  // add the lines from stencil  plane
 
     BdyUnpack(f_body,
-	      &Ring[0],
-	      (long)i,              
-	      (long)f_bm->BytesPerRow,
-	      (long)f_info->compression);
+          &Ring[0],
+          (long)i,              
+          (long)f_bm->BytesPerRow,
+          (long)f_info->compression);
 
   }
   else
@@ -1592,18 +1592,18 @@ void BodyToBitMap(struct BitMap *f_bm,struct BitMapHeader *bmh,UBYTE *f_body,LON
   {
     Ring[Depth-1].next = (APTR)&Ring[0];
     C_BdyUnpack(f_body,
-	      &Ring[0],
-	      (long)i,                  /* Zeilensumme */
-	      (long)f_bm->BytesPerRow,
-	      (long)(dltasize!=(f_bm->BytesPerRow*i)) );
+          &Ring[0],
+          (long)i,                  /* Zeilensumme */
+          (long)f_bm->BytesPerRow,
+          (long)(dltasize!=(f_bm->BytesPerRow*i)) );
   }
 }               /* end BodyToBitMap */
 
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    MakeYTable
-	Setup a Multiplication Table for the
-	skip opcode.
+    Setup a Multiplication Table for the
+    skip opcode.
    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 
 void MakeYTable(short f_BytesPerRow)
@@ -1630,16 +1630,16 @@ void MakeYTable(short f_BytesPerRow)
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    DeltaUnpack
-	Unpack a DLTA Chunk into the corresponding frame bitmap.
-	This code handles:
-	- Anim5 standard DLTA Chunks       (IFF standard)
-	- Anim7 short and long DLTA Chunks (nonstandard format !!)
+    Unpack a DLTA Chunk into the corresponding frame bitmap.
+    This code handles:
+    - Anim5 standard DLTA Chunks       (IFF standard)
+    - Anim7 short and long DLTA Chunks (nonstandard format !!)
 
-	The DLTA Chunk contains
-	- 8 opcode list pointers (one for each plane) followed by
-	- 8 corresponding data list pointers (only in Anim7) followd by
-	- opcode and data
-	Unused Bitplanes have a deltadata[i] == 0
+    The DLTA Chunk contains
+    - 8 opcode list pointers (one for each plane) followed by
+    - 8 corresponding data list pointers (only in Anim7) followd by
+    - opcode and data
+    Unused Bitplanes have a deltadata[i] == 0
    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 
 // f_mode:
@@ -1652,7 +1652,7 @@ void MakeYTable(short f_BytesPerRow)
 void DeltaUnpack(struct BitMap *f_bm,long f_dlta_adr,long f_mode)
 {
    register unsigned char *opclist;
-	    unsigned char *dtalist;
+        unsigned char *dtalist;
    register short          i;
    long          *deltadata;
 
@@ -1663,15 +1663,15 @@ void DeltaUnpack(struct BitMap *f_bm,long f_dlta_adr,long f_mode)
    {
       if (deltadata[i])
       {
-	 opclist = (unsigned char *)deltadata + deltadata[i];
-	 dtalist = (unsigned char *)deltadata + deltadata[i+8];
-	 decode_plane(opclist,        /* in   (opc list)  */
-		      dtalist,        /* dta  (data list) */
-		      f_bm->Planes[i],  /* out  (bitplane)  */
-		      (long)f_bm->BytesPerRow,
-		      &g_ytable[0],
-		      f_mode
-		      );
+     opclist = (unsigned char *)deltadata + deltadata[i];
+     dtalist = (unsigned char *)deltadata + deltadata[i+8];
+     decode_plane(opclist,        /* in   (opc list)  */
+              dtalist,        /* dta  (data list) */
+              f_bm->Planes[i],  /* out  (bitplane)  */
+              (long)f_bm->BytesPerRow,
+              &g_ytable[0],
+              f_mode
+              );
       }
    }
 }               /* end DeltaUnpack */
@@ -1709,31 +1709,31 @@ void C_BdyUnpack( UBYTE *f_bdy, PTR_RING *f_ring_ptr,long f_row,long f_BytePerRo
       /* loop for all bytes in one pixelline (count) */
       while(count > 0)
       {
-	i = *(f_bdy++);
-	if(i > 127 )            /* next byte is repeated i times */
-	{
-	  i =  257 - i;
+    i = *(f_bdy++);
+    if(i > 127 )            /* next byte is repeated i times */
+    {
+      i =  257 - i;
 
           ct_r++;
           sum_r += i;
 //          printf("r%3d ", (long)i);
 
-	  count -= i;
-	  while(i--)   *(WrPtr++) = *f_bdy;
-	  f_bdy++;
-	}
-	else                    /* transfer i uncompressed bytes */
-	{
-	  i++;
+      count -= i;
+      while(i--)   *(WrPtr++) = *f_bdy;
+      f_bdy++;
+    }
+    else                    /* transfer i uncompressed bytes */
+    {
+      i++;
 
           ct_u++;
           sum_u += i;
 //          D(bug("u%3ld ", (long)i));
 
 
-	  count -= i;
-	  while(i--)  *(WrPtr++) = *(f_bdy++);
-	}                               /* end if *f_bdy < 0 */
+      count -= i;
+      while(i--)  *(WrPtr++) = *(f_bdy++);
+    }                               /* end if *f_bdy < 0 */
       }                                 /* end while */
 
 //      D(bug("\n"));

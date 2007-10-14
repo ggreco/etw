@@ -8,13 +8,13 @@ long WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 50;
 extern BOOL free_longpass;
 BOOL use_key0 = FALSE, use_key1 = FALSE;
 
-Partita *p;
-Pallone *pl;
+game_t *p;
+ball_t *pl;
 
 #ifdef __SASC
 char versione[] =
-	"\0$VER: ETW-NG " ETW_VERSION " " __AMIGADATE__
-	" by Gabriele Greco - Hurricane Studios";
+    "\0$VER: ETW-NG " ETW_VERSION " " __AMIGADATE__
+    " by Gabriele Greco - Hurricane Studios";
 #endif
 
 BOOL highlight = FALSE;
@@ -30,7 +30,7 @@ void Progress(void)
 
     y = WINDOW_HEIGHT - 20;
 
-	/* AC: I've noticed that the max block was 22, but now I've reduced them to 20 */
+    /* AC: I've noticed that the max block was 22, but now I've reduced them to 20 */
     block_width = ((WINDOW_WIDTH - 20) / 20); //- 1;
     
     x += (progress_called*(block_width /*+ 1*/));
@@ -42,74 +42,74 @@ void Progress(void)
 
 void SetResult(char *fstring, ...)
 {
-	va_list ap;
-	FILE *f;
+    va_list ap;
+    FILE *f;
 
-	if ((f = fopen(RESULT_FILE, "w"))) {
-		int i, j, sn;
-		Team *s;
+    if ((f = fopen(RESULT_FILE, "w"))) {
+        int i, j, sn;
+        team_t *s;
 
-		va_start(ap, fstring);
-		vfprintf(f, fstring, ap);
-		va_end(ap);
+        va_start(ap, fstring);
+        vfprintf(f, fstring, ap);
+        va_end(ap);
 
-		if (quit_game) {
-			int l;
+        if (quit_game) {
+            int l;
 
-			if (network_game) {
-				if (*fstring == '%')	// verifico che la partita sia finita, altrimenti si e' interrotta.
-					SendFinish(p->team[0]->
-							   Reti | (p->team[1]->Reti << 8));
-				else
-					SendQuit();
+            if (network_game) {
+                if (*fstring == '%')    // verifico che la partita sia finita, altrimenti si e' interrotta.
+                    SendFinish(p->team[0]->
+                               Reti | (p->team[1]->Reti << 8));
+                else
+                    SendQuit();
             }
 
-			if (penalties) {
-				extern char golrig[2];
+            if (penalties) {
+                extern char golrig[2];
 
-				p->team[0]->Reti -= golrig[0];
-				p->team[1]->Reti -= golrig[1];
-				fprintf(f, "penalties\n%d\n", (int) golrig[0] + golrig[1]);
-			}
+                p->team[0]->Reti -= golrig[0];
+                p->team[1]->Reti -= golrig[1];
+                fprintf(f, "penalties\n%d\n", (int) golrig[0] + golrig[1]);
+            }
 
-			l = min(GA_SIZE, (p->team[0]->Reti + p->team[1]->Reti));
+            l = min(GA_SIZE, (p->team[0]->Reti + p->team[1]->Reti));
 
-			for (i = 0; i < l; i++)
-				fprintf(f, "%d %d %d\n", (int) goal_team[i],
-						(int) (goal_array[i] & (~(32))),
-						(int) goal_minute[i]);
+            for (i = 0; i < l; i++)
+                fprintf(f, "%d %d %d\n", (int) goal_team[i],
+                        (int) (goal_array[i] & (~(32))),
+                        (int) goal_minute[i]);
 
-			for (j = 0; j < 2; j++) {
-				s = p->team[j];
+            for (j = 0; j < 2; j++) {
+                s = p->team[j];
 
-				sn = 0;
+                sn = 0;
 
-				if ((teams_swapped && j == 0)
-					|| (!teams_swapped && j == 1))
-					sn = 1;
+                if ((teams_swapped && j == 0)
+                    || (!teams_swapped && j == 1))
+                    sn = 1;
 
 //                              fprintf("%ld\n",p->team[0]->Reti+p->team[1]->Reti); Non serve!
 
-				for (i = 0; i < 10; i++) {
-					char c = 0;
+                for (i = 0; i < 10; i++) {
+                    char c = 0;
 
-					if (s->players[i].AnimType == GIOCATORE_ESPULSO)
-						c = 'e';
-					else if (s->players[i].Ammonito)
-						c = 'a';
+                    if (s->players[i].AnimType == GIOCATORE_ESPULSO)
+                        c = 'e';
+                    else if (s->players[i].Ammonito)
+                        c = 'a';
 
-					if (s->players[i].Resistenza == 0)
-						c = 'i';
+                    if (s->players[i].stamina == 0)
+                        c = 'i';
 
-					if (c)
-						fprintf(f, "%d %d %c\n", (int) sn,
-								(int) s->players[i].number, c);
-				}
-			}
-		}
+                    if (c)
+                        fprintf(f, "%d %d %c\n", (int) sn,
+                                (int) s->players[i].number, c);
+                }
+            }
+        }
 
-		fclose(f);
-	}
+        fclose(f);
+    }
 }
 
 /*
@@ -118,270 +118,270 @@ void SetResult(char *fstring, ...)
 
 void DrawName(char *name, char *surname, int num, int x, int y)
 {
-	char buffer[50];
-	int k;
+    char buffer[50];
+    int k;
 
-	if (*name && *surname)
-		sprintf(buffer, "%-2d %s %s", num, name, surname);
-	else if (*surname)
-		sprintf(buffer, "%-2d %s", num, surname);
-	else if (*name)
-		sprintf(buffer, "%-2d %s", num, name);
+    if (*name && *surname)
+        sprintf(buffer, "%-2d %s %s", num, name, surname);
+    else if (*surname)
+        sprintf(buffer, "%-2d %s", num, surname);
+    else if (*name)
+        sprintf(buffer, "%-2d %s", num, name);
 
-	num = strlen(buffer);
+    num = strlen(buffer);
 
-	drawtext(buffer, num, x + 1, y + 1, Pens[P_NERO]);
-	k = drawtext(buffer, 2, x, y, Pens[P_GIALLO]);
-	drawtext(buffer + 2, num - 2, x + k, y, Pens[P_BIANCO]);
+    drawtext(buffer, num, x + 1, y + 1, Pens[P_NERO]);
+    k = drawtext(buffer, 2, x, y, Pens[P_GIALLO]);
+    drawtext(buffer + 2, num - 2, x + k, y, Pens[P_BIANCO]);
 
 }
 
 void Loading(void)
 {
-	char buffer[40];
-	struct myfont *sf = NULL;
-	extern struct myfont *gtf;
-	int i, x, y, passo, maxlen;
-	struct team_disk s;
+    char buffer[40];
+    struct myfont *sf = NULL;
+    extern struct myfont *gtf;
+    int i, x, y, passo, maxlen;
+    struct team_disk s;
 
 // Da metterci le immagini dei campi.
 
-	if (!arcade) {
-		sprintf(buffer, "gfx/stadium%02d.gfx", MyRangeRand(NUMERO_STADI));
-		LoadLogo(buffer);
-	} else {
-		LoadLogo("menugfx/worldmap.gfx");
-	}
+    if (!arcade) {
+        sprintf(buffer, "gfx/stadium%02d.gfx", MyRangeRand(NUMERO_STADI));
+        LoadLogo(buffer);
+    } else {
+        LoadLogo("menugfx/worldmap.gfx");
+    }
 
-	if (WINDOW_HEIGHT < 320 && WINDOW_WIDTH < 440) {
-		if (!(sf = openfont(SMALLGAME_FONT)))
-			printf("Unable to open required font!\n");
-	}
+    if (WINDOW_HEIGHT < 320 && WINDOW_WIDTH < 440) {
+        if (!(sf = openfont(SMALLGAME_FONT)))
+            printf("Unable to open required font!\n");
+    }
 
-	if (!sf)
-		sf = gtf;
+    if (!sf)
+        sf = gtf;
 
-	passo = WINDOW_HEIGHT / 23;
+    passo = WINDOW_HEIGHT / 23;
 
-	for (i = 0; i < 2; i++) {
-		if (training && i == 1)
-			break;
+    for (i = 0; i < 2; i++) {
+        if (training && i == 1)
+            break;
 
-		x = 10 + i * (WINDOW_WIDTH - 35);
-		maxlen = 20;
+        x = 10 + i * (WINDOW_WIDTH - 35);
+        maxlen = 20;
 
-		{
+        {
 
-			extern struct team_disk leftteam_dk, rightteam_dk;
-			int k, t, xsup, ysup;
-			char *n;
+            extern struct team_disk leftteam_dk, rightteam_dk;
+            int k, t, xsup, ysup;
+            char *n;
 
-			s = (i == 0 ? leftteam_dk : rightteam_dk);
+            s = (i == 0 ? leftteam_dk : rightteam_dk);
 
-			for (k = 0; k < s.nkeepers; k++) {
-				char *c = s.keepers[k].name, *d = s.keepers[k].surname;
+            for (k = 0; k < s.nkeepers; k++) {
+                char *c = s.keepers[k].name, *d = s.keepers[k].surname;
 
-				t = 0;
+                t = 0;
 
-				while (*c) {
-					*c = toupper(*c);
-					c++;
-					t++;
-				}
+                while (*c) {
+                    *c = toupper(*c);
+                    c++;
+                    t++;
+                }
 
-				while (*d) {
-					*d = toupper(*d);
-					d++;
-					t++;
-				}
+                while (*d) {
+                    *d = toupper(*d);
+                    d++;
+                    t++;
+                }
 
-				t += 4;
+                t += 4;
 
-				maxlen = max(t, maxlen);
+                maxlen = max(t, maxlen);
 #ifdef SUPER_DEBUG
-				D(bug("maxlen: %ld\n", maxlen));
+                D(bug("maxlen: %ld\n", maxlen));
 #endif
-			}
+            }
 
-			for (k = 0; k < s.nplayers; k++) {
-				char *c = s.players[k].name, *d = s.players[k].surname;
+            for (k = 0; k < s.nplayers; k++) {
+                char *c = s.players[k].name, *d = s.players[k].surname;
 
-				t = 0;
+                t = 0;
 
-				while (*c) {
-					*c = toupper(*c);
-					c++;
-					t++;
-				}
+                while (*c) {
+                    *c = toupper(*c);
+                    c++;
+                    t++;
+                }
 
-				while (*d) {
-					*d = toupper(*d);
-					d++;
-					t++;
-				}
+                while (*d) {
+                    *d = toupper(*d);
+                    d++;
+                    t++;
+                }
 
-				t += 4;
+                t += 4;
 
-				maxlen = max(t, maxlen);
+                maxlen = max(t, maxlen);
 #ifdef SUPER_DEBUG
-				D(bug("maxlen: %ld\n", maxlen));
+                D(bug("maxlen: %ld\n", maxlen));
 #endif
-			}
+            }
 
-			n = s.name;
-			t = 0;
+            n = s.name;
+            t = 0;
 
-			while (*n) {
-				t++;
-				*n = toupper(*n);
-				n++;
-			}
+            while (*n) {
+                t++;
+                *n = toupper(*n);
+                n++;
+            }
 
-			maxlen = max(maxlen * sf->width, t * gtf->width);
+            maxlen = max(maxlen * sf->width, t * gtf->width);
 
 #ifdef SUPER_DEBUG
-			D(bug("maxlen: %ld\n", maxlen));
+            D(bug("maxlen: %ld\n", maxlen));
 #endif
 
-			if (i == 1)
-				x -= maxlen;
+            if (i == 1)
+                x -= maxlen;
 
-			if (!arcade_teams)
-				y = passo * 2;
-			else {
-				GfxObj *o;
-				struct MyScaleArgs scale;
+            if (!arcade_teams)
+                y = passo * 2;
+            else {
+                gfx_t *o;
+                struct MyScaleArgs scale;
 
-				sprintf(buffer, "menugfx/arcade%d.gfx", arcade_team[i]);
+                sprintf(buffer, "menugfx/arcade%d.gfx", arcade_team[i]);
 
-				if ((o = LoadGfxObject(buffer, NULL, NULL))) {
-					scale.SrcX = scale.SrcY = 0;
+                if ((o = LoadGfxObject(buffer, NULL, NULL))) {
+                    scale.SrcX = scale.SrcY = 0;
 
-					if (i == 1)
-						scale.DestX = WINDOW_WIDTH - 10 - passo * 6;
-					else
-						scale.DestX = x;
+                    if (i == 1)
+                        scale.DestX = WINDOW_WIDTH - 10 - passo * 6;
+                    else
+                        scale.DestX = x;
 
-					scale.DestY = passo;
-					scale.SrcWidth = 70;	// o->width e o->height valgono 80...
-					scale.SrcHeight = 70;
-					scale.Dest = main_bitmap;
-					scale.SrcSpan = o->width;
-					scale.DestSpan = bitmap_width;
-					scale.Src = o->bmap;
-					scale.DestWidth = passo * 6;
-					scale.DestHeight = passo * 6;
-					bitmapScale(&scale);
-					FreeGfxObj(o);
-				}
+                    scale.DestY = passo;
+                    scale.SrcWidth = 70;    // o->width e o->height valgono 80...
+                    scale.SrcHeight = 70;
+                    scale.Dest = main_bitmap;
+                    scale.SrcSpan = o->width;
+                    scale.DestSpan = bitmap_width;
+                    scale.Src = o->bmap;
+                    scale.DestWidth = passo * 6;
+                    scale.DestHeight = passo * 6;
+                    bitmapScale(&scale);
+                    FreeGfxObj(o);
+                }
 
-				y = (passo * 8);
-			}
+                y = (passo * 8);
+            }
 
-			D(bug("X: %ld maxlen: %ld\n", x, maxlen));
+            D(bug("X: %ld maxlen: %ld\n", x, maxlen));
 
-			setfont(gtf);
+            setfont(gtf);
 
-			if (arcade_teams) {
-				if (i == 1) {
-					xsup = WINDOW_WIDTH - 9 - t * font_width;
-					ysup = y + font_height;
-				} else {
-					xsup = 11;
-					ysup = y + font_height;
-				}
-			} else {
-				xsup = x + 21;
-				ysup = y + font_height;
-			}
-
-
-			drawtext(s.name, t, xsup, ysup, Pens[P_NERO]);
-
-			xsup--;
-			ysup--;
-
-			drawtext(s.name, t, xsup, ysup, Pens[P_BIANCO]);
-
-			y += passo;
-
-			if (player_type[i] != -1 || training) {
-				unsigned char c;
-
-				if (player_type[i] == 1)
-					c = Pens[RADAR_TEAM_A];
-				else
-					c = Pens[RADAR_TEAM_B];
+            if (arcade_teams) {
+                if (i == 1) {
+                    xsup = WINDOW_WIDTH - 9 - t * font_width;
+                    ysup = y + font_height;
+                } else {
+                    xsup = 11;
+                    ysup = y + font_height;
+                }
+            } else {
+                xsup = x + 21;
+                ysup = y + font_height;
+            }
 
 
-				if (arcade_teams) {
-					if (i == 1)
-						rectfill(main_bitmap,
-								 WINDOW_WIDTH - 10 - t * gtf->width, y + 3,
-								 WINDOW_WIDTH - 10, y + 7, c,
-								 bitmap_width);
-					else
-						rectfill(main_bitmap, 10, y + 3,
-								 10 + t * gtf->width, y + 7, c,
-								 bitmap_width);
-				} else
-					rectfill(main_bitmap, x + 20, y + 3,
-							 x + 20 + t * gtf->width, y + 7, c,
-							 bitmap_width);
-			}
+            drawtext(s.name, t, xsup, ysup, Pens[P_NERO]);
 
-			y += 2 * passo;
+            xsup--;
+            ysup--;
 
-			setfont(sf);
+            drawtext(s.name, t, xsup, ysup, Pens[P_BIANCO]);
 
-			DrawName(s.keepers[0].name, s.keepers[0].surname, 1, x,
-					 y + sf->height - 1);
+            y += passo;
 
-			y += passo;
+            if (player_type[i] != -1 || training) {
+                unsigned char c;
 
-			for (t = 0; t < 10; t++) {
-				DrawName(s.players[t].name, s.players[t].surname,
-						 t + 2, x, y + sf->height - 1);
-				y += passo;
-			}
+                if (player_type[i] == 1)
+                    c = Pens[RADAR_TEAM_A];
+                else
+                    c = Pens[RADAR_TEAM_B];
 
-			if (!arcade_teams) {
-				y += passo;
 
-				if (s.nkeepers > 1) {
-					DrawName(s.keepers[1].name, s.keepers[1].surname, 12,
-							 x, y + sf->height - 1);
-					y += passo;
-				}
+                if (arcade_teams) {
+                    if (i == 1)
+                        rectfill(main_bitmap,
+                                 WINDOW_WIDTH - 10 - t * gtf->width, y + 3,
+                                 WINDOW_WIDTH - 10, y + 7, c,
+                                 bitmap_width);
+                    else
+                        rectfill(main_bitmap, 10, y + 3,
+                                 10 + t * gtf->width, y + 7, c,
+                                 bitmap_width);
+                } else
+                    rectfill(main_bitmap, x + 20, y + 3,
+                             x + 20 + t * gtf->width, y + 7, c,
+                             bitmap_width);
+            }
 
-				for (t = 10; t < min(14, s.nplayers); t++) {
-					DrawName(s.players[t].name, s.players[t].surname,
-							 t + 3, x, y + sf->height - 1);
-					y += passo;
-				}
-			}
+            y += 2 * passo;
 
-		}
-	}
+            setfont(sf);
 
-	if (sf != gtf) {
-		setfont(gtf);
-		closefont(sf);
-	}
+            DrawName(s.keepers[0].name, s.keepers[0].surname, 1, x,
+                     y + sf->height - 1);
 
-	ScreenSwap();
+            y += passo;
 
-	if (triple_buffering)
-		ScreenSwap();
+            for (t = 0; t < 10; t++) {
+                DrawName(s.players[t].name, s.players[t].surname,
+                         t + 2, x, y + sf->height - 1);
+                y += passo;
+            }
 
-	Progress();
+            if (!arcade_teams) {
+                y += passo;
+
+                if (s.nkeepers > 1) {
+                    DrawName(s.keepers[1].name, s.keepers[1].surname, 12,
+                             x, y + sf->height - 1);
+                    y += passo;
+                }
+
+                for (t = 10; t < min(14, s.nplayers); t++) {
+                    DrawName(s.players[t].name, s.players[t].surname,
+                             t + 3, x, y + sf->height - 1);
+                    y += passo;
+                }
+            }
+
+        }
+    }
+
+    if (sf != gtf) {
+        setfont(gtf);
+        closefont(sf);
+    }
+
+    ScreenSwap();
+
+    if (triple_buffering)
+        ScreenSwap();
+
+    Progress();
 }
 
 void FreeStuff(void)
 {
-	extern BOOL was_using_nosound;
+    extern BOOL was_using_nosound;
 
-	LiberaPartita(p);
+    LiberaPartita(p);
 
     VuotaCLista();
 
@@ -395,24 +395,24 @@ void FreeStuff(void)
         scaling = NULL;
     }
     
-	D(bug("Freeing replay buffers...\n"));
-	FreeReplayBuffers();
+    D(bug("Freeing replay buffers...\n"));
+    FreeReplayBuffers();
 
-	D(bug("Freeing fonts...\n"));
-	FreeFonts();
+    D(bug("Freeing fonts...\n"));
+    FreeFonts();
 
     free_crowd();
     
-	if (!no_sound || (replay_mode && !was_using_nosound)) {
+    if (!no_sound || (replay_mode && !was_using_nosound)) {
 // non libero piu' il sound system, lo condivido tra menu' e game
-		D(bug("Freeing sounds.\n"));
-		LiberaSuoni();
-	}
+        D(bug("Freeing sounds.\n"));
+        LiberaSuoni();
+    }
 
-	free_joyports();
+    free_joyports();
 
-	os_free_timer();
-	close_graphics();
+    os_free_timer();
+    close_graphics();
 }
 
 
@@ -425,10 +425,10 @@ void FreeStuff(void)
 BOOL LoadStuff(void)
 {
     int i;
-    save_back = FALSE;			/* Non mi interessa conservare gli sfondi */
-    use_clipping = TRUE;		/* Voglio vedere gli omini parzialmente fuori dallo schermo */
+    save_back = FALSE;            /* Non mi interessa conservare gli sfondi */
+    use_clipping = TRUE;        /* Voglio vedere gli omini parzialmente fuori dallo schermo */
 
-    //	srand((int) time(NULL));
+    //    srand((int) time(NULL));
 
     os_init_timer();
 
@@ -536,7 +536,7 @@ BOOL LoadStuff(void)
     }
 
     if ((background = LoadGfxObject(fieldname, Pens, NULL))) {
-        GfxObj *temp;
+        gfx_t *temp;
         int i, x = 106;
 
         Progress();
@@ -609,7 +609,7 @@ BOOL LoadStuff(void)
         Progress();
 
         if (!arcade && !training) {
-            AnimObj *p;
+            anim_t *p;
 
             if ( (p = LoadAnimObject("gfx/people.obj", Pens))) {
                 for (i = 0; i < NUMERO_OGGETTI; i++) {
@@ -656,7 +656,7 @@ BOOL LoadStuff(void)
 #endif
         if (!arcade) {
             char portname[20] = "gfx/porte.obj";
-            AnimObj *obj = LoadAnimObject(portname, Pens);
+            anim_t *obj = LoadAnimObject(portname, Pens);
 
             if (!obj) {
                 FreeFonts();
@@ -819,35 +819,35 @@ int game_main(void)
 {
     progress_called = 0;
 
-	read_config();
+    read_config();
 
-	if (arcade_teams && use_speaker) {
-		use_speaker = FALSE;
-		use_crowd = TRUE;
-	}
+    if (arcade_teams && use_speaker) {
+        use_speaker = FALSE;
+        use_crowd = TRUE;
+    }
 
-	if (arcade) {
-		injuries = FALSE;
-		bookings = FALSE;
-		substitutions = FALSE;
-	}
+    if (arcade) {
+        injuries = FALSE;
+        bookings = FALSE;
+        substitutions = FALSE;
+    }
 
-	init_system();
+    init_system();
 
-	if (use_speaker)
-		free_speaker();
+    if (use_speaker)
+        free_speaker();
 
 
     LiberaListe();
     
-	quit_game = FALSE;
+    quit_game = FALSE;
 
 #ifdef __CODEGUARD__
-	if(access(TEMP_DIR "lock",0) != -1)
+    if(access(TEMP_DIR "lock",0) != -1)
 #endif
-	remove(TEMP_DIR "lock");
+    remove(TEMP_DIR "lock");
 
-	D(bug("Match end!\n"));
+    D(bug("Match end!\n"));
 
-	return 0;
+    return 0;
 }
