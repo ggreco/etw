@@ -28,7 +28,7 @@ void CheckStatus(void)
                 frase=PALLA_PERSA;
             else
             {
-                special_status=S_SQUADRA_A-(pl->gioc_palla->SNum^1);
+                special_status=S_TEAM_A-(pl->gioc_palla->SNum^1);
                 frase=PERDE_LA_PALLA+MyRangeRand(2);
             }
             break;
@@ -98,8 +98,8 @@ void CheckStatus(void)
         case S_ESPULSIONE:
             frase=L_ARBITRO_ESTRAE_IL_CARTELLINO_ROSSO;
             break;
-        case S_GOAL_SQUADRA_A:
-        case S_GOAL_SQUADRA_B:
+        case S_GOAL_TEAM_A:
+        case S_GOAL_TEAM_B:
             frase=ED_E_GOL+MyRangeRand(5);
             break;
         case S_INIZIO_REPLAY:
@@ -162,7 +162,7 @@ void CheckStatus(void)
                             }
                             else
                             {
-                                special_status=S_SQUADRA_A-pl->gioc_palla->SNum;
+                                special_status=S_TEAM_A-pl->gioc_palla->SNum;
                                 frase=CI_PROVA_SULLA_FASCIA+MyRangeRand(2);
                             }
                         }
@@ -170,8 +170,8 @@ void CheckStatus(void)
                         {
                             if(CanScore(g)==CS_SI)
                             {
-                                if(p->squadra[g->SNum]->Reti > 
-                                        p->squadra[g->SNum^1]->Reti+1
+                                if(p->team[g->SNum]->Reti > 
+                                        p->team[g->SNum^1]->Reti+1
                                         && MyRangeRand(3)!=0)
                                     frase=E_UN_ASSEDIO+MyRangeRand(2);
                                 else
@@ -184,39 +184,39 @@ void CheckStatus(void)
 
                             if(frase!=E_UN_ASSEDIO
                                     && frase!=SI_GIOCA_AD_UNA_PORTA)
-                                special_status=S_SQUADRA_A-g->SNum;
+                                special_status=S_TEAM_A-g->SNum;
                         }
                         break;
                     case 1:
-                        if(p->squadra[0]->Reti>p->squadra[1]->Reti+1)
+                        if(p->team[0]->Reti>p->team[1]->Reti+1)
                         {
 
                             switch(MyRangeRand(7))
                             {
                                 case 0:
                                 case 5:
-                                    special_status=S_SQUADRA_A;
+                                    special_status=S_TEAM_A;
                                     frase=STA_DOMINANDO_LA_PARTITA;
                                     break;
                                 case 2:
                                 case 1:
-                                    special_status=S_SQUADRA_B;
+                                    special_status=S_TEAM_B;
                                     frase=E_IN_BALIA_DELL_AVVERSARIO;
                                     break;	
                             }
                         }
-                        else if(p->squadra[1]->Reti>p->squadra[0]->Reti+1)
+                        else if(p->team[1]->Reti>p->team[0]->Reti+1)
                         {
                             switch(MyRangeRand(7))
                             {
                                 case 0:
                                 case 5:
-                                    special_status=S_SQUADRA_B;
+                                    special_status=S_TEAM_B;
                                     frase=STA_DOMINANDO_LA_PARTITA;
                                     break;
                                 case 2:
                                 case 1:
-                                    special_status=S_SQUADRA_A;
+                                    special_status=S_TEAM_A;
                                     frase=E_IN_BALIA_DELL_AVVERSARIO;
                                     break;	
                             }
@@ -395,12 +395,12 @@ struct SoundInfo *handle_speaker(void)
 
 		switch(special_status)
 		{
-			case S_SQUADRA_A:
+			case S_TEAM_A:
 				special_status=S_NOMESQUADRA;
 				previous_status=frase;
 				frase=team_a;
 				break;
-			case S_SQUADRA_B:
+			case S_TEAM_B:
 				special_status=S_NOMESQUADRA;
 				previous_status=frase;
 				frase=team_b;

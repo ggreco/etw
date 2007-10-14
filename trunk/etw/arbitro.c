@@ -26,9 +26,9 @@ Giocatore *PrendiPalla(void)
 
 		for(i=0;i<10;i++)
 		{
-			if(v->squadra->giocatore[i].Comando==0&&
-				v->squadra->giocatore[i].AnimType!=GIOCATORE_ESPULSO)
-				ChangeControlled(v->squadra,i);
+			if(v->team->giocatore[i].Comando==0&&
+				v->team->giocatore[i].AnimType!=GIOCATORE_ESPULSO)
+				ChangeControlled(v->team,i);
 		}
 	}
 
@@ -153,24 +153,24 @@ void HandleArbitro(void)
 							g->Tick=150;
 
 						}
-						else if( (!nopari) || (p->squadra[0]->Reti!=p->squadra[1]->Reti) )
+						else if( (!nopari) || (p->team[0]->Reti!=p->team[1]->Reti) )
 						{
 							g->Comando=0;
 							quit_game=TRUE;
 							full_replay=FALSE;
 //							if(teams_swapped)
 //							{
-								SetResult("%ld-%ld\n",p->squadra[1]->Reti,p->squadra[0]->Reti);
+								SetResult("%ld-%ld\n",p->team[1]->Reti,p->team[0]->Reti);
 								D(bug("\t\tHandleArbitro: inverto il risultato %s: %d - %s: %d!\n",
-									p->squadra[0]->Nome,p->squadra[0]->Reti,
-									p->squadra[1]->Nome,p->squadra[1]->Reti));
+									p->team[0]->Nome,p->team[0]->Reti,
+									p->team[1]->Nome,p->team[1]->Reti));
 //							}
 //							else
 //							{
-//								SetResult("%ld-%ld\n",p->squadra[0]->Reti,p->squadra[1]->Reti);
+//								SetResult("%ld-%ld\n",p->team[0]->Reti,p->team[1]->Reti);
 //								D(bug("\t\tHandleArbitro: mantengo il risultato %s: %d - %s: %d!\n",
-//									p->squadra[0]->Nome,p->squadra[0]->Reti,
-//									p->squadra[1]->Nome,p->squadra[1]->Reti));
+//									p->team[0]->Nome,p->team[0]->Reti,
+//									p->team[1]->Nome,p->team[1]->Reti));
 //							}
 						}
 						else if(!extratime)
@@ -187,8 +187,8 @@ void HandleArbitro(void)
 							g->Comando=FISCHIA_RIPRESA;
 							pl->settore=KICKOFF;
 
-							p->squadra[starting_team]->Possesso=1;
-							p->squadra[starting_team^1]->Possesso=0;
+							p->team[starting_team]->Possesso=1;
+							p->team[starting_team^1]->Possesso=0;
 
 							StartGameTime=Timer();
 							EndTime=time_length*MY_CLOCKS_PER_SEC+StartGameTime;
@@ -198,7 +198,7 @@ void HandleArbitro(void)
 							full_replay=FALSE;
 							penalties=TRUE;
 							golrig[0]=golrig[1]=0;
-							p->squadra[0]->Falli=p->squadra[1]->Falli=0;
+							p->team[0]->Falli=p->team[1]->Falli=0;
 
 							StartGameTime=Timer();
 							EndTime=60*40*MY_CLOCKS_PER_SEC+StartGameTime; // do 40 minuti per finire i rigori...
@@ -260,8 +260,8 @@ void HandleArbitro(void)
 							pl->settore=KICKOFF;
 
 // E' sempre starting team ad avere la palla!
-							p->squadra[starting_team]->Possesso=1;
-							p->squadra[starting_team^1]->Possesso=0;
+							p->team[starting_team]->Possesso=1;
+							p->team[starting_team^1]->Possesso=0;
 
 							StartGameTime=Timer();
 							EndTime=time_length*MY_CLOCKS_PER_SEC+StartGameTime;
@@ -295,18 +295,18 @@ void HandleArbitro(void)
 							p->last_touch|=OWN_GOAL;
 						}
 
-						p->squadra[0]->Reti++;
+						p->team[0]->Reti++;
 
 						if(penalties)
 							golrig[0]++;
 
-						p->squadra[0]->Possesso=0;
-						p->squadra[1]->Possesso=1;
+						p->team[0]->Possesso=0;
+						p->team[1]->Possesso=1;
 
 						if(!replay_mode&&!training)
 						{
-							game_status=S_GOAL_SQUADRA_A;
-							UrgentSpeaker(S_GOAL_SQUADRA_A);
+							game_status=S_GOAL_TEAM_A;
+							UrgentSpeaker(S_GOAL_TEAM_A);
 						}
 					}
 					else
@@ -321,18 +321,18 @@ void HandleArbitro(void)
 							p->last_touch|=OWN_GOAL;
 						}
 
-						p->squadra[1]->Reti++;
+						p->team[1]->Reti++;
 
 						if(penalties)
 							golrig[1]++;
 
-						p->squadra[0]->Possesso=1;
-						p->squadra[1]->Possesso=0;
+						p->team[0]->Possesso=1;
+						p->team[1]->Possesso=0;
 
 						if(!replay_mode&&!training)
 						{
-							game_status=S_GOAL_SQUADRA_B;
-							UrgentSpeaker(S_GOAL_SQUADRA_B);
+							game_status=S_GOAL_TEAM_B;
+							UrgentSpeaker(S_GOAL_TEAM_B);
 						}
 
 					}
@@ -341,10 +341,10 @@ void HandleArbitro(void)
 
 // Assegno gol e marcatore
 
-					if(!penalties && (p->squadra[0]->Reti+p->squadra[1]->Reti)<GA_SIZE )
+					if(!penalties && (p->team[0]->Reti+p->team[1]->Reti)<GA_SIZE )
 					{
 						mytimer temptime;
-						int i=p->squadra[0]->Reti+p->squadra[1]->Reti-1;
+						int i=p->team[0]->Reti+p->team[1]->Reti-1;
 
 						goal_array[i]=p->last_touch;
 
@@ -447,7 +447,7 @@ void HandleArbitro(void)
 				case FISCHIA_KICKOFF:
 					{
 						BOOL ok=FALSE;
-						register Squadra *s=p->squadra[0];
+						register Team *s=p->team[0];
 
 						if(p->show_panel&0xff00)
 						{
@@ -456,8 +456,8 @@ void HandleArbitro(void)
 							break;
 						}
 
-						if(!training && p->squadra[1]->Possesso)
-							s=p->squadra[1];
+						if(!training && p->team[1]->Possesso)
+							s=p->team[1];
 
 						if(!first_kickoff)
 						{
@@ -560,9 +560,9 @@ void HandleArbitro(void)
 						Giocatore *v;
 
 						if(g->Argomento>=10)
-							v=&p->squadra[1]->giocatore[g->Argomento-10];
+							v=&p->team[1]->giocatore[g->Argomento-10];
 						else
-							v=&p->squadra[0]->giocatore[g->Argomento];
+							v=&p->team[0]->giocatore[g->Argomento];
 
 						v->ActualSpeed=0;
 						v->Comando=STAI_FERMO;
@@ -645,11 +645,11 @@ void HandleArbitro(void)
 					{
 						SwapTeams();
 
-						if( (	p->squadra[1]->Falli>=5 &&
-							p->squadra[0]->Reti!=p->squadra[1]->Reti &&
-							p->squadra[0]->Falli==p->squadra[1]->Falli) ||
-						    	p->squadra[1]->Reti>(p->squadra[0]->Reti+5-p->squadra[0]->Falli) ||
-							p->squadra[0]->Reti>(p->squadra[1]->Reti+5-p->squadra[1]->Falli)
+						if( (	p->team[1]->Falli>=5 &&
+							p->team[0]->Reti!=p->team[1]->Reti &&
+							p->team[0]->Falli==p->team[1]->Falli) ||
+						    	p->team[1]->Reti>(p->team[0]->Reti+5-p->team[0]->Falli) ||
+							p->team[0]->Reti>(p->team[1]->Reti+5-p->team[1]->Falli)
 							)
 						{
 							g->Comando=FISCHIA_FINE;
@@ -657,7 +657,7 @@ void HandleArbitro(void)
 							break;
 						}
 					}
-					else if(p->squadra[1]->Falli>=5)
+					else if(p->team[1]->Falli>=5)
 					{
 						D(bug("Battuti 5 rigori, fine allenamento!\n"));
 						g->Comando=FISCHIA_FINE;
@@ -665,13 +665,13 @@ void HandleArbitro(void)
 						break;
 					}
 
-					p->squadra[1]->portiere.AnimType=PORTIERE_FERMO;
-					p->squadra[1]->portiere.Special=FALSE;
+					p->team[1]->portiere.AnimType=PORTIERE_FERMO;
+					p->team[1]->portiere.Special=FALSE;
 
 
-					pl->sq_palla=p->squadra[0];
-					p->squadra[0]->Possesso=1;
-					p->squadra[1]->Possesso=0;
+					pl->sq_palla=p->team[0];
+					p->team[0]->Possesso=1;
+					p->team[1]->Possesso=0;
 					p->arbitro.Comando=BATTI_FALLO;
 
 					if(penalties)
@@ -682,8 +682,8 @@ void HandleArbitro(void)
 					}
 					else
 					{
-						pl->world_x=piazzati[p->squadra[1]->Falli].x;
-						pl->world_y=piazzati[p->squadra[1]->Falli].y;
+						pl->world_x=piazzati[p->team[1]->Falli].x;
+						pl->world_y=piazzati[p->team[1]->Falli].y;
 						pl->settore = (pl->world_y/1450 << 2) + (pl->world_x/2560);
 					}
 					g->world_x=pl->world_x;
@@ -691,8 +691,8 @@ void HandleArbitro(void)
 					g->Direzione=4;
 					p->flash_pos=0;
 					p->flash_mode=TRUE;
-					DisponiSquadra(p->squadra[0],pl->settore,TRUE);
-					DisponiSquadra(p->squadra[1],pl->settore,FALSE);
+					DisponiSquadra(p->team[0],pl->settore,TRUE);
+					DisponiSquadra(p->team[1],pl->settore,FALSE);
 					break;
 				case FISCHIA_OFFSIDE:
 					if(g->Argomento<40)
@@ -709,22 +709,22 @@ void HandleArbitro(void)
 					}
 					else
 					{
-						Squadra *s;
+						Team *s;
 
 						g->Argomento-=40;
 
 						if(g->Argomento>=10)
 						{
-							s=p->squadra[1];
+							s=p->team[1];
 							g->Argomento-=10;
-							p->squadra[0]->Possesso=1;
-							p->squadra[1]->Possesso=0;
+							p->team[0]->Possesso=1;
+							p->team[1]->Possesso=0;
 						}	
 						else
 						{
-							s=p->squadra[0];
-							p->squadra[0]->Possesso=0;
-							p->squadra[1]->Possesso=1;
+							s=p->team[0];
+							p->team[0]->Possesso=0;
+							p->team[1]->Possesso=1;
 						}
 
 						TogliPalla();
@@ -763,7 +763,7 @@ void HandleArbitro(void)
 // Occhio, in questa funzione g e' player_injuried, non l'arbitro!
 
 						Giocatore *g=p->player_injuried;
-						struct Squadra *s=g->squadra;
+						struct Team *s=g->team;
 						int j=g->SNum;
 
 						if(s->Joystick<0)
@@ -797,15 +797,15 @@ void HandleArbitro(void)
 
 // Le if sono dovute al fatto che se si gioca computer contro computer il codice seguente causava un enforcer hit!
 
-									if(p->squadra[j^1]->Joystick>=0)
-										r_controls[p->squadra[j^1]->Joystick^1][counter]=best;
+									if(p->team[j^1]->Joystick>=0)
+										r_controls[p->team[j^1]->Joystick^1][counter]=best;
 									else
 										r_controls[j][counter]=best;
 								}
 								else
 								{
-									if(p->squadra[j^1]->Joystick>=0)
-										best=r_controls[p->squadra[j^1]->Joystick^1][counter];
+									if(p->team[j^1]->Joystick>=0)
+										best=r_controls[p->team[j^1]->Joystick^1][counter];
 									else
 										best=r_controls[j][counter];
 								}
@@ -836,16 +836,16 @@ void HandleArbitro(void)
 
 // Gestisco qui anche i rigori!
 
-					if(p->squadra[0]->Possesso)
+					if(p->team[0]->Possesso)
 					{
 
-						p->squadra[1]->Falli++;
+						p->team[1]->Falli++;
 
 						if(InArea(1,pl->world_x,pl->world_y))
 						{
 // y-136 = -31x + 6293
 							if(!penalties)
-								p->squadra[0]->Rigori++;
+								p->team[0]->Rigori++;
 							else
 							{
 								p->show_panel=PANEL_RESULT;
@@ -864,30 +864,30 @@ void HandleArbitro(void)
 							pl->world_x=RIGORE_X_O;
 							pl->world_y=RIGORE_Y;
 						}
-						pl->sq_palla=p->squadra[0];
+						pl->sq_palla=p->team[0];
 
-						if(p->squadra[1]->attivo->Comando!=ESCI_CAMPO&&InArea(1,P2G_X(p->squadra[1]->attivo->world_x),P2G_Y(p->squadra[1]->attivo->world_y)))
-							p->squadra[1]->attivo->Comando=ESCI_AREA;
+						if(p->team[1]->attivo->Comando!=ESCI_CAMPO&&InArea(1,P2G_X(p->team[1]->attivo->world_x),P2G_Y(p->team[1]->attivo->world_y)))
+							p->team[1]->attivo->Comando=ESCI_AREA;
 					}
 					else
 					{
 
-						p->squadra[0]->Falli++;
+						p->team[0]->Falli++;
 
 						if(InArea(0,pl->world_x,pl->world_y))
 						{
 // y-136 = 31x - 33139
-							p->squadra[1]->Rigori++;
+							p->team[1]->Rigori++;
 
 							PlayBackSound(sound[RIGORE]);
 							pl->settore=PENALTY;
 							pl->world_x=RIGORE_X_E;
 							pl->world_y=RIGORE_Y;
 						}
-						pl->sq_palla=p->squadra[1];
+						pl->sq_palla=p->team[1];
 
-						if(p->squadra[0]->attivo->Comando!=ESCI_CAMPO&&InArea(0,P2G_X(p->squadra[0]->attivo->world_x),P2G_Y(p->squadra[0]->attivo->world_y)))
-							p->squadra[0]->attivo->Comando=ESCI_AREA;
+						if(p->team[0]->attivo->Comando!=ESCI_CAMPO&&InArea(0,P2G_X(p->team[0]->attivo->world_x),P2G_Y(p->team[0]->attivo->world_y)))
+							p->team[0]->attivo->Comando=ESCI_AREA;
 					}
 
 					{
@@ -901,8 +901,8 @@ void HandleArbitro(void)
 
 							p->flash_mode=TRUE;
 
-							DisponiSquadra(p->squadra[0],pl->settore,p->squadra[0]->Possesso);
-							DisponiSquadra(p->squadra[1],pl->settore,p->squadra[1]->Possesso);
+							DisponiSquadra(p->team[0],pl->settore,p->team[0]->Possesso);
+							DisponiSquadra(p->team[1],pl->settore,p->team[1]->Possesso);
 
 							g1->Direzione=FindDirection(g1->world_x,g1->world_y, (g1->SNum ? PORTA_E_X : PORTA_O_X) ,PORTA_E_Y);
 
@@ -960,14 +960,14 @@ void HandleArbitro(void)
 
 							pl->Direzione=127;
 
-							if(p->squadra[0]->Possesso)
+							if(p->team[0]->Possesso)
 							{
-								p->squadra[0]->Corner++;
+								p->team[0]->Corner++;
 								pl->world_x=CORNER_X_NO;
 							}
 							else
 							{
-								p->squadra[1]->Corner++;
+								p->team[1]->Corner++;
 								pl->world_x=CORNER_X_NE;
 							}
 
@@ -976,15 +976,15 @@ void HandleArbitro(void)
 							p->show_panel=PANEL_RESULT|PANEL_TIME;
 							p->show_time=100;
 
-							DisponiSquadra(p->squadra[0],CORNER_N,p->squadra[0]->Possesso);
+							DisponiSquadra(p->team[0],CORNER_N,p->team[0]->Possesso);
 
-							DisponiSquadra(p->squadra[1],CORNER_N,p->squadra[1]->Possesso);
+							DisponiSquadra(p->team[1],CORNER_N,p->team[1]->Possesso);
 
 							{
 								Giocatore *v;
 
 								if(training)
-									pl->sq_palla=p->squadra[0];
+									pl->sq_palla=p->team[0];
 
 								v=PrendiPalla();
 
@@ -1008,22 +1008,22 @@ void HandleArbitro(void)
 							p->show_panel=PANEL_RESULT|PANEL_TIME;
 							p->show_time=100;
 
-							if(p->squadra[0]->Possesso)
+							if(p->team[0]->Possesso)
 							{
-								p->squadra[0]->Corner++;
+								p->team[0]->Corner++;
 								pl->Direzione=4;
 								pl->world_x=CORNER_X_SO;
 							}
 							else
 							{
 								pl->Direzione=252;
-								p->squadra[1]->Corner++;
+								p->team[1]->Corner++;
 								pl->world_x=CORNER_X_SE;
 							}
 
 							p->flash_mode=TRUE;
-							DisponiSquadra(p->squadra[0],CORNER_S,p->squadra[0]->Possesso);
-							DisponiSquadra(p->squadra[1],CORNER_S,p->squadra[1]->Possesso);
+							DisponiSquadra(p->team[0],CORNER_S,p->team[0]->Possesso);
+							DisponiSquadra(p->team[1],CORNER_S,p->team[1]->Possesso);
 
 							{
 								Giocatore *v;
@@ -1049,7 +1049,7 @@ void HandleArbitro(void)
 							{
 								pl->world_y=GOALKICK_Y_S;
 
-								if(p->squadra[1]->Possesso)
+								if(p->team[1]->Possesso)
 								{
 									pl->world_x=GOALKICK_X_SO;
 								}
@@ -1062,7 +1062,7 @@ void HandleArbitro(void)
 							{
 								pl->world_y=GOALKICK_Y_N;
 
-								if(p->squadra[1]->Possesso)
+								if(p->team[1]->Possesso)
 								{
 									pl->world_x=GOALKICK_X_NO;
 								}
@@ -1072,42 +1072,42 @@ void HandleArbitro(void)
 								}
 							}
 
-							if(p->squadra[1]->Possesso)
+							if(p->team[1]->Possesso)
 							{
-								p->squadra[1]->portiere.Direzione=D_EST;
+								p->team[1]->portiere.Direzione=D_EST;
 
-								if(p->squadra[1]->Joystick<0)
-									p->squadra[1]->portiere.Tick=30+(GetTable()<<3);
+								if(p->team[1]->Joystick<0)
+									p->team[1]->portiere.Tick=30+(GetTable()<<3);
 								else
-									p->squadra[1]->portiere.Tick=120;
+									p->team[1]->portiere.Tick=120;
 
-								DoSpecialAnim((&p->squadra[1]->portiere),PORTIERE_FERMO);
+								DoSpecialAnim((&p->team[1]->portiere),PORTIERE_FERMO);
 
-								if(InArea(1,P2G_X(p->squadra[0]->attivo->world_x),P2G_Y(p->squadra[0]->attivo->world_y)))
-									p->squadra[0]->attivo->Comando=ESCI_AREA;
+								if(InArea(1,P2G_X(p->team[0]->attivo->world_x),P2G_Y(p->team[0]->attivo->world_y)))
+									p->team[0]->attivo->Comando=ESCI_AREA;
 
 							}
 							else
 							{
-								DoSpecialAnim((&p->squadra[0]->portiere),PORTIERE_FERMO);
+								DoSpecialAnim((&p->team[0]->portiere),PORTIERE_FERMO);
 
-								if(p->squadra[0]->Joystick<0)
-									p->squadra[0]->portiere.Tick=30+(GetTable()<<3);
+								if(p->team[0]->Joystick<0)
+									p->team[0]->portiere.Tick=30+(GetTable()<<3);
 								else
-									p->squadra[0]->portiere.Tick=120;
+									p->team[0]->portiere.Tick=120;
 
-								p->squadra[0]->portiere.Direzione=D_OVEST;
+								p->team[0]->portiere.Direzione=D_OVEST;
 
-								if(InArea(0,P2G_X(p->squadra[1]->attivo->world_x),P2G_Y(p->squadra[1]->attivo->world_y)))
-									p->squadra[1]->attivo->Comando=ESCI_AREA;
+								if(InArea(0,P2G_X(p->team[1]->attivo->world_x),P2G_Y(p->team[1]->attivo->world_y)))
+									p->team[1]->attivo->Comando=ESCI_AREA;
 							}
 
 							p->flash_mode=TRUE;
 							p->show_panel=PANEL_RESULT|PANEL_TIME;
 							p->show_time=100;
 
-							DisponiSquadra(p->squadra[0],GOALKICK,p->squadra[0]->Possesso);
-							DisponiSquadra(p->squadra[1],GOALKICK,p->squadra[1]->Possesso);
+							DisponiSquadra(p->team[0],GOALKICK,p->team[0]->Possesso);
+							DisponiSquadra(p->team[1],GOALKICK,p->team[1]->Possesso);
 
 							ShowBall();
 							break;
@@ -1141,19 +1141,19 @@ void HandleArbitro(void)
 							p->show_panel=PANEL_KICKOFF|PANEL_TIME;
 							p->show_time=100;
 
-							DisponiSquadra(p->squadra[0],KICKOFF,p->squadra[0]->Possesso);
-							DisponiSquadra(p->squadra[1],KICKOFF,p->squadra[1]->Possesso);
+							DisponiSquadra(p->team[0],KICKOFF,p->team[0]->Possesso);
+							DisponiSquadra(p->team[1],KICKOFF,p->team[1]->Possesso);
 
 							{
 								int i;
 								int j;
 								Giocatore *g1,*g2;
-								Squadra *s=p->squadra[0] /*,*ns=p->squadra[1]*/ ;
+								Team *s=p->team[0] /*,*ns=p->team[1]*/ ;
 
-								if(p->squadra[1]->Possesso && !training)
+								if(p->team[1]->Possesso && !training)
 								{
-									s=p->squadra[1];
-/*									ns=p->squadra[0]; 
+									s=p->team[1];
+/*									ns=p->team[0]; 
 
  Non uso ns...
  */
@@ -1179,7 +1179,7 @@ void HandleArbitro(void)
 */
 								for(j=0;j<2;j++)
 								{
-									s=p->squadra[j];
+									s=p->team[j];
 
 									for(i=0;i<10;i++)
 									{

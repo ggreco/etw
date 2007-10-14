@@ -20,8 +20,8 @@ mytimer StartGameTime, EndTime, ideal;
 
 WORD field_x, field_y, n_limit, o_limit, s_limit, e_limit;
 WORD field_x_limit, field_y_limit, real_fx, real_fy;
-void (*HandleSquadra0) (int);
-void (*HandleSquadra1) (int);
+void (*HandleTeam0) (int);
+void (*HandleTeam1) (int);
 void (*HandleRadar) (void);
 GfxObj *background;
 
@@ -32,8 +32,8 @@ __inline void HandleControl(void)
 
 		UpdatePortStatus();
 
-		i = p->squadra[0]->Joystick;
-		j = p->squadra[1]->Joystick;
+		i = p->team[0]->Joystick;
+		j = p->team[1]->Joystick;
 
 		if (i == 0 || j == 0)
 			r_controls[0][counter] = MyReadPort0(0);
@@ -69,10 +69,10 @@ void HandleScrolling(void)
 	}
 
 	if (scroll_tick > 50) {
-		if (p->squadra[0]->Possesso) {
+		if (p->team[0]->Possesso) {
 			o_limit = WINDOW_WIDTH * 3 / 5;
 			e_limit = WINDOW_WIDTH * 4 / 5;
-		} else if (p->squadra[1]->Possesso) {
+		} else if (p->team[1]->Possesso) {
 			o_limit = WINDOW_WIDTH / 5;
 			e_limit = WINDOW_WIDTH * 2 / 5;
 		} else {
@@ -91,23 +91,23 @@ void HandleScrolling(void)
 	else {
 		if (scroll_type == 1) {
 // GK team 0
-			xs = (p->squadra[0]->portiere.world_x >> 3) - field_x + 5;
-			ys = (p->squadra[0]->portiere.world_y >> 3) - field_y + 16;
+			xs = (p->team[0]->portiere.world_x >> 3) - field_x + 5;
+			ys = (p->team[0]->portiere.world_y >> 3) - field_y + 16;
 		} else if (scroll_type == 12) {
 // GK team 1
-			xs = (p->squadra[1]->portiere.world_x >> 3) - field_x + 5;
-			ys = (p->squadra[1]->portiere.world_y >> 3) - field_y + 16;
+			xs = (p->team[1]->portiere.world_x >> 3) - field_x + 5;
+			ys = (p->team[1]->portiere.world_y >> 3) - field_y + 16;
 		} else if (scroll_type < 12) {
 // Player of team 0
-			xs = (p->squadra[0]->giocatore[scroll_type - 2].world_x >> 3) -
+			xs = (p->team[0]->giocatore[scroll_type - 2].world_x >> 3) -
 				field_x + 5;
-			ys = (p->squadra[0]->giocatore[scroll_type - 2].world_y >> 3) -
+			ys = (p->team[0]->giocatore[scroll_type - 2].world_y >> 3) -
 				field_y + 15;
 		} else if (scroll_type < 23) {
 // Player of team 1
-			xs = (p->squadra[1]->giocatore[scroll_type - 13].
+			xs = (p->team[1]->giocatore[scroll_type - 13].
 				  world_x >> 3) - field_x + 5;
-			ys = (p->squadra[1]->giocatore[scroll_type - 13].
+			ys = (p->team[1]->giocatore[scroll_type - 13].
 				  world_y >> 3) - field_y + 16;
 		} else {
             D(bug("WARNING, undefined scrolltype!"));
@@ -295,8 +295,8 @@ void logic_frame(void)
 		if (detail_level & USA_GUARDALINEE)
 			HandleGuardalinee();
 
-		HandleSquadra0(0);
-		HandleSquadra1(1);
+		HandleTeam0(0);
+		HandleTeam1(1);
 
 		HandlePortiere(0);
 		HandlePortiere(1);

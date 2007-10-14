@@ -22,7 +22,7 @@ char snum,divisa;
 
 extern struct Pos portieri[2][2][SECTORS+SPECIALS];
 
-BOOL NumeroDiverso(struct Squadra *s,char n)
+BOOL NumeroDiverso(struct Team *s,char n)
 {
 	register int i;
 
@@ -69,7 +69,7 @@ void ChangeImmagine(Giocatore *g,AnimObj *o)
 	}
 	else
 	{
-		Squadra *s=g->squadra;
+		Team *s=g->team;
 		Giocatore *g2=NULL;
 		int i;
 
@@ -131,7 +131,7 @@ void SwapTeams(void)
 	extern UBYTE ReplaySet;
 	extern char golrig[2];
 	char c;
-	struct Squadra *s;
+	struct Team *s;
 	int i,j;
 	UBYTE tmp;
 	void (*Temp)(int);
@@ -140,23 +140,23 @@ void SwapTeams(void)
 
 	swaps++;
 
-	s=p->squadra[0];
-	p->squadra[0]=p->squadra[1];
-	p->squadra[1]=s;
+	s=p->team[0];
+	p->team[0]=p->team[1];
+	p->team[1]=s;
 
 	for(j=0;j<2;j++) {
-		p->squadra[j]->portiere.SNum=j;
+		p->team[j]->portiere.SNum=j;
 
 		for(i=0;i<10;i++)
-			p->squadra[j]->giocatore[i].SNum=j;
+			p->team[j]->giocatore[i].SNum=j;
 	}
 
 	
-	Temp=HandleSquadra0;
-	HandleSquadra0=HandleSquadra1;
-	HandleSquadra1=Temp;
-	InvertTactic(p->squadra[0]->tattica);
-	InvertTactic(p->squadra[1]->tattica);
+	Temp=HandleTeam0;
+	HandleTeam0=HandleTeam1;
+	HandleTeam1=Temp;
+	InvertTactic(p->team[0]->tattica);
+	InvertTactic(p->team[1]->tattica);
 
 	counter=0;
 	replay_looped=FALSE;
@@ -197,9 +197,9 @@ void CheckPelle(void)
 	if(arcade_teams)
 	{
 		if(team_a==3)
-			RemapAnimObjColor(p->squadra[0]->giocatore[9].immagine,Pens[P_ARANCIO1],Pens[P_GIALLO]);
+			RemapAnimObjColor(p->team[0]->giocatore[9].immagine,Pens[P_ARANCIO1],Pens[P_GIALLO]);
 		else if(team_b==3)
-			RemapAnimObjColor(p->squadra[1]->giocatore[9].immagine,Pens[P_ARANCIO1],Pens[P_GIALLO]);
+			RemapAnimObjColor(p->team[1]->giocatore[9].immagine,Pens[P_ARANCIO1],Pens[P_GIALLO]);
 	}
 
 
@@ -211,7 +211,7 @@ void CheckPelle(void)
 	
 	for(i=0;i<2;i++)
 	{
-		struct Squadra *s=p->squadra[i];
+		struct Team *s=p->team[i];
 
 		D(bug("Check skin color team %ld\n",i));
 		neri=0;
@@ -309,7 +309,7 @@ void ChangePlayer(struct Giocatore_Disk *src,Giocatore *dest)
 		if( IsBlack(dest) && !IsBlack(src) )
 		{
 // E' entrato un giocatore bianco al posto di un nero...
-			struct Squadra *s=dest->squadra;
+			struct Team *s=dest->team;
 			int i;
 
 			for(i=0;i<10;i++)
@@ -324,7 +324,7 @@ void ChangePlayer(struct Giocatore_Disk *src,Giocatore *dest)
 		else if( IsBlack(src) && !IsBlack(dest))
 		{
 // E' entrato un giocatore nero al posto di un bianco...
-			struct Squadra *s=dest->squadra;
+			struct Team *s=dest->team;
 			int i;
 
 			for(i=0;i<10;i++)
@@ -440,7 +440,7 @@ BOOL InizializzaOggetti(Partita *p)
 			
 				o->world_y=0;
 
-				if (!(o->immagine=CloneAnimObj(p->squadra[0]->Marker)))	{
+				if (!(o->immagine=CloneAnimObj(p->team[0]->Marker)))	{
 					D(bug("Non c'e' piu' memoria per gli animobj!\n"));
 					ok=FALSE;
 					break;
@@ -513,7 +513,7 @@ BOOL InizializzaOggetti(Partita *p)
 	return ok;
 }
 
-void LiberaSquadra(Squadra *s)
+void DestroyTeam(Team *s)
 {
 	int i;
 
@@ -542,7 +542,7 @@ void LiberaSquadra(Squadra *s)
 	D(bug("Ok.\n"));
 }
 
-void DisponiPortiere(Squadra *s,int settore,BOOL possesso)
+void DisponiPortiere(Team *s,int settore,BOOL possesso)
 {
 
 	s->portiere.world_x=portieri[(int)s->portiere.SNum][possesso][settore].x;
@@ -556,7 +556,7 @@ void DisponiPortiere(Squadra *s,int settore,BOOL possesso)
 			{
 				s->portiere.world_y=((346-14)*8);
 
-				if(s==p->squadra[1])
+				if(s==p->team[1])
 				{
 					s->portiere.world_x=(70*8);
 				}
@@ -566,7 +566,7 @@ void DisponiPortiere(Squadra *s,int settore,BOOL possesso)
 			{
 				s->portiere.world_y=((198-14)*8);
 
-				if(s==p->squadra[1])
+				if(s==p->team[1])
 				{
 					s->portiere.world_x=(80*8);
 				}
@@ -576,7 +576,7 @@ void DisponiPortiere(Squadra *s,int settore,BOOL possesso)
 	}
 }
 
-void DisponiSquadra(Squadra *s,int settore,BOOL possesso)
+void DisponiSquadra(Team *s,int settore,BOOL possesso)
 {
 	int i;
 
@@ -717,10 +717,10 @@ void ReadSquadra(FILE *fh, struct Squadra_Disk *s)
 	}
 }
 
-Squadra *CreaSquadra(int num)
+Team *CreateTeam(int num)
 {
 	char path[100];
-	Squadra *s;
+	Team *s;
 	extern struct Squadra_Disk leftteam_dk,rightteam_dk;
 	struct Squadra_Disk sd;
 #if 0
@@ -728,7 +728,7 @@ Squadra *CreaSquadra(int num)
 #endif
 	int i;
 
-	if(!(s=calloc(1,sizeof(struct Squadra))))
+	if(!(s=calloc(1,sizeof(struct Team))))
 		return NULL;
 
 #if 0
@@ -898,7 +898,7 @@ Squadra *CreaSquadra(int num)
 		s->giocatore[i].GNum=i;
 		s->giocatore[i].SNum=snum;
 		s->giocatore[i].ObjectType=TIPO_GIOCATORE;
-		s->giocatore[i].squadra=s;
+		s->giocatore[i].team=s;
 	}
 
 	TotaleRiserve[snum]=s->NumeroRiserve=sd.NumeroGiocatori-10;
@@ -919,7 +919,7 @@ Squadra *CreaSquadra(int num)
 	s->portiere.immagine=portiere;
 	s->portiere.SNum=snum;
 	s->portiere.ObjectType=TIPO_PORTIERE;
-	s->portiere.squadra=s;
+	s->portiere.team=s;
 	s->portiere.Numero=sd.portiere[0].Numero;
 	s->portiere.Parata=sd.portiere[0].Parata;
 	s->portiere.Attenzione=sd.portiere[0].Attenzione;
@@ -1071,7 +1071,7 @@ Partita *SetupSquadre(void)
 	os_delay(50);
 #endif
 
-	if(!(p->squadra[0]=CreaSquadra(0)))
+	if(!(p->team[0]=CreateTeam(0)))
 	{
 		free(p);
 		return NULL;
@@ -1084,35 +1084,35 @@ Partita *SetupSquadre(void)
 	os_delay(100);
 #endif
 
-	if(!(p->squadra[1]=CreaSquadra(1)))
+	if(!(p->team[1]=CreateTeam(1)))
 	{
-		LiberaSquadra(p->squadra[0]);
+		DestroyTeam(p->team[0]);
 		free(p);
 		return NULL;
 	}
 
 
-	if(!(p->squadra[0]->Marker=LoadAnimObject( (arcade ? "gfx/arcade.obj" : "gfx/marker.obj"),Pens)))
+	if(!(p->team[0]->Marker=LoadAnimObject( (arcade ? "gfx/arcade.obj" : "gfx/marker.obj"),Pens)))
 	{
-		LiberaSquadra(p->squadra[1]);
-		LiberaSquadra(p->squadra[0]);
+		DestroyTeam(p->team[1]);
+		DestroyTeam(p->team[0]);
 		free(p);
 		return NULL;
 	}
 
 	Progress();
 
-	if(!(p->squadra[1]->Marker=CloneAnimObj(p->squadra[0]->Marker)))
+	if(!(p->team[1]->Marker=CloneAnimObj(p->team[0]->Marker)))
 	{
-		LiberaSquadra(p->squadra[0]);
-		LiberaSquadra(p->squadra[1]);
+		DestroyTeam(p->team[0]);
+		DestroyTeam(p->team[1]);
 		free(p);
 		return NULL;
 	}
 	
 // La squadra 1 attacca da destra a sinistra.
 
-	InvertTactic(p->squadra[0]->tattica);
+	InvertTactic(p->team[0]->tattica);
 
 /*  Setto a tutte e due le squadre lo stesso joystick per evitare problemi
     nelle rimesse e nei corner (non ancora implementati per il computer,
@@ -1122,13 +1122,13 @@ Partita *SetupSquadre(void)
 
 // Ricordarsi che i portieri sono inversi rispetto alle squadre come piazzamento!!!
 
-	p->squadra[0]->Joystick=1;
-	p->squadra[1]->Joystick=1;
+	p->team[0]->Joystick=1;
+	p->team[1]->Joystick=1;
 
 	if(!(p->extras=LoadAnimObject("gfx/extras.obj",Pens)))
 	{
-		LiberaSquadra(p->squadra[0]);
-		LiberaSquadra(p->squadra[1]);
+		DestroyTeam(p->team[0]);
+		DestroyTeam(p->team[1]);
 		free(p);
 		return NULL;
 	}
@@ -1194,7 +1194,7 @@ Partita *SetupSquadre(void)
 	}
 
 	if(detail_level&USA_RISULTATO) {
-		result_width=(strlen(p->squadra[0]->Nome)+strlen(p->squadra[1]->Nome)+9)*VS_CHAR_X;
+		result_width=(strlen(p->team[0]->Nome)+strlen(p->team[1]->Nome)+9)*VS_CHAR_X;
 
 		if(!(p->result=malloc( result_width * (VS_CHAR_Y+1))))
 		{
@@ -1217,8 +1217,8 @@ Partita *SetupSquadre(void)
 			RimuoviLista((Oggetto *)&p->arbitro);
 
 		RimuoviGuardalinee();
-		LiberaSquadra(p->squadra[0]);
-		LiberaSquadra(p->squadra[1]);
+		DestroyTeam(p->team[0]);
+		DestroyTeam(p->team[1]);
 		free(p);
 		return NULL;
 	}
@@ -1246,21 +1246,21 @@ Partita *SetupSquadre(void)
 
 		starting_team=MyRangeRand(2);
 
-		pl->sq_palla=p->squadra[starting_team];
-		p->squadra[starting_team]->Possesso=1;
-		p->squadra[starting_team^1]->Possesso=0;
+		pl->sq_palla=p->team[starting_team];
+		p->team[starting_team]->Possesso=1;
+		p->team[starting_team^1]->Possesso=0;
 	
 		pl->world_x=CENTROCAMPO_X;
 		pl->world_y=CENTROCAMPO_Y;
 		pl->InGioco=FALSE;
 	}
 /*
-	DisponiSquadra(p->squadra[0],KICKOFF,TRUE);
-	DisponiSquadra(p->squadra[1],KICKOFF,FALSE);
+	DisponiSquadra(p->team[0],KICKOFF,TRUE);
+	DisponiSquadra(p->team[1],KICKOFF,FALSE);
 */
 	D(bug("GK 0: P:%ld A:%ld\nGK 1: P:%ld A:%ld\n",
-		p->squadra[0]->portiere.Parata,	p->squadra[0]->portiere.Attenzione,
-		p->squadra[1]->portiere.Parata,	p->squadra[1]->portiere.Attenzione));
+		p->team[0]->portiere.Parata,	p->team[0]->portiere.Attenzione,
+		p->team[1]->portiere.Parata,	p->team[1]->portiere.Attenzione));
 
 	return p;
 }
@@ -1316,8 +1316,8 @@ void LiberaPartita(Partita *p)
 
 	totale_lista=0;
 
-	LiberaSquadra(p->squadra[1]);
-	LiberaSquadra(p->squadra[0]);
+	DestroyTeam(p->team[1]);
+	DestroyTeam(p->team[0]);
 
 	if(detail_level&USA_ARBITRO)
 		FreeAnimObj(p->arbitro.immagine);
@@ -1347,8 +1347,8 @@ void MakeResult(void)
 		return;
 
 	p->result_len=sprintf(buffer," %s %d-%d %s",
-            p->squadra[1]->Nome, (int) p->squadra[1]->Reti,
-            (int) p->squadra[0]->Reti, p->squadra[0]->Nome);
+            p->team[1]->Nome, (int) p->team[1]->Reti,
+            (int) p->team[0]->Reti, p->team[0]->Nome);
 
 	rectfill(p->result,0,0,result_width-1, VS_CHAR_Y,Pens[P_VERDE2],result_width);
 

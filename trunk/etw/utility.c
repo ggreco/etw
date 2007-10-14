@@ -213,18 +213,18 @@ void DoPause(void)
 			quit_game=TRUE;
 			SetResult("break");
 
-			if(p->squadra[0]->Joystick<0 ||
-				p->squadra[1]->Joystick<0)
+			if(p->team[0]->Joystick<0 ||
+				p->team[1]->Joystick<0)
 			{
-				if(p->squadra[0]->Joystick>=0)
+				if(p->team[0]->Joystick>=0)
 				{
-					p->squadra[0]->Reti=0;
-					p->squadra[1]->Reti=5;
+					p->team[0]->Reti=0;
+					p->team[1]->Reti=5;
 				}
 				else
 				{
-					p->squadra[0]->Reti=5;
-					p->squadra[1]->Reti=0;
+					p->team[0]->Reti=5;
+					p->team[1]->Reti=0;
 				}
 			}
 		}
@@ -250,7 +250,7 @@ Giocatore *TrovaPiuVicinoDirGiocatore(Giocatore *g)
 
         for(i=0;i<10;i++)
         {
-                if((g2=&g->squadra->giocatore[i])!=g)
+                if((g2=&g->team->giocatore[i])!=g)
                 {
                         if(FindDirection(g->world_x,g->world_y,g2->world_x,g2->world_y)==g->Direzione)
                         {
@@ -279,7 +279,7 @@ Giocatore *TrovaPiuVicinoGiocatore(Giocatore *g)
 
         for(i=0;i<10;i++)
         {
-                if((g2=&g->squadra->giocatore[i])!=g)
+                if((g2=&g->team->giocatore[i])!=g)
                 {
 			t=abs(g->world_x-g2->world_x)+abs(g->world_y-g2->world_y);
 
@@ -788,7 +788,7 @@ void RimuoviCLista(struct DOggetto *o)
 	}
 }
 
-Giocatore *TrovaPiuVicino(Squadra *s,WORD x,WORD y)
+Giocatore *TrovaPiuVicino(Team *s,WORD x,WORD y)
 {
 	register int i;
 	register WORD t,minv=32767;
@@ -827,7 +827,7 @@ void DoFlash(void)
 
 void CheckActive(void)
 {
-	register Squadra *s=p->squadra[0];
+	register Team *s=p->team[0];
 	register Giocatore *g;
 	static BOOL second_call=FALSE;
 	int i;
@@ -842,7 +842,7 @@ void CheckActive(void)
 			s->Possesso=1;
 		}
 
-		s=p->squadra[1];
+		s=p->team[1];
 	}
 	else if(!pl->gioc_palla&&(pl->velocita<8||pl->Rimbalzi>0)&&!second_call)
 	{
@@ -893,7 +893,7 @@ void CheckActive(void)
 
 void RimuoviComandoSquadra(char sq, BYTE cmd)
 {
-	register Squadra *s=p->squadra[sq];
+	register Team *s=p->team[sq];
 	register int i;
 
 	for(i=0;i<10;i++)
@@ -925,7 +925,7 @@ void EseguiDopoComando(Giocatore *g)
 			PassaggioB(g);
 			break;
 		case ESEGUI_RIMESSA:
-			g->Direzione=FindDirection(g->world_x,g->world_y,g->squadra->attivo->world_x,g->squadra->attivo->world_y);
+			g->Direzione=FindDirection(g->world_x,g->world_y,g->team->attivo->world_x,g->team->attivo->world_y);
 
 			HideBall();
 
@@ -937,7 +937,7 @@ void EseguiDopoComando(Giocatore *g)
 		        DoSpecialAnim(g,GIOCATORE_RECUPERA_PALLA);
 
 
-			if(g->squadra->Joystick<0)
+			if(g->team->Joystick<0)
 				g->WaitForControl=(GetTable()+2)<<3;
 			else
 				g->WaitForControl=120; // 4 secondi max per le rimesse umane.
@@ -953,7 +953,7 @@ void EseguiDopoComando(Giocatore *g)
 
 			DoSpecialAnim(g,GIOCATORE_BATTUTA);
 
-			if(g->squadra->Joystick<0)
+			if(g->team->Joystick<0)
 				g->WaitForControl=(GetTable()+5)<<4;
 
 			StopTime(); // Fermo il tempo per corner/punizioni/rigori

@@ -212,7 +212,7 @@ void EseguiCross(Giocatore *g)
 
 void PreparaBarriera(char sq)
 {
-	Squadra *s=p->squadra[sq];
+	Team *s=p->team[sq];
 	Giocatore *g;
 // La barriera la metto sul primo o sul secondo palo a seconda della posizione del pallone
 	UBYTE dir=FindDirection256(pl->world_x,pl->world_y,
@@ -337,14 +337,14 @@ void UpdateCornerLine(void)
 			rectfill(main_bitmap,
 				WINDOW_WIDTH-37,WINDOW_HEIGHT-((CHAR_Y+2)*2+1),
 				WINDOW_WIDTH-3,WINDOW_HEIGHT-(CHAR_Y+3),
-				p->squadra[0]->MarkerRed==Pens[RADAR_SQUADRA_B] ? Pens[P_ROSSO0] : Pens[P_BLU1],
+				p->team[0]->MarkerRed==Pens[RADAR_TEAM_B] ? Pens[P_ROSSO0] : Pens[P_BLU1],
 				bitmap_width);
 
 			rectfill(main_bitmap,
 				WINDOW_WIDTH-36,WINDOW_HEIGHT-((CHAR_Y+2)*2),
 				WINDOW_WIDTH-36+(pl->gioc_palla->TimePress),
 				WINDOW_HEIGHT-(CHAR_Y+4),
-				p->squadra[0]->MarkerRed==Pens[RADAR_SQUADRA_B] ? Pens[P_ROSSO1] : Pens[P_BLU2],
+				p->team[0]->MarkerRed==Pens[RADAR_TEAM_B] ? Pens[P_ROSSO1] : Pens[P_BLU2],
 				bitmap_width);
 		}
 		else
@@ -356,14 +356,14 @@ void UpdateCornerLine(void)
 			rectfill(main_bitmap,
 				1,WINDOW_HEIGHT-((CHAR_Y+2)*2+1),
 				35,WINDOW_HEIGHT-(CHAR_Y+3),
-				p->squadra[1]->MarkerRed==Pens[RADAR_SQUADRA_B] ? Pens[P_ROSSO0] : Pens[P_BLU1],
+				p->team[1]->MarkerRed==Pens[RADAR_TEAM_B] ? Pens[P_ROSSO0] : Pens[P_BLU1],
 				bitmap_width);
 
 			rectfill(main_bitmap,
 				2,WINDOW_HEIGHT-((CHAR_Y+2)*2),
 				2+(pl->gioc_palla->TimePress),
 				WINDOW_HEIGHT-(CHAR_Y+4),
-				p->squadra[1]->MarkerRed==Pens[RADAR_SQUADRA_B] ? Pens[P_ROSSO1] : Pens[P_BLU2],
+				p->team[1]->MarkerRed==Pens[RADAR_TEAM_B] ? Pens[P_ROSSO1] : Pens[P_BLU2],
 				bitmap_width);
 		}
 	}
@@ -451,7 +451,7 @@ void DoSpecials(Giocatore *g)
 				}
 			}
 	}
-	else if(g->squadra->Joystick>=0)
+	else if(g->team->Joystick>=0)
 	{
 		if(pl->quota>2)
 		{
@@ -581,7 +581,7 @@ void PreparaPassaggio(Giocatore *g,Giocatore *g_min)
 
 // Se non c'e' il joystick fermo il giocatore che riceve il passaggio.
 
-	if(g->squadra->Joystick<0)
+	if(g->team->Joystick<0)
 	{
 		g_min->Direzione=FindDirection(g_min->world_x,g_min->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
 		g_min->ActualSpeed=0;
@@ -657,7 +657,7 @@ void PassaggioB(Giocatore *g)
 
         if(g->SpecialData>-1&&g->SpecialData<10)
         {
-           ChangeControlled(g->squadra,g->SpecialData);
+           ChangeControlled(g->team,g->SpecialData);
            g->SpecialData=-1;
 	   g->WaitForControl=40;
         }
@@ -693,8 +693,8 @@ void RimessaLaterale(Giocatore *g)
 
 // Serve per evitare che durante la rimessa venga mostrato il pannello
 
-	p->squadra[0]->ArcadeCounter=0;
-	p->squadra[1]->ArcadeCounter=0;
+	p->team[0]->ArcadeCounter=0;
+	p->team[1]->ArcadeCounter=0;
 
 	if(((pl->Direzione+1)>>1)==32)
 	{
@@ -750,8 +750,8 @@ void RimessaLaterale(Giocatore *g)
 
 // Serve per evitare che durante la rimessa venga mostrato il pannello
 
-	p->squadra[0]->ArcadeCounter=0;
-	p->squadra[1]->ArcadeCounter=0;
+	p->team[0]->ArcadeCounter=0;
+	p->team[1]->ArcadeCounter=0;
 
 }
 
@@ -760,7 +760,7 @@ void HandleRimessa(Giocatore *g)
 	if(p->show_panel&0xff00)
 		return;
 
-	if(g->squadra->Joystick>=0)
+	if(g->team->Joystick>=0)
 	{
 		ULONG l;
 
@@ -769,15 +769,15 @@ void HandleRimessa(Giocatore *g)
 		if(g->WaitForControl<0)
 			goto rimessacomputer;
 
-		l=r_controls[g->squadra->Joystick][counter];
+		l=r_controls[g->team->Joystick][counter];
 
 		if(!g->Controlled)
-			ChangeControlled(g->squadra,g->GNum);
+			ChangeControlled(g->team,g->GNum);
 
 		if(l&MYBUTTONMASK)
 		{
-			p->squadra[0]->ArcadeCounter=0;
-			p->squadra[1]->ArcadeCounter=0;
+			p->team[0]->ArcadeCounter=0;
+			p->team[1]->ArcadeCounter=0;
 
 			g->FirePressed=TRUE;
 			g->TimePress++;
@@ -798,8 +798,8 @@ void HandleRimessa(Giocatore *g)
 		{
 			WORD temp;
 
-			p->squadra[0]->ArcadeCounter=0;
-			p->squadra[1]->ArcadeCounter=0;
+			p->team[0]->ArcadeCounter=0;
+			p->team[1]->ArcadeCounter=0;
 
 			TogliPalla();
 			DaiPalla(g);
@@ -902,7 +902,7 @@ void Rigore(Giocatore *g)
 		g->FirePressed=FALSE;
 		g->TimePress=0;
 
-		if(g->squadra->Joystick<0)
+		if(g->team->Joystick<0)
 			g->WaitForControl=(GetTable()+1)<<4;
 
 		StopTime();
@@ -921,9 +921,9 @@ void Rigore(Giocatore *g)
 		g->world_y=pl->world_y-avanzamento_y[g->Direzione];
 */
 		if(g->SNum)
-			DisponiPortiere(p->squadra[0],PENALTY,0);
+			DisponiPortiere(p->team[0],PENALTY,0);
 		else
-			DisponiPortiere(p->squadra[1],PENALTY,0);
+			DisponiPortiere(p->team[1],PENALTY,0);
 	}
 
 	p->marker_y+=p->adder;
@@ -939,16 +939,16 @@ void Rigore(Giocatore *g)
 
 	MoveAnimObj(p->extras,p->marker_x-field_x,p->marker_y-field_y);
 
-	if(g->squadra->Joystick>=0)
+	if(g->team->Joystick>=0)
 	{
 		ULONG l;
 
 		g->WaitForControl--;
 
-		l=r_controls[g->squadra->Joystick][counter];
+		l=r_controls[g->team->Joystick][counter];
 
 		if(!g->Controlled)
-			ChangeControlled(g->squadra,g->GNum);
+			ChangeControlled(g->team,g->GNum);
 
 
                 if(l&MYBUTTONMASK)
@@ -974,7 +974,7 @@ tirarigore:
 		g->WaitForControl--;
 
 		if(!g->Controlled)
-			ChangeControlled(g->squadra,g->GNum);
+			ChangeControlled(g->team,g->GNum);
 
 		if(g->WaitForControl<0)
 		{
@@ -1011,7 +1011,7 @@ finetiro:
 
 			if(GetTable()<4)
 			{
-				struct Portiere *po=&p->squadra[g->SNum^1]->portiere;
+				struct Portiere *po=&p->team[g->SNum^1]->portiere;
 
 				DoSpecialAnim(po,PORTIERE_PRERIGORE);
 			}
@@ -1044,11 +1044,11 @@ void PunizioneCorner(Giocatore *g)
 	{
 		Rigore(g);
 	}
-	else if(g->squadra->Joystick>=0)
+	else if(g->team->Joystick>=0)
 	{
 		ULONG l;
 
-		l=r_controls[g->squadra->Joystick][counter];
+		l=r_controls[g->team->Joystick][counter];
 
 		g->WaitForControl--;
 
@@ -1060,7 +1060,7 @@ void PunizioneCorner(Giocatore *g)
 */
 
                 if(!g->Controlled)
-                        ChangeControlled(g->squadra,g->GNum);
+                        ChangeControlled(g->team,g->GNum);
 
 		if(pl->gioc_palla!=g)
 		{
@@ -1070,7 +1070,7 @@ void PunizioneCorner(Giocatore *g)
 
                 if(l&MYBUTTONMASK)
                 {
-			g->squadra->ArcadeCounter=0;
+			g->team->ArcadeCounter=0;
 
                         g->FirePressed=TRUE;
                         g->TimePress++;
@@ -1082,7 +1082,7 @@ void PunizioneCorner(Giocatore *g)
                 {
 tirapunizione:
                         g->FirePressed=FALSE;
-			g->squadra->ArcadeCounter=0;
+			g->team->ArcadeCounter=0;
 
                         pl->velocita=(g->TimePress>>1)+3;
 
@@ -1112,7 +1112,7 @@ tirapunizione:
 				WORD xs=pl->world_x+(pl->delta_x<<7);
 				WORD ys=pl->world_y+(pl->delta_y<<7);
 
-				if((g2=TrovaPiuVicino(g->squadra,xs,ys))) {
+				if((g2=TrovaPiuVicino(g->team,xs,ys))) {
 					g->SpecialData=g2->GNum;
 				}
 			}
@@ -1239,19 +1239,19 @@ tirapunizione:
 
 			c=CanScore(g);
 
-			if(c==CS_NO&&g!=g->squadra->attivo)
+			if(c==CS_NO&&g!=g->team->attivo)
 			{
-		                g->Direzione=FindDirection(g->world_x,g->world_y,g->squadra->attivo->world_x,g->squadra->attivo->world_y);
+		                g->Direzione=FindDirection(g->world_x,g->world_y,g->team->attivo->world_x,g->team->attivo->world_y);
 
 				if(!g->Controlled)
-					ChangeControlled(g->squadra,g->GNum);
+					ChangeControlled(g->team,g->GNum);
 
                 		Passaggio2(g,g->Direzione);
 			}
 			else
 			{
 				if(!g->Controlled)
-					ChangeControlled(g->squadra,g->GNum);
+					ChangeControlled(g->team,g->GNum);
 
 				if(c==CS_SI)
 				{
@@ -1322,9 +1322,9 @@ void ColpoDiTesta(Giocatore *g)
 
 		PortaDir=FindDirection(g->world_x,g->world_y,G2P_X( ( g->SNum ? PORTA_E_X : PORTA_O_X) ),G2P_Y(PORTA_O_Y));
 
-		if(g->squadra->Joystick>=0)
+		if(g->team->Joystick>=0)
 		{
-			state=r_controls[g->squadra->Joystick][counter];
+			state=r_controls[g->team->Joystick][counter];
 		}
 		else
 		{
@@ -1507,10 +1507,10 @@ void ColpoDiTesta(Giocatore *g)
 	g->FrameLen=Animation[g->AnimType].FrameLen;
 }
 
-void EseguiEsultanza(int Squadra)
+void EseguiEsultanza(int Team)
 {
 	Giocatore *g=NULL;
-	struct Squadra *sq=p->squadra[Squadra];
+	struct Team *sq=p->team[Team];
 	int s;
 
 	for(s=9;s>-1;s--)
@@ -1560,13 +1560,13 @@ void EseguiEsultanza(int Squadra)
 
 BOOL IsOffside(Giocatore *g)
 {
-	Giocatore *g1=&g->squadra->giocatore[g->SpecialData];
+	Giocatore *g1=&g->team->giocatore[g->SpecialData];
 
 	if(g1->SNum)
 	{
 		if(g1->world_x>CENTROCAMPO_X&&g1->world_x>(g->world_x+150))
 		{
-			Squadra *sa=p->squadra[0];
+			Team *sa=p->team[0];
 			int i;
 			WORD xpos=g1->world_x+100;
 			BOOL offs=TRUE;
@@ -1587,7 +1587,7 @@ BOOL IsOffside(Giocatore *g)
 	{
 		if(g1->world_x<CENTROCAMPO_X&&g1->world_x<(g->world_x-150))
 		{
-			Squadra *sa=p->squadra[1];
+			Team *sa=p->team[1];
 			int i;
 			WORD xpos=g1->world_x-100;
 			BOOL offs=TRUE;

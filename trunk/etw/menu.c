@@ -980,10 +980,10 @@ void PrintButtonType(struct Bottone *b, WORD bl, WORD bt,
 		return;
 
 	switch (b->Colore) {
-	case COLORE_SQUADRA_A:
+	case COLORE_TEAM_A:
 		c = "_J2" /*-*/ ;
 		break;
-	case COLORE_SQUADRA_B:
+	case COLORE_TEAM_B:
 		c = "_J1" /*-*/ ;
 		break;
 	case COLORE_COMPUTER:

@@ -180,9 +180,9 @@ void HandleGol(void)
 	}
 
 	if(pl->world_x>CENTROCAMPO_X)
-		p->squadra[1]->Tiri++;
+		p->team[1]->Tiri++;
 	else
-		p->squadra[0]->Tiri++;
+		p->team[0]->Tiri++;
 
 }
 
@@ -355,8 +355,8 @@ void HandleBall(void)
 			{
 /* Inserire controllo del gol per la squadra 0 */
 
-				p->squadra[0]->ArcadeCounter=0;
-				p->squadra[1]->ArcadeCounter=0;
+				p->team[0]->ArcadeCounter=0;
+				p->team[1]->ArcadeCounter=0;
 
 				if(	pl->world_y< (GOAL_Y_S+16) &&
 					pl->world_y> (GOAL_Y_N-16) &&
@@ -388,14 +388,14 @@ void HandleBall(void)
 					pl->InGioco=FALSE;
 
 // Rinvio
-					if(p->squadra[0]->Possesso&&!training)
+					if(p->team[0]->Possesso&&!training)
 					{
 						if(!replay_mode)
 							game_status=S_RIMESSA_DAL_FONDO;
 						pl->settore=GOALKICK;
-						pl->sq_palla=p->squadra[1];
-						p->squadra[0]->Possesso=0;
-						p->squadra[1]->Possesso=1;
+						pl->sq_palla=p->team[1];
+						p->team[0]->Possesso=0;
+						p->team[1]->Possesso=1;
 
 
 						GL_Fuori(1);
@@ -415,9 +415,9 @@ void HandleBall(void)
 							pl->settore=CORNER_N;
 						}
 
-						pl->sq_palla=p->squadra[0];
-						p->squadra[0]->Possesso=1;
-						p->squadra[1]->Possesso=0;
+						pl->sq_palla=p->team[0];
+						p->team[0]->Possesso=1;
+						p->team[1]->Possesso=0;
 
 						GL_Fuori(0);
 					}
@@ -431,8 +431,8 @@ void HandleBall(void)
 			else if ( (pl->world_y>>3)<( pl->world_x + (pl->world_x>>2) - 12141) ) /* era 12116 , poi 12131 */
 			{
 /* controllo del gol per la squadra 1 */
-				p->squadra[0]->ArcadeCounter=0;
-				p->squadra[1]->ArcadeCounter=0;
+				p->team[0]->ArcadeCounter=0;
+				p->team[1]->ArcadeCounter=0;
 
 				if(	pl->world_y< (GOAL_Y_S+16)	&&
 					pl->world_y> (GOAL_Y_N-16)	&&
@@ -462,15 +462,15 @@ void HandleBall(void)
 					p->arbitro.Tick=0;
 					pl->InGioco=FALSE;
 // Rinvio
-					if(p->squadra[1]->Possesso||training)
+					if(p->team[1]->Possesso||training)
 					{
 						if(!replay_mode)
 							game_status=S_RIMESSA_DAL_FONDO;
 
 						pl->settore=GOALKICK;
-						pl->sq_palla=p->squadra[0];
-						p->squadra[1]->Possesso=0;
-						p->squadra[0]->Possesso=1;
+						pl->sq_palla=p->team[0];
+						p->team[1]->Possesso=0;
+						p->team[0]->Possesso=1;
 						GL_Fuori(0);
 
 					}
@@ -489,9 +489,9 @@ void HandleBall(void)
 							pl->settore=CORNER_N;
 						}
 
-						pl->sq_palla=p->squadra[1];
-						p->squadra[1]->Possesso=1;
-						p->squadra[0]->Possesso=0;
+						pl->sq_palla=p->team[1];
+						p->team[1]->Possesso=1;
+						p->team[0]->Possesso=0;
 						GL_Fuori(1);
 					}
 				}
@@ -499,8 +499,8 @@ void HandleBall(void)
 // Laterale di sotto o di sopra
 			else if (pl->world_y>(501*8)|| pl->world_y<(46*8))
 			{
-				p->squadra[0]->ArcadeCounter=0;
-				p->squadra[1]->ArcadeCounter=0;
+				p->team[0]->ArcadeCounter=0;
+				p->team[1]->ArcadeCounter=0;
 
 				if(!replay_mode)
 					game_status=S_RIMESSA_LATERALE;
@@ -532,18 +532,18 @@ void HandleBall(void)
 
 // Queste due prima erano un toglipallamod();
 
-					if(p->squadra[1]->Possesso||training)
+					if(p->team[1]->Possesso||training)
 					{
-						pl->sq_palla=p->squadra[0];
-						p->squadra[1]->Possesso=0;
-						p->squadra[0]->Possesso=1;	
+						pl->sq_palla=p->team[0];
+						p->team[1]->Possesso=0;
+						p->team[0]->Possesso=1;	
 						GL_Fuori(0);
 					}
 					else
 					{
-						pl->sq_palla=p->squadra[1];
-						p->squadra[1]->Possesso=1;
-						p->squadra[0]->Possesso=0;
+						pl->sq_palla=p->team[1];
+						p->team[1]->Possesso=1;
+						p->team[0]->Possesso=0;
 						GL_Fuori(1);
 					}
 				}
@@ -716,9 +716,9 @@ void HandleBall(void)
 
 void CheckPanels(void)
 {
-	if(p->player_injuried&&p->player_injuried->squadra->Joystick>=0)
+	if(p->player_injuried&&p->player_injuried->team->Joystick>=0)
 	{
-		struct Squadra *s=p->player_injuried->squadra;
+		struct Team *s=p->player_injuried->team;
 		ULONG l=r_controls[s->Joystick][counter];
 
 //		D(bug("CheckPanel: %ld\n",p->show_panel));
@@ -923,7 +923,7 @@ void CheckPanels(void)
 					{
 						FreeTactic(oldtct);
 
-						if(s==p->squadra[0])
+						if(s==p->team[0])
 							InvertTactic(s->tattica);
 					}
 
@@ -982,8 +982,8 @@ void PostHandleBall(void)
 
 	if(pl->InGioco)
 	{
-		p->squadra[0]->TempoPossesso+=p->squadra[0]->Possesso;
-		p->squadra[1]->TempoPossesso+=p->squadra[1]->Possesso;
+		p->team[0]->TempoPossesso+=p->team[0]->Possesso;
+		p->team[1]->TempoPossesso+=p->team[1]->Possesso;
 	}
 	else
 	{

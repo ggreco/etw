@@ -87,7 +87,7 @@ struct Pos portieri[2][2][SECTORS+SPECIALS]=
 
 void CheckPortiere(int n)
 {
-	struct Portiere *g=&p->squadra[n]->portiere;
+	struct Portiere *g=&p->team[n]->portiere;
 	
 	if(g->Special)
 		return;
@@ -130,9 +130,9 @@ void HandleGoalKick(struct Portiere *g)
 	if(p->show_panel&0xff00)
 		return;
 
-	if(g->squadra->Joystick>=0)
+	if(g->team->Joystick>=0)
 	{
-		ULONG l=r_controls[g->squadra->Joystick][counter];
+		ULONG l=r_controls[g->team->Joystick][counter];
 
 		g->Tick--;
 
@@ -259,7 +259,7 @@ void HandlePortiereControlled(struct Portiere *g)
 	if(p->show_panel&0xff00)
 		return;
 
-	if(g->squadra->Joystick>=0)
+	if(g->team->Joystick>=0)
 	{
 		 ULONG l;
 
@@ -268,7 +268,7 @@ void HandlePortiereControlled(struct Portiere *g)
 		if(g->Tick<0&&!(p->show_panel&0xff00) )
 			goto rinvioliberocomputer;
 
-		l=r_controls[g->squadra->Joystick][counter];
+		l=r_controls[g->team->Joystick][counter];
 
                 if(l&MYBUTTONMASK)
                 {
@@ -416,7 +416,7 @@ void HandlePortiere(int num)
 {
 	BOOL near_porta;
 
-	register struct Portiere *g=&p->squadra[num]->portiere;
+	register struct Portiere *g=&p->team[num]->portiere;
 
 	g->Tick--;
 
@@ -424,10 +424,10 @@ void HandlePortiere(int num)
 	{
 	    g->Tick=12;
 
-	    if( ! (IsVeryNear(g->world_x,g->world_y,portieri[g->SNum][g->squadra->Possesso][pl->settore].x,portieri[g->SNum][g->squadra->Possesso][pl->settore].y) ) )
+	    if( ! (IsVeryNear(g->world_x,g->world_y,portieri[g->SNum][g->team->Possesso][pl->settore].x,portieri[g->SNum][g->team->Possesso][pl->settore].y) ) )
 	    {
 		g->ActualSpeed=1;
-		g->Direzione=FindDirection(g->world_x,g->world_y,portieri[g->SNum][g->squadra->Possesso][pl->settore].x,portieri[g->SNum][g->squadra->Possesso][pl->settore].y);
+		g->Direzione=FindDirection(g->world_x,g->world_y,portieri[g->SNum][g->team->Possesso][pl->settore].x,portieri[g->SNum][g->team->Possesso][pl->settore].y);
 
 		if(g->AnimType!=PORTIERE_CORSA)
 		{
@@ -487,7 +487,7 @@ void HandlePortiere(int num)
 	        if(     pl->world_x>(g->world_x-44)  &&
 	                pl->world_x<(g->world_x+170) &&
         	        pl->world_y>(g->world_y+75) &&
-	/*		g->squadra!=pl->sq_palla    && */
+	/*		g->team!=pl->sq_palla    && */
 	                pl->world_y<(g->world_y+200) )
 		{
 			BOOL presa=FALSE;
@@ -545,8 +545,8 @@ void HandlePortiere(int num)
 				FermaPalla();
 				pl->InGioco=FALSE;
 				pl->settore=GOALKICK;
-				g->squadra->Possesso=1;
-				p->squadra[g->SNum^1]->Possesso=0;
+				g->team->Possesso=1;
+				p->team[g->SNum^1]->Possesso=0;
 			}
 //		Qui devo mettere il codice che gestisce il passaggio all'indietro...
 
@@ -694,7 +694,7 @@ void HandlePortiere(int num)
 					g->Direzione-=8;
 			}
 		}
-		else if(( (pl->gioc_palla&&pl->gioc_palla->squadra!=g->squadra) || (!pl->gioc_palla && pl->velocita<10) ) && 
+		else if(( (pl->gioc_palla&&pl->gioc_palla->team!=g->team) || (!pl->gioc_palla && pl->velocita<10) ) && 
 			g->world_y<(AREA_RIGORE_Y_S-100)&&g->world_y>(AREA_RIGORE_Y_N+100)&&
 			(g->world_x>AREA_RIGORE_X_E ||g->world_x<AREA_RIGORE_X_O ) )
 		{
@@ -746,8 +746,8 @@ void HandlePortiere(int num)
 				FermaPalla();
 				pl->InGioco=FALSE;
 				pl->settore=GOALKICK;
-				g->squadra->Possesso=1;
-				p->squadra[g->SNum^1]->Possesso=0;
+				g->team->Possesso=1;
+				p->team[g->SNum^1]->Possesso=0;
 			}
 		}
 	}
@@ -768,19 +768,19 @@ skiptuffo:
 				{
 					case PORTIERE_PRENDI_MEZZARIA:
 					case PORTIERE_SALTO_PRENDI:
-						p->squadra[g->SNum^1]->Tiri++;
+						p->team[g->SNum^1]->Tiri++;
 					case PORTIERE_TERRA_PALLA:
 					case PORTIERE_TUFFO_USCITA_PRENDI:
 					case PORTIERE_RACCOGLI_PALLA:
 						p->mantieni_distanza=TRUE;
 						g->AnimType=PORTIERE_FERMO_PALLA;
 
-						if(g->squadra->Joystick<0)
+						if(g->team->Joystick<0)
 							g->Tick=30+(GetTable()<<3);
 						else
 							g->Tick=100;
 
-						if(g->squadra==p->squadra[0])
+						if(g->team==p->team[0])
 							g->Direzione=D_OVEST;
 						else
 							g->Direzione=D_EST;
@@ -820,7 +820,7 @@ skiptuffo:
 					case PORTIERE_TUFFO_SX_BASSO:
 						if(NeiPressiPallaPortiere(g)&&pl->quota<14)
 						{
-							p->squadra[g->SNum^1]->Tiri++;
+							p->team[g->SNum^1]->Tiri++;
 
 							if(pl->velocita<((g->Parata<<2)-(GetTable()<<1)+2)&&pl->InGioco)
 							{
@@ -832,8 +832,8 @@ skiptuffo:
 									UrgentSpeaker(S_PARATA);
 								}
 
-								p->squadra[g->SNum]->Possesso=1;
-								p->squadra[g->SNum^1]->Possesso=0;
+								p->team[g->SNum]->Possesso=1;
+								p->team[g->SNum^1]->Possesso=0;
 								pl->InGioco=FALSE;
 								FermaPalla();
 								HideBall();
@@ -881,8 +881,8 @@ skiptuffo:
 								if(pl->velocita<=0)
 									pl->velocita=2;
 
-								p->squadra[g->SNum]->Possesso=1;
-								p->squadra[g->SNum^1]->Possesso=0;
+								p->team[g->SNum]->Possesso=1;
+								p->team[g->SNum^1]->Possesso=0;
 								
 								pl->Direzione=(g->SpecialData-(GetTable()<<2)+10);
 								
@@ -971,7 +971,7 @@ skiptuffo:
 
 						if(!penalties&&!free_kicks)
 						{
-							Giocatore *g2=p->squadra[g->SNum^1]->attivo;
+							Giocatore *g2=p->team[g->SNum^1]->attivo;
 
 							if(g2 && InArea(g->SNum,P2G_X(g2->world_x),P2G_Y(g2->world_y)))
 								g2->Comando=ESCI_AREA;
@@ -1081,8 +1081,8 @@ skiptuffo:
 
 			if(presa)
 			{
-				p->squadra[g->SNum]->Possesso=1;
-				p->squadra[g->SNum^1]->Possesso=0;
+				p->team[g->SNum]->Possesso=1;
+				p->team[g->SNum^1]->Possesso=0;
 				pl->InGioco=FALSE;
 				FermaPalla();
 				HideBall();

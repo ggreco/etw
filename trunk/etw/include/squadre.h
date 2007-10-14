@@ -75,7 +75,7 @@ struct Campionato_Disk
 	char Nome[64];
 	char Tipo, Scontri;
 	char Vittoria,Pareggio,Sconfitta; // Punti assegnati nei vari casi
-	char NumeroSquadre;
+	char nteams;
 };
 
 struct Controlled_Disk

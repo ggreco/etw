@@ -10,7 +10,7 @@
 
 #define GetTable() Table[p->TabCounter++]
 
-#define CheckTrain(x) if(training){ int i; for(i=0;i<10;i++) if(!p->squadra[1]->giocatore[i].Special){ D(bug("Err%ld: G%ld!\n",x,i)); break;} }
+#define CheckTrain(x) if(training){ int i; for(i=0;i<10;i++) if(!p->team[1]->giocatore[i].Special){ D(bug("Err%ld: G%ld!\n",x,i)); break;} }
 
 #define G2P_X(x) ((x)-48)
 #define G2P_Y(x) ((x)-80)
@@ -93,8 +93,8 @@ void Progress();
 					pl->gioc_palla->Comando=NESSUN_COMANDO; pl->gioc_palla=NULL;pl->sq_palla=NULL;	\
 					pl->MaxQuota=0;for(i=1;i<SHOT_LENGTH;i++) p->shotheight[i]=0;UpdateBallSpeed();}
 
-#define DaiPalla(g) pl->gioc_palla=g;if(g->Velocita>2)g->Velocita-=3;pl->sq_palla=g->squadra; \
-			pl->sq_palla->Possesso=1;p->squadra[g->SNum^1]->Possesso=0;
+#define DaiPalla(g) pl->gioc_palla=g;if(g->Velocita>2)g->Velocita-=3;pl->sq_palla=g->team; \
+			pl->sq_palla->Possesso=1;p->team[g->SNum^1]->Possesso=0;
 
 #define HideBall()	if(!pl->Hide) \
 			{	\

@@ -21,7 +21,7 @@ void HandleRadarBig(void)
     uint8_t *bmt;
     uint8_t *main_bitmap_start = main_bitmap + bitmap_width;
     uint8_t *main_bitmap_end = main_bitmap + bitmap_width*(bitmap_height-1);
-    int j, c0 = p->squadra[0]->MarkerRed, c1 = p->squadra[1]->MarkerRed;
+    int j, c0 = p->team[0]->MarkerRed, c1 = p->team[1]->MarkerRed;
 
     polydraw(Pens[P_NERO], radar_xstart+BIG_MODIFIER, radar_ystart+BIG_MODIFIER, 4, radarlines);
     polydraw(Pens[P_NERO], radar_xstart+BIG_MODIFIER, radar_ystart+(BIG_MODIFIER+START_AREA), 3, area1);
@@ -32,12 +32,12 @@ void HandleRadarBig(void)
     {
         for(j = 0; j < 10; j++)
         {
-            bmt = bm+(p->squadra[0]->giocatore[j].world_x >> 6)+(p->squadra[0]->giocatore[j].world_y >> 6)*bitmap_width;
+            bmt = bm+(p->team[0]->giocatore[j].world_x >> 6)+(p->team[0]->giocatore[j].world_y >> 6)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c0;
 
-            bmt = bm+(p->squadra[1]->giocatore[j].world_x >> 6)+(p->squadra[1]->giocatore[j].world_y >> 6)*bitmap_width;
+            bmt = bm+(p->team[1]->giocatore[j].world_x >> 6)+(p->team[1]->giocatore[j].world_y >> 6)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c1;
@@ -47,7 +47,7 @@ void HandleRadarBig(void)
     {
         for(j = 0; j < 10; j++)
         {
-            bmt = bm+(p->squadra[0]->giocatore[j].world_x >> 6)+(p->squadra[0]->giocatore[j].world_y >> 6)*bitmap_width;
+            bmt = bm+(p->team[0]->giocatore[j].world_x >> 6)+(p->team[0]->giocatore[j].world_y >> 6)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
             {
@@ -60,7 +60,7 @@ void HandleRadarBig(void)
                 *bmt = c0;
             }
 
-            bmt = bm+(p->squadra[1]->giocatore[j].world_x >> 6)+(p->squadra[1]->giocatore[j].world_y >> 6)*bitmap_width;
+            bmt = bm+(p->team[1]->giocatore[j].world_x >> 6)+(p->team[1]->giocatore[j].world_y >> 6)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
             {
@@ -79,7 +79,7 @@ void HandleRadarBig(void)
 
     if(small_dot)
     {
-        bm2 = bm+(p->squadra[0]->attivo->world_x >> 6)+(p->squadra[0]->attivo->world_y >> 6)*bitmap_width+1;
+        bm2 = bm+(p->team[0]->attivo->world_x >> 6)+(p->team[0]->attivo->world_y >> 6)*bitmap_width+1;
 
         if(bm2 < main_bitmap_end && bm2 > main_bitmap_start)
         {
@@ -90,7 +90,7 @@ void HandleRadarBig(void)
             *bm2 = c0;
         }
 
-        bm2 = bm+(p->squadra[1]->attivo->world_x >> 6)+(p->squadra[1]->attivo->world_y >> 6)*bitmap_width+1;
+        bm2 = bm+(p->team[1]->attivo->world_x >> 6)+(p->team[1]->attivo->world_y >> 6)*bitmap_width+1;
 
         if(bm2 < main_bitmap_end && bm2 > main_bitmap_start)
         {
@@ -103,7 +103,7 @@ void HandleRadarBig(void)
     }
     else
     {
-        bm2 = bm+(p->squadra[0]->attivo->world_x >> 6)+(p->squadra[0]->attivo->world_y >> 6)*bitmap_width+2;
+        bm2 = bm+(p->team[0]->attivo->world_x >> 6)+(p->team[0]->attivo->world_y >> 6)*bitmap_width+2;
 
         if(bm2 < main_bitmap_end && bm2 > main_bitmap_start)
         {
@@ -118,7 +118,7 @@ void HandleRadarBig(void)
             *bm2 = c0;
         }
 
-        bm2 = bm+(p->squadra[1]->attivo->world_x >> 6)+(p->squadra[1]->attivo->world_y >> 6)*bitmap_width+2;
+        bm2 = bm+(p->team[1]->attivo->world_x >> 6)+(p->team[1]->attivo->world_y >> 6)*bitmap_width+2;
 
         if(bm2 < main_bitmap_end && bm2 > main_bitmap_start)
         {
@@ -186,7 +186,7 @@ void HandleRadarLittle(void)
     uint8_t *bmt;
     uint8_t *main_bitmap_start = main_bitmap+bitmap_width;
     uint8_t *main_bitmap_end = main_bitmap+bitmap_width*(bitmap_height-1);
-    int j, c0 = p->squadra[0]->MarkerRed, c1 = p->squadra[1]->MarkerRed;
+    int j, c0 = p->team[0]->MarkerRed, c1 = p->team[1]->MarkerRed;
 
     polydraw(Pens[P_NERO], radar_xstart+(BIG_MODIFIER/2), radar_ystart+(BIG_MODIFIER/2), 4, radarlines);
     polydraw(Pens[P_NERO], radar_xstart+(BIG_MODIFIER/2), radar_ystart+((BIG_MODIFIER+START_AREA)/2), 3, area1);
@@ -198,12 +198,12 @@ void HandleRadarLittle(void)
     {
         for(j = 0; j < 10; j++)
         {
-            bmt = bm+(p->squadra[0]->giocatore[j].world_x >> 7)+(p->squadra[0]->giocatore[j].world_y >> 7)*bitmap_width;
+            bmt = bm+(p->team[0]->giocatore[j].world_x >> 7)+(p->team[0]->giocatore[j].world_y >> 7)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c0;
 
-            bmt = bm+(p->squadra[1]->giocatore[j].world_x >> 7)+(p->squadra[1]->giocatore[j].world_y >> 7)*bitmap_width;
+            bmt = bm+(p->team[1]->giocatore[j].world_x >> 7)+(p->team[1]->giocatore[j].world_y >> 7)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c1;
@@ -213,7 +213,7 @@ void HandleRadarLittle(void)
     {
         for(j = 0; j < 10; j++)
         {
-            bmt = bm+(p->squadra[0]->giocatore[j].world_x >> 7)+(p->squadra[0]->giocatore[j].world_y >> 7)*bitmap_width;
+            bmt = bm+(p->team[0]->giocatore[j].world_x >> 7)+(p->team[0]->giocatore[j].world_y >> 7)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
             {
@@ -226,7 +226,7 @@ void HandleRadarLittle(void)
                 *bmt = c0;
             }
 
-            bmt = bm+(p->squadra[1]->giocatore[j].world_x >> 7)+(p->squadra[1]->giocatore[j].world_y >> 7)*bitmap_width;
+            bmt = bm+(p->team[1]->giocatore[j].world_x >> 7)+(p->team[1]->giocatore[j].world_y >> 7)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
             {
@@ -243,7 +243,7 @@ void HandleRadarLittle(void)
 
     if(small_dot)
     {
-        bm2 = bm+(p->squadra[0]->attivo->world_x >> 7)+(p->squadra[0]->attivo->world_y >> 7)*bitmap_width+1;
+        bm2 = bm+(p->team[0]->attivo->world_x >> 7)+(p->team[0]->attivo->world_y >> 7)*bitmap_width+1;
 
         if(bm2 < main_bitmap_end && bm2 > main_bitmap_start)
         {
@@ -254,7 +254,7 @@ void HandleRadarLittle(void)
             *bm2 = c0;
         }
 
-        bm2 = bm+(p->squadra[1]->attivo->world_x >> 7)+(p->squadra[1]->attivo->world_y >> 7)*bitmap_width+1;
+        bm2 = bm+(p->team[1]->attivo->world_x >> 7)+(p->team[1]->attivo->world_y >> 7)*bitmap_width+1;
 
         if(bm2 < main_bitmap_end && bm2 > main_bitmap_start)
         {
@@ -267,7 +267,7 @@ void HandleRadarLittle(void)
     }
     else
     {
-        bm2 = bm+(p->squadra[0]->attivo->world_x >> 7)+(p->squadra[0]->attivo->world_y >> 7)*bitmap_width+2;
+        bm2 = bm+(p->team[0]->attivo->world_x >> 7)+(p->team[0]->attivo->world_y >> 7)*bitmap_width+2;
 
         if(bm2 < main_bitmap_end && bm2 > main_bitmap_start)
         {
@@ -282,7 +282,7 @@ void HandleRadarLittle(void)
             *bm2 = c0;
         }
 
-        bm2 = bm+(p->squadra[1]->attivo->world_x >> 7)+(p->squadra[1]->attivo->world_y >> 7)*bitmap_width+2;
+        bm2 = bm+(p->team[1]->attivo->world_x >> 7)+(p->team[1]->attivo->world_y >> 7)*bitmap_width+2;
 
         if(bm2 < main_bitmap_end && bm2 > main_bitmap_start)
         {
