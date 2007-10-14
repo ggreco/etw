@@ -105,11 +105,11 @@
 #define COLORE_STANDARD_CALZONI P_BLU2
 #define COLORE_STANDARD_AUSILIARIO P_GIALLO
 
-#define RADAR_SQUADRA_A P_BLU2
-#define RADAR_SQUADRA_B P_ROSSO0
+#define RADAR_TEAM_A P_BLU2
+#define RADAR_TEAM_B P_ROSSO0
 #define RADAR_PALLA P_BIANCO
 
-#define MARKER_SQUADRA_B 10
+#define MARKER_TEAM_B 10
 
 // Direzioni per FindDirection ed altro...
 
@@ -285,8 +285,8 @@
 
 // Stati della partita
 
-#define S_SQUADRA_A		-3
-#define S_SQUADRA_B		-4
+#define S_TEAM_A		-3
+#define S_TEAM_B		-4
 #define S_NOMESQUADRA		-2
 #define S_RESET			-1
 #define S_NON_INIZIATO		0
@@ -295,8 +295,8 @@
 #define S_CALCIO_D_ANGOLO	3
 #define S_CALCIO_DI_PUNIZIONE	4
 #define S_CALCIO_DI_RIGORE	5
-#define S_GOAL_SQUADRA_A	6
-#define S_GOAL_SQUADRA_B	7
+#define S_GOAL_TEAM_A	6
+#define S_GOAL_TEAM_B	7
 #define S_PALLA_TIRATA		8
 #define S_TRAVERSA_COLPITA	9
 #define S_PALO_COLPITO		10

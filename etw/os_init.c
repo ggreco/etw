@@ -44,7 +44,7 @@ void init_system(void)
 
     if (training && !penalties && !free_kicks) {
         int i;
-        struct Squadra *s = p->squadra[1];
+        struct Team *s = p->team[1];
 
         D(bug("*** TRAINING mode settings"));
         s->Joystick = -1;
@@ -99,8 +99,8 @@ void init_system(void)
 
     os_delay(20);
 
-    situation_result[0] = p->squadra[0]->Reti;
-    situation_result[1] = p->squadra[0]->Reti;
+    situation_result[0] = p->team[0]->Reti;
+    situation_result[1] = p->team[0]->Reti;
 
     D(bug("Start: FreeStuff...\n"));
     FreeStuff();

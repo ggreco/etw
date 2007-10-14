@@ -33,7 +33,7 @@ void CheckInfortuni(Giocatore *g)
 
 				p->player_injuried=g;
 
-				if(g->squadra->Joystick>=0)
+				if(g->team->Joystick>=0)
 					p->show_panel=PANEL_INJURIED;
 
 				p->show_time=200;
@@ -47,7 +47,7 @@ void MoveNonControlled(void)
     register int i;
     register WORD xg,yg;
     register Giocatore *g;
-    register Squadra *s;
+    register Team *s;
     WORD xlimit_e,ylimit_s,xlimit_o,ylimit_n,j;
 
     // Cacho un paio di cose :)
@@ -59,7 +59,7 @@ void MoveNonControlled(void)
 
     for(j=0;j<2;j++)
     {
-        s= p->squadra[j];
+        s= p->team[j];
 
         if(s->ArcadeEffect)
         {
@@ -199,13 +199,13 @@ void MoveNonControlled(void)
 
                                 pl->InGioco=FALSE;
 
-                                if(p->squadra[0]->Possesso)
+                                if(p->team[0]->Possesso)
                                 {
-                                    pl->sq_palla=p->squadra[0];
+                                    pl->sq_palla=p->team[0];
                                 }
                                 else
                                 {
-                                    pl->sq_palla=p->squadra[1];
+                                    pl->sq_palla=p->team[1];
                                 }
 
                                 if(bookings)
@@ -216,12 +216,12 @@ void MoveNonControlled(void)
                                         {
                                             if(!g->Ammonito)
                                             {
-                                                p->squadra[g->SNum]->Ammonizioni++;
+                                                p->team[g->SNum]->Ammonizioni++;
                                                 p->arbitro.Comando=AMMONIZIONE;
                                             }
                                             else
                                             {
-                                                p->squadra[g->SNum]->Espulsioni++;
+                                                p->team[g->SNum]->Espulsioni++;
                                                 p->arbitro.Comando=ESPULSIONE;
                                             }
 
@@ -232,7 +232,7 @@ void MoveNonControlled(void)
                                     }
                                     else if(GetTable()>((12-p->arbitro.cattiveria)>>1))
                                     {
-                                        p->squadra[g->SNum]->Espulsioni++;
+                                        p->team[g->SNum]->Espulsioni++;
                                         p->arbitro.Comando=ESPULSIONE;
                                         p->arbitro.Argomento=g->GNum+g->SNum*10;
                                         p->arbitro.Tick=-50;
@@ -310,7 +310,7 @@ skipchange:
                             pl->Direzione += 2;
 
                             s->Possesso = 1;
-                            p->squadra[g->SNum^1]->Possesso = 0;
+                            p->team[g->SNum^1]->Possesso = 0;
 
                             PlayIfNotPlaying(CONTRASTO);
 
@@ -331,7 +331,7 @@ skipchange:
                     else {
 /* the ball is too fast for the player */
                         s->Possesso=1;
-                        p->squadra[g->SNum^1]->Possesso=0;
+                        p->team[g->SNum^1]->Possesso=0;
 
                         RimbalzoCasuale();
 
@@ -348,7 +348,7 @@ skipchange:
             }
 
             // Check the distance
-            if(p->mantieni_distanza&&!g->Comando&&g->squadra!=pl->sq_palla&&g->AnimType!=GIOCATORE_BATTUTA)
+            if(p->mantieni_distanza&&!g->Comando&&g->team!=pl->sq_palla&&g->AnimType!=GIOCATORE_BATTUTA)
             {
                 if(SimpleDistance(pl->world_x,pl->world_y,P2G_X(g->world_x),P2G_Y(g->world_y))<700)
                 {
@@ -439,7 +439,7 @@ skipchange:
 
                     if(g->settore!=pl->settore || s==pl->sq_palla || !pl->InGioco)
                     {
-                        // Qui avevo messo degli 0 al posto di p->squadra[j]->Possesso, chissa' come mai...
+                        // Qui avevo messo degli 0 al posto di p->team[j]->Possesso, chissa' come mai...
 
                         if(!IsNear(g->world_x,g->world_y,s->tattica->Position[s->Possesso][i][p->palla.settore].x,s->tattica->Position[s->Possesso][i][p->palla.settore].y) || !pl->InGioco)
                         {
@@ -510,9 +510,9 @@ skipchange:
                             }
                             else
                             {
-                                if(s->MarkerRed==Pens[RADAR_SQUADRA_B])
+                                if(s->MarkerRed==Pens[RADAR_TEAM_B])
                                 {
-                                    ChangeAnimObj(s->Marker,s->MarkerFrame+MARKER_SQUADRA_B);
+                                    ChangeAnimObj(s->Marker,s->MarkerFrame+MARKER_TEAM_B);
                                 }
                                 else
                                 {
@@ -528,7 +528,7 @@ skipchange:
                         {
                             s->MarkerOnScreen=TRUE;
                             s->MarkerFrame=0;
-                            AddAnimObj(s->Marker,(g->world_x>>3)-field_x+3,yk-7,s->MarkerRed ? MARKER_SQUADRA_B : 0);
+                            AddAnimObj(s->Marker,(g->world_x>>3)-field_x+3,yk-7,s->MarkerRed ? MARKER_TEAM_B : 0);
 
                         }
                     }
@@ -970,7 +970,7 @@ skipchange:
 }
 
 
-void ChangeControlled(Squadra *s,WORD i)
+void ChangeControlled(Team *s,WORD i)
 {
 // Occhio qui, potrebbe dar problemi.
 
@@ -1121,15 +1121,15 @@ void CheckChange(Giocatore *g)
 {
 	if(substitutions && !arcade && !(p->show_panel&0xff00) )
 	{
-		if(r_controls[g->squadra->Joystick][counter]&(JPF_JOY_DOWN|JPF_JOY_UP))
+		if(r_controls[g->team->Joystick][counter]&(JPF_JOY_DOWN|JPF_JOY_UP))
 		{
-			g->squadra->ArcadeCounter++;
+			g->team->ArcadeCounter++;
 
-			if(g->squadra->ArcadeCounter>70)
+			if(g->team->ArcadeCounter>70)
 			{
-				if(r_controls[g->squadra->Joystick][counter]&JPF_JOY_DOWN)
+				if(r_controls[g->team->Joystick][counter]&JPF_JOY_DOWN)
 				{
-					if(g->squadra->NumeroRiserve>0&&g->squadra->Sostituzioni<3)
+					if(g->team->NumeroRiserve>0&&g->team->Sostituzioni<3)
 					{
 						StopTime();
 						p->player_injuried=g;
@@ -1144,10 +1144,10 @@ void CheckChange(Giocatore *g)
 					p->RiservaAttuale=0;
 					p->show_panel=PANEL_CHANGE_TACTIC;
 				}
-				g->squadra->ArcadeCounter=0;
+				g->team->ArcadeCounter=0;
 			}
 		}
-		else g->squadra->ArcadeCounter=0;
+		else g->team->ArcadeCounter=0;
 	}
 }
 
@@ -1159,9 +1159,9 @@ void NoPlayerControl(Giocatore *g)
 	{
 		g->Tick=0;
 
-		if(!IsNear(g->world_x,g->world_y,g->squadra->tattica->Position[g->squadra->Possesso][g->GNum][p->palla.settore].x,g->squadra->tattica->Position[g->squadra->Possesso][g->GNum][p->palla.settore].y) )
+		if(!IsNear(g->world_x,g->world_y,g->team->tattica->Position[g->team->Possesso][g->GNum][p->palla.settore].x,g->team->tattica->Position[g->team->Possesso][g->GNum][p->palla.settore].y) )
 		{
-			MoveTo(g,g->squadra->tattica->Position[g->squadra->Possesso][g->GNum][pl->settore].x,g->squadra->tattica->Position[g->squadra->Possesso][g->GNum][pl->settore].y);
+			MoveTo(g,g->team->tattica->Position[g->team->Possesso][g->GNum][pl->settore].x,g->team->tattica->Position[g->team->Possesso][g->GNum][pl->settore].y);
 		}
 		else
 		{

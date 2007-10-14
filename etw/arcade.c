@@ -27,14 +27,14 @@ void RemoveArcadeEffect(Giocatore *g,UBYTE effect)
 			{
 				int i;
 
-				g->squadra->ArcadeEffect=NESSUN_COMANDO;
+				g->team->ArcadeEffect=NESSUN_COMANDO;
 
 				for(i=0;i<10;i++)
 				{
-					if(g->squadra->giocatore[i].ArcadeEffect==ARCADE_FREEZE)
+					if(g->team->giocatore[i].ArcadeEffect==ARCADE_FREEZE)
 					{
-						g->squadra->giocatore[i].Comando=NESSUN_COMANDO;
-						g->squadra->giocatore[i].ArcadeEffect=NESSUN_COMANDO;
+						g->team->giocatore[i].Comando=NESSUN_COMANDO;
+						g->team->giocatore[i].ArcadeEffect=NESSUN_COMANDO;
 					}
 				}
 			}
@@ -70,7 +70,7 @@ void AddArcadeEffect(Giocatore *g,UBYTE effect)
 		case ARCADE_FREEZE:
 			{
 				int i;
-				Squadra *s=p->squadra[g->SNum^1];
+				Team *s=p->team[g->SNum^1];
 
 				s->ArcadeEffect=ARCADE_FREEZE;
 				s->ArcadeCounter=400; // 8 secondi di durata.

@@ -56,7 +56,7 @@ extern void LiberaPartita(Partita *);
 extern WORD FindDirection(WORD,WORD,WORD,WORD);
 extern ULONG ReadKeyPort(ULONG port);
 extern ULONG ReadNetworkPort(ULONG port);
-extern void ChangeControlled(Squadra *,WORD);
+extern void ChangeControlled(Team *,WORD);
 extern void HandleControlled(int);
 extern void HandleControlledJ2B(int);
 extern void HandleControlledJoyPad(int);
@@ -80,13 +80,13 @@ extern void SetResult(char *,...);
 // squadre
 
 extern void ReadSquadra(FILE *,struct Squadra_Disk *);
-extern void DisponiSquadra(Squadra *,int ,BOOL );
-extern void DisponiPortiere(Squadra *,int ,BOOL );
+extern void DisponiSquadra(Team *,int ,BOOL );
+extern void DisponiPortiere(Team *,int ,BOOL );
 extern void MakeResult(void);
 extern FILE *OpenTeam(char *);
 extern void SwapTeams(void);
 extern void ChangePlayer(struct Giocatore_Disk *,Giocatore *);
-extern BOOL NumeroDiverso(struct Squadra *,char);
+extern BOOL NumeroDiverso(struct Team *,char);
 extern void GL_Fuori(int);
 
 // control
@@ -122,7 +122,7 @@ extern BOOL IsOffside(Giocatore *);
 
 // Aggiungo e rimuovo oggetti alla lista degli oggetti presente sul campo
 
-extern Giocatore *TrovaPiuVicino(Squadra *s,WORD,WORD);
+extern Giocatore *TrovaPiuVicino(Team *s,WORD,WORD);
 extern void MoveTo(Giocatore *,WORD,WORD);
 extern WORD FindDirection32(WORD, WORD, WORD ,WORD );
 extern WORD CanScore(Giocatore *);
@@ -203,8 +203,8 @@ extern void ResizeRadar(void);
 
 extern void MainLoop(void);
 extern void OldMainLoop(void);
-extern void (*HandleSquadra0)(int);
-extern void (*HandleSquadra1)(int);
+extern void (*HandleTeam0)(int);
+extern void (*HandleTeam1)(int);
 extern void (*HandleRadar)(void);
 extern GfxObj *background;
 extern WORD n_limit,o_limit,s_limit,e_limit;

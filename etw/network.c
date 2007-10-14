@@ -182,7 +182,7 @@ int SendTeam(UBYTE team)
 		
 		if((l=SockRead(network_player->socket,network_player->packetbuffer,sizeof(simplemsg)))==sizeof(simplemsg)) {
 			if(IsPacket(network_player->packetbuffer,l,MSG_OK)) {
-				D(bug("Squadra inviata correttamente.\n"));
+				D(bug("Team inviata correttamente.\n"));
 				return TRUE;
 			}
 		}

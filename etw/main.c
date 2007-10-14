@@ -47,7 +47,7 @@ void SetResult(char *fstring, ...)
 
 	if ((f = fopen(RESULT_FILE, "w"))) {
 		int i, j, sn;
-		Squadra *s;
+		Team *s;
 
 		va_start(ap, fstring);
 		vfprintf(f, fstring, ap);
@@ -58,8 +58,8 @@ void SetResult(char *fstring, ...)
 
 			if (network_game) {
 				if (*fstring == '%')	// verifico che la partita sia finita, altrimenti si e' interrotta.
-					SendFinish(p->squadra[0]->
-							   Reti | (p->squadra[1]->Reti << 8));
+					SendFinish(p->team[0]->
+							   Reti | (p->team[1]->Reti << 8));
 				else
 					SendQuit();
             }
@@ -67,12 +67,12 @@ void SetResult(char *fstring, ...)
 			if (penalties) {
 				extern char golrig[2];
 
-				p->squadra[0]->Reti -= golrig[0];
-				p->squadra[1]->Reti -= golrig[1];
+				p->team[0]->Reti -= golrig[0];
+				p->team[1]->Reti -= golrig[1];
 				fprintf(f, "penalties\n%d\n", (int) golrig[0] + golrig[1]);
 			}
 
-			l = min(GA_SIZE, (p->squadra[0]->Reti + p->squadra[1]->Reti));
+			l = min(GA_SIZE, (p->team[0]->Reti + p->team[1]->Reti));
 
 			for (i = 0; i < l; i++)
 				fprintf(f, "%d %d %d\n", (int) goal_team[i],
@@ -80,7 +80,7 @@ void SetResult(char *fstring, ...)
 						(int) goal_minute[i]);
 
 			for (j = 0; j < 2; j++) {
-				s = p->squadra[j];
+				s = p->team[j];
 
 				sn = 0;
 
@@ -88,7 +88,7 @@ void SetResult(char *fstring, ...)
 					|| (!teams_swapped && j == 1))
 					sn = 1;
 
-//                              fprintf("%ld\n",p->squadra[0]->Reti+p->squadra[1]->Reti); Non serve!
+//                              fprintf("%ld\n",p->team[0]->Reti+p->team[1]->Reti); Non serve!
 
 				for (i = 0; i < 10; i++) {
 					char c = 0;
@@ -309,9 +309,9 @@ void Loading(void)
 				unsigned char c;
 
 				if (player_type[i] == 1)
-					c = Pens[RADAR_SQUADRA_A];
+					c = Pens[RADAR_TEAM_A];
 				else
-					c = Pens[RADAR_SQUADRA_B];
+					c = Pens[RADAR_TEAM_B];
 
 
 				if (arcade_teams) {
@@ -729,11 +729,11 @@ BOOL LoadStuff(void)
             set_controls();
 
             if (player_type[0] == TYPE_JOYSTICK1) {
-                p->squadra[0]->MarkerRed = Pens[RADAR_SQUADRA_A];
-                p->squadra[1]->MarkerRed = Pens[RADAR_SQUADRA_B];
+                p->team[0]->MarkerRed = Pens[RADAR_TEAM_A];
+                p->team[1]->MarkerRed = Pens[RADAR_TEAM_B];
             } else {
-                p->squadra[0]->MarkerRed = Pens[RADAR_SQUADRA_B];
-                p->squadra[1]->MarkerRed = Pens[RADAR_SQUADRA_A];
+                p->team[0]->MarkerRed = Pens[RADAR_TEAM_B];
+                p->team[1]->MarkerRed = Pens[RADAR_TEAM_A];
             }
 
             if (big)
@@ -759,8 +759,8 @@ BOOL LoadStuff(void)
             Progress();
 
             if (situation) {
-                p->squadra[0]->Reti = situation_result[0];
-                p->squadra[1]->Reti = situation_result[1];
+                p->team[0]->Reti = situation_result[0];
+                p->team[1]->Reti = situation_result[1];
                 MakeResult();
             }
 

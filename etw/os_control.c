@@ -181,7 +181,7 @@ int os_get_joy_button(int i)
 
 void set_controls(void)
 {
-	p->squadra[0]->Joystick=player_type[0];
+	p->team[0]->Joystick=player_type[0];
 
 	if(control[0]>=CTRL_KEY_1)
 	{
@@ -199,22 +199,22 @@ void set_controls(void)
 		LoadKeyDef(1,KEY_BLUE_FILE);*/
 	}
 
-	if(p->squadra[0]->Joystick>=0)
+	if(p->team[0]->Joystick>=0)
 	{
-		if(control[p->squadra[0]->Joystick]<CTRL_KEY_1)	{
+		if(control[p->team[0]->Joystick]<CTRL_KEY_1)	{
 joy_try_again:
-			D(bug("Opening joystick %ld\n",p->squadra[0]->Joystick));
+			D(bug("Opening joystick %ld\n",p->team[0]->Joystick));
 
-			if ((joy[p->squadra[0]->Joystick]=SDL_JoystickOpen(p->squadra[0]->Joystick))) {
+			if ((joy[p->team[0]->Joystick]=SDL_JoystickOpen(p->team[0]->Joystick))) {
 				num_joys++;
 				has_joystick=TRUE;
 
-				D(bug("Opened Joystick %ld\n",p->squadra[0]->Joystick));
-				D(bug("Name: %s\n", SDL_JoystickName(p->squadra[0]->Joystick)));
-				D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->squadra[0]->Joystick])));
-				D(bug("Number of Hats: %ld\n", SDL_JoystickNumAxes(joy[p->squadra[0]->Joystick])));
-				D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->squadra[0]->Joystick])));
-				D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->squadra[0]->Joystick])));
+				D(bug("Opened Joystick %ld\n",p->team[0]->Joystick));
+				D(bug("Name: %s\n", SDL_JoystickName(p->team[0]->Joystick)));
+				D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->team[0]->Joystick])));
+				D(bug("Number of Hats: %ld\n", SDL_JoystickNumAxes(joy[p->team[0]->Joystick])));
+				D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->team[0]->Joystick])));
+				D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->team[0]->Joystick])));
 				D(bug("Joystick event manager: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
 
 				if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE)
@@ -223,12 +223,12 @@ joy_try_again:
 					SDL_JoystickEventState(SDL_DISABLE);
 				}
 
-				joybuttons[p->squadra[0]->Joystick]=SDL_JoystickNumButtons(joy[p->squadra[0]->Joystick]);
+				joybuttons[p->team[0]->Joystick]=SDL_JoystickNumButtons(joy[p->team[0]->Joystick]);
 			}
 			else if (player_type[1] == TYPE_COMPUTER && player_type[0] == 1) {
                 // if we are playing single player and we have a single joystick installed
                 // let the player use it anyway
-                p->squadra[0]->Joystick = 0;
+                p->team[0]->Joystick = 0;
                 goto joy_try_again;
             }
             else {
@@ -238,27 +238,27 @@ joy_try_again:
 			}
 		}
 
-		if(control[p->squadra[0]->Joystick]==CTRL_JOYPAD ||
-			control[p->squadra[0]->Joystick]==CTRL_KEY_2) {
-			HandleSquadra0=HandleControlledJoyPad;
+		if(control[p->team[0]->Joystick]==CTRL_JOYPAD ||
+			control[p->team[0]->Joystick]==CTRL_KEY_2) {
+			HandleTeam0=HandleControlledJoyPad;
 			D(bug("Joypad/key2 for team 0\n"));
 		}
 		else {
-			if(control[p->squadra[0]->Joystick]==CTRL_JOY2B || 
-				control[p->squadra[0]->Joystick]==CTRL_KEY_1) {
-				HandleSquadra0=HandleControlledJ2B;
+			if(control[p->team[0]->Joystick]==CTRL_JOY2B || 
+				control[p->team[0]->Joystick]==CTRL_KEY_1) {
+				HandleTeam0=HandleControlledJ2B;
        			D(bug("Joy2b/key1 for team 0\n"));
 			}
 			else {
-				HandleSquadra0=HandleControlled;
+				HandleTeam0=HandleControlled;
 			}
 		}
 	}
 	else {
-		HandleSquadra0=HandleCPU;
+		HandleTeam0=HandleCPU;
 
 		if(nocpu)
-			p->squadra[0]->Joystick=TYPE_JOYSTICK1;
+			p->team[0]->Joystick=TYPE_JOYSTICK1;
 	}
 
 	if (player_type[1] == player_type[0] && 
@@ -266,26 +266,26 @@ joy_try_again:
 			player_type[1]^=1;
 	}
 
-	p->squadra[1]->Joystick=player_type[1];
+	p->team[1]->Joystick=player_type[1];
 
-	if(p->squadra[1]->Joystick<0) {
-		HandleSquadra1=HandleCPU;
+	if(p->team[1]->Joystick<0) {
+		HandleTeam1=HandleCPU;
 
 		if(nocpu)
-			p->squadra[1]->Joystick=TYPE_JOYSTICK1;
+			p->team[1]->Joystick=TYPE_JOYSTICK1;
 	}
 	else {
-		if(control[p->squadra[1]->Joystick]<CTRL_KEY_1) {
-			D(bug("Opening joystick %ld\n",p->squadra[1]->Joystick));
+		if(control[p->team[1]->Joystick]<CTRL_KEY_1) {
+			D(bug("Opening joystick %ld\n",p->team[1]->Joystick));
 
-			if ((joy[p->squadra[1]->Joystick]=SDL_JoystickOpen(p->squadra[1]->Joystick))) {
+			if ((joy[p->team[1]->Joystick]=SDL_JoystickOpen(p->team[1]->Joystick))) {
 				has_joystick=TRUE;
 				num_joys++;
-				D(bug("Opened Joystick %ld\n",p->squadra[1]->Joystick));
-				D(bug("Name: %ld\n", SDL_JoystickName(p->squadra[1]->Joystick)));
-				D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->squadra[1]->Joystick])));
-				D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->squadra[1]->Joystick])));
-				D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->squadra[1]->Joystick])));
+				D(bug("Opened Joystick %ld\n",p->team[1]->Joystick));
+				D(bug("Name: %ld\n", SDL_JoystickName(p->team[1]->Joystick)));
+				D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->team[1]->Joystick])));
+				D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->team[1]->Joystick])));
+				D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->team[1]->Joystick])));
 				D(bug("Joystick event manager: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
 
 				if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE) {
@@ -293,25 +293,25 @@ joy_try_again:
 					SDL_JoystickEventState(SDL_DISABLE);
 				}
  
-				joybuttons[p->squadra[1]->Joystick]=SDL_JoystickNumButtons(joy[p->squadra[1]->Joystick]);
+				joybuttons[p->team[1]->Joystick]=SDL_JoystickNumButtons(joy[p->team[1]->Joystick]);
 			}
 			else {
 				D(bug(" ->Error opening joystick!\n"));
 			}
 		}
-		if(control[p->squadra[1]->Joystick]==CTRL_JOYPAD ||
-			control[p->squadra[1]->Joystick]==CTRL_KEY_2) {
-			HandleSquadra1=HandleControlledJoyPad;
+		if(control[p->team[1]->Joystick]==CTRL_JOYPAD ||
+			control[p->team[1]->Joystick]==CTRL_KEY_2) {
+			HandleTeam1=HandleControlledJoyPad;
 			D(bug("Joypad/key2 for team 1\n"));
 		}
 		else {
-			if(control[p->squadra[1]->Joystick]==CTRL_JOY2B ||
-				control[p->squadra[1]->Joystick]==CTRL_KEY_1) {
-				HandleSquadra1=HandleControlledJ2B;
+			if(control[p->team[1]->Joystick]==CTRL_JOY2B ||
+				control[p->team[1]->Joystick]==CTRL_KEY_1) {
+				HandleTeam1=HandleControlledJ2B;
        			D(bug("Joy2b/key1 for team 0\n"));
 			}
 			else {
-				HandleSquadra1=HandleControlled;
+				HandleTeam1=HandleControlled;
 			}
 		}
 	}
@@ -387,7 +387,7 @@ void CheckKeys(void)
 
                     case SDLK_i:
                         {
-                            Squadra *s=p->squadra[1];
+                            Team *s=p->team[1];
                             int i;
 
                             for(i=0;i<10;i++)
@@ -406,8 +406,8 @@ void CheckKeys(void)
                                     for(j=0;j<(SECTORS+SPECIALS);j++)
                                     {
                                         D(bug("S:%ld - without: X:%ld Y:%ld - with: X:%ld Y:%ld\n",j,
-                                                    g->squadra->tattica->Position[0][i][j].x,g->squadra->tattica->Position[0][i][j].y,
-                                                    g->squadra->tattica->Position[1][i][j].x,g->squadra->tattica->Position[1][i][j].y));
+                                                    g->team->tattica->Position[0][i][j].x,g->team->tattica->Position[0][i][j].y,
+                                                    g->team->tattica->Position[1][i][j].x,g->team->tattica->Position[1][i][j].y));
                                     }
                                 }
                             }
@@ -435,25 +435,25 @@ void CheckKeys(void)
 
                         p->arbitro.Comando=FISCHIA_FALLO;
                         TogliPalla();
-                        if(p->squadra[0]->Possesso)
+                        if(p->team[0]->Possesso)
                         {
-                            pl->sq_palla=p->squadra[0];
-                            p->squadra[1]->Falli++;
+                            pl->sq_palla=p->team[0];
+                            p->team[1]->Falli++;
                         }
                         else
                         {
-                            pl->sq_palla=p->squadra[1];
-                            p->squadra[0]->Falli++;
+                            pl->sq_palla=p->team[1];
+                            p->team[0]->Falli++;
                         }
                         break;
 
                         /* AC: make a fake goal for team 0. */
                     case SDLK_g:
-                        p->squadra[0]->Reti++;
-                        if(!penalties && (p->squadra[0]->Reti+p->squadra[1]->Reti)<GA_SIZE )
+                        p->team[0]->Reti++;
+                        if(!penalties && (p->team[0]->Reti+p->team[1]->Reti)<GA_SIZE )
                         {
                             mytimer temptime;
-                            int i=p->squadra[0]->Reti+p->squadra[1]->Reti-1;
+                            int i=p->team[0]->Reti+p->team[1]->Reti-1;
 
                             goal_array[i]=p->last_touch;
 
@@ -478,7 +478,7 @@ void CheckKeys(void)
                             }
 
                         }
-                        D(bug("I have signed a GOAL for team %s\n",p->squadra[0]->Nome));
+                        D(bug("I have signed a GOAL for team %s\n",p->team[0]->Nome));
                         break;
 #endif
                     case SDLK_r:
@@ -539,42 +539,42 @@ void CheckKeys(void)
 
 					// Left Alt, role play enable/disabled for team 1
                     case SDLK_LALT:
-                        p->squadra[1]->gioco_ruolo = (p->squadra[1]->gioco_ruolo ? FALSE : TRUE);
+                        p->team[1]->gioco_ruolo = (p->team[1]->gioco_ruolo ? FALSE : TRUE);
 						break;
 					// Left Shift, changes active player team 1 if role play
 					case SDLK_LSHIFT:
-                        if(p->squadra[1]->gioco_ruolo)
+                        if(p->team[1]->gioco_ruolo)
                         {
-                            char num=p->squadra[1]->attivo->GNum;
+                            char num=p->team[1]->attivo->GNum;
 
                             if(num<9)
                                 num++;
                             else
                                 num=0;
 
-                            p->squadra[1]->gioco_ruolo=FALSE;
-                            ChangeControlled(p->squadra[1],num);
-                            p->squadra[1]->gioco_ruolo=TRUE;
+                            p->team[1]->gioco_ruolo=FALSE;
+                            ChangeControlled(p->team[1],num);
+                            p->team[1]->gioco_ruolo=TRUE;
                         }
                         break;
 					// Right Alt, role play enable/disabled for team 0
                     case SDLK_RALT:
-                        p->squadra[0]->gioco_ruolo = (p->squadra[0]->gioco_ruolo ? FALSE : TRUE);
+                        p->team[0]->gioco_ruolo = (p->team[0]->gioco_ruolo ? FALSE : TRUE);
                         break;
 					// Right Shift, changes active player team 0 if role play
                     case SDLK_RSHIFT:
-                        if(p->squadra[0]->gioco_ruolo)
+                        if(p->team[0]->gioco_ruolo)
                         {
-                            char num=p->squadra[0]->attivo->GNum;
+                            char num=p->team[0]->attivo->GNum;
 
                             if(num<9)
                                 num++;
                             else
                                 num=0;
 
-                            p->squadra[0]->gioco_ruolo=FALSE;
-                            ChangeControlled(p->squadra[0],num);
-                            p->squadra[0]->gioco_ruolo=TRUE;
+                            p->team[0]->gioco_ruolo=FALSE;
+                            ChangeControlled(p->team[0],num);
+                            p->team[0]->gioco_ruolo=TRUE;
                         }
                         break;
 #endif
@@ -619,7 +619,7 @@ void CheckKeys(void)
                                 else
                                     scroll_type=0;
                             //}
-                            //							ChangeControlled(p->squadra[0],selected);
+                            //							ChangeControlled(p->team[0],selected);
                         }
                         else {
                             SaveReplay();

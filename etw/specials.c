@@ -483,7 +483,7 @@ void InvertiSquadre(void)
 
 	for(i=0;i<totale_giornate;i++)
 	{
-		for(k=0;k<((numero_squadre+1)/2);k++)
+		for(k=0;k<((nteams+1)/2);k++)
 		{
 			t=turni[i][k].t1;
 			turni[i][k].t1=turni[i][k].t2;
@@ -533,7 +533,7 @@ void NewTurn(void)
 
 	turno++;
 
-	for(i=0;i<campionato.NumeroSquadre;i++)
+	for(i=0;i<campionato.nteams;i++)
 	{
 		for(j=0;j<teamlist[i].NumeroGiocatori;j++)
 		{
@@ -621,11 +621,11 @@ BOOL TeamSelection(WORD bottone)
 			{
 				team1_selected=TRUE;
 				controllo[-b->ID-1]=1;
-				b->Colore=COLORE_SQUADRA_A;
+				b->Colore=COLORE_TEAM_A;
 			}
 			else
 			{
-				b->Colore=COLORE_SQUADRA_B;			
+				b->Colore=COLORE_TEAM_B;			
 				team2_selected=TRUE;
 				controllo[-b->ID-1]=0;
 			}
@@ -635,15 +635,15 @@ BOOL TeamSelection(WORD bottone)
 			b->Colore=COLORE_UNSELECTED;
 			selected_number--;
 		}
-		else if(b->Colore==COLORE_SQUADRA_A && (!team2_selected || wanted_number>2 || wanted_number<=0 || selected_number>2) )
+		else if(b->Colore==COLORE_TEAM_A && (!team2_selected || wanted_number>2 || wanted_number<=0 || selected_number>2) )
 		{
 			team1_selected=FALSE;
 			controllo[-b->ID-1]=0;
-			b->Colore=COLORE_SQUADRA_B;
+			b->Colore=COLORE_TEAM_B;
 		}
 		else
 		{
-			if(b->Colore==COLORE_SQUADRA_A)
+			if(b->Colore==COLORE_TEAM_A)
 				team1_selected=FALSE;
 			else
 				team2_selected=FALSE;
@@ -707,9 +707,9 @@ BOOL TeamSelection(WORD bottone)
 /*
 	This is disabled because controllo is fixed on the team!
 
-				if(actual_menu->Bottone[i].Colore==COLORE_SQUADRA_A)
+				if(actual_menu->Bottone[i].Colore==COLORE_TEAM_A)
 					controllo[j]=0;
-				else if(actual_menu->Bottone[i].Colore==COLORE_SQUADRA_B)
+				else if(actual_menu->Bottone[i].Colore==COLORE_TEAM_B)
 					controllo[j]=1;
 				else
 					controllo[j]=-1;
@@ -742,10 +742,10 @@ BOOL TeamSelection(WORD bottone)
 // Cup
 			RandomDraw(selected_number);
 
-			numero_squadre=selected_number;
+			nteams=selected_number;
 
 			menu[MENU_MATCHES].Titolo=msg_32;
-			ViewEliminazioneDiretta(numero_squadre/2);
+			ViewEliminazioneDiretta(nteams/2);
 			mb[0].ID=MENU_MATCHES;
 			ChangeMenu(MENU_MATCHES);
 		}
@@ -1106,11 +1106,11 @@ BOOL ArcadeTeamSelection(WORD bottone)
 			{
 				team1_selected=TRUE;
 				controllo[b->ID]=1;
-				b->Colore=COLORE_SQUADRA_A;
+				b->Colore=COLORE_TEAM_A;
 			}
 			else
 			{
-				b->Colore=COLORE_SQUADRA_B;
+				b->Colore=COLORE_TEAM_B;
 				team2_selected=TRUE;
 				controllo[b->ID]=0;
 			}			
@@ -1120,15 +1120,15 @@ BOOL ArcadeTeamSelection(WORD bottone)
 			b->Colore=COLORE_UNSELECTED;
 			selected_number--;
 		}
-		else if(b->Colore==COLORE_SQUADRA_A && (!team2_selected || wanted_number>2 || wanted_number<=0 || selected_number>2) )
+		else if(b->Colore==COLORE_TEAM_A && (!team2_selected || wanted_number>2 || wanted_number<=0 || selected_number>2) )
 		{
 			team1_selected=FALSE;
 			controllo[b->ID]=0;
-			b->Colore=COLORE_SQUADRA_B;
+			b->Colore=COLORE_TEAM_B;
 		}
 		else
 		{
-			if(b->Colore==COLORE_SQUADRA_A)
+			if(b->Colore==COLORE_TEAM_A)
 				team1_selected=FALSE;
 			else
 				team2_selected=FALSE;
@@ -1199,9 +1199,9 @@ BOOL ArcadeTeamSelection(WORD bottone)
 			if(actual_menu->Bottone[i].Colore!=COLORE_UNSELECTED)
 			{
 /*
-				if(actual_menu->Bottone[i].Colore==COLORE_SQUADRA_A)
+				if(actual_menu->Bottone[i].Colore==COLORE_TEAM_A)
 					controllo[j]=0;
-				else if(actual_menu->Bottone[i].Colore==COLORE_SQUADRA_B)
+				else if(actual_menu->Bottone[i].Colore==COLORE_TEAM_B)
 					controllo[j]=1;
 				else
 					controllo[j]=-1;
@@ -1224,10 +1224,10 @@ BOOL ArcadeTeamSelection(WORD bottone)
 
 			PlayMenuMusic();
 
-			numero_squadre=selected_number;
+			nteams=selected_number;
 
 			menu[MENU_MATCHES].Titolo=msg_33;
-			ViewEliminazioneDiretta(numero_squadre/2);
+			ViewEliminazioneDiretta(nteams/2);
 			mb[0].ID=MENU_MATCHES;
 			ChangeMenu(MENU_MATCHES);
 		}
@@ -2376,7 +2376,7 @@ void SetupMatches(void)
 			else
 				menu[MENU_MATCHES].Titolo=msg_43;
 
-			ViewEliminazioneDiretta(numero_squadre/2);
+			ViewEliminazioneDiretta(nteams/2);
 			break;
 		case MENU_LEAGUE:
 			menu[MENU_MATCHES].Titolo=msg_44;
@@ -2386,12 +2386,12 @@ void SetupMatches(void)
 				BYTE a,b;
 				int k;
 
-				for(k=0;k<numero_squadre/2;k++)
+				for(k=0;k<nteams/2;k++)
 				{
 					a=teamarray[turni[turno][k].t1-1];
 					b=teamarray[turni[turno][k].t2-1];
 
-					ClearMatches((numero_squadre+1)/2);
+					ClearMatches((nteams+1)/2);
 
 					if(a==FAKE_TEAM)
 					{
@@ -2600,14 +2600,14 @@ void PlayMatches(void)
 			else
 				menu[MENU_MATCHES].Titolo=msg_54;
 
-			if(numero_squadre==2)
+			if(nteams==2)
 				final=TRUE;
 
-			EliminazioneDiretta(numero_squadre/2);
+			EliminazioneDiretta(nteams/2);
 
-			numero_squadre/=2;
+			nteams/=2;
 
-			if(numero_squadre>1)
+			if(nteams>1)
 			{
 				NewTurn();
 				make_setup=TRUE;
@@ -2635,7 +2635,7 @@ void PlayMatches(void)
 
 				nopari=FALSE;
 
-				for(k=0;k<numero_squadre/2;k++)
+				for(k=0;k<nteams/2;k++)
 				{
 					a=teamarray[turni[turno][k].t1-1];
 					b=teamarray[turni[turno][k].t2-1];

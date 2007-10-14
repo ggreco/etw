@@ -4,7 +4,7 @@
 
 void HandleCPU(int squadra)
 {
-	HandleRealCPU(p->squadra[squadra]->attivo);
+	HandleRealCPU(p->team[squadra]->attivo);
 }
 
 void HandleRealCPU(Giocatore *g)
@@ -22,11 +22,11 @@ void HandleRealCPU(Giocatore *g)
 
                 if(pl->gioc_palla==g)
                 {
-			char schema=g->squadra->Schema;
+			char schema=g->team->Schema;
 
 			if(g->SNum==1)
 			{
-        	                if(g->settore!=g->squadra->tattica->Position[1][g->GNum][pl->settore].settore&&GetTable()>0)
+        	                if(g->settore!=g->team->tattica->Position[1][g->GNum][pl->settore].settore&&GetTable()>0)
 	                        {
                                 	switch(g->settore)
                         	        {
@@ -160,7 +160,7 @@ void HandleRealCPU(Giocatore *g)
 			}
 			else
 			{
-        	                if(g->settore!=g->squadra->tattica->Position[1][g->GNum][pl->settore].settore||GetTable()>4)
+        	                if(g->settore!=g->team->tattica->Position[1][g->GNum][pl->settore].settore||GetTable()>4)
 	                        {
                                 	switch(g->settore)
                         	        {
@@ -310,10 +310,10 @@ void HandleRealCPU(Giocatore *g)
 						MoveTo(g,G2P_X(pl->world_x),G2P_Y(pl->world_y));
 			}
 			else
-	                        MoveTo(g,g->squadra->tattica->Position[g->squadra->Possesso][g->GNum][pl->settore].x,g->squadra->tattica->Position[g->squadra->Possesso][g->GNum][pl->settore].y);
+	                        MoveTo(g,g->team->tattica->Position[g->team->Possesso][g->GNum][pl->settore].x,g->team->tattica->Position[g->team->Possesso][g->GNum][pl->settore].y);
 
 			if(pl->InGioco && !pl->Hide &&
-				 !g->squadra->Possesso && GetTable()>3)
+				 !g->team->Possesso && GetTable()>3)
 				DoSpecials(g);
 		}
 	}

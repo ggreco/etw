@@ -100,7 +100,7 @@ struct Pallone
 {
     AnimObj *immagine;
     struct Giocatore *gioc_palla;
-    struct Squadra *sq_palla;
+    struct Team *sq_palla;
     WORD world_x, world_y;
     WORD delta_x, delta_y;
     int8_t ToTheTop, ThisQuota, Stage, TipoTiro;
@@ -125,7 +125,7 @@ struct Portiere
     WORD Tick; 
     char *Nome;
     char *Cognome; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    struct Squadra *squadra;
+    struct Team *team;
     int8_t NameLen; // Lunghezza in chars del cognome (per text) 
     int8_t SNum;
     BOOL Ammonito, Special, FirePressed;
@@ -149,7 +149,7 @@ struct Giocatore
     WORD Tick; 
     char *Nome;
     char *Cognome; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    struct Squadra *squadra;
+    struct Team *team;
     int8_t NameLen; // Lunghezza in chars del cognome (per text) 
     int8_t GNum;
     BOOL Ammonito, Special, FirePressed;
@@ -173,7 +173,7 @@ struct Giocatore
     WORD ArcadeCounter; // Per la gestione dell'arcade
 };
 
-struct Squadra
+struct Team
 {
     int8_t TPossesso;
     int8_t Reti;
@@ -214,11 +214,11 @@ struct Partita
 {
     struct Pallone palla;
     struct Arbitro arbitro;
-    struct Squadra *squadra[2];
+    struct Team *team[2];
     bitmap result;
     struct Giocatore *player_injuried;
     AnimObj *extras; // Ci metto bandierine, fotografi, poliziotti...
-    struct Squadra *possesso;
+    struct Team *possesso;
     ULONG TempoPassato;
     LONG show_panel, show_time;
     WORD check_sector, shotheight[SHOT_LENGTH], flash_pos;
@@ -238,7 +238,6 @@ struct DOggetto
 
 typedef struct GuardaLinee GuardaLinee;
 typedef struct Partita Partita;
-typedef struct Squadra Squadra;
 typedef struct Giocatore Giocatore;
 typedef struct Pallone Pallone;
 typedef struct Tactic Tattica;
@@ -248,7 +247,7 @@ typedef struct Elemento Oggetto;
 typedef struct Arbitro Refree;
 typedef struct GuardaLinee Linesman;
 typedef struct Giocatore Player;
-typedef struct Squadra Team;
+typedef struct Team Team;
 typedef struct Partita Match;
 typedef struct Elemento Object;
 typedef struct Pallone Ball;

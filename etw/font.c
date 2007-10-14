@@ -37,7 +37,7 @@ BOOL draw_r, replay_done;
 
 void PrintTeamName(Giocatore * g, LONG y)
 {
-	char *c = g->squadra->Nome;
+	char *c = g->team->Nome;
 	LONG l, x;
 
 	l = strlen(c);
@@ -47,7 +47,7 @@ void PrintTeamName(Giocatore * g, LONG y)
 	x = WINDOW_WIDTH - l * font_width;
 	x >>= 1;
 
-	ColorTextShadow(x, y, c, l, g->squadra->MarkerRed);
+	ColorTextShadow(x, y, c, l, g->team->MarkerRed);
 }
 
 BOOL InitFonts(void)
@@ -145,15 +145,15 @@ void PrintVerySmall(bitmap dest, char *text, char len, int width)
 void PrintNames(void)
 {
 	if (!training)
-		bltchunkybitmap(p->squadra[1]->NomeAttivo, 0, 0, main_bitmap,
+		bltchunkybitmap(p->team[1]->NomeAttivo, 0, 0, main_bitmap,
 						0, WINDOW_HEIGHT - (CHAR_Y + 1),
-						p->squadra[1]->attivo->NameLen * 6, CHAR_Y,
+						p->team[1]->attivo->NameLen * 6, CHAR_Y,
 						(CHAR_X * MAX_LEN), bitmap_width);
 
-	bltchunkybitmap(p->squadra[0]->NomeAttivo, 0, 0, main_bitmap,
-					WINDOW_WIDTH - p->squadra[0]->attivo->NameLen * 6 - 1,
+	bltchunkybitmap(p->team[0]->NomeAttivo, 0, 0, main_bitmap,
+					WINDOW_WIDTH - p->team[0]->attivo->NameLen * 6 - 1,
 					WINDOW_HEIGHT - (CHAR_Y + 1),
-					p->squadra[0]->attivo->NameLen * 6, CHAR_Y,
+					p->team[0]->attivo->NameLen * 6, CHAR_Y,
 					(CHAR_X * MAX_LEN), bitmap_width);
 }
 
@@ -305,9 +305,9 @@ void ShowPanel(void)
 		y = WINDOW_HEIGHT - (font_height << 2) + (font_height << 1) - 1;
 
 		if (p->arbitro.Argomento >= 10)
-			g = &p->squadra[1]->giocatore[p->arbitro.Argomento - 10];
+			g = &p->team[1]->giocatore[p->arbitro.Argomento - 10];
 		else
-			g = &p->squadra[0]->giocatore[p->arbitro.Argomento];
+			g = &p->team[0]->giocatore[p->arbitro.Argomento];
 
 		l = strlen(g->Nome);
 
@@ -484,7 +484,7 @@ void ShowPanel(void)
 			x = font_width << 2;
 
 			if (left_sel) {
-				ColorTextShadow(x, y, "YES", 3, g->squadra->MarkerRed);
+				ColorTextShadow(x, y, "YES", 3, g->team->MarkerRed);
 			} else {
 				TextShadow(x, y, "YES", 3);
 			}
@@ -492,7 +492,7 @@ void ShowPanel(void)
 			x = WINDOW_WIDTH - font_width * 6;
 
 			if (right_sel) {
-				ColorTextShadow(x, y, "NO", 2, g->squadra->MarkerRed);
+				ColorTextShadow(x, y, "NO", 2, g->team->MarkerRed);
 			} else {
 				TextShadow(x, y, "NO", 2);
 			}
@@ -515,7 +515,7 @@ void ShowPanel(void)
 			if (p->RiservaAttuale < 0)
 				c = "NOBODY";
 			else
-				c = g->squadra->giocatore[p->RiservaAttuale].Nome;
+				c = g->team->giocatore[p->RiservaAttuale].Nome;
 
 			l = strlen(c);
 
@@ -614,23 +614,23 @@ void ShowPanel(void)
 
 		y = t + 5;
 
-		t = p->squadra[0]->TempoPossesso + p->squadra[1]->TempoPossesso;
-		l = p->squadra[0]->TempoPossesso * 100 / t;
-		p->squadra[0]->TPossesso = l;
-		l = p->squadra[1]->TempoPossesso * 100 / t;
-		p->squadra[1]->TPossesso = l;
+		t = p->team[0]->TempoPossesso + p->team[1]->TempoPossesso;
+		l = p->team[0]->TempoPossesso * 100 / t;
+		p->team[0]->TPossesso = l;
+		l = p->team[1]->TempoPossesso * 100 / t;
+		p->team[1]->TPossesso = l;
 
 		xs = (font_width << 1) + font_width;
 
-		l = strlen(p->squadra[0]->Nome);
+		l = strlen(p->team[0]->Nome);
 
-		TextShadow(xs, y, p->squadra[0]->Nome, l);
+		TextShadow(xs, y, p->team[0]->Nome, l);
 
-		l = strlen(p->squadra[1]->Nome);
+		l = strlen(p->team[1]->Nome);
 
 		x = WINDOW_WIDTH - (l + 3) * font_width;
 
-		TextShadow(x, y, p->squadra[1]->Nome, l);
+		TextShadow(x, y, p->team[1]->Nome, l);
 
 		y += (font_height * 2);
 
@@ -639,14 +639,14 @@ void ShowPanel(void)
 
 			TextShadow(x, y, stats[t].nome, stats[t].len);
 
-			c = *((char *) (((char *) (p->squadra[0])) +
+			c = *((char *) (((char *) (p->team[0])) +
 							stats[t].address));
 
 			l = sprintf(buffer, "%d", (int) c);
 
 			TextShadow(xs, y, buffer, l);
 
-			c = *((char *) (((char *) (p->squadra[1])) +
+			c = *((char *) (((char *) (p->team[1])) +
 							stats[t].address));
 
 			l = sprintf(buffer, "%d", (int) c);
@@ -677,15 +677,15 @@ void ShowPanel(void)
 		y = WINDOW_HEIGHT - (font_height << 3) + (font_height << 1) +
 			font_height;
 
-		l = strlen(p->squadra[0]->Nome);
+		l = strlen(p->team[0]->Nome);
 
-		TextShadow(x, y, p->squadra[0]->Nome, l);
+		TextShadow(x, y, p->team[0]->Nome, l);
 
 		x = WINDOW_WIDTH - (font_width << 2) - font_width;
 		y = WINDOW_HEIGHT - (font_height << 3) + (font_height << 1) +
 			font_height;
 
-		l = sprintf(temp, "%d", p->squadra[0]->Reti);
+		l = sprintf(temp, "%d", p->team[0]->Reti);
 
 		TextShadow(x, y, temp, l);
 
@@ -693,14 +693,14 @@ void ShowPanel(void)
 			x = font_width << 2;
 			y = WINDOW_HEIGHT - (font_height << 2) + font_height;
 
-			l = strlen(p->squadra[1]->Nome);
+			l = strlen(p->team[1]->Nome);
 
-			TextShadow(x, y, p->squadra[1]->Nome, l);
+			TextShadow(x, y, p->team[1]->Nome, l);
 
 			x = WINDOW_WIDTH - (font_width << 2) - font_width;
 			y = WINDOW_HEIGHT - (font_height << 2) + font_height;
 
-			l = sprintf(temp, "%d", p->squadra[1]->Reti);
+			l = sprintf(temp, "%d", p->team[1]->Reti);
 			TextShadow(x, y, temp, l);
 		}
 	}
@@ -805,9 +805,9 @@ void DrawR(void)
 
 void ShowFinal(void)
 {
-	struct Squadra *s =
-		(p->squadra[0]->Reti >
-		 p->squadra[1]->Reti ? p->squadra[0] : p->squadra[1]);
+	struct Team *s =
+		(p->team[0]->Reti >
+		 p->team[1]->Reti ? p->team[0] : p->team[1]);
 
 	if (s->Joystick >= 0) {
 		bitmap mask;

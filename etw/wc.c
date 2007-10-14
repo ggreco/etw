@@ -175,7 +175,7 @@ void UpdateLeagueTable(void)
 {
 	BYTE temp[32];
 	WORD maxpunti,maxdiff,maxgol;
-	int i,j=0,best,ns=numero_squadre;
+	int i,j=0,best,ns=nteams;
 
 	if(teamarray[ns-1]==FAKE_TEAM)
 		ns--;
@@ -243,7 +243,7 @@ void UpdateLeagueTable(void)
 
 void InitTable(void)
 {
-	int i,j,ns=numero_squadre;
+	int i,j,ns=nteams;
 	char *c;
 
 	if(turno==0)

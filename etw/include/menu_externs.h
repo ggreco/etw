@@ -126,7 +126,7 @@ extern int arcade_score;
 extern int8_t competition, selected_number, wanted_number, actual_team, controllo[], p_control[],
 	situation_result[2], strictness, field, duration, field_type, ruolo[];
 extern UBYTE totale_giornate;
-extern BYTE teamarray[], turno, numero_squadre, daytime, league_pos[64], ppp, ppv, pps;
+extern BYTE teamarray[], turno, nteams, daytime, league_pos[64], ppp, ppv, pps;
 
 extern long WINDOW_WIDTH, WINDOW_HEIGHT, oldwidth, oldheight, wanted_width, wanted_height;
 extern WORD radar_position, players, current_menu;

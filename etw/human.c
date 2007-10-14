@@ -75,7 +75,7 @@ void HumanShot(Giocatore *g, LONG joystate)
 void HandleControlled(int squadra)
 {
     register LONG joystate;
-    register Giocatore *g=p->squadra[squadra]->attivo;
+    register Giocatore *g=p->team[squadra]->attivo;
 
     //      g->WaitForControl++;
 
@@ -94,16 +94,16 @@ void HandleControlled(int squadra)
         return;
     }
 
-    if (g->squadra->Joystick < 0) {
+    if (g->team->Joystick < 0) {
         D(bug("HandleControlled with Joystick < 0!\n"));
         return;
     }
 
-    joystate=r_controls[g->squadra->Joystick][counter];
+    joystate=r_controls[g->team->Joystick][counter];
 
     // Gestione del fire
 
-    if((joystate&JPF_BUTTON_RED)&&!need_release[g->squadra->Joystick])
+    if((joystate&JPF_BUTTON_RED)&&!need_release[g->team->Joystick])
     {
         if(g->FirePressed)
         {
@@ -111,7 +111,7 @@ void HandleControlled(int squadra)
 
             if(g->TimePress>8)
             {
-                need_release[g->squadra->Joystick]=TRUE;
+                need_release[g->team->Joystick]=TRUE;
 
                 if(pl->gioc_palla==g)
                     HumanShot(g,joystate);
@@ -172,10 +172,10 @@ void HandleControlled(int squadra)
         return;
     }
     /*
-       else need_release[g->squadra->Joystick]=FALSE;
+       else need_release[g->team->Joystick]=FALSE;
      */
     if(!(joystate&JPF_BUTTON_RED))
-        need_release[g->squadra->Joystick]=FALSE;
+        need_release[g->team->Joystick]=FALSE;
 
     if(g->ActualSpeed==3 && g->AnimFrame!=0 && g==pl->gioc_palla)
         return;
@@ -325,7 +325,7 @@ void HandleControlled(int squadra)
     {
         if(g->ActualSpeed==2)
         {
-            if(counter>0 && r_controls[g->squadra->Joystick][counter-1]&JP_DIRECTION_MASK)
+            if(counter>0 && r_controls[g->team->Joystick][counter-1]&JP_DIRECTION_MASK)
                 g->WaitForControl=0;
 
             g->WaitForControl++;
@@ -346,7 +346,7 @@ void HandleControlled(int squadra)
 void HandleControlledJ2B(int squadra)
 {
     register LONG joystate;
-    register Giocatore *g=p->squadra[squadra]->attivo;
+    register Giocatore *g=p->team[squadra]->attivo;
 
     //      g->WaitForControl++;
 
@@ -364,20 +364,20 @@ void HandleControlledJ2B(int squadra)
         return;
     }
 
-    if (g->squadra->Joystick < 0) {
+    if (g->team->Joystick < 0) {
         D(bug("HandleControlled with Joystick < 0!\n"));
         return;
     }
 
-    joystate=r_controls[g->squadra->Joystick][counter];
+    joystate=r_controls[g->team->Joystick][counter];
 
     // Gestione del fire
 
-    if(!need_release[g->squadra->Joystick])
+    if(!need_release[g->team->Joystick])
     {
         if(joystate&JPF_BUTTON_RED)
         {
-            need_release[g->squadra->Joystick]=TRUE;
+            need_release[g->team->Joystick]=TRUE;
 
             if(pl->gioc_palla==g)
             {
@@ -400,7 +400,7 @@ void HandleControlledJ2B(int squadra)
 
                 if(g->TimePress>8)
                 {
-                    need_release[g->squadra->Joystick]=TRUE;
+                    need_release[g->team->Joystick]=TRUE;
 
                     if(pl->gioc_palla==g)
                     {
@@ -447,7 +447,7 @@ void HandleControlledJ2B(int squadra)
         }
     }
     else if(!(joystate&(JPF_BUTTON_RED|JPF_BUTTON_BLUE)))
-        need_release[g->squadra->Joystick]=FALSE;
+        need_release[g->team->Joystick]=FALSE;
 
     if(g->ActualSpeed==3 && g->AnimFrame!=0 && g==pl->gioc_palla)
         return;
@@ -597,7 +597,7 @@ void HandleControlledJ2B(int squadra)
     {
         if(g->ActualSpeed==2)
         {
-            if(counter>0 && r_controls[g->squadra->Joystick][counter-1]&JP_DIRECTION_MASK)
+            if(counter>0 && r_controls[g->team->Joystick][counter-1]&JP_DIRECTION_MASK)
                 g->WaitForControl=0;
 
             g->WaitForControl++;
@@ -618,7 +618,7 @@ void HandleControlledJ2B(int squadra)
 void HandleControlledJoyPad(int squadra)
 {
     register LONG joystate;
-    register Giocatore *g=p->squadra[squadra]->attivo;
+    register Giocatore *g=p->team[squadra]->attivo;
 
     if(g->Special || g->Comando)
     {
@@ -634,20 +634,20 @@ void HandleControlledJoyPad(int squadra)
         return;
     }
 
-    if (g->squadra->Joystick < 0) {
+    if (g->team->Joystick < 0) {
         D(bug("HandleControlled with Joystick < 0!\n"));
         return;
     }
     
-    joystate=r_controls[g->squadra->Joystick][counter];
+    joystate=r_controls[g->team->Joystick][counter];
 
     // Gestione del fire
 
-    if(!need_release[g->squadra->Joystick])
+    if(!need_release[g->team->Joystick])
     {
         if(joystate&JPF_BUTTON_RED)
         {
-            need_release[g->squadra->Joystick]=TRUE;
+            need_release[g->team->Joystick]=TRUE;
 
             if(g==pl->gioc_palla)
             {
@@ -664,7 +664,7 @@ void HandleControlledJoyPad(int squadra)
 
         if(joystate&JPF_BUTTON_BLUE)
         {
-            need_release[g->squadra->Joystick]=TRUE;
+            need_release[g->team->Joystick]=TRUE;
 
             if(g==pl->gioc_palla)
             {
@@ -680,7 +680,7 @@ void HandleControlledJoyPad(int squadra)
 
         if(joystate&JPF_BUTTON_YELLOW)
         {
-            need_release[g->squadra->Joystick]=TRUE;
+            need_release[g->team->Joystick]=TRUE;
 
             if(g==pl->gioc_palla)
             {
@@ -693,7 +693,7 @@ void HandleControlledJoyPad(int squadra)
 
         if(joystate&JPF_BUTTON_GREEN)
         {
-            need_release[g->squadra->Joystick]=TRUE;
+            need_release[g->team->Joystick]=TRUE;
 
             if(g==pl->gioc_palla)
             {
@@ -705,7 +705,7 @@ void HandleControlledJoyPad(int squadra)
         }
     }
     else if(!(joystate&(JPF_BUTTON_RED|JPF_BUTTON_YELLOW|JPF_BUTTON_BLUE)))
-        need_release[g->squadra->Joystick]=FALSE;
+        need_release[g->team->Joystick]=FALSE;
 
     if(joystate&JPF_BUTTON_REVERSE)
     {
