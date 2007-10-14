@@ -319,7 +319,7 @@ void FreeSound(struct SoundInfo *s)
 	free(s);
 }
 
-struct SoundInfo *LoadSound(STRPTR Name)
+struct SoundInfo *LoadSound(char const *Name)
 {
 	BOOL loop = FALSE;
     Uint8 *buffer;

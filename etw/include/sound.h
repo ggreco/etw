@@ -3,22 +3,22 @@
 #define SOUND_H
 
 #ifndef MENU
-	#include "suoni.h"
+    #include "suoni.h"
 #endif
 
-	/* Double buffering chunk size. */
+    /* Double buffering chunk size. */
 
-#define BUFFER_SIZE	2048
+#define BUFFER_SIZE    2048
 
 
-	/* The voice header. */
+    /* The voice header. */
 
 struct BufferInfo
 {
-	UBYTE	Buffer[BUFFER_SIZE];
+    UBYTE    Buffer[BUFFER_SIZE];
 };
 
-	/* Sound replay information. */
+    /* Sound replay information. */
 
 
 
@@ -30,23 +30,23 @@ struct BufferInfo
 
 struct SoundInfo
 {
-	ULONG	Rate,Length,Volume,	Flags;
-	// ULONG Loops; ???
+    ULONG    Rate, Length, Volume,    Flags;
+    // ULONG Loops; ???
 
-	long	Offset;
-	void	*SoundData;
+    long    Offset;
+    void    *SoundData;
 
-	void	*LeftData,*RightData;
-	long	FileOffset;
+    void    *LeftData, *RightData;
+    long    FileOffset;
 };
 
 extern void os_start_audio(void);
 extern void os_stop_audio(void);
 extern void ReplaySound(struct SoundInfo *SoundInfo);
 extern void FreeSound(struct SoundInfo *SoundInfo);
-extern struct SoundInfo *LoadSound(STRPTR Name);
+extern struct SoundInfo *LoadSound(char const *Name);
 extern LONG PlayBackSound(struct SoundInfo *si);
-extern struct SoundInfo *LoadRAWSample(char *name,int rate);
+extern struct SoundInfo *LoadRAWSample(char const *name, int rate);
 extern BOOL InitSoundSystem(void);
 extern void FreeSoundSystem(void);
 extern BOOL CaricaSuoniMenu(void);
