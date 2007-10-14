@@ -32,12 +32,12 @@ void HandleRadarBig(void)
     {
         for(j = 0; j < 10; j++)
         {
-            bmt = bm+(p->team[0]->giocatore[j].world_x >> 6)+(p->team[0]->giocatore[j].world_y >> 6)*bitmap_width;
+            bmt = bm+(p->team[0]->players[j].world_x >> 6)+(p->team[0]->players[j].world_y >> 6)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c0;
 
-            bmt = bm+(p->team[1]->giocatore[j].world_x >> 6)+(p->team[1]->giocatore[j].world_y >> 6)*bitmap_width;
+            bmt = bm+(p->team[1]->players[j].world_x >> 6)+(p->team[1]->players[j].world_y >> 6)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c1;
@@ -47,7 +47,7 @@ void HandleRadarBig(void)
     {
         for(j = 0; j < 10; j++)
         {
-            bmt = bm+(p->team[0]->giocatore[j].world_x >> 6)+(p->team[0]->giocatore[j].world_y >> 6)*bitmap_width;
+            bmt = bm+(p->team[0]->players[j].world_x >> 6)+(p->team[0]->players[j].world_y >> 6)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
             {
@@ -60,7 +60,7 @@ void HandleRadarBig(void)
                 *bmt = c0;
             }
 
-            bmt = bm+(p->team[1]->giocatore[j].world_x >> 6)+(p->team[1]->giocatore[j].world_y >> 6)*bitmap_width;
+            bmt = bm+(p->team[1]->players[j].world_x >> 6)+(p->team[1]->players[j].world_y >> 6)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
             {
@@ -198,12 +198,12 @@ void HandleRadarLittle(void)
     {
         for(j = 0; j < 10; j++)
         {
-            bmt = bm+(p->team[0]->giocatore[j].world_x >> 7)+(p->team[0]->giocatore[j].world_y >> 7)*bitmap_width;
+            bmt = bm+(p->team[0]->players[j].world_x >> 7)+(p->team[0]->players[j].world_y >> 7)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c0;
 
-            bmt = bm+(p->team[1]->giocatore[j].world_x >> 7)+(p->team[1]->giocatore[j].world_y >> 7)*bitmap_width;
+            bmt = bm+(p->team[1]->players[j].world_x >> 7)+(p->team[1]->players[j].world_y >> 7)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c1;
@@ -213,7 +213,7 @@ void HandleRadarLittle(void)
     {
         for(j = 0; j < 10; j++)
         {
-            bmt = bm+(p->team[0]->giocatore[j].world_x >> 7)+(p->team[0]->giocatore[j].world_y >> 7)*bitmap_width;
+            bmt = bm+(p->team[0]->players[j].world_x >> 7)+(p->team[0]->players[j].world_y >> 7)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
             {
@@ -226,7 +226,7 @@ void HandleRadarLittle(void)
                 *bmt = c0;
             }
 
-            bmt = bm+(p->team[1]->giocatore[j].world_x >> 7)+(p->team[1]->giocatore[j].world_y >> 7)*bitmap_width;
+            bmt = bm+(p->team[1]->players[j].world_x >> 7)+(p->team[1]->players[j].world_y >> 7)*bitmap_width;
 
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
             {

@@ -91,23 +91,23 @@ void HandleScrolling(void)
 	else {
 		if (scroll_type == 1) {
 // GK team 0
-			xs = (p->team[0]->portiere.world_x >> 3) - field_x + 5;
-			ys = (p->team[0]->portiere.world_y >> 3) - field_y + 16;
+			xs = (p->team[0]->keepers.world_x >> 3) - field_x + 5;
+			ys = (p->team[0]->keepers.world_y >> 3) - field_y + 16;
 		} else if (scroll_type == 12) {
 // GK team 1
-			xs = (p->team[1]->portiere.world_x >> 3) - field_x + 5;
-			ys = (p->team[1]->portiere.world_y >> 3) - field_y + 16;
+			xs = (p->team[1]->keepers.world_x >> 3) - field_x + 5;
+			ys = (p->team[1]->keepers.world_y >> 3) - field_y + 16;
 		} else if (scroll_type < 12) {
 // Player of team 0
-			xs = (p->team[0]->giocatore[scroll_type - 2].world_x >> 3) -
+			xs = (p->team[0]->players[scroll_type - 2].world_x >> 3) -
 				field_x + 5;
-			ys = (p->team[0]->giocatore[scroll_type - 2].world_y >> 3) -
+			ys = (p->team[0]->players[scroll_type - 2].world_y >> 3) -
 				field_y + 15;
 		} else if (scroll_type < 23) {
 // Player of team 1
-			xs = (p->team[1]->giocatore[scroll_type - 13].
+			xs = (p->team[1]->players[scroll_type - 13].
 				  world_x >> 3) - field_x + 5;
-			ys = (p->team[1]->giocatore[scroll_type - 13].
+			ys = (p->team[1]->players[scroll_type - 13].
 				  world_y >> 3) - field_y + 16;
 		} else {
             D(bug("WARNING, undefined scrolltype!"));

@@ -31,10 +31,10 @@ void RemoveArcadeEffect(Giocatore *g,UBYTE effect)
 
 				for(i=0;i<10;i++)
 				{
-					if(g->team->giocatore[i].ArcadeEffect==ARCADE_FREEZE)
+					if(g->team->players[i].ArcadeEffect==ARCADE_FREEZE)
 					{
-						g->team->giocatore[i].Comando=NESSUN_COMANDO;
-						g->team->giocatore[i].ArcadeEffect=NESSUN_COMANDO;
+						g->team->players[i].Comando=NESSUN_COMANDO;
+						g->team->players[i].ArcadeEffect=NESSUN_COMANDO;
 					}
 				}
 			}
@@ -77,12 +77,12 @@ void AddArcadeEffect(Giocatore *g,UBYTE effect)
 
 				for(i=0;i<10;i++)
 				{
-					if(s->giocatore[i].AnimType!=GIOCATORE_ESPULSO)
+					if(s->players[i].AnimType!=GIOCATORE_ESPULSO)
 					{
-						s->giocatore[i].Comando=STAI_FERMO;
-						s->giocatore[i].ArcadeEffect=ARCADE_FREEZE;
-						s->giocatore[i].ArcadeCounter=300;
-						s->giocatore[i].ActualSpeed=0;
+						s->players[i].Comando=STAI_FERMO;
+						s->players[i].ArcadeEffect=ARCADE_FREEZE;
+						s->players[i].ArcadeCounter=300;
+						s->players[i].ActualSpeed=0;
 					}
 				}
 			}

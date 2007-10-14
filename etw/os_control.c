@@ -392,13 +392,13 @@ void CheckKeys(void)
 
                             for(i=0;i<10;i++)
                             {
-                                D(bug("G: %ld A: %ld S: %ld C: %ld\n",i+2,s->giocatore[i].AnimType,s->giocatore[i].Special,s->giocatore[i].Comando));
+                                D(bug("G: %ld A: %ld S: %ld C: %ld\n",i+2,s->players[i].AnimType,s->players[i].Special,s->players[i].Comando));
 
-                                if(s->giocatore[i].world_x<0 || s->giocatore[i].world_y<0 ||
-                                        s->giocatore[i].world_x>11000 || s->giocatore[i].world_y>4200 )
+                                if(s->players[i].world_x<0 || s->players[i].world_y<0 ||
+                                        s->players[i].world_x>11000 || s->players[i].world_y>4200 )
                                 {
                                     int j;
-                                    Giocatore *g=&s->giocatore[i];
+                                    Giocatore *g=&s->players[i];
 
                                     D(bug("Parameters: Sp:%ld Cmd:%ld Dir:%ld Anim:%ld Spd:%ld Sect:%ld\n",
                                                 g->Special,g->Comando,g->Direzione,g->AnimType,g->ActualSpeed,g->settore));
@@ -478,7 +478,7 @@ void CheckKeys(void)
                             }
 
                         }
-                        D(bug("I have signed a GOAL for team %s\n",p->team[0]->Nome));
+                        D(bug("I have signed a GOAL for team %s\n",p->team[0]->name));
                         break;
 #endif
                     case SDLK_r:

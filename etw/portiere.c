@@ -87,7 +87,7 @@ struct Pos portieri[2][2][SECTORS+SPECIALS]=
 
 void CheckPortiere(int n)
 {
-	struct Portiere *g=&p->team[n]->portiere;
+	struct Portiere *g=&p->team[n]->keepers;
 	
 	if(g->Special)
 		return;
@@ -416,7 +416,7 @@ void HandlePortiere(int num)
 {
 	BOOL near_porta;
 
-	register struct Portiere *g=&p->team[num]->portiere;
+	register struct Portiere *g=&p->team[num]->keepers;
 
 	g->Tick--;
 

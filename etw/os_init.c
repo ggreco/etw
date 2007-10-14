@@ -50,11 +50,11 @@ void init_system(void)
         s->Joystick = -1;
 
         for (i = 0; i < 10; i++) {
-            s->giocatore[i].world_x = 12000;
-            s->giocatore[i].world_y = 10;
+            s->players[i].world_x = 12000;
+            s->players[i].world_y = 10;
 
-            DoSpecialAnim((&(s->giocatore[i])), GIOCATORE_ESPULSO);
-            s->giocatore[i].Comando = STAI_FERMO;
+            DoSpecialAnim((&(s->players[i])), GIOCATORE_ESPULSO);
+            s->players[i].Comando = STAI_FERMO;
         }
     } else if (!penalties && !free_kicks) {
         p->show_panel = PANEL_TIME | PANEL_KICKOFF;

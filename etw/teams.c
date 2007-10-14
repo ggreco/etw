@@ -14,150 +14,150 @@ char division=0, scontri=0, i_scontri=0;
 
 char career_file[128]="\0";
 
-struct Campionato_Disk campionato;
-struct Squadra_Disk *teamlist=NULL;
-struct Manager_Disk manager;
+struct championship_disk campionato;
+struct team_disk *teamlist=NULL;
+struct manager_disk manager;
 
-struct DatiSquadra_Disk DatiCampionato[64];
-struct Controlled_Disk *giocatori[64];
+struct teamstats_disk DatiCampionato[64];
+struct control_disk *giocatori[64];
 
 struct Match turni[64][32];
 
 char *empty=" "/*-*/;
 
-void ReadTeam(FILE *fh, struct Squadra_Disk *s)
+void ReadTeam(FILE *fh, struct team_disk *s)
 {
     int i;
 
     fread(&s->disponibilita, sizeof(uint32_t), 1, fh);
     SWAP_LONG(s->disponibilita);
-    fread(&s->NumeroGiocatori, sizeof(uint8_t), 1, fh);
-    fread(&s->NumeroPortieri, sizeof(uint8_t), 1, fh);
+    fread(&s->nplayers, sizeof(uint8_t), 1, fh);
+    fread(&s->nkeepers, sizeof(uint8_t), 1, fh);
     fread(&s->Nazione, sizeof(uint8_t), 1, fh);
     fread(&s->Flags, sizeof(uint8_t), 1, fh);
 
     for(i = 0; i < 2; i++)
     {
-        fread(&s->maglie[i].Tipo, sizeof(uint8_t), 1, fh);
-        fread(&s->maglie[i].Colore0, sizeof(uint8_t), 1, fh);
-        fread(&s->maglie[i].Colore1, sizeof(uint8_t), 1, fh);
-        fread(&s->maglie[i].Colore2, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].type, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color0, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color1, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color2, sizeof(uint8_t), 1, fh);
     }
 
     for(i = 0; i < 3; i++)
-        fread(&s->Tattiche[i], sizeof(char), 16, fh);
+        fread(&s->tactics[i], sizeof(char), 16, fh);
 
-    fread(s->nome, sizeof(char), 52, fh);
+    fread(s->name, sizeof(char), 52, fh);
     fread(s->allenatore, sizeof(char), 52, fh);
 
     // Teams always have 3 keepers and 21 players because their size is fixed!
 
     for(i = 0; i < 3; i++)
     {
-        fread(s->portiere[i].Nome, sizeof(char), 20, fh);
-        fread(s->portiere[i].Cognome, sizeof(char), 20, fh);
-        fread(&s->portiere[i].valore, sizeof(uint32_t), 1, fh);
-        SWAP_LONG(s->portiere[i].valore);
-        fread(&s->portiere[i].Numero, sizeof(uint8_t), 1, fh);
-        fread(&s->portiere[i].Velocita, sizeof(uint8_t), 1, fh);
-        fread(&s->portiere[i].Parata, sizeof(uint8_t), 1, fh);
-        fread(&s->portiere[i].Attenzione, sizeof(uint8_t), 1, fh);
-        fread(&s->portiere[i].Nazionalita, sizeof(uint8_t), 1, fh);
-        fread(&s->portiere[i].Eta, sizeof(uint8_t), 1, fh);
-        fread(&s->portiere[i].Infortuni, sizeof(uint8_t), 1, fh);
-        fread(&s->portiere[i].Flags, sizeof(uint8_t), 1, fh);
+        fread(s->keepers[i].name, sizeof(char), 20, fh);
+        fread(s->keepers[i].surname, sizeof(char), 20, fh);
+        fread(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
+        SWAP_LONG(s->keepers[i].value);
+        fread(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Velocita, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Attenzione, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Eta, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Flags, sizeof(uint8_t), 1, fh);
     }
 
     for(i = 0; i < 21; i++)
     {
-        fread(s->giocatore[i].Nome, sizeof(char), 20, fh);
-        fread(s->giocatore[i].Cognome, sizeof(char), 20, fh);
-        fread(&s->giocatore[i].valore, sizeof(uint32_t), 1, fh);
-        SWAP_LONG(s->giocatore[i].valore);
-        fread(&s->giocatore[i].Numero, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Velocita, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Contrasto, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Tiro, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Durata, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Resistenza, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Prontezza, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Nazionalita, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Creativita, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Tecnica, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Eta, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Infortuni, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Ammonizioni, sizeof(uint8_t), 1, fh);
-        fread(&s->giocatore[i].Posizioni, sizeof(uint8_t), 1, fh);
+        fread(s->players[i].name, sizeof(char), 20, fh);
+        fread(s->players[i].surname, sizeof(char), 20, fh);
+        fread(&s->players[i].value, sizeof(uint32_t), 1, fh);
+        SWAP_LONG(s->players[i].value);
+        fread(&s->players[i].number, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Velocita, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Contrasto, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Tiro, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Durata, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Resistenza, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Prontezza, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Creativita, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Tecnica, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Eta, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Ammonizioni, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Posizioni, sizeof(uint8_t), 1, fh);
     }
 }
 
 
-void WriteTeam(FILE *fh, struct Squadra_Disk *s)
+void WriteTeam(FILE *fh, struct team_disk *s)
 {
     int i;
 
     SWAP_LONG(s->disponibilita);
     fwrite(&s->disponibilita, sizeof(uint32_t), 1, fh);
     SWAP_LONG(s->disponibilita);
-    fwrite(&s->NumeroGiocatori, sizeof(uint8_t), 1, fh);
-    fwrite(&s->NumeroPortieri, sizeof(uint8_t), 1, fh);
+    fwrite(&s->nplayers, sizeof(uint8_t), 1, fh);
+    fwrite(&s->nkeepers, sizeof(uint8_t), 1, fh);
     fwrite(&s->Nazione, sizeof(uint8_t), 1, fh);
     fwrite(&s->Flags, sizeof(uint8_t), 1, fh);
 
     for(i = 0; i < 2; i++)
     {
-        fwrite(&s->maglie[i].Tipo, sizeof(uint8_t), 1, fh);
-        fwrite(&s->maglie[i].Colore0, sizeof(uint8_t), 1, fh);
-        fwrite(&s->maglie[i].Colore1, sizeof(uint8_t), 1, fh);
-        fwrite(&s->maglie[i].Colore2, sizeof(uint8_t), 1, fh);
+        fwrite(&s->jerseys[i].type, sizeof(uint8_t), 1, fh);
+        fwrite(&s->jerseys[i].color0, sizeof(uint8_t), 1, fh);
+        fwrite(&s->jerseys[i].color1, sizeof(uint8_t), 1, fh);
+        fwrite(&s->jerseys[i].color2, sizeof(uint8_t), 1, fh);
     }
 
     for(i = 0; i < 3; i++)
-        fwrite(&s->Tattiche[i], sizeof(char), 16, fh);
+        fwrite(&s->tactics[i], sizeof(char), 16, fh);
 
-    fwrite(s->nome, sizeof(char), 52, fh);
+    fwrite(s->name, sizeof(char), 52, fh);
     fwrite(s->allenatore, sizeof(char), 52, fh);
 
     // The number of keepers and players written is always the same
 
     for(i = 0; i < 3; i++)
     {
-        fwrite(s->portiere[i].Nome, sizeof(char), 20, fh);
-        fwrite(s->portiere[i].Cognome, sizeof(char), 20, fh);
-        SWAP_LONG(s->portiere[i].valore);
-        fwrite(&s->portiere[i].valore, sizeof(uint32_t), 1, fh);
-        SWAP_LONG(s->portiere[i].valore);
-        fwrite(&s->portiere[i].Numero, sizeof(uint8_t), 1, fh);
-        fwrite(&s->portiere[i].Velocita, sizeof(uint8_t), 1, fh);
-        fwrite(&s->portiere[i].Parata, sizeof(uint8_t), 1, fh);
-        fwrite(&s->portiere[i].Attenzione, sizeof(uint8_t), 1, fh);
-        fwrite(&s->portiere[i].Nazionalita, sizeof(uint8_t), 1, fh);
-        fwrite(&s->portiere[i].Eta, sizeof(uint8_t), 1, fh);
-        fwrite(&s->portiere[i].Infortuni, sizeof(uint8_t), 1, fh);
-        fwrite(&s->portiere[i].Flags, sizeof(uint8_t), 1, fh);
+        fwrite(s->keepers[i].name, sizeof(char), 20, fh);
+        fwrite(s->keepers[i].surname, sizeof(char), 20, fh);
+        SWAP_LONG(s->keepers[i].value);
+        fwrite(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
+        SWAP_LONG(s->keepers[i].value);
+        fwrite(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Velocita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Attenzione, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Eta, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Flags, sizeof(uint8_t), 1, fh);
     }
 
     for(i = 0; i < 21; i++)
     {
-        fwrite(s->giocatore[i].Nome, sizeof(char), 20, fh);
-        fwrite(s->giocatore[i].Cognome, sizeof(char), 20, fh);
-        SWAP_LONG(s->giocatore[i].valore);
-        fwrite(&s->giocatore[i].valore, sizeof(uint32_t), 1, fh);
-        SWAP_LONG(s->giocatore[i].valore);
-        fwrite(&s->giocatore[i].Numero, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Velocita, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Contrasto, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Tiro, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Durata, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Resistenza, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Prontezza, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Nazionalita, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Creativita, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Tecnica, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Eta, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Infortuni, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Ammonizioni, sizeof(uint8_t), 1, fh);
-        fwrite(&s->giocatore[i].Posizioni, sizeof(uint8_t), 1, fh);
+        fwrite(s->players[i].name, sizeof(char), 20, fh);
+        fwrite(s->players[i].surname, sizeof(char), 20, fh);
+        SWAP_LONG(s->players[i].value);
+        fwrite(&s->players[i].value, sizeof(uint32_t), 1, fh);
+        SWAP_LONG(s->players[i].value);
+        fwrite(&s->players[i].number, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Velocita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Contrasto, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Tiro, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Durata, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Resistenza, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Prontezza, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Nazionalita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Creativita, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Tecnica, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Eta, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Infortuni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Ammonizioni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Posizioni, sizeof(uint8_t), 1, fh);
     }
 }
 
@@ -181,9 +181,9 @@ void ViewEliminazioneDiretta(int n)
         mp[i*4].Highlight=highlight_team[controllo[teamarray[i*2]]+1];
         mp[i*4+2].Colore=colore_team[controllo[teamarray[i*2+1]]+1];
         mp[i*4+2].Highlight=highlight_team[controllo[teamarray[i*2+1]]+1];
-        mp[i*4].Testo=teamlist[teamarray[i*2]].nome;
+        mp[i*4].Testo=teamlist[teamarray[i*2]].name;
         mp[i*4+1].Testo="-"/*-*/;
-        mp[i*4+2].Testo=teamlist[teamarray[i*2+1]].nome;
+        mp[i*4+2].Testo=teamlist[teamarray[i*2+1]].name;
 
         if(mp[i*4+3].Testo)
         {
@@ -241,7 +241,7 @@ void SetupSpecialEvent(struct Bottone *b)
         return;
     }
 
-    switch(campionato.Tipo)
+    switch(campionato.type)
     {
         case CAMP_CUP:
             competition=MENU_MATCHES;
@@ -270,9 +270,9 @@ void SetupSpecialEvent(struct Bottone *b)
                 }
                 D(bug("League with %ld teams\n", wanted_number));
             }
-            ppv=campionato.Vittoria;
-            ppp=campionato.Pareggio;
-            pps=campionato.Sconfitta;
+            ppv=campionato.win;
+            ppp=campionato.draw;
+            pps=campionato.loss;
 
             i_scontri=scontri=campionato.Scontri;
             menu[MENU_TEAM_SELECTION].Bottone[64].Testo=msg_0;
@@ -363,7 +363,7 @@ void DisplayTactic(int xs, int ys)
     if(actual_team<0)
         return;
 
-    sprintf(buffer, "tct/%s", teamlist[actual_team].Tattiche[0]);
+    sprintf(buffer, "tct/%s", teamlist[actual_team].tactics[0]);
 
     ys+=menu[MENU_TEAM_SETTINGS].Y;
     xs+=menu[MENU_TEAM_SETTINGS].X;
@@ -527,23 +527,23 @@ void MakeLeague(int ns)
 
 }
 
-void AddName(struct Giocatore_Disk *g, int posizione)
+void AddName(struct player_disk *g, int posizione)
 {
     char namebuffer[60];
-    char *c=namebuffer, *d=g->Cognome;
+    char *c=namebuffer, *d=g->surname;
 
     *c++='-';
 
 
-    if(*g->Nome)
+    if(*g->name)
     {
-        if(*g->Cognome)
+        if(*g->surname)
         {
-            *c++=*g->Nome;
+            *c++=*g->name;
             *c++='.';
         }
         else
-            strcpy(c, g->Nome);
+            strcpy(c, g->name);
     }
 
 
@@ -623,7 +623,7 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
     if(v>9)
         v=9;
 
-//    D(bug("Valore: %ld -> %ld\n", valore, v));
+//    D(bug("value: %ld -> %ld\n", value, v));
 
     for(i=0; i<10; i+=2)
     {
@@ -634,7 +634,7 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
     }
 }
 
-void AddGiocatore(struct Giocatore_Disk *g, int posizione)
+void AddGiocatore(struct player_disk *g, int posizione)
 {
     char buffer[8];
 
@@ -688,30 +688,30 @@ void SetTeamSettings(WORD team, BOOL starting)
             teamsettings[i*2].Highlight=pannelli[i*3].Highlight=colore_team[controllo[team]+1];
     }
 
-    for(i=0, k=1; i<min(15, teamlist[team].NumeroGiocatori); i++)
+    for(i=0, k=1; i<min(15, teamlist[team].nplayers); i++)
     {
         if(k==11)
         {
             k++;
         }
 
-        AddGiocatore(&teamlist[team].giocatore[i], k);
+        AddGiocatore(&teamlist[team].players[i], k);
 
         k++;
     }
 
-    for(i=0; i<min(17, teamlist[team].NumeroGiocatori+teamlist[team].NumeroPortieri); i++)
+    for(i=0; i<min(17, teamlist[team].nplayers+teamlist[team].nkeepers); i++)
     {
         teamsettings[i*2].Testo=numero[i];
         teamsettings[i*2].ID=i;
 //        pannelli[i*3].Testo=empty;
     }
 
-    if(teamlist[team].NumeroGiocatori<15)
+    if(teamlist[team].nplayers<15)
     {
         if(k==11)
             k++;
-        D(bug("teamlist[team].NumeroGiocatori<15)"));
+        D(bug("teamlist[team].nplayers<15)"));
         for(i=k; i<17; i++)
         {
             if(teamsettings[i*2+1].Testo)
@@ -735,21 +735,21 @@ void SetTeamSettings(WORD team, BOOL starting)
     D(bug("SetTeamSettings FREEING"));
     
     for(i=0; i<6; i++) {
-        if(!stricmp(teamsettings[34+i].Testo, teamlist[team].Tattiche[0]))
+        if(!stricmp(teamsettings[34+i].Testo, teamlist[team].tactics[0]))
         {
             teamsettings[34+i].Colore=COLORE_TATTICA_SELEZIONATA;
         }
         else teamsettings[34+i].Colore=COLORE_TATTICA_NON_SELEZIONATA;
     }
 
-    AddName((struct Giocatore_Disk *)&teamlist[team].portiere[0], 0);
-    SetPlayerStatus(0, teamlist[team].portiere[0].Infortuni, 0, (((teamlist[team].portiere[0].Parata*2+teamlist[team].portiere[0].Attenzione-2*3+2)*10)/7)/3);
+    AddName((struct player_disk *)&teamlist[team].keepers[0], 0);
+    SetPlayerStatus(0, teamlist[team].keepers[0].Infortuni, 0, (((teamlist[team].keepers[0].Parata*2+teamlist[team].keepers[0].Attenzione-2*3+2)*10)/7)/3);
 
     D(bug("SetTeamSettings after SetPlayerStatus, AddName"));
     
-    if(teamlist[team].NumeroPortieri<2)
+    if(teamlist[team].nkeepers<2)
     {
-        D(bug("if(teamlist[team].NumeroPortieri<2)"));
+        D(bug("if(teamlist[team].nkeepers<2)"));
         
         if(teamsettings[11*2+1].Testo)
             free(teamsettings[11*2+1].Testo);
@@ -778,9 +778,9 @@ void SetTeamSettings(WORD team, BOOL starting)
         teamsettings[11*2].Testo=teamsettings[11*2+1].Testo=NULL;
     }
     else {
-        AddName((struct Giocatore_Disk *)&teamlist[team].portiere[1], 11);
-        SetPlayerStatus(11, teamlist[team].portiere[1].Infortuni, 0,
-                        (teamlist[team].portiere[1].Parata*2+teamlist[team].portiere[1].Attenzione+2)/3);
+        AddName((struct player_disk *)&teamlist[team].keepers[1], 11);
+        SetPlayerStatus(11, teamlist[team].keepers[1].Infortuni, 0,
+                        (teamlist[team].keepers[1].Parata*2+teamlist[team].keepers[1].Attenzione+2)/3);
     }
 
     if (starting) 
@@ -812,7 +812,7 @@ void SetTeamSelection(void)
     for(i=0; i<campionato.nteams; i++)
     {
         teamselection[i+start*TS_COLONNE].ID=-i-1;
-        teamselection[i+start*TS_COLONNE].Testo=teamlist[i].nome;
+        teamselection[i+start*TS_COLONNE].Testo=teamlist[i].name;
     }
 }
 
@@ -852,7 +852,7 @@ void SaveTeams(char *name)
     if ((fh=fopen(name, "wb"))) {
         campionato.nteams--;
 
-        fwrite(&campionato, sizeof(struct Campionato_Disk), 1, fh);
+        fwrite(&campionato, sizeof(struct championship_disk), 1, fh);
 
         campionato.nteams++;
 
@@ -860,14 +860,14 @@ void SaveTeams(char *name)
             WriteTeam(fh, &teamlist[i]);
 
         if(competition!=MENU_TEAMS) {
-            fwrite(DatiCampionato, sizeof(struct DatiSquadra_Disk)*campionato.nteams, 1, fh);
+            fwrite(DatiCampionato, sizeof(struct teamstats_disk)*campionato.nteams, 1, fh);
 
             for(i=0; i<campionato.nteams; i++)    {
                 if(DatiCampionato[i].Controllata) {
-                    fwrite(giocatori[i], sizeof(struct Controlled_Disk), 1, fh);
+                    fwrite(giocatori[i], sizeof(struct control_disk), 1, fh);
 
                     if(giocatori[i]->ManagerType)
-                        fwrite(&manager, sizeof(struct Manager_Disk), 1, fh);
+                        fwrite(&manager, sizeof(struct manager_disk), 1, fh);
                 }
             }
 
@@ -921,7 +921,7 @@ void SaveTeams(char *name)
 void LoadTeams(char *name)
 {
     FILE *fh;
-    struct Campionato_Disk temp;
+    struct championship_disk temp;
 
     if(teamfile!=name)
     strcpy(teamfile, name);
@@ -933,35 +933,35 @@ void LoadTeams(char *name)
 
         D(bug("Loading teams from %s...\n", name));
 
-        if(fread(&campionato, 1, sizeof(struct Campionato_Disk), fh)==sizeof(struct Campionato_Disk)) {
-            struct Squadra_Disk *teamold;
-            D(bug("League: %s V:%ld-P:%ld-L:%ld-S:%ld\n", campionato.Nome, campionato.Vittoria,
-                    campionato.Pareggio, campionato.Sconfitta, campionato.nteams+1));
+        if(fread(&campionato, 1, sizeof(struct championship_disk), fh)==sizeof(struct championship_disk)) {
+            struct team_disk *teamold;
+            D(bug("League: %s V:%ld-P:%ld-L:%ld-S:%ld\n", campionato.name, campionato.win,
+                    campionato.draw, campionato.loss, campionato.nteams+1));
 
             campionato.nteams++;
 
-            menu[MENU_SIMULATION].Bottone[0].Testo=(*campionato.Nome!=0) ? campionato.Nome : NULL;
+            menu[MENU_SIMULATION].Bottone[0].Testo=(*campionato.name!=0) ? campionato.name : NULL;
 
             {
                 int i=0;
 
-                while(campionato.Nome[i])
+                while(campionato.name[i])
                 {
-                    campionato.Nome[i]=toupper(campionato.Nome[i]);
+                    campionato.name[i]=toupper(campionato.name[i]);
                     i++;
                 }
             }
 
             teamold=teamlist;
 
-            if ((teamlist=malloc(campionato.nteams*sizeof(struct Squadra_Disk)) ))    {
+            if ((teamlist=malloc(campionato.nteams*sizeof(struct team_disk)) ))    {
                 int i;
                 char *s;
 
                 for(i=0; i<campionato.nteams; i++)    {
                     ReadTeam(fh, &teamlist[i]);
                     
-                    s=teamlist[i].nome;
+                    s=teamlist[i].name;
 
                     while(*s) {
                         *s=toupper(*s);
@@ -994,18 +994,18 @@ void LoadTeams(char *name)
                 }
 
                 if(competition!=MENU_TEAMS)    {
-                    if(fread(DatiCampionato, sizeof(struct DatiSquadra_Disk)*campionato.nteams, 1, fh)==sizeof(struct DatiSquadra_Disk)*campionato.nteams) {
+                    if(fread(DatiCampionato, sizeof(struct teamstats_disk)*campionato.nteams, 1, fh)==sizeof(struct teamstats_disk)*campionato.nteams) {
                         for(i=0; i<campionato.nteams; i++)
                         {
                             if(DatiCampionato[i].Controllata) {
                                 if(!giocatori[i])
-                                    giocatori[i]=malloc( sizeof(struct Controlled_Disk) ); 
+                                    giocatori[i]=malloc( sizeof(struct control_disk) ); 
 
                                 if(giocatori[i]) {
-                                    fread(giocatori[i], sizeof(struct Controlled_Disk), 1, fh);
+                                    fread(giocatori[i], sizeof(struct control_disk), 1, fh);
 
                                     if(giocatori[i]->ManagerType)
-                                        fread(&manager, sizeof(struct Manager_Disk), 1, fh);
+                                        fread(&manager, sizeof(struct manager_disk), 1, fh);
                                 }
                             }
                         }

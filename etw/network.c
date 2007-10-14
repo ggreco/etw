@@ -25,8 +25,8 @@
 
 #include "menu_externs.h"
 
-extern struct Squadra_Disk *teamlist;
-extern struct Squadra_Disk leftteam_dk,rightteam_dk;
+extern struct team_disk *teamlist;
+extern struct team_disk leftteam_dk,rightteam_dk;
 
 player *network_player=NULL;
 char chat_message[CHATMSGSIZE];
@@ -127,7 +127,7 @@ void UpdateNetStatus(char *string)
 	ScreenSwap();
 }
 
-int ReceiveTeam(struct Squadra_Disk *s)
+int ReceiveTeam(struct team_disk *s)
 {
 	simplemsg *m;
 
@@ -314,10 +314,10 @@ player *connect_server(char *ip,int team)
 		else if(IsPacket(buffer,l,MSG_WELCOME)) {
 			simplemsg m={SERVER_HDR,MSG_NAME,0,0};
 
-			m.size=htons((unsigned short)strlen(teamlist[team].nome));
+			m.size=htons((unsigned short)strlen(teamlist[team].name));
 			memcpy(buffer,&m,sizeof(simplemsg));
-			strcpy(buffer+sizeof(simplemsg),teamlist[team].nome);
-			SockWrite(p->socket,buffer,sizeof(simplemsg)+strlen(teamlist[team].nome));
+			strcpy(buffer+sizeof(simplemsg),teamlist[team].name);
+			SockWrite(p->socket,buffer,sizeof(simplemsg)+strlen(teamlist[team].name));
 
 			os_delay(10);
 			UpdateNetStatus("FIRST NEGOTIATION");

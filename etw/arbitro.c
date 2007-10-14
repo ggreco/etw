@@ -26,8 +26,8 @@ Giocatore *PrendiPalla(void)
 
 		for(i=0;i<10;i++)
 		{
-			if(v->team->giocatore[i].Comando==0&&
-				v->team->giocatore[i].AnimType!=GIOCATORE_ESPULSO)
+			if(v->team->players[i].Comando==0&&
+				v->team->players[i].AnimType!=GIOCATORE_ESPULSO)
 				ChangeControlled(v->team,i);
 		}
 	}
@@ -162,15 +162,15 @@ void HandleArbitro(void)
 //							{
 								SetResult("%ld-%ld\n",p->team[1]->Reti,p->team[0]->Reti);
 								D(bug("\t\tHandleArbitro: inverto il risultato %s: %d - %s: %d!\n",
-									p->team[0]->Nome,p->team[0]->Reti,
-									p->team[1]->Nome,p->team[1]->Reti));
+									p->team[0]->name,p->team[0]->Reti,
+									p->team[1]->name,p->team[1]->Reti));
 //							}
 //							else
 //							{
 //								SetResult("%ld-%ld\n",p->team[0]->Reti,p->team[1]->Reti);
 //								D(bug("\t\tHandleArbitro: mantengo il risultato %s: %d - %s: %d!\n",
-//									p->team[0]->Nome,p->team[0]->Reti,
-//									p->team[1]->Nome,p->team[1]->Reti));
+//									p->team[0]->name,p->team[0]->Reti,
+//									p->team[1]->name,p->team[1]->Reti));
 //							}
 						}
 						else if(!extratime)
@@ -461,9 +461,9 @@ void HandleArbitro(void)
 
 						if(!first_kickoff)
 						{
-							s->giocatore[0].WaitForControl--;
+							s->players[0].WaitForControl--;
 
-							if(s->giocatore[0].WaitForControl<0)
+							if(s->players[0].WaitForControl<0)
 								ok=TRUE;
 						}
 
@@ -560,9 +560,9 @@ void HandleArbitro(void)
 						Giocatore *v;
 
 						if(g->Argomento>=10)
-							v=&p->team[1]->giocatore[g->Argomento-10];
+							v=&p->team[1]->players[g->Argomento-10];
 						else
-							v=&p->team[0]->giocatore[g->Argomento];
+							v=&p->team[0]->players[g->Argomento];
 
 						v->ActualSpeed=0;
 						v->Comando=STAI_FERMO;
@@ -665,8 +665,8 @@ void HandleArbitro(void)
 						break;
 					}
 
-					p->team[1]->portiere.AnimType=PORTIERE_FERMO;
-					p->team[1]->portiere.Special=FALSE;
+					p->team[1]->keepers.AnimType=PORTIERE_FERMO;
+					p->team[1]->keepers.Special=FALSE;
 
 
 					pl->sq_palla=p->team[0];
@@ -731,8 +731,8 @@ void HandleArbitro(void)
 						FermaPalla();
 						ShowBall();
 
-						pl->world_x=G2P_X(s->giocatore[g->Argomento].world_x);
-						pl->world_y=G2P_Y(s->giocatore[g->Argomento].world_y);
+						pl->world_x=G2P_X(s->players[g->Argomento].world_x);
+						pl->world_y=G2P_Y(s->players[g->Argomento].world_y);
 
 						g->Tick=25;
 						g->Comando=BATTI_FALLO;
@@ -781,7 +781,7 @@ void HandleArbitro(void)
 									for(k=0;k<TotaleRiserve[j];k++)
 									{
 										if(Riserve[j][k].Ammonizioni<2&&
-											Riserve[j][k].Infortuni<2 && NumeroDiverso(s,Riserve[j][k].Numero) )
+											Riserve[j][k].Infortuni<2 && NumeroDiverso(s,Riserve[j][k].number) )
 										{
 											char t1=g->Posizioni&(P_DIFESA|P_CENTRO|P_ATTACCO),
 												t2=Riserve[j][k].Posizioni&(P_DIFESA|P_CENTRO|P_ATTACCO);
@@ -1074,14 +1074,14 @@ void HandleArbitro(void)
 
 							if(p->team[1]->Possesso)
 							{
-								p->team[1]->portiere.Direzione=D_EST;
+								p->team[1]->keepers.Direzione=D_EST;
 
 								if(p->team[1]->Joystick<0)
-									p->team[1]->portiere.Tick=30+(GetTable()<<3);
+									p->team[1]->keepers.Tick=30+(GetTable()<<3);
 								else
-									p->team[1]->portiere.Tick=120;
+									p->team[1]->keepers.Tick=120;
 
-								DoSpecialAnim((&p->team[1]->portiere),PORTIERE_FERMO);
+								DoSpecialAnim((&p->team[1]->keepers),PORTIERE_FERMO);
 
 								if(InArea(1,P2G_X(p->team[0]->attivo->world_x),P2G_Y(p->team[0]->attivo->world_y)))
 									p->team[0]->attivo->Comando=ESCI_AREA;
@@ -1089,14 +1089,14 @@ void HandleArbitro(void)
 							}
 							else
 							{
-								DoSpecialAnim((&p->team[0]->portiere),PORTIERE_FERMO);
+								DoSpecialAnim((&p->team[0]->keepers),PORTIERE_FERMO);
 
 								if(p->team[0]->Joystick<0)
-									p->team[0]->portiere.Tick=30+(GetTable()<<3);
+									p->team[0]->keepers.Tick=30+(GetTable()<<3);
 								else
-									p->team[0]->portiere.Tick=120;
+									p->team[0]->keepers.Tick=120;
 
-								p->team[0]->portiere.Direzione=D_OVEST;
+								p->team[0]->keepers.Direzione=D_OVEST;
 
 								if(InArea(0,P2G_X(p->team[1]->attivo->world_x),P2G_Y(p->team[1]->attivo->world_y)))
 									p->team[1]->attivo->Comando=ESCI_AREA;
@@ -1162,7 +1162,7 @@ void HandleArbitro(void)
 								s->Possesso=1;
 
 								if(s->Joystick>=0&&!first_kickoff)
-									s->giocatore[0].WaitForControl=150;
+									s->players[0].WaitForControl=150;
 
 								g1=TrovaPiuVicino(s,CENTROCAMPO_X,CENTROCAMPO_Y-100);
 								g1->world_x=CENTROCAMPO_X-30;
@@ -1183,13 +1183,13 @@ void HandleArbitro(void)
 
 									for(i=0;i<10;i++)
 									{
-										if(s->giocatore[i].Comando!=ESCI_CAMPO		&&
-											s->giocatore[i].Comando!=STAI_FERMO	&&
-											s->giocatore[i].AnimType!=GIOCATORE_ESPULSO)
+										if(s->players[i].Comando!=ESCI_CAMPO		&&
+											s->players[i].Comando!=STAI_FERMO	&&
+											s->players[i].AnimType!=GIOCATORE_ESPULSO)
 										{
-											s->giocatore[i].Comando=STAI_FERMO;
-											s->giocatore[i].ActualSpeed=0;
-											DoAnim((&s->giocatore[i]),GIOCATORE_FERMO);
+											s->players[i].Comando=STAI_FERMO;
+											s->players[i].ActualSpeed=0;
+											DoAnim((&s->players[i]),GIOCATORE_FERMO);
 										}
 									}
 								}

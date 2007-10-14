@@ -53,7 +53,7 @@ void SendChatMessage(void);
 int SendTeam(unsigned char);
 void SendQuit(void);
 void SendFinish(unsigned short);
-int ReceiveTeam(struct Squadra_Disk *);
+int ReceiveTeam(struct team_disk *);
 
 extern unsigned long NetJoyPos[2];
 extern player *network_player;

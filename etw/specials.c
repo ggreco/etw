@@ -535,13 +535,13 @@ void NewTurn(void)
 
 	for(i=0;i<campionato.nteams;i++)
 	{
-		for(j=0;j<teamlist[i].NumeroGiocatori;j++)
+		for(j=0;j<teamlist[i].nplayers;j++)
 		{
-			if(teamlist[i].giocatore[j].Infortuni>0)
-				teamlist[i].giocatore[j].Infortuni--;
+			if(teamlist[i].players[j].Infortuni>0)
+				teamlist[i].players[j].Infortuni--;
 
-			if(teamlist[i].giocatore[j].Ammonizioni>1)
-				teamlist[i].giocatore[j].Ammonizioni-=2;
+			if(teamlist[i].players[j].Ammonizioni>1)
+				teamlist[i].players[j].Ammonizioni-=2;
 		}
 	}
 }
@@ -1079,10 +1079,10 @@ BOOL ArcadeTeamSelection(WORD bottone)
 
 		if(b->Colore!=COLORE_COMPUTER)
 		{
-			int l=strlen(teamlist[b->ID].nome);
+			int l=strlen(teamlist[b->ID].name);
 
 
-			PrintShadow((WINDOW_WIDTH-l*bigfont->width)/2,FixedScaledY(120),teamlist[b->ID].nome,l,bigfont);
+			PrintShadow((WINDOW_WIDTH-l*bigfont->width)/2,FixedScaledY(120),teamlist[b->ID].name,l,bigfont);
 
 			if(!b3->Testo)
 			{
@@ -1325,19 +1325,19 @@ BOOL TeamSettings(WORD bottone)
 		{
 			if(bottone==32)
 			{
-				if(teamlist[actual_team].NumeroGiocatori>15)
+				if(teamlist[actual_team].nplayers>15)
 				{
 					int i;
 
-					if(teamlist[actual_team].NumeroGiocatori>(b->ID-1))
+					if(teamlist[actual_team].nplayers>(b->ID-1))
 					{
-						AddGiocatore(&teamlist[actual_team].giocatore[b->ID-1],16);
+						AddGiocatore(&teamlist[actual_team].players[b->ID-1],16);
 						b->ID++;
 					}
 					else
 					{
 						b->ID=16;
-						AddGiocatore(&teamlist[actual_team].giocatore[14],16);
+						AddGiocatore(&teamlist[actual_team].players[14],16);
 					}
 
 					if(sel1==16)
@@ -1375,19 +1375,19 @@ BOOL TeamSettings(WORD bottone)
 
 						if( (pos==0&&sel1==11) || (sel1==0&&pos==11) )
 						{
-							struct Portiere_Disk p;
+							struct keeper_disk p;
 
-							p=teamlist[actual_team].portiere[1];
-							teamlist[actual_team].portiere[1]=teamlist[actual_team].portiere[0];
-							teamlist[actual_team].portiere[0]=p;
+							p=teamlist[actual_team].keepers[1];
+							teamlist[actual_team].keepers[1]=teamlist[actual_team].keepers[0];
+							teamlist[actual_team].keepers[0]=p;
 
-							AddName((struct Giocatore_Disk *)&teamlist[actual_team].portiere[0],0);
-							SetPlayerStatus(0,teamlist[actual_team].portiere[0].Infortuni,0,
-								(((teamlist[actual_team].portiere[0].Parata*2+teamlist[actual_team].portiere[0].Attenzione-2*3+2)*10)/7)/3);
-							AddName((struct Giocatore_Disk *)&teamlist[actual_team].portiere[1],11);
+							AddName((struct player_disk *)&teamlist[actual_team].keepers[0],0);
+							SetPlayerStatus(0,teamlist[actual_team].keepers[0].Infortuni,0,
+								(((teamlist[actual_team].keepers[0].Parata*2+teamlist[actual_team].keepers[0].Attenzione-2*3+2)*10)/7)/3);
+							AddName((struct player_disk *)&teamlist[actual_team].keepers[1],11);
 							
-							SetPlayerStatus(11,teamlist[actual_team].portiere[1].Infortuni,0,
-								(((teamlist[actual_team].portiere[0].Parata*2+teamlist[actual_team].portiere[1].Attenzione-2*3+2)*10)/7)/3);
+							SetPlayerStatus(11,teamlist[actual_team].keepers[1].Infortuni,0,
+								(((teamlist[actual_team].keepers[0].Parata*2+teamlist[actual_team].keepers[1].Attenzione-2*3+2)*10)/7)/3);
 							RedrawBottone(b2,b2->Colore);
 
 							for(i=0;i<3;i++)
@@ -1398,7 +1398,7 @@ BOOL TeamSettings(WORD bottone)
 						}
 						else if(pos!=0 && pos!=11 &&sel1!=0 &&sel1!=11)
 						{
-							struct Giocatore_Disk g;
+							struct player_disk g;
 
 							int pos2;
 
@@ -1414,7 +1414,7 @@ BOOL TeamSettings(WORD bottone)
 									pos--;
 							}
 
-							g=teamlist[actual_team].giocatore[pos];
+							g=teamlist[actual_team].players[pos];
 
 							if(sel1==16)
 								pos2=actual_menu->Bottone[32].ID-2;
@@ -1426,10 +1426,10 @@ BOOL TeamSettings(WORD bottone)
 									pos2--;
 							}
 
-							teamlist[actual_team].giocatore[pos]=teamlist[actual_team].giocatore[pos2];
-							teamlist[actual_team].giocatore[pos2]=g;
-							AddGiocatore(&teamlist[actual_team].giocatore[pos],selected);
-							AddGiocatore(&teamlist[actual_team].giocatore[pos2],sel1);
+							teamlist[actual_team].players[pos]=teamlist[actual_team].players[pos2];
+							teamlist[actual_team].players[pos2]=g;
+							AddGiocatore(&teamlist[actual_team].players[pos],selected);
+							AddGiocatore(&teamlist[actual_team].players[pos2],sel1);
 
 							if(!ruolo[actual_team] || ruolo[actual_team]!=selected )
 								RedrawBottone(b2,b2->Colore);
@@ -1466,7 +1466,7 @@ changetactic:
 			{
 				int i;
 
-				strcpy(teamlist[actual_team].Tattiche[0],b->Testo);
+				strcpy(teamlist[actual_team].tactics[0],b->Testo);
 				bltchunkybitmap(back,actual_menu->X,actual_menu->Y,main_bitmap,
 					actual_menu->X,actual_menu->Y,108,156,bitmap_width,bitmap_width);
 				BltAnimObj(logos,main_bitmap,actual_menu->Immagine,actual_menu->X,actual_menu->Y,bitmap_width);
@@ -2306,25 +2306,25 @@ void SetupMatches(void)
 
 			if(turno<10)
 			{
-				struct Squadra_Disk *s=&teamlist[arcade_sequence[turno]];
+				struct team_disk *s=&teamlist[arcade_sequence[turno]];
 				int i;
 
 				menu[MENU_CHALLENGE].Titolo=msg_41;
 
-				for(i=0;i<s->NumeroPortieri;i++)
+				for(i=0;i<s->nkeepers;i++)
 				{
-					s->portiere[i].Parata=min(9,s->portiere[i].Parata+(turno+1)/2);
-					s->portiere[i].Velocita=min(9,s->portiere[i].Velocita+(turno+1)/2);
-					s->portiere[i].Attenzione=min(9,s->portiere[i].Attenzione+(turno+1)/2);
+					s->keepers[i].Parata=min(9,s->keepers[i].Parata+(turno+1)/2);
+					s->keepers[i].Velocita=min(9,s->keepers[i].Velocita+(turno+1)/2);
+					s->keepers[i].Attenzione=min(9,s->keepers[i].Attenzione+(turno+1)/2);
 				}
 
-				for(i=0;i<s->NumeroGiocatori;i++)
+				for(i=0;i<s->nplayers;i++)
 				{
-					s->giocatore[i].Velocita=min(9,s->giocatore[i].Velocita+(turno+1)/2);
-					s->giocatore[i].Tiro=min(9,s->giocatore[i].Tiro+(turno+1)/2);
-					s->giocatore[i].Contrasto=min(9,s->giocatore[i].Contrasto+(turno+1)/2);
-					s->giocatore[i].Prontezza=min(9,s->giocatore[i].Prontezza+(turno+1)/2);
-					s->giocatore[i].Tecnica=min(9,s->giocatore[i].Tecnica+(turno+1)/2);
+					s->players[i].Velocita=min(9,s->players[i].Velocita+(turno+1)/2);
+					s->players[i].Tiro=min(9,s->players[i].Tiro+(turno+1)/2);
+					s->players[i].Contrasto=min(9,s->players[i].Contrasto+(turno+1)/2);
+					s->players[i].Prontezza=min(9,s->players[i].Prontezza+(turno+1)/2);
+					s->players[i].Tecnica=min(9,s->players[i].Tecnica+(turno+1)/2);
 				}
 			}
 			else if(turno==10)
@@ -2349,7 +2349,7 @@ void SetupMatches(void)
 // Team A
 			cp[0].Testo[1]=*teamarray;
 			cp[4].Colore=cp[0].Colore=cp[0].Highlight=cp[2].Colore=colore_team[controllo[*teamarray]+1];
-			cp[2].Testo=teamlist[*teamarray].nome;
+			cp[2].Testo=teamlist[*teamarray].name;
 			cp[4].Highlight=cp[2].Highlight=highlight_team[controllo[*teamarray]+1];
 
 			jingle=PlayBackSound(menusound[FIRST_ARCADE+arcade_sequence[turno]]);
@@ -2363,7 +2363,7 @@ void SetupMatches(void)
 			}
 // Team B
 			cp[1].Testo[1]=arcade_sequence[turno];
-			cp[3].Testo=teamlist[arcade_sequence[turno]].nome;
+			cp[3].Testo=teamlist[arcade_sequence[turno]].name;
 			cp[5].Colore=cp[1].Colore=cp[1].Highlight=cp[3].Colore=colore_team[0];
 			cp[5].Highlight=cp[3].Highlight=highlight_team[0];
 
@@ -2401,7 +2401,7 @@ void SetupMatches(void)
 
 					if(b==FAKE_TEAM)
 					{
-						mp[k*4].Testo=teamlist[a].nome;
+						mp[k*4].Testo=teamlist[a].name;
 						mp[k*4].Colore=colore_team[controllo[a]+1];
 						mp[k*4].Highlight=highlight_team[controllo[a]+1];
 						mp[k*4+1].Testo=NULL;
@@ -2417,9 +2417,9 @@ void SetupMatches(void)
 						mp[k*4+2].Colore=colore_team[controllo[b]+1];
 						mp[k*4+2].Highlight=highlight_team[controllo[b]+1];
 
-						mp[k*4].Testo=teamlist[a].nome;
+						mp[k*4].Testo=teamlist[a].name;
 						mp[k*4+1].Testo="-"/*-*/;
-						mp[k*4+2].Testo=teamlist[b].nome;
+						mp[k*4+2].Testo=teamlist[b].name;
 					}
 
 					if(mp[k*4+3].Testo)
@@ -2466,9 +2466,9 @@ void SetupMatches(void)
 				{
 					for(j=0;j<2;j++)
 					{
-						mp[k*4].Testo=teamlist[start_groups[i][camp4[turno][j].t1-1]].nome;
+						mp[k*4].Testo=teamlist[start_groups[i][camp4[turno][j].t1-1]].name;
 						mp[k*4+1].Testo="-"/*-*/;
-						mp[k*4+2].Testo=teamlist[start_groups[i][camp4[turno][j].t2-1]].nome;
+						mp[k*4+2].Testo=teamlist[start_groups[i][camp4[turno][j].t2-1]].name;
 						mp[k*4].Colore=colore_team[controllo[start_groups[i][camp4[turno][j].t1-1]]+1];
 						mp[k*4].Highlight=highlight_team[controllo[start_groups[i][camp4[turno][j].t1-1]]+1];
 						mp[k*4+2].Colore=colore_team[controllo[start_groups[i][camp4[turno][j].t2-1]]+1];
@@ -2555,8 +2555,8 @@ void PlayMatches(void)
 				result=PlayMatch(*teamarray,arcade_sequence[turno]);
 	
 				
-				cp[2].Testo=teamlist[*teamarray].nome;
-				cp[3].Testo=teamlist[arcade_sequence[turno]].nome;
+				cp[2].Testo=teamlist[*teamarray].name;
+				cp[3].Testo=teamlist[arcade_sequence[turno]].name;
 
 				c=cp[4].Testo=strdup(ElaboraRisultato(*teamarray,arcade_sequence[turno],result));
 
@@ -2587,8 +2587,8 @@ void PlayMatches(void)
 					turno=0;
 					competition=MENU_TEAMS;					
 					LoadTeams("teams/arcade"/*-*/); // Reload original teams...
-					cp[2].Testo=teamlist[*teamarray].nome;
-					cp[3].Testo=teamlist[arcade_sequence[turno]].nome;
+					cp[2].Testo=teamlist[*teamarray].name;
+					cp[3].Testo=teamlist[arcade_sequence[turno]].name;
 					cp[6].Testo=msg_52;
 					cb[0].ID=MENU_ARCADE;
 				}
@@ -2733,7 +2733,7 @@ void PlayMatches(void)
 
 					for(i=0;i<4;i++)
 					{
-						wcfp[i].Testo=teamlist[teamarray[i]].nome;
+						wcfp[i].Testo=teamlist[teamarray[i]].name;
 						wcfp[i].Colore=colore_team[controllo[teamarray[i]]+1];
 						wcfp[i].Highlight=highlight_team[controllo[teamarray[i]]+1];
 					}

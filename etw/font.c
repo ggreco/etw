@@ -15,7 +15,7 @@ struct myfont *gtf;
 BOOL left_sel, right_sel;
 
 struct Stats {
-	char *nome;
+	char *name;
 	UBYTE address, len;
 };
 
@@ -37,7 +37,7 @@ BOOL draw_r, replay_done;
 
 void PrintTeamName(Giocatore * g, LONG y)
 {
-	char *c = g->team->Nome;
+	char *c = g->team->name;
 	LONG l, x;
 
 	l = strlen(c);
@@ -305,13 +305,13 @@ void ShowPanel(void)
 		y = WINDOW_HEIGHT - (font_height << 2) + (font_height << 1) - 1;
 
 		if (p->arbitro.Argomento >= 10)
-			g = &p->team[1]->giocatore[p->arbitro.Argomento - 10];
+			g = &p->team[1]->players[p->arbitro.Argomento - 10];
 		else
-			g = &p->team[0]->giocatore[p->arbitro.Argomento];
+			g = &p->team[0]->players[p->arbitro.Argomento];
 
-		l = strlen(g->Nome);
+		l = strlen(g->name);
 
-		TextShadow(x, y, g->Nome, l);
+		TextShadow(x, y, g->name, l);
 	}
 
 	if (p->show_panel & PANEL_OFFSIDE) {
@@ -420,7 +420,7 @@ void ShowPanel(void)
 			char buffer[80];
 			int l, x, y;
 
-			sprintf(buffer, "OUT: %s", g->Cognome);
+			sprintf(buffer, "OUT: %s", g->surname);
 
 			l = strlen(buffer);
 
@@ -434,7 +434,7 @@ void ShowPanel(void)
 				y += (font_height << 2);
 
 				sprintf(buffer, "IN: %s",
-						Riserve[g->SNum][g->CA[0] - 1].Cognome);
+						Riserve[g->SNum][g->CA[0] - 1].surname);
 
 				l = strlen(buffer);
 
@@ -449,7 +449,7 @@ void ShowPanel(void)
 			char buffer[80];
 			LONG x, y, l;
 
-			sprintf(buffer, "%s INJURIED.", g->Nome);
+			sprintf(buffer, "%s INJURIED.", g->name);
 
 			l = strlen(buffer);
 
@@ -469,7 +469,7 @@ void ShowPanel(void)
 			char buffer[80];
 			LONG x, y, l;
 
-			sprintf(buffer, "%s INJURIED. SUBSTITUTE HIM:", g->Cognome);
+			sprintf(buffer, "%s INJURIED. SUBSTITUTE HIM:", g->surname);
 
 			l = strlen(buffer);
 
@@ -515,7 +515,7 @@ void ShowPanel(void)
 			if (p->RiservaAttuale < 0)
 				c = "NOBODY";
 			else
-				c = g->team->giocatore[p->RiservaAttuale].Nome;
+				c = g->team->players[p->RiservaAttuale].name;
 
 			l = strlen(c);
 
@@ -539,7 +539,7 @@ void ShowPanel(void)
 
 			y += (font_height << 1) + 1;
 
-			c = Riserve[g->SNum][p->RiservaAttuale].Cognome;
+			c = Riserve[g->SNum][p->RiservaAttuale].surname;
 
 			l = strlen(c);
 
@@ -563,7 +563,7 @@ void ShowPanel(void)
 
 			y += (font_height << 1) + 1;
 
-			c = Tattiche[p->RiservaAttuale];
+			c = tactics[p->RiservaAttuale];
 
 			l = strlen(c);
 
@@ -622,22 +622,22 @@ void ShowPanel(void)
 
 		xs = (font_width << 1) + font_width;
 
-		l = strlen(p->team[0]->Nome);
+		l = strlen(p->team[0]->name);
 
-		TextShadow(xs, y, p->team[0]->Nome, l);
+		TextShadow(xs, y, p->team[0]->name, l);
 
-		l = strlen(p->team[1]->Nome);
+		l = strlen(p->team[1]->name);
 
 		x = WINDOW_WIDTH - (l + 3) * font_width;
 
-		TextShadow(x, y, p->team[1]->Nome, l);
+		TextShadow(x, y, p->team[1]->name, l);
 
 		y += (font_height * 2);
 
 		for (t = 0; t < NUMERO_STATS; t++) {
 			x = (WINDOW_WIDTH - stats[t].len * font_width) >> 1;
 
-			TextShadow(x, y, stats[t].nome, stats[t].len);
+			TextShadow(x, y, stats[t].name, stats[t].len);
 
 			c = *((char *) (((char *) (p->team[0])) +
 							stats[t].address));
@@ -677,9 +677,9 @@ void ShowPanel(void)
 		y = WINDOW_HEIGHT - (font_height << 3) + (font_height << 1) +
 			font_height;
 
-		l = strlen(p->team[0]->Nome);
+		l = strlen(p->team[0]->name);
 
-		TextShadow(x, y, p->team[0]->Nome, l);
+		TextShadow(x, y, p->team[0]->name, l);
 
 		x = WINDOW_WIDTH - (font_width << 2) - font_width;
 		y = WINDOW_HEIGHT - (font_height << 3) + (font_height << 1) +
@@ -693,9 +693,9 @@ void ShowPanel(void)
 			x = font_width << 2;
 			y = WINDOW_HEIGHT - (font_height << 2) + font_height;
 
-			l = strlen(p->team[1]->Nome);
+			l = strlen(p->team[1]->name);
 
-			TextShadow(x, y, p->team[1]->Nome, l);
+			TextShadow(x, y, p->team[1]->name, l);
 
 			x = WINDOW_WIDTH - (font_width << 2) - font_width;
 			y = WINDOW_HEIGHT - (font_height << 2) + font_height;
@@ -833,7 +833,7 @@ void ShowFinal(void)
 			extern UBYTE cols[2][4];
 			bitmap temp;
 			GfxObj *o;
-			int i = s->giocatore[0].SNum;
+			int i = s->players[0].SNum;
 			char buffer[100];
 
 			BltGfxObj(background, (FIELD_WIDTH - WINDOW_WIDTH) / 2 - 1,

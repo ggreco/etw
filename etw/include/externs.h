@@ -1,7 +1,7 @@
 // this is a fix for OSX
 #define MoveTo MyMoveTo
 
-extern struct Giocatore_Disk Riserve[2][12];
+extern struct player_disk Riserve[2][12];
 extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,team_b,TotaleRiserve[2],NumeroTattiche;
 extern char team_name[2][16],fieldname[24],palette[24],shirt[2][24];
 extern Oggetto *pezzi_porte[4],*bonus[MAX_ARCADE_ON_FIELD];
@@ -28,11 +28,11 @@ extern WORD av_palla_x[8][12],av_palla_y[8][12],velocita_scivolata_x[],velocita_
 extern Partita *p;
 extern Pallone *pl;
 extern struct Animazione Animation[],ArbAnim[],PortAnim[],GLAnim[];
-extern WORD field_x,field_y,porte_x[],players,field_x_limit,field_y_limit;
+extern WORD field_x,field_y,porte_x[],field_x_limit,field_y_limit;
 extern BYTE joy_opposto[],dir_pred[],dir_next[],CambioDirezione[8][8],player_type[4],role[4];
 extern long WINDOW_WIDTH, WINDOW_HEIGHT, wanted_sound;
 extern struct SoundInfo *sound[];
-extern char *soundname[],*Tattiche[];
+extern char *soundname[],*tactics[];
 extern Oggetto *object_list[];
 extern struct DOggetto *c_list[];
 extern int totale_lista,totale_lista_c;
@@ -79,13 +79,13 @@ extern void SetResult(char *,...);
 
 // squadre
 
-extern void ReadSquadra(FILE *,struct Squadra_Disk *);
+extern void ReadSquadra(FILE *,struct team_disk *);
 extern void DisponiSquadra(Team *,int ,BOOL );
 extern void DisponiPortiere(Team *,int ,BOOL );
 extern void MakeResult(void);
 extern FILE *OpenTeam(char *);
 extern void SwapTeams(void);
-extern void ChangePlayer(struct Giocatore_Disk *,Giocatore *);
+extern void ChangePlayer(struct player_disk *,Giocatore *);
 extern BOOL NumeroDiverso(struct Team *,char);
 extern void GL_Fuori(int);
 

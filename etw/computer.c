@@ -102,30 +102,30 @@ void CheckCheat(UBYTE c )
 	}
 }
 
-WORD CalcolaPotenza(struct Squadra_Disk *s,char POS)
+WORD CalcolaPotenza(struct team_disk *s,char POS)
 {
 	int i;
 	WORD potenza=0;
 
 	for(i=0;i<10;i++)
 	{
-		if(s->giocatore[i].Posizioni&POS)
+		if(s->players[i].Posizioni&POS)
 		{
-			potenza+=s->giocatore[i].Velocita;
+			potenza+=s->players[i].Velocita;
 
 			switch(POS)
 			{
 				case P_ATTACCO:
-					potenza+=s->giocatore[i].Tiro;
-					potenza+=s->giocatore[i].Tecnica;
+					potenza+=s->players[i].Tiro;
+					potenza+=s->players[i].Tecnica;
 					break;
 				case P_DIFESA:
-					potenza+=s->giocatore[i].Contrasto;
-					potenza+=s->giocatore[i].Resistenza;
+					potenza+=s->players[i].Contrasto;
+					potenza+=s->players[i].Resistenza;
 					break;
 				case P_CENTRO:
-					potenza+=s->giocatore[i].Creativita;
-					potenza+=s->giocatore[i].Durata;
+					potenza+=s->players[i].Creativita;
+					potenza+=s->players[i].Durata;
 					break;
 			}
 		}

@@ -250,7 +250,7 @@ Giocatore *TrovaPiuVicinoDirGiocatore(Giocatore *g)
 
         for(i=0;i<10;i++)
         {
-                if((g2=&g->team->giocatore[i])!=g)
+                if((g2=&g->team->players[i])!=g)
                 {
                         if(FindDirection(g->world_x,g->world_y,g2->world_x,g2->world_y)==g->Direzione)
                         {
@@ -279,7 +279,7 @@ Giocatore *TrovaPiuVicinoGiocatore(Giocatore *g)
 
         for(i=0;i<10;i++)
         {
-                if((g2=&g->team->giocatore[i])!=g)
+                if((g2=&g->team->players[i])!=g)
                 {
 			t=abs(g->world_x-g2->world_x)+abs(g->world_y-g2->world_y);
 
@@ -792,11 +792,11 @@ Giocatore *TrovaPiuVicino(Team *s,WORD x,WORD y)
 {
 	register int i;
 	register WORD t,minv=32767;
-	register Giocatore *n=&s->giocatore[0],*g;
+	register Giocatore *n=&s->players[0],*g;
 
 	for(i=0;i<10;i++)
 	{
-		g=&s->giocatore[i];
+		g=&s->players[i];
 
 		t=abs(g->world_x-x)+abs(g->world_y-y);
 
@@ -898,8 +898,8 @@ void RimuoviComandoSquadra(char sq, BYTE cmd)
 
 	for(i=0;i<10;i++)
 	{
-		if(s->giocatore[i].Comando==cmd)
-			s->giocatore[i].Comando=NESSUN_COMANDO;
+		if(s->players[i].Comando==cmd)
+			s->players[i].Comando=NESSUN_COMANDO;
 	}
 }
 

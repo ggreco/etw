@@ -93,17 +93,17 @@ void SetResult(char *fstring, ...)
 				for (i = 0; i < 10; i++) {
 					char c = 0;
 
-					if (s->giocatore[i].AnimType == GIOCATORE_ESPULSO)
+					if (s->players[i].AnimType == GIOCATORE_ESPULSO)
 						c = 'e';
-					else if (s->giocatore[i].Ammonito)
+					else if (s->players[i].Ammonito)
 						c = 'a';
 
-					if (s->giocatore[i].Resistenza == 0)
+					if (s->players[i].Resistenza == 0)
 						c = 'i';
 
 					if (c)
 						fprintf(f, "%d %d %c\n", (int) sn,
-								(int) s->giocatore[i].Numero, c);
+								(int) s->players[i].number, c);
 				}
 			}
 		}
@@ -116,17 +116,17 @@ void SetResult(char *fstring, ...)
  * Questa routine scrive il nome di un giocatore
  */
 
-void DrawName(char *nome, char *cognome, int num, int x, int y)
+void DrawName(char *name, char *surname, int num, int x, int y)
 {
 	char buffer[50];
 	int k;
 
-	if (*nome && *cognome)
-		sprintf(buffer, "%-2d %s %s", num, nome, cognome);
-	else if (*cognome)
-		sprintf(buffer, "%-2d %s", num, cognome);
-	else if (*nome)
-		sprintf(buffer, "%-2d %s", num, nome);
+	if (*name && *surname)
+		sprintf(buffer, "%-2d %s %s", num, name, surname);
+	else if (*surname)
+		sprintf(buffer, "%-2d %s", num, surname);
+	else if (*name)
+		sprintf(buffer, "%-2d %s", num, name);
 
 	num = strlen(buffer);
 
@@ -142,7 +142,7 @@ void Loading(void)
 	struct myfont *sf = NULL;
 	extern struct myfont *gtf;
 	int i, x, y, passo, maxlen;
-	struct Squadra_Disk s;
+	struct team_disk s;
 
 // Da metterci le immagini dei campi.
 
@@ -172,14 +172,14 @@ void Loading(void)
 
 		{
 
-			extern struct Squadra_Disk leftteam_dk, rightteam_dk;
+			extern struct team_disk leftteam_dk, rightteam_dk;
 			int k, t, xsup, ysup;
 			char *n;
 
 			s = (i == 0 ? leftteam_dk : rightteam_dk);
 
-			for (k = 0; k < s.NumeroPortieri; k++) {
-				char *c = s.portiere[k].Nome, *d = s.portiere[k].Cognome;
+			for (k = 0; k < s.nkeepers; k++) {
+				char *c = s.keepers[k].name, *d = s.keepers[k].surname;
 
 				t = 0;
 
@@ -203,8 +203,8 @@ void Loading(void)
 #endif
 			}
 
-			for (k = 0; k < s.NumeroGiocatori; k++) {
-				char *c = s.giocatore[k].Nome, *d = s.giocatore[k].Cognome;
+			for (k = 0; k < s.nplayers; k++) {
+				char *c = s.players[k].name, *d = s.players[k].surname;
 
 				t = 0;
 
@@ -228,7 +228,7 @@ void Loading(void)
 #endif
 			}
 
-			n = s.nome;
+			n = s.name;
 			t = 0;
 
 			while (*n) {
@@ -296,12 +296,12 @@ void Loading(void)
 			}
 
 
-			drawtext(s.nome, t, xsup, ysup, Pens[P_NERO]);
+			drawtext(s.name, t, xsup, ysup, Pens[P_NERO]);
 
 			xsup--;
 			ysup--;
 
-			drawtext(s.nome, t, xsup, ysup, Pens[P_BIANCO]);
+			drawtext(s.name, t, xsup, ysup, Pens[P_BIANCO]);
 
 			y += passo;
 
@@ -334,13 +334,13 @@ void Loading(void)
 
 			setfont(sf);
 
-			DrawName(s.portiere[0].Nome, s.portiere[0].Cognome, 1, x,
+			DrawName(s.keepers[0].name, s.keepers[0].surname, 1, x,
 					 y + sf->height - 1);
 
 			y += passo;
 
 			for (t = 0; t < 10; t++) {
-				DrawName(s.giocatore[t].Nome, s.giocatore[t].Cognome,
+				DrawName(s.players[t].name, s.players[t].surname,
 						 t + 2, x, y + sf->height - 1);
 				y += passo;
 			}
@@ -348,14 +348,14 @@ void Loading(void)
 			if (!arcade_teams) {
 				y += passo;
 
-				if (s.NumeroPortieri > 1) {
-					DrawName(s.portiere[1].Nome, s.portiere[1].Cognome, 12,
+				if (s.nkeepers > 1) {
+					DrawName(s.keepers[1].name, s.keepers[1].surname, 12,
 							 x, y + sf->height - 1);
 					y += passo;
 				}
 
-				for (t = 10; t < min(14, s.NumeroGiocatori); t++) {
-					DrawName(s.giocatore[t].Nome, s.giocatore[t].Cognome,
+				for (t = 10; t < min(14, s.nplayers); t++) {
+					DrawName(s.players[t].name, s.players[t].surname,
 							 t + 3, x, y + sf->height - 1);
 					y += passo;
 				}

@@ -1162,9 +1162,9 @@ void ChangeMenu(WORD m)
 		if (y <= titlefont->height)
 			y = titlefont->height + 1;
 
-		i = strlen(teamlist[actual_team].nome);
+		i = strlen(teamlist[actual_team].name);
 
-		TextShadow(FixedScaledX(5), y, teamlist[actual_team].nome, i);
+		TextShadow(FixedScaledX(5), y, teamlist[actual_team].name, i);
 
 		setfont(WINDOW_HEIGHT > 300 ? bigfont : smallfont);
 

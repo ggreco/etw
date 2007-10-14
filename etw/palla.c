@@ -780,14 +780,14 @@ void CheckPanels(void)
 				{
 					if(p->RiservaAttuale>=0)
 					{
-						WORD t=s->giocatore[p->RiservaAttuale].AnimType;
+						WORD t=s->players[p->RiservaAttuale].AnimType;
 
 						if(t!=GIOCATORE_RIMESSA && t!=GIOCATORE_BATTUTA &&
 							t!=GIOCATORE_PREPARA_RIMESSA && t!=GIOCATORE_RECUPERA_PALLA &&
 							t!=GIOCATORE_ESPULSO )
 						{
 							p->show_panel=PANEL_SUBSTITUTION_2;
-							p->player_injuried=&s->giocatore[p->RiservaAttuale];
+							p->player_injuried=&s->players[p->RiservaAttuale];
 							p->player_injuried->Comando=ESCI_CAMPO;
 							p->player_injuried->CA[0]=0;
 						}
@@ -884,16 +884,16 @@ void CheckPanels(void)
 			}
 			else s->ArcadeCounter=0;
 
-			if(p->RiservaAttuale>=TotaleRiserve[s->giocatore[0].SNum])
+			if(p->RiservaAttuale>=TotaleRiserve[s->players[0].SNum])
 				p->RiservaAttuale=0;
 			else if(p->RiservaAttuale<0)
-					p->RiservaAttuale=TotaleRiserve[s->giocatore[0].SNum]-1;
+					p->RiservaAttuale=TotaleRiserve[s->players[0].SNum]-1;
 
-			while(!NumeroDiverso(s,Riserve[s->giocatore[0].SNum][p->RiservaAttuale].Numero))
+			while(!NumeroDiverso(s,Riserve[s->players[0].SNum][p->RiservaAttuale].number))
 			{
 				p->RiservaAttuale++;
 
-				if(p->RiservaAttuale>=TotaleRiserve[s->giocatore[0].SNum])
+				if(p->RiservaAttuale>=TotaleRiserve[s->players[0].SNum])
 					p->RiservaAttuale=0;
 			}
 
@@ -912,7 +912,7 @@ void CheckPanels(void)
 					struct Tactic *oldtct=s->tattica;
 
 					strcpy(path,"ETW-TCT:");
-					strcat(path,Tattiche[p->RiservaAttuale]);
+					strcat(path,tactics[p->RiservaAttuale]);
 
 					if(!(s->tattica=LoadTactic(path)))
 					{
