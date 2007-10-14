@@ -23,7 +23,7 @@ BOOL training = FALSE, nosync = FALSE, firsttime = TRUE, arcade_back =
 char control[4] = { CTRL_JOY, CTRL_JOY, CTRL_JOY, CTRL_JOY };
 AnimObj *logos = NULL, *symbols = NULL;
 GfxObj *arcade_gfx[ARCADE_TEAMS + 1];
-char *back;
+uint8_t *back;
 int bitmap_width, bitmap_height;
 struct SoundInfo *music = NULL;
 

@@ -25,7 +25,6 @@ typedef uint8_t         UBYTE;
 typedef uint8_t         BYTEBITS;
 typedef uint16_t        WORDBITS;
 typedef uint32_t        LONGBITS;
-typedef unsigned char * STRPTR;
 
 #else
 typedef void            *APTR;      /* 32-bit untyped pointer */
@@ -50,7 +49,6 @@ typedef unsigned char   BYTEBITS;   /* 8 bits manipulated individually */
 typedef unsigned short  WORDBITS;   /* 16 bits manipulated individually */
 typedef unsigned long   LONGBITS;   /* 32 bits manipulated individually */
 // typedef void VOID;
-typedef unsigned char  *STRPTR;
 
 #ifndef _STDINT_H_
 typedef signed char     int8_t;
