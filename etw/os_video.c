@@ -291,14 +291,14 @@ void ScreenSwap(void)
 			memcpy(screen->pixels,main_bitmap,bitmap_width*bitmap_height);
 		else
 		{
-			register int i;
-			register char *src=main_bitmap,*dest=screen->pixels;
+			uint8_t *src = main_bitmap, *dest = screen->pixels;
+			int i;
 
 			for(i=bitmap_height;i;--i)
 			{
 				memcpy(dest,src,bitmap_width);
-				src+=bitmap_width;
-				dest+=screen->pitch;
+				src += bitmap_width;
+				dest += screen->pitch;
 			}
 		}
 	

@@ -47,14 +47,14 @@ void handle_sound(void *unused, Uint8 * stream, int len)
 //              D(bug("Mixxo canale %ld, %ld bytes (st: %lx)\n",i,amount,stream));
 
 				if (busy[i]->Flags & SOUND_DISK) {
-					char buffer[BUFFER_SIZE];
+					unsigned char buffer[BUFFER_SIZE];
 
 					fread(buffer, amount, 1, (FILE *) busy[i]->SoundData);
 					SDL_MixAudio(stream, buffer, amount,
 								 SDL_MIX_MAXVOLUME);
 				} else
 					SDL_MixAudio(stream,
-								 ((char *) busy[i]->SoundData) +
+								 ((unsigned char *) busy[i]->SoundData) +
 								 busy[i]->Offset, amount,
 								 SDL_MIX_MAXVOLUME);
 

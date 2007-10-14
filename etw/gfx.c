@@ -598,9 +598,9 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
 			}
 
 			if ((obj->Frames = calloc(obj->num_frames, sizeof(APTR)))) {
-				if ((obj->Widths = malloc(obj->num_frames * sizeof(LONG)))) {
+				if ((obj->Widths = malloc(obj->num_frames * sizeof(int)))) {
 					if ((obj->Heights =
-						malloc(obj->num_frames * sizeof(LONG)))) {
+						malloc(obj->num_frames * sizeof(int)))) {
 						BOOL ok = TRUE;
 						unsigned short tempw;
 

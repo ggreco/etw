@@ -69,7 +69,7 @@ void LoadMenuLogo(char *name)
 	}
 }
 
-void ScaleGfxObj(GfxObj *o,char *b)
+void ScaleGfxObj(GfxObj *o, uint8_t *b)
 {
 	struct MyScaleArgs scale;
 
