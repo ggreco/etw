@@ -27,7 +27,7 @@ char *palettes[]=
 
 BOOL ETW_running=FALSE;
 
-struct Squadra_Disk leftteam_dk,rightteam_dk;
+struct team_disk leftteam_dk,rightteam_dk;
 
 BOOL CheckMaglie(UBYTE a,UBYTE b)
 {
@@ -36,21 +36,21 @@ BOOL CheckMaglie(UBYTE a,UBYTE b)
 	se il colore 1 e' uguale o se le coppie 1->0 e 0->1 sono
 	uguali
 */
-	if( 	(teamlist[a].maglie[0].Colore0 == P_ROSSO0 &&
- 		teamlist[b].maglie[0].Colore0 == P_ROSSO1	) ||
-		(teamlist[b].maglie[0].Colore0 == P_ROSSO0 &&
- 		teamlist[a].maglie[0].Colore0 == P_ROSSO1	)
+	if( 	(teamlist[a].jerseys[0].color0 == P_ROSSO0 &&
+ 		teamlist[b].jerseys[0].color0 == P_ROSSO1	) ||
+		(teamlist[b].jerseys[0].color0 == P_ROSSO0 &&
+ 		teamlist[a].jerseys[0].color0 == P_ROSSO1	)
 	)
 		return FALSE;
 
-	return (BOOL)( (teamlist[a].maglie[0].Colore0 !=teamlist[b].maglie[0].Colore0 &&
-			teamlist[a].maglie[0].Colore1 != teamlist[b].maglie[0].Colore1 ) ||
-			teamlist[a].maglie[0].Colore0 == teamlist[b].maglie[1].Colore0
+	return (BOOL)( (teamlist[a].jerseys[0].color0 !=teamlist[b].jerseys[0].color0 &&
+			teamlist[a].jerseys[0].color1 != teamlist[b].jerseys[0].color1 ) ||
+			teamlist[a].jerseys[0].color0 == teamlist[b].jerseys[1].color0
 
 /*
 	commentato per problemi
-			&& !(teamlist[a].maglie[0].Colore1 == teamlist[b].maglie[0].Colore0 &&
-			teamlist[a].maglie[0].Colore0 == teamlist[b].maglie[0].Colore1 &)
+			&& !(teamlist[a].jerseys[0].color1 == teamlist[b].jerseys[0].color0 &&
+			teamlist[a].jerseys[0].color0 == teamlist[b].jerseys[0].color1 &)
 */
 			 );
 }
@@ -278,13 +278,13 @@ WORD StartMatch(BYTE team1,BYTE team2)
 	if(!training && !network_game)
 	{
 		if(!CheckMaglie(team1,team2))
-			rightteam_dk.maglie[0]=rightteam_dk.maglie[1];
+			rightteam_dk.jerseys[0]=rightteam_dk.jerseys[1];
 	}
 
     use_offside = FALSE;
     
 	if(training) {
-		rightteam_dk.maglie[0]=rightteam_dk.maglie[1];
+		rightteam_dk.jerseys[0]=rightteam_dk.jerseys[1];
     }
     else if (offside)
         use_offside = TRUE;
@@ -292,12 +292,12 @@ WORD StartMatch(BYTE team1,BYTE team2)
 	sprintf(shirt[0],"gfx/play%lc%lc%lc.obj"/*-*/,
 			( (nightgame||arcade) ? 'n' : 'e'),
 			( (field==8&&!arcade) ? 's' : 'r'),
-			teamlist[team1].maglie[0].Tipo+'a');
+			teamlist[team1].jerseys[0].type+'a');
 
 	sprintf(shirt[1],"gfx/play%lc%lc%lc.obj"/*-*/,
 			( (nightgame||arcade) ? 'n' : 'e'),
 			( (field==8&&!arcade) ? 's' : 'r'),
-			(training ? teamlist[team2].maglie[1].Tipo : teamlist[team2].maglie[0].Tipo)+'a');
+			(training ? teamlist[team2].jerseys[1].type : teamlist[team2].jerseys[0].type)+'a');
 
 	if(!field)
 		t=RangeRand(6);
@@ -527,8 +527,8 @@ WORD StartMatch(BYTE team1,BYTE team2)
 				mr[1].Colore=mr[3].Colore=colore_team[controllo[team2]+1];
 				mr[1].Highlight=mr[3].Highlight=highlight_team[controllo[team2]+1];
 
-				mr[0].Testo=teamlist[team1].nome;
-				mr[1].Testo=teamlist[team2].nome;
+				mr[0].Testo=teamlist[team1].name;
+				mr[1].Testo=teamlist[team2].name;
 
 				mr[2].Testo=buffer;
 				mr[3].Testo=c;
@@ -559,7 +559,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 						if(sscanf(buffer,"%d %d %d",&team,&num,&min)==3)
 						{
 							int t= (team==0 ? team1 : team2),og=0,j;
-							struct Giocatore_Disk *g = NULL;
+							struct player_disk *g = NULL;
 
 							if(num&OWN_GOAL)
 							{
@@ -568,9 +568,9 @@ WORD StartMatch(BYTE team1,BYTE team2)
 								num&=~(OWN_GOAL);
 							}
 		
-							for(j=0;j<teamlist[t].NumeroGiocatori;j++)
-								if(teamlist[t].giocatore[j].Numero==num)
-									g=&teamlist[t].giocatore[j];
+							for(j=0;j<teamlist[t].nplayers;j++)
+								if(teamlist[t].players[j].number==num)
+									g=&teamlist[t].players[j];
 	
 							if(g)
 							{
@@ -588,7 +588,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 									y=&yr;
 								}
 
-								l=sprintf(buf,"%s (%s%d)",g->Cognome, og ? "OG " : "" ,min);
+								l=sprintf(buf,"%s (%s%d)",g->surname, og ? "OG " : "" ,min);
 
 								d=buf;
 
@@ -640,11 +640,11 @@ WORD StartMatch(BYTE team1,BYTE team2)
 					if(sscanf(buffer,"%d %d %c"/*-*/,&team,&num,&op)==3)
 					{
 						int t= (team==0 ? team1 : team2);
-						struct Giocatore_Disk *g=NULL;
+						struct player_disk *g=NULL;
 	
-						for(i=0;i<teamlist[t].NumeroGiocatori;i++)
-							if(teamlist[t].giocatore[i].Numero==num)
-								g=&teamlist[t].giocatore[i];
+						for(i=0;i<teamlist[t].nplayers;i++)
+							if(teamlist[t].players[i].number==num)
+								g=&teamlist[t].players[i];
 		
 						if(g)
 						{

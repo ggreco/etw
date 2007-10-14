@@ -49,7 +49,7 @@ void read_config(void)
 	else
 		audio2fast=FALSE;
 
-	players=2;
+	//players=2;
 
 	if(use_scaling&&!scaling)
 		scaling=malloc(sizeof(struct MyFastScaleArgs));

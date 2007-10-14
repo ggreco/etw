@@ -1011,7 +1011,7 @@ finetiro:
 
 			if(GetTable()<4)
 			{
-				struct Portiere *po=&p->team[g->SNum^1]->portiere;
+				struct Portiere *po=&p->team[g->SNum^1]->keepers;
 
 				DoSpecialAnim(po,PORTIERE_PRERIGORE);
 			}
@@ -1515,10 +1515,10 @@ void EseguiEsultanza(int Team)
 
 	for(s=9;s>-1;s--)
 	{
-		if(	sq->giocatore[s].OnScreen && 
-			sq->giocatore[s].AnimType!=GIOCATORE_ESPULSO &&
-			sq->giocatore[s].AnimType<GIOCATORE_PRIMA_ESULTANZA )
-			g=&(sq->giocatore[s]);
+		if(	sq->players[s].OnScreen && 
+			sq->players[s].AnimType!=GIOCATORE_ESPULSO &&
+			sq->players[s].AnimType<GIOCATORE_PRIMA_ESULTANZA )
+			g=&(sq->players[s]);
 	}
 
 	if(!g)
@@ -1560,7 +1560,7 @@ void EseguiEsultanza(int Team)
 
 BOOL IsOffside(Giocatore *g)
 {
-	Giocatore *g1=&g->team->giocatore[g->SpecialData];
+	Giocatore *g1=&g->team->players[g->SpecialData];
 
 	if(g1->SNum)
 	{
@@ -1573,7 +1573,7 @@ BOOL IsOffside(Giocatore *g)
 
 			for(i=0;i<10;i++)
 			{
-				if(sa->giocatore[i].world_x>xpos)
+				if(sa->players[i].world_x>xpos)
 				{
 					offs=FALSE;
 					break;
@@ -1594,7 +1594,7 @@ BOOL IsOffside(Giocatore *g)
 
 			for(i=0;i<10;i++)
 			{
-				if(sa->giocatore[i].world_x<xpos)
+				if(sa->players[i].world_x<xpos)
 				{
 					offs=FALSE;
 					break;

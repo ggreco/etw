@@ -9,11 +9,11 @@ GuardaLinee *guardalinee;
 UBYTE cols[2][4],NumeroTattiche=0,TotaleRiserve[2];
 BOOL teams_swapped=FALSE,has_black[2]={FALSE,FALSE};
 WORD swaps=0;
-char *Tattiche[32];
+char *tactics[32];
 
-struct Giocatore_Disk Riserve[2][12];
+struct player_disk Riserve[2][12];
 
-AnimObj *giocatore[2]={NULL,NULL},*portiere=NULL,*ports,*arcade_anim;
+AnimObj *players[2]={NULL,NULL},*keepers=NULL,*ports,*arcade_anim;
 AnimObj *g_neri[2]={NULL,NULL};
 Oggetto *pezzi_porte[4];
 Oggetto *bonus[MAX_ARCADE_ON_FIELD];
@@ -27,7 +27,7 @@ BOOL NumeroDiverso(struct Team *s,char n)
 	register int i;
 
 	for(i=0;i<10;i++)
-			if(s->giocatore[i].Numero==n)
+			if(s->players[i].number==n)
 					return FALSE;
 
 	return TRUE;
@@ -78,14 +78,14 @@ void ChangeImmagine(Giocatore *g,AnimObj *o)
 			if(i==g->GNum)
 				continue;
 
-			if(g_nero && IsBlack(&s->giocatore[i]))
+			if(g_nero && IsBlack(&s->players[i]))
 			{
-				g2=&s->giocatore[i];
+				g2=&s->players[i];
 				break;
 			}
-			else if(!g_nero && !IsBlack(&s->giocatore[i]))
+			else if(!g_nero && !IsBlack(&s->players[i]))
 			{
-				g2=&s->giocatore[i];
+				g2=&s->players[i];
 				break;
 			}
 		}
@@ -145,10 +145,10 @@ void SwapTeams(void)
 	p->team[1]=s;
 
 	for(j=0;j<2;j++) {
-		p->team[j]->portiere.SNum=j;
+		p->team[j]->keepers.SNum=j;
 
 		for(i=0;i<10;i++)
-			p->team[j]->giocatore[i].SNum=j;
+			p->team[j]->players[i].SNum=j;
 	}
 
 	
@@ -175,7 +175,7 @@ void SwapTeams(void)
 	golrig[1]=c;
 
 	for(i=0;i<12;i++) {
-		struct Giocatore_Disk temp;
+		struct player_disk temp;
 
 		temp=Riserve[0][i];
 		Riserve[0][i]=Riserve[1][i];
@@ -197,9 +197,9 @@ void CheckPelle(void)
 	if(arcade_teams)
 	{
 		if(team_a==3)
-			RemapAnimObjColor(p->team[0]->giocatore[9].immagine,Pens[P_ARANCIO1],Pens[P_GIALLO]);
+			RemapAnimObjColor(p->team[0]->players[9].immagine,Pens[P_ARANCIO1],Pens[P_GIALLO]);
 		else if(team_b==3)
-			RemapAnimObjColor(p->team[1]->giocatore[9].immagine,Pens[P_ARANCIO1],Pens[P_GIALLO]);
+			RemapAnimObjColor(p->team[1]->players[9].immagine,Pens[P_ARANCIO1],Pens[P_GIALLO]);
 	}
 
 
@@ -218,7 +218,7 @@ void CheckPelle(void)
 
 		for(j=0;j<10;j++)
 		{
-			if(IsBlack(&s->giocatore[j]))
+			if(IsBlack(&s->players[j]))
 				neri++;
 		}
 
@@ -226,13 +226,13 @@ void CheckPelle(void)
 		if( neri>9 ) {
 			has_black[i]=FALSE;
 
-			RemapAnimObjColor(s->giocatore[9].immagine,Pens[P_ROSSO2],Pens[P_NERO]);
-			RemapAnimObjColor(s->giocatore[9].immagine,Pens[P_ARANCIO1],Pens[P_ROSSO2]);
+			RemapAnimObjColor(s->players[9].immagine,Pens[P_ROSSO2],Pens[P_NERO]);
+			RemapAnimObjColor(s->players[9].immagine,Pens[P_ARANCIO1],Pens[P_ROSSO2]);
 		}
 		else if(neri>0)	{
 			AnimObj *o;
 
-			if ((o=CopyAnimObj(s->giocatore[9].immagine)))	{
+			if ((o=CopyAnimObj(s->players[9].immagine)))	{
 				BOOL fatti=FALSE;
 				has_black[i]=TRUE;
 
@@ -241,32 +241,32 @@ void CheckPelle(void)
 
 				for(j=0;j<9;j++)
 				{
-					if(IsBlack(&s->giocatore[j]))
+					if(IsBlack(&s->players[j]))
 					{
-						FreeAnimObj(s->giocatore[j].immagine);
+						FreeAnimObj(s->players[j].immagine);
 
 						if(!fatti)
 						{
-							s->giocatore[j].immagine=o;
+							s->players[j].immagine=o;
 							fatti=TRUE;
 						}
 						else
 						{
-							s->giocatore[j].immagine=CloneAnimObj(o);
+							s->players[j].immagine=CloneAnimObj(o);
 						}
 					}
 				}
 
-				if(IsBlack(&s->giocatore[9]))
+				if(IsBlack(&s->players[9]))
 				{
 					j=8;
 
-					while(IsBlack(&s->giocatore[j]))
+					while(IsBlack(&s->players[j]))
 						j--;
 
-					FreeAnimObj(s->giocatore[j].immagine);
-					s->giocatore[j].immagine=s->giocatore[9].immagine;
-					s->giocatore[9].immagine=CloneAnimObj(o);
+					FreeAnimObj(s->players[j].immagine);
+					s->players[j].immagine=s->players[9].immagine;
+					s->players[9].immagine=CloneAnimObj(o);
 				}				
 				g_neri[i]=o;
 			}
@@ -276,27 +276,27 @@ void CheckPelle(void)
 	}
 }
 
-void MakeName(Giocatore *g,struct Giocatore_Disk *gd)
+void MakeName(Giocatore *g,struct player_disk *gd)
 {
-	int j,l=strlen(gd->Nome)+strlen(gd->Cognome)+1;
+	int j,l=strlen(gd->name)+strlen(gd->surname)+1;
 
-	g->Nome=malloc(l+1);
+	g->name=malloc(l+1);
 
-	strcpy(g->Nome,gd->Nome);
-	strcat(g->Nome," ");
+	strcpy(g->name,gd->name);
+	strcat(g->name," ");
 		
-	strcat(g->Nome,gd->Cognome);
-	g->NameLen=strlen(gd->Cognome);
+	strcat(g->name,gd->surname);
+	g->NameLen=strlen(gd->surname);
 
-	g->Cognome=g->Nome+1+strlen(gd->Nome);
+	g->surname=g->name+1+strlen(gd->name);
 
 	for(j=0;j<l;j++)
 	{
-		g->Nome[j]=toupper(g->Nome[j]);
+		g->name[j]=toupper(g->name[j]);
 	}
 }
 
-void ChangePlayer(struct Giocatore_Disk *src,Giocatore *dest)
+void ChangePlayer(struct player_disk *src,Giocatore *dest)
 {
 // Devo curarmi del cambio di colore della pelle...
 	int snum=dest->SNum;
@@ -314,9 +314,9 @@ void ChangePlayer(struct Giocatore_Disk *src,Giocatore *dest)
 
 			for(i=0;i<10;i++)
 			{
-				if(!IsBlack(&s->giocatore[i]))
+				if(!IsBlack(&s->players[i]))
 				{
-					ChangeImmagine(dest,s->giocatore[i].immagine);
+					ChangeImmagine(dest,s->players[i].immagine);
 					break;
 				}
 			}
@@ -329,16 +329,16 @@ void ChangePlayer(struct Giocatore_Disk *src,Giocatore *dest)
 
 			for(i=0;i<10;i++)
 			{
-				if(IsBlack(&s->giocatore[i]))
+				if(IsBlack(&s->players[i]))
 				{
-					ChangeImmagine(dest,s->giocatore[i].immagine);
+					ChangeImmagine(dest,s->players[i].immagine);
 					break;
 				}
 			}
 		}
 	}
 
-	dest->Numero=src->Numero;
+	dest->number=src->number;
 	dest->Velocita=src->Velocita;
 	dest->Contrasto=src->Contrasto;
 	dest->Tiro=src->Tiro;
@@ -349,7 +349,7 @@ void ChangePlayer(struct Giocatore_Disk *src,Giocatore *dest)
 	dest->Tecnica=src->Tecnica;
 	dest->Posizioni=src->Posizioni;
 	
-    free(dest->Nome);
+    free(dest->name);
 	MakeName(dest,src);
 
 	dest->Posizioni=src->Posizioni;
@@ -370,7 +370,7 @@ void ScanTactics(void)
 			if( *ent->d_name == '.' )
 				continue;
 
-			Tattiche[NumeroTattiche]=strdup(ent->d_name);
+			tactics[NumeroTattiche]=strdup(ent->d_name);
 			NumeroTattiche++;
 		}
 		closedir(dir);
@@ -522,20 +522,20 @@ void DestroyTeam(Team *s)
 	if(s->Marker)
 		FreeAnimObj(s->Marker);
 
-	FreeAnimObj(s->portiere.immagine);
-	free(s->portiere.Nome);
+	FreeAnimObj(s->keepers.immagine);
+	free(s->keepers.name);
 
 	free(s->NomeAttivo);
 	FreeTactic(s->tattica);
 
 	for(i=0;i<10;i++)
 	{
-		free(s->giocatore[i].Nome);
-		FreeAnimObj(s->giocatore[i].immagine);
+		free(s->players[i].name);
+		FreeAnimObj(s->players[i].immagine);
 	}
 
-	giocatore[(int)s->giocatore[0].SNum]=NULL;
-	portiere=NULL;
+	players[(int)s->players[0].SNum]=NULL;
+	keepers=NULL;
 
 	free(s);
 
@@ -545,8 +545,8 @@ void DestroyTeam(Team *s)
 void DisponiPortiere(Team *s,int settore,BOOL possesso)
 {
 
-	s->portiere.world_x=portieri[(int)s->portiere.SNum][possesso][settore].x;
-	s->portiere.world_y=portieri[(int)s->portiere.SNum][possesso][settore].y;
+	s->keepers.world_x=portieri[(int)s->keepers.SNum][possesso][settore].x;
+	s->keepers.world_y=portieri[(int)s->keepers.SNum][possesso][settore].y;
 
 	if(settore==GOALKICK)
 	{
@@ -554,23 +554,23 @@ void DisponiPortiere(Team *s,int settore,BOOL possesso)
 		{
 			if(pl->world_y>CENTROCAMPO_Y)
 			{
-				s->portiere.world_y=((346-14)*8);
+				s->keepers.world_y=((346-14)*8);
 
 				if(s==p->team[1])
 				{
-					s->portiere.world_x=(70*8);
+					s->keepers.world_x=(70*8);
 				}
-				else	s->portiere.world_x=(1196*8);
+				else	s->keepers.world_x=(1196*8);
 			}
 			else
 			{
-				s->portiere.world_y=((198-14)*8);
+				s->keepers.world_y=((198-14)*8);
 
 				if(s==p->team[1])
 				{
-					s->portiere.world_x=(80*8);
+					s->keepers.world_x=(80*8);
 				}
-				else	s->portiere.world_x=(1186*8);
+				else	s->keepers.world_x=(1186*8);
 			}
 		}
 	}
@@ -583,66 +583,66 @@ void DisponiSquadra(Team *s,int settore,BOOL possesso)
 	possesso = (possesso ? 1 : 0);
 
 	if(s->ArcadeEffect)
-		RemoveArcadeEffect(&s->giocatore[0],s->ArcadeEffect);
+		RemoveArcadeEffect(&s->players[0],s->ArcadeEffect);
 
 	for(i=0;i<10;i++)
 	{
 
 // Per debug, causo un enforcer hit se ho problemi
 
-	    if(s->giocatore[i].AnimType!=GIOCATORE_ESPULSO&&s->giocatore[i].Comando!=STAI_FERMO&&s->giocatore[i].Comando!=ESCI_CAMPO)
+	    if(s->players[i].AnimType!=GIOCATORE_ESPULSO&&s->players[i].Comando!=STAI_FERMO&&s->players[i].Comando!=ESCI_CAMPO)
 	    {
-		if(s->giocatore[i].world_x<0 ||
-			s->giocatore[i].world_x>10400 ||
-			s->giocatore[i].Velocita<3 ||
-			s->giocatore[i].Direzione>7 ||
-			s->giocatore[i].Direzione<0 ||
-			s->giocatore[i].GNum!=i ||
-			s->giocatore[i].ActualSpeed<0 ||
-			s->giocatore[i].ActualSpeed>3 )
+		if(s->players[i].world_x<0 ||
+			s->players[i].world_x>10400 ||
+			s->players[i].Velocita<3 ||
+			s->players[i].Direzione>7 ||
+			s->players[i].Direzione<0 ||
+			s->players[i].GNum!=i ||
+			s->players[i].ActualSpeed<0 ||
+			s->players[i].ActualSpeed>3 )
 		{
 //			char *a=NULL;
 
-			D(bug(" *** Player %ld of team %ld with internal problems!\n",i+2,s->giocatore[i].SNum));
+			D(bug(" *** Player %ld of team %ld with internal problems!\n",i+2,s->players[i].SNum));
 //			a[0]=1;
 		}
 
-		s->giocatore[i].world_x=s->tattica->Position[possesso][i][settore].x;
-		s->giocatore[i].world_y=s->tattica->Position[possesso][i][settore].y;
+		s->players[i].world_x=s->tattica->Position[possesso][i][settore].x;
+		s->players[i].world_y=s->tattica->Position[possesso][i][settore].y;
 
 // Metto questa roba per vedere se risolvo il problema dell'omino ballerino!
 
-		s->giocatore[i].ArcadeEffect=NESSUN_COMANDO;
-		s->giocatore[i].Comando=NESSUN_COMANDO;
-		s->giocatore[i].Special=FALSE;
-		s->giocatore[i].FrameLen=10;
-		s->giocatore[i].AnimType=GIOCATORE_RESPIRA;
-		s->giocatore[i].AnimFrame=0;
-		s->giocatore[i].ActualSpeed=0;
-		s->giocatore[i].Direzione=FindDirection(s->giocatore[i].world_x,s->giocatore[i].world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
+		s->players[i].ArcadeEffect=NESSUN_COMANDO;
+		s->players[i].Comando=NESSUN_COMANDO;
+		s->players[i].Special=FALSE;
+		s->players[i].FrameLen=10;
+		s->players[i].AnimType=GIOCATORE_RESPIRA;
+		s->players[i].AnimFrame=0;
+		s->players[i].ActualSpeed=0;
+		s->players[i].Direzione=FindDirection(s->players[i].world_x,s->players[i].world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
 	    }
 	    else
 	    {
-		D(bug("Skipping player %ld of team %ld(A:%ld,S:%ld,C:%ld)\n",i+2,s->giocatore[0].SNum,
-			s->giocatore[i].AnimType,s->giocatore[i].Special,s->giocatore[i].Comando));
+		D(bug("Skipping player %ld of team %ld(A:%ld,S:%ld,C:%ld)\n",i+2,s->players[0].SNum,
+			s->players[i].AnimType,s->players[i].Special,s->players[i].Comando));
 	    }
 	}
 
 	DisponiPortiere(s,settore,possesso);
 }
 
-FILE *OpenTeam(char *Nome)
+FILE *OpenTeam(char *name)
 {
 	char path[100];
 	FILE *fh;
 
 	strcpy(path,TEMP_DIR);
-	strcat(path,Nome);
+	strcat(path,name);
 
 	if(!(fh=fopen(path,"rb")))
 	{
 		strcpy(path,TEAMS_DIR);
-		strcat(path,Nome);
+		strcat(path,name);
 
 		if(!(fh=fopen(path,"rb")))
 		{
@@ -653,67 +653,67 @@ FILE *OpenTeam(char *Nome)
 	return fh;
 }
 
-void ReadSquadra(FILE *fh, struct Squadra_Disk *s)
+void ReadSquadra(FILE *fh, struct team_disk *s)
 {
 	int i;
 
 	fread(&s->disponibilita,sizeof(long),1,fh);
 	SWAP_LONG(s->disponibilita);
-	fread(&s->NumeroGiocatori,sizeof(char),1,fh);
-	fread(&s->NumeroPortieri,sizeof(char),1,fh);
+	fread(&s->nplayers,sizeof(char),1,fh);
+	fread(&s->nkeepers,sizeof(char),1,fh);
 	fread(&s->Nazione,sizeof(char),1,fh);
 	fread(&s->Flags,sizeof(char),1,fh);
 
 	for(i=0;i<2;i++)
 	{
-		fread(&s->maglie[i].Tipo,sizeof(char),1,fh);
-		fread(&s->maglie[i].Colore0,sizeof(char),1,fh);
-		fread(&s->maglie[i].Colore1,sizeof(char),1,fh);
-		fread(&s->maglie[i].Colore2,sizeof(char),1,fh);
+		fread(&s->jerseys[i].type,sizeof(char),1,fh);
+		fread(&s->jerseys[i].color0,sizeof(char),1,fh);
+		fread(&s->jerseys[i].color1,sizeof(char),1,fh);
+		fread(&s->jerseys[i].color2,sizeof(char),1,fh);
 	}
 
 	for(i=0;i<3;i++)
-		fread(&s->Tattiche[i],sizeof(char),16,fh);
+		fread(&s->tactics[i],sizeof(char),16,fh);
 
-	fread(s->nome,sizeof(char),52,fh);
+	fread(s->name,sizeof(char),52,fh);
 	fread(s->allenatore,sizeof(char),52,fh);
 
-	for(i=0;i<s->NumeroPortieri;i++)
+	for(i=0;i<s->nkeepers;i++)
 	{
-		fread(s->portiere[i].Nome,sizeof(char),20,fh);
-		fread(s->portiere[i].Cognome,sizeof(char),20,fh);
-		fread(&s->portiere[i].valore,sizeof(long),1,fh);
-		SWAP_LONG(s->portiere[i].valore);
-		fread(&s->portiere[i].Numero,sizeof(char),1,fh);
-		fread(&s->portiere[i].Velocita,sizeof(char),1,fh);
-		fread(&s->portiere[i].Parata,sizeof(char),1,fh);
-		fread(&s->portiere[i].Attenzione,sizeof(char),1,fh);
-		fread(&s->portiere[i].Nazionalita,sizeof(char),1,fh);
-		fread(&s->portiere[i].Eta,sizeof(char),1,fh);
-		fread(&s->portiere[i].Infortuni,sizeof(char),1,fh);
-		fread(&s->portiere[i].Flags,sizeof(char),1,fh);
+		fread(s->keepers[i].name,sizeof(char),20,fh);
+		fread(s->keepers[i].surname,sizeof(char),20,fh);
+		fread(&s->keepers[i].value,sizeof(long),1,fh);
+		SWAP_LONG(s->keepers[i].value);
+		fread(&s->keepers[i].number,sizeof(char),1,fh);
+		fread(&s->keepers[i].Velocita,sizeof(char),1,fh);
+		fread(&s->keepers[i].Parata,sizeof(char),1,fh);
+		fread(&s->keepers[i].Attenzione,sizeof(char),1,fh);
+		fread(&s->keepers[i].Nazionalita,sizeof(char),1,fh);
+		fread(&s->keepers[i].Eta,sizeof(char),1,fh);
+		fread(&s->keepers[i].Infortuni,sizeof(char),1,fh);
+		fread(&s->keepers[i].Flags,sizeof(char),1,fh);
 	}
 
-	for(i=0;i<s->NumeroGiocatori;i++)
+	for(i=0;i<s->nplayers;i++)
 	{
-		fread(s->giocatore[i].Nome,sizeof(char),20,fh);
-		fread(s->giocatore[i].Cognome,sizeof(char),20,fh);
-		fread(&s->giocatore[i].valore,sizeof(long),1,fh);
-		SWAP_LONG(s->giocatore[i].valore);
-		fread(&s->giocatore[i].Numero,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Velocita,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Contrasto,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Tiro,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Durata,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Resistenza,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Prontezza,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Nazionalita,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Creativita,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Tecnica,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Eta,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Infortuni,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Ammonizioni,sizeof(char),1,fh);
-		fread(&s->giocatore[i].Posizioni,sizeof(char),1,fh);
+		fread(s->players[i].name,sizeof(char),20,fh);
+		fread(s->players[i].surname,sizeof(char),20,fh);
+		fread(&s->players[i].value,sizeof(long),1,fh);
+		SWAP_LONG(s->players[i].value);
+		fread(&s->players[i].number,sizeof(char),1,fh);
+		fread(&s->players[i].Velocita,sizeof(char),1,fh);
+		fread(&s->players[i].Contrasto,sizeof(char),1,fh);
+		fread(&s->players[i].Tiro,sizeof(char),1,fh);
+		fread(&s->players[i].Durata,sizeof(char),1,fh);
+		fread(&s->players[i].Resistenza,sizeof(char),1,fh);
+		fread(&s->players[i].Prontezza,sizeof(char),1,fh);
+		fread(&s->players[i].Nazionalita,sizeof(char),1,fh);
+		fread(&s->players[i].Creativita,sizeof(char),1,fh);
+		fread(&s->players[i].Tecnica,sizeof(char),1,fh);
+		fread(&s->players[i].Eta,sizeof(char),1,fh);
+		fread(&s->players[i].Infortuni,sizeof(char),1,fh);
+		fread(&s->players[i].Ammonizioni,sizeof(char),1,fh);
+		fread(&s->players[i].Posizioni,sizeof(char),1,fh);
 	}
 }
 
@@ -721,8 +721,8 @@ Team *CreateTeam(int num)
 {
 	char path[100];
 	Team *s;
-	extern struct Squadra_Disk leftteam_dk,rightteam_dk;
-	struct Squadra_Disk sd;
+	extern struct team_disk leftteam_dk,rightteam_dk;
+	struct team_disk sd;
 #if 0
 	FILE *fh;
 #endif
@@ -732,9 +732,9 @@ Team *CreateTeam(int num)
 		return NULL;
 
 #if 0
-	if(!(fh=OpenTeam(Nome)))
+	if(!(fh=OpenTeam(name)))
 	{
-		D(bug("Non trovo %s!\n",Nome));
+		D(bug("Non trovo %s!\n",name));
 		free(s);
 		return NULL;
 	}
@@ -749,33 +749,33 @@ Team *CreateTeam(int num)
 		sd=leftteam_dk;
 #endif
 
-//	fread(&sd,sizeof(struct Squadra_Disk),1,fh); prima la leggevo cosi'...
+//	fread(&sd,sizeof(struct team_disk),1,fh); prima la leggevo cosi'...
 
 
-	if(portiere)
+	if(keepers)
 	{
-		if(!(portiere=CloneAnimObj(portiere)))
+		if(!(keepers=CloneAnimObj(keepers)))
 			return NULL;
 	}
 	else
 	{
-		if(!(portiere=LoadAnimObject((current_field==7 ? "gfx/portsnow.obj" : "gfx/portiere.obj"),Pens)))
+		if(!(keepers=LoadAnimObject((current_field==7 ? "gfx/portsnow.obj" : "gfx/portiere.obj"),Pens)))
 			return NULL;
 	}
 
 
-	for(i=0;i<strlen(sd.nome);i++)
+	for(i=0;i<strlen(sd.name);i++)
 	{
-		s->Nome[i]=toupper(sd.nome[i]);
+		s->name[i]=toupper(sd.name[i]);
 	}
 
-	s->Nome[i]=0;
+	s->name[i]=0;
 
-	s->giocatore[9].immagine=giocatore[snum];
+	s->players[9].immagine=players[snum];
 
 	for(i=0;i<9;i++)
 	{
-		if(!(s->giocatore[i].immagine=CloneAnimObj(giocatore[snum])))
+		if(!(s->players[i].immagine=CloneAnimObj(players[snum])))
 		{
 			free(s);
 			return NULL;
@@ -783,7 +783,7 @@ Team *CreateTeam(int num)
 	}
 
 	strcpy(path,TCT_DIR);
-	strcat(path,sd.Tattiche[0]);
+	strcat(path,sd.tactics[0]);
 
 	if(!(s->tattica=LoadTactic(path)))
 	{
@@ -801,37 +801,37 @@ Team *CreateTeam(int num)
 		return NULL;
 	}
 
-	cols[snum][0]=sd.maglie[0].Colore0;
-	cols[snum][1]=sd.maglie[0].Colore1;
-	cols[snum][2]=sd.maglie[0].Colore2;
+	cols[snum][0]=sd.jerseys[0].color0;
+	cols[snum][1]=sd.jerseys[0].color1;
+	cols[snum][2]=sd.jerseys[0].color2;
 
-	if(sd.maglie[0].Colore0!=COLORE_STANDARD_MAGLIE)
-		RemapAnimObjColor(giocatore[snum],Pens[COLORE_STANDARD_MAGLIE],Pens[sd.maglie[0].Colore0]);
-	if(sd.maglie[0].Colore1!=COLORE_STANDARD_CALZONI)
-		RemapAnimObjColor(giocatore[snum],Pens[COLORE_STANDARD_CALZONI],Pens[sd.maglie[0].Colore1]);
-	if(sd.maglie[0].Colore2!=COLORE_STANDARD_AUSILIARIO&&sd.maglie[0].Tipo>0)
-		RemapAnimObjColor(giocatore[snum],Pens[COLORE_STANDARD_AUSILIARIO],Pens[sd.maglie[0].Colore2]);
+	if(sd.jerseys[0].color0!=COLORE_STANDARD_MAGLIE)
+		RemapAnimObjColor(players[snum],Pens[COLORE_STANDARD_MAGLIE],Pens[sd.jerseys[0].color0]);
+	if(sd.jerseys[0].color1!=COLORE_STANDARD_CALZONI)
+		RemapAnimObjColor(players[snum],Pens[COLORE_STANDARD_CALZONI],Pens[sd.jerseys[0].color1]);
+	if(sd.jerseys[0].color2!=COLORE_STANDARD_AUSILIARIO&&sd.jerseys[0].type>0)
+		RemapAnimObjColor(players[snum],Pens[COLORE_STANDARD_AUSILIARIO],Pens[sd.jerseys[0].color2]);
 
 // Copio i dati dei giocatori.
 
 	if(player_type[snum]<0)
 	{
-		for(i=0;i<sd.NumeroGiocatori;i++)
+		for(i=0;i<sd.nplayers;i++)
 		{
-			if(sd.giocatore[i].Velocita<5)
-				sd.giocatore[i].Velocita++;
-			if(sd.giocatore[i].Velocita<7)
-				sd.giocatore[i].Velocita++;
+			if(sd.players[i].Velocita<5)
+				sd.players[i].Velocita++;
+			if(sd.players[i].Velocita<7)
+				sd.players[i].Velocita++;
 
-			if(sd.giocatore[i].Contrasto<5)
-				sd.giocatore[i].Contrasto++;
-			if(sd.giocatore[i].Contrasto<7)
-				sd.giocatore[i].Contrasto++;
+			if(sd.players[i].Contrasto<5)
+				sd.players[i].Contrasto++;
+			if(sd.players[i].Contrasto<7)
+				sd.players[i].Contrasto++;
 			
-			if(sd.giocatore[i].Prontezza<5)
-				sd.giocatore[i].Prontezza++;
-			if(sd.giocatore[i].Prontezza<7)
-				sd.giocatore[i].Prontezza++;
+			if(sd.players[i].Prontezza<5)
+				sd.players[i].Prontezza++;
+			if(sd.players[i].Prontezza<7)
+				sd.players[i].Prontezza++;
 		}
 	}
 
@@ -839,131 +839,131 @@ Team *CreateTeam(int num)
 	{
 // Copio le 10 stats del giocatore
 
-		if(sd.giocatore[i].Ammonizioni>1)
+		if(sd.players[i].Ammonizioni>1)
 		{
 			int k=10;
 
-			while(k<sd.NumeroGiocatori&&(sd.giocatore[k].Ammonizioni>1||sd.giocatore[k].Infortuni>2))
+			while(k<sd.nplayers&&(sd.players[k].Ammonizioni>1||sd.players[k].Infortuni>2))
 				k++;
 
-			if(k==sd.NumeroGiocatori)
+			if(k==sd.nplayers)
 			{
-				DoSpecialAnim( (&s->giocatore[i]),GIOCATORE_ESPULSO);
-				s->giocatore[i].Comando=STAI_FERMO;
-				s->giocatore[i].world_x=CENTROCAMPO_X;
-				s->giocatore[i].world_y=(FIELD_HEIGHT-30)*8;
+				DoSpecialAnim( (&s->players[i]),GIOCATORE_ESPULSO);
+				s->players[i].Comando=STAI_FERMO;
+				s->players[i].world_x=CENTROCAMPO_X;
+				s->players[i].world_y=(FIELD_HEIGHT-30)*8;
 			}
 			else
 			{
-				struct Giocatore_Disk temp=sd.giocatore[i];
+				struct player_disk temp=sd.players[i];
 
-				sd.giocatore[i]=sd.giocatore[k-1];
-				sd.giocatore[k-1]=temp;
+				sd.players[i]=sd.players[k-1];
+				sd.players[k-1]=temp;
 			}
 		}
 
-		if(sd.giocatore[i].Infortuni>0)
+		if(sd.players[i].Infortuni>0)
 		{
-			char t=sd.giocatore[i].Infortuni;
+			char t=sd.players[i].Infortuni;
 
 			if(t>3)
 				t=3;
 	
 			t*=2;
 
-			sd.giocatore[i].Velocita=max(1,sd.giocatore[i].Velocita-t);
-			sd.giocatore[i].Durata=max(1,sd.giocatore[i].Durata-t);
-			sd.giocatore[i].Contrasto=max(1,sd.giocatore[i].Contrasto-t);
-			sd.giocatore[i].Tiro=max(1,sd.giocatore[i].Tiro-t);
+			sd.players[i].Velocita=max(1,sd.players[i].Velocita-t);
+			sd.players[i].Durata=max(1,sd.players[i].Durata-t);
+			sd.players[i].Contrasto=max(1,sd.players[i].Contrasto-t);
+			sd.players[i].Tiro=max(1,sd.players[i].Tiro-t);
 		}
 
 #ifdef OLD_VERSION
-		memcpy(&s->giocatore[i].Numero,&sd.giocatore[i].Numero,sizeof(char)*10);
-		s->giocatore[i].Posizioni=sd.giocatore[i].Posizioni;
+		memcpy(&s->players[i].number,&sd.players[i].number,sizeof(char)*10);
+		s->players[i].Posizioni=sd.players[i].Posizioni;
 #else
-		s->giocatore[i].Numero=sd.giocatore[i].Numero;
-		s->giocatore[i].Velocita=sd.giocatore[i].Velocita;
-		s->giocatore[i].Contrasto=sd.giocatore[i].Contrasto;
-		s->giocatore[i].Tiro=sd.giocatore[i].Tiro;
-		s->giocatore[i].Durata=sd.giocatore[i].Durata;
-		s->giocatore[i].Resistenza=sd.giocatore[i].Resistenza;
-		s->giocatore[i].Prontezza=sd.giocatore[i].Prontezza;
-		s->giocatore[i].Creativita=sd.giocatore[i].Creativita;
-		s->giocatore[i].Tecnica=sd.giocatore[i].Tecnica;
-		s->giocatore[i].Posizioni=sd.giocatore[i].Posizioni;
+		s->players[i].number=sd.players[i].number;
+		s->players[i].Velocita=sd.players[i].Velocita;
+		s->players[i].Contrasto=sd.players[i].Contrasto;
+		s->players[i].Tiro=sd.players[i].Tiro;
+		s->players[i].Durata=sd.players[i].Durata;
+		s->players[i].Resistenza=sd.players[i].Resistenza;
+		s->players[i].Prontezza=sd.players[i].Prontezza;
+		s->players[i].Creativita=sd.players[i].Creativita;
+		s->players[i].Tecnica=sd.players[i].Tecnica;
+		s->players[i].Posizioni=sd.players[i].Posizioni;
 #endif
-		MakeName(&s->giocatore[i],&sd.giocatore[i]);
+		MakeName(&s->players[i],&sd.players[i]);
 
 
-		s->giocatore[i].GNum=i;
-		s->giocatore[i].SNum=snum;
-		s->giocatore[i].ObjectType=TIPO_GIOCATORE;
-		s->giocatore[i].team=s;
+		s->players[i].GNum=i;
+		s->players[i].SNum=snum;
+		s->players[i].ObjectType=TIPO_GIOCATORE;
+		s->players[i].team=s;
 	}
 
-	TotaleRiserve[snum]=s->NumeroRiserve=sd.NumeroGiocatori-10;
+	TotaleRiserve[snum]=s->NumeroRiserve=sd.nplayers-10;
 
-	for(i=10;i<sd.NumeroGiocatori;i++)
+	for(i=10;i<sd.nplayers;i++)
 	{
 		int k=0;
 
-		Riserve[snum][i-10]=sd.giocatore[i];
+		Riserve[snum][i-10]=sd.players[i];
 
-		while(Riserve[snum][i-10].Cognome[k])
+		while(Riserve[snum][i-10].surname[k])
 		{
-				Riserve[snum][i-10].Cognome[k]=toupper(Riserve[snum][i-10].Cognome[k]);
+				Riserve[snum][i-10].surname[k]=toupper(Riserve[snum][i-10].surname[k]);
 				k++;
 		}
 	}
 
-	s->portiere.immagine=portiere;
-	s->portiere.SNum=snum;
-	s->portiere.ObjectType=TIPO_PORTIERE;
-	s->portiere.team=s;
-	s->portiere.Numero=sd.portiere[0].Numero;
-	s->portiere.Parata=sd.portiere[0].Parata;
-	s->portiere.Attenzione=sd.portiere[0].Attenzione;
-	s->portiere.velocita=sd.portiere[0].Velocita;
+	s->keepers.immagine=keepers;
+	s->keepers.SNum=snum;
+	s->keepers.ObjectType=TIPO_PORTIERE;
+	s->keepers.team=s;
+	s->keepers.number=sd.keepers[0].number;
+	s->keepers.Parata=sd.keepers[0].Parata;
+	s->keepers.Attenzione=sd.keepers[0].Attenzione;
+	s->keepers.velocita=sd.keepers[0].Velocita;
 	
 // Rinforzo i portieri computerizzati, non definitivo
 
 	if(player_type[snum]<0)
 	{
-		if(s->portiere.Parata<5)
-			s->portiere.Parata+=3;
-		else if(s->portiere.Parata<6)
-			s->portiere.Parata+=2;
-		else if(s->portiere.Parata<7)
-			s->portiere.Parata+=1;
+		if(s->keepers.Parata<5)
+			s->keepers.Parata+=3;
+		else if(s->keepers.Parata<6)
+			s->keepers.Parata+=2;
+		else if(s->keepers.Parata<7)
+			s->keepers.Parata+=1;
 
-		if(s->portiere.Attenzione<5)
-			s->portiere.Attenzione+=3;
-		else if(s->portiere.Attenzione<6)
-			s->portiere.Attenzione+=2;
-		else if(s->portiere.Attenzione<7)
-			s->portiere.Attenzione+=1;
+		if(s->keepers.Attenzione<5)
+			s->keepers.Attenzione+=3;
+		else if(s->keepers.Attenzione<6)
+			s->keepers.Attenzione+=2;
+		else if(s->keepers.Attenzione<7)
+			s->keepers.Attenzione+=1;
 
 		D(bug("Enhanced goalkeeper %ld, P: %ld (%ld) - A: %ld (%ld)\n",snum,
-			s->portiere.Parata,sd.portiere[0].Parata,
-			s->portiere.Attenzione,sd.portiere[0].Attenzione));
+			s->keepers.Parata,sd.keepers[0].Parata,
+			s->keepers.Attenzione,sd.keepers[0].Attenzione));
 	}
 
-	MakeName((Giocatore *)&s->portiere,(struct Giocatore_Disk *)&sd.portiere[0]);
-	AggiungiLista((Oggetto *) &s->portiere);
+	MakeName((Giocatore *)&s->keepers,(struct player_disk *)&sd.keepers[0]);
+	AggiungiLista((Oggetto *) &s->keepers);
 
 	if(role[snum])
 	{
-		s->attivo=&s->giocatore[role[snum]-1];
+		s->attivo=&s->players[role[snum]-1];
 		s->attivo->Controlled=TRUE;
 		s->gioco_ruolo=TRUE;
 	}
 	else
 	{
-		s->attivo=&s->giocatore[8];
+		s->attivo=&s->players[8];
 		s->attivo->Controlled=TRUE;
 	}
 
-	PrintSmall(s->NomeAttivo,s->attivo->Cognome,s->attivo->NameLen);
+	PrintSmall(s->NomeAttivo,s->attivo->surname,s->attivo->NameLen);
 
 	return s;
 }
@@ -1021,7 +1021,7 @@ Partita *SetupSquadre(void)
 
 	snum=0;
 
-	if(!(giocatore[0]=LoadAnimObject(shirt[0],Pens)))
+	if(!(players[0]=LoadAnimObject(shirt[0],Pens)))
 	{
 		free(p);
 		return NULL;
@@ -1041,7 +1041,7 @@ Partita *SetupSquadre(void)
 
 		cols[1][3]=cols[0][3];
 
-		if(!(giocatore[1]=CopyAnimObj(giocatore[0])))
+		if(!(players[1]=CopyAnimObj(players[0])))
 		{
 			free(p);
 			return NULL;
@@ -1055,7 +1055,7 @@ Partita *SetupSquadre(void)
 
 		cols[1][3]=shirt[1][strlen(shirt[1])-5];
 
-		if(!(obj=giocatore[1]=LoadAnimObject(shirt[1],Pens)))
+		if(!(obj=players[1]=LoadAnimObject(shirt[1],Pens)))
 		{
 			free(p);
 			return NULL;
@@ -1194,7 +1194,7 @@ Partita *SetupSquadre(void)
 	}
 
 	if(detail_level&USA_RISULTATO) {
-		result_width=(strlen(p->team[0]->Nome)+strlen(p->team[1]->Nome)+9)*VS_CHAR_X;
+		result_width=(strlen(p->team[0]->name)+strlen(p->team[1]->name)+9)*VS_CHAR_X;
 
 		if(!(p->result=malloc( result_width * (VS_CHAR_Y+1))))
 		{
@@ -1259,8 +1259,8 @@ Partita *SetupSquadre(void)
 	DisponiSquadra(p->team[1],KICKOFF,FALSE);
 */
 	D(bug("GK 0: P:%ld A:%ld\nGK 1: P:%ld A:%ld\n",
-		p->team[0]->portiere.Parata,	p->team[0]->portiere.Attenzione,
-		p->team[1]->portiere.Parata,	p->team[1]->portiere.Attenzione));
+		p->team[0]->keepers.Parata,	p->team[0]->keepers.Attenzione,
+		p->team[1]->keepers.Parata,	p->team[1]->keepers.Attenzione));
 
 	return p;
 }
@@ -1347,8 +1347,8 @@ void MakeResult(void)
 		return;
 
 	p->result_len=sprintf(buffer," %s %d-%d %s",
-            p->team[1]->Nome, (int) p->team[1]->Reti,
-            (int) p->team[0]->Reti, p->team[0]->Nome);
+            p->team[1]->name, (int) p->team[1]->Reti,
+            (int) p->team[0]->Reti, p->team[0]->name);
 
 	rectfill(p->result,0,0,result_width-1, VS_CHAR_Y,Pens[P_VERDE2],result_width);
 

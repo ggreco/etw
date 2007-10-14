@@ -454,7 +454,7 @@ AnimObj *LoadAnimObject(char *name, LONG * pens)
     BOOL convert = FALSE;
 
     if ((obj = calloc(1, sizeof(struct AnimObject)))) {
-// Routine che cambia dir/nome.obj in newgfx/nome.objc e vede se esiste gia'
+// Routine che cambia dir/name.obj in newgfx/name.objc e vede se esiste gia'
 // l'oggetto convertito.
 
         {

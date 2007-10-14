@@ -81,8 +81,8 @@ extern BOOL KeyCfg(WORD);
 
 extern void SetTeamSettings(WORD, BOOL);
 extern void DisplayTactic(int, int);
-extern void AddGiocatore(struct Giocatore_Disk *, int);
-extern void AddName(struct Giocatore_Disk *, int);
+extern void AddGiocatore(struct player_disk *, int);
+extern void AddName(struct player_disk *, int);
 extern void SetPlayerStatus(int, char, char, long);
 extern WORD StartMatch(BYTE, BYTE);
 extern void ScaleGfxObj(GfxObj *, uint8_t *);
@@ -138,12 +138,12 @@ extern GfxObj *arcade_gfx[], *last_obj;
 extern struct MyFileRequest freq;
 extern uint8_t *back;
 extern char numero[17][3], *controls[];
-extern struct Squadra_Disk *teamlist;
-extern struct DatiSquadra_Disk DatiCampionato[];
+extern struct team_disk *teamlist;
+extern struct teamstats_disk DatiCampionato[];
 extern struct EasyStruct easy;
 extern UBYTE colore_team[3], highlight_team[3];
 extern struct SoundInfo *menusound[];
-extern struct Campionato_Disk campionato;
+extern struct championship_disk campionato;
 
 // Moduli generici...
 

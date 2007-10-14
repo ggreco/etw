@@ -66,12 +66,12 @@ void MoveNonControlled(void)
             s->ArcadeCounter--;
 
             if(s->ArcadeCounter==0)
-                RemoveArcadeEffect(&s->giocatore[0],s->ArcadeEffect);
+                RemoveArcadeEffect(&s->players[0],s->ArcadeEffect);
         }
 
         for(i=0;i<10;i++)
         {
-            g = &(s->giocatore[i]);
+            g = &(s->players[i]);
 
             xg=g->world_x>>3;
             yg=g->world_y>>3;
@@ -646,12 +646,12 @@ skipchange:
                                  */
                                 if(g->CA[0]>0)
                                 {
-                                    D(bug("Effettuo la sostutuzione...(s:%ld go:%ld gi:%ld)\n",j,g->Numero,Riserve[j][g->CA[0]-1].Numero));								
+                                    D(bug("Effettuo la sostutuzione...(s:%ld go:%ld gi:%ld)\n",j,g->number,Riserve[j][g->CA[0]-1].number));								
                                     ChangePlayer(&Riserve[j][g->CA[0]-1],g);
 
                                     // Il giocatore sostituito potrebbe essere quello attivo!
                                     if(detail_level&USA_NOMI)
-                                        PrintSmall(s->NomeAttivo,s->attivo->Cognome,s->attivo->NameLen);
+                                        PrintSmall(s->NomeAttivo,s->attivo->surname,s->attivo->NameLen);
                                     s->NumeroRiserve--;
                                     p->player_injuried=NULL;
                                     p->show_panel&=0xff;
@@ -974,7 +974,7 @@ void ChangeControlled(Team *s,WORD i)
 {
 // Occhio qui, potrebbe dar problemi.
 
-	if(s->gioco_ruolo||s->giocatore[i].Comando||s->giocatore[i].AnimType==GIOCATORE_ESPULSO)
+	if(s->gioco_ruolo||s->players[i].Comando||s->players[i].AnimType==GIOCATORE_ESPULSO)
 		return;
 
         if(s->attivo->Controlled && s->MarkerOnScreen)
@@ -991,11 +991,11 @@ void ChangeControlled(Team *s,WORD i)
 
         s->attivo->Controlled=FALSE;
 
-        s->attivo=&s->giocatore[i];
+        s->attivo=&s->players[i];
         s->attivo->Controlled=TRUE;
 
 	if(detail_level&USA_NOMI)
-		PrintSmall(s->NomeAttivo,s->attivo->Cognome,s->attivo->NameLen);
+		PrintSmall(s->NomeAttivo,s->attivo->surname,s->attivo->NameLen);
 
 	if(s->Joystick>=0)
 		need_release[s->Joystick]=TRUE;

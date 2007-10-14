@@ -58,7 +58,7 @@ BOOL GroupsClear(void)
 	k=FixedScaledY(8);
 
 	for(i=0;i<64;i++)
-		memset(&DatiCampionato[i],0,sizeof(struct DatiSquadra_Disk));
+		memset(&DatiCampionato[i],0,sizeof(struct teamstats_disk));
 
 	for(i=0;i<8;i++)
 		for(j=0;j<4;j++)
@@ -159,7 +159,7 @@ void GroupsUpdate()
 				wcp[k*5+4].Testo=t+12;
 			}
 
-			wcp[k*5].Testo=teamlist[groups[i][j]].nome;
+			wcp[k*5].Testo=teamlist[groups[i][j]].name;
 			wcp[k*5].Colore=colore_team[controllo[groups[i][j]]+1];
 			wcp[k*5].Highlight=highlight_team[controllo[groups[i][j]]+1];
 
@@ -224,7 +224,7 @@ void UpdateLeagueTable(void)
 		{
 			league_pos[j-1]=temp[best];
 
-			league[j*8].Testo=teamlist[temp[best]].nome;
+			league[j*8].Testo=teamlist[temp[best]].name;
 			league[j*8].Colore=colore_team[controllo[temp[best]]+1];
 			league[j*8].Highlight=highlight_team[controllo[temp[best]]+1];
 
@@ -248,7 +248,7 @@ void InitTable(void)
 
 	if(turno==0)
 		for(i=0;i<64;i++)
-			memset(&DatiCampionato[i],0,sizeof(struct DatiSquadra_Disk));
+			memset(&DatiCampionato[i],0,sizeof(struct teamstats_disk));
 
 	lb[0].ID=MENU_MATCHES;
 
@@ -430,7 +430,7 @@ void AddScore(UBYTE team)
 	if(arcade_score<0)
 		arcade_score=0;
 
-	sprintf(buffer, "%-5d %s", arcade_score, teamlist[team].nome);
+	sprintf(buffer, "%-5d %s", arcade_score, teamlist[team].name);
 
 	arcade_score=0;
 

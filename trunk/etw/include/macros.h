@@ -10,7 +10,7 @@
 
 #define GetTable() Table[p->TabCounter++]
 
-#define CheckTrain(x) if(training){ int i; for(i=0;i<10;i++) if(!p->team[1]->giocatore[i].Special){ D(bug("Err%ld: G%ld!\n",x,i)); break;} }
+#define CheckTrain(x) if(training){ int i; for(i=0;i<10;i++) if(!p->team[1]->players[i].Special){ D(bug("Err%ld: G%ld!\n",x,i)); break;} }
 
 #define G2P_X(x) ((x)-48)
 #define G2P_Y(x) ((x)-80)
@@ -80,13 +80,13 @@ void Progress();
 #define DoAnim(g,x) g->AnimType=x;g->FrameLen=0;g->AnimFrame=-1
 
 #define TogliPalla() if(pl->gioc_palla){if(pl->gioc_palla->Velocita<7) pl->gioc_palla->Velocita+=3;	\
-					pl->gioc_palla->Comando=NESSUN_COMANDO; p->last_touch=pl->gioc_palla->Numero+(pl->gioc_palla->SNum<<5); \
+					pl->gioc_palla->Comando=NESSUN_COMANDO; p->last_touch=pl->gioc_palla->number+(pl->gioc_palla->SNum<<5); \
 					if(pl->gioc_palla->ArcadeEffect) RemoveArcadeEffect(pl->gioc_palla,pl->gioc_palla->ArcadeEffect); \
 					pl->gioc_palla=NULL;pl->sq_palla=NULL;  }
 					
 
 #define TogliPallaMod() if(pl->gioc_palla){  \
-					int i;  p->last_touch=pl->gioc_palla->Numero+(pl->gioc_palla->SNum<<5); \
+					int i;  p->last_touch=pl->gioc_palla->number+(pl->gioc_palla->SNum<<5); \
 					pl->velocita=(pl->gioc_palla->ActualSpeed<<2);	\
 					pl->Direzione=(pl->gioc_palla->Direzione<<5);if(pl->gioc_palla->Velocita<7) pl->gioc_palla->Velocita+=3;\
 					if(pl->gioc_palla->ArcadeEffect) RemoveArcadeEffect(pl->gioc_palla,pl->gioc_palla->ArcadeEffect); \
