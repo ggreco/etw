@@ -13,7 +13,7 @@
 #   define SMART_MCHUNKY
 #endif
 
-void bltchunkybitmap(bitmap src, int xs, int ys, bitmap dest, int xd, int yd,
+void bltchunkybitmap(uint8_t * src, int xs, int ys, uint8_t * dest, int xd, int yd,
                      int w, int h, int srcmod, int destmod)
 {
     register int i;
@@ -109,7 +109,7 @@ void bltanimobjscale(struct scaleAnimObjArgs *args)
     } 
 }
 
-void bltbitmap_x(bitmap src, int xs, int ys, bitmap dest, int xd, int yd,
+void bltbitmap_x(uint8_t * src, int xs, int ys, uint8_t * dest, int xd, int yd,
                  int w, int h, int srcmod, int destmod, unsigned char noblit)
 {
     register int i;
@@ -139,8 +139,8 @@ void bltbitmap_x(bitmap src, int xs, int ys, bitmap dest, int xd, int yd,
     }
 }
 
-void do_p2c(unsigned char **p, bitmap b, int width, int height, int depth,
-            LONG *pens)
+void do_p2c(unsigned char **p, uint8_t * b, int width, int height, int depth,
+            int32_t *pens)
 {
     register int k, i, source_color, current_bit;
 
@@ -182,7 +182,7 @@ void do_p2c(unsigned char **p, bitmap b, int width, int height, int depth,
     }
 }
 
-void bltanimobjclipped(struct MChunky *src, int xs, int ys, bitmap dest,
+void bltanimobjclipped(struct MChunky *src, int xs, int ys, uint8_t * dest,
                        int xd, int yd, int w, int h, int destmod)
 {
     register struct ALine *line = src->FirstLine;
@@ -219,7 +219,7 @@ void bltanimobjclipped(struct MChunky *src, int xs, int ys, bitmap dest,
     }
 }
 
-void bltanimobj(struct MChunky *src, bitmap dest, int xd, int yd, int destmod)
+void bltanimobj(struct MChunky *src, uint8_t * dest, int xd, int yd, int destmod)
 {
     register struct ALine *line = src->FirstLine;
     register struct ABlock *block;
@@ -288,14 +288,14 @@ void free_mchunky(struct MChunky *c)
 
 #ifdef SMART_MCHUNKY
 BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
-                    uint8_t *t_data, LONG *Pens)
+                    uint8_t *t_data, int32_t *pens)
 {
     uint8_t *c;
     int i;
 
-    if(Pens)
+    if(pens)
         for(i = 0; i < m->buffers; i++)
-            t_data[i] = Pens[t_data[i]];
+            t_data[i] = pens[t_data[i]];
 
 // Il +4 per sicurezza
 
@@ -354,7 +354,7 @@ BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
         }
 
 #ifdef SUPER_DEBUG
-        D(bug("Ho usato %ld bytes...\n", (LONG)c - (LONG)m->FirstLine));
+        D(bug("Ho usato %ld bytes...\n", (long int)c - (long int)m->FirstLine));
 #endif
         return TRUE;
     }
@@ -365,15 +365,15 @@ BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
 #else
 
 BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
-                    uint8_t *t_data, int32_t *Pens)
+                    uint8_t *t_data, int32_t *pens)
 {
     int i, k = 0;
     struct ALine *pl = NULL, *l;
     struct ABlock *pb, *b;
 
-    if(Pens)
+    if(pens)
         for(i = 0; i < m->buffers; i++)
-            t_data[i] = Pens[t_data[i]];
+            t_data[i] = pens[t_data[i]];
 
     for(i = 0; i < m->lines; i++)
     {
@@ -441,20 +441,20 @@ void save_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
 //    int i;
 #endif
 
-//    SWAP_WORD(m->blocks);
+//    SWAP16(m->blocks);
     fwrite(&m->blocks, sizeof(int16_t), 1, f);
-//    SWAP_WORD(m->blocks);
+//    SWAP16(m->blocks);
 
-//    SWAP_LONG(m->buffers);
+//    SWAP32(m->buffers);
     fwrite(&m->buffers, sizeof(int32_t), 1, f);
-//    SWAP_LONG(m->buffers);
+//    SWAP32(m->buffers);
 /*
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
     for(i=0;i<m->lines;i++)
-        SWAP_WORD(blks[i]);
+        SWAP16(blks[i]);
 
     for(i=0;i<m->blocks;i++)
-        SWAP_WORD(bufs[i]);
+        SWAP16(bufs[i]);
 #endif
 */
     fwrite(blks, m->lines, sizeof(int16_t), f);
@@ -462,16 +462,16 @@ void save_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
 /*
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
     for(i=0;i<m->lines;i++)
-        SWAP_WORD(blks[i]);
+        SWAP16(blks[i]);
 
     for(i=0;i<m->blocks;i++)
-        SWAP_WORD(bufs[i]);
+        SWAP16(bufs[i]);
 #endif
 */
     fwrite(t_data, m->buffers, 1, f);
 }
 
-struct MChunky *load_mchunky(FILE *f, int height, LONG *Pens)
+struct MChunky *load_mchunky(FILE *f, int height, int32_t *pens)
 {
     struct MChunky *m;
     uint8_t *tmp, *t_data;
@@ -485,9 +485,9 @@ struct MChunky *load_mchunky(FILE *f, int height, LONG *Pens)
 
     m->lines = height;
     fread(&m->blocks, sizeof(int16_t), 1, f);
-//  SWAP_WORD(m->blocks);
+//  SWAP16(m->blocks);
     fread(&m->buffers, sizeof(int32_t), 1, f);
-//  SWAP_LONG(m->buffers);
+//  SWAP32(m->buffers);
 
     size = (m->lines + m->blocks) * sizeof(int16_t) + m->buffers;
     tmp = malloc(size);
@@ -506,7 +506,7 @@ struct MChunky *load_mchunky(FILE *f, int height, LONG *Pens)
     // Swap m->lines+m->blocks items in tmp
 #endif
 
-    if(!create_mchunky(m, blks, bufs, t_data, Pens))
+    if(!create_mchunky(m, blks, bufs, t_data, pens))
     {
         free(tmp);
         free(m);
@@ -523,11 +523,11 @@ error:
 
 
 struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
-                                int depth, LONG *Pens)
+                                int depth, int32_t *pens)
 {
     int planesize=BITRASSIZE(width, height), i, k;
     unsigned char *temp, *planes[9];
-    bitmap chunky;
+    uint8_t * chunky;
     int start_blocks = 200;
     int start_datas = 500;
     struct MChunky *m;
@@ -565,7 +565,7 @@ struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
             if ((bufs = malloc(start_blocks * sizeof(int16_t)))) {
                 uint8_t linebuffer[640], *chunky_line = chunky;
                 int s;
-                bitmap linea = planes[8];
+                uint8_t * linea = planes[8];
 
 
 #ifdef SUPER_DEBUG
@@ -671,7 +671,7 @@ struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
                 if(fo)
                     save_mchunky(m, blks, bufs, t_data, fo);
 
-                if(create_mchunky(m, blks, bufs, t_data, Pens)) {
+                if(create_mchunky(m, blks, bufs, t_data, pens)) {
                     free(bufs);
                     free(temp);
                     free(blks);
@@ -831,7 +831,7 @@ struct MChunky *CloneMChunky(struct MChunky *c)
 }
 #endif
 
-void RemapMChunkyColors(struct MChunky *m, unsigned char *pens)
+void RemapMChunkyColors(struct MChunky *m, uint8_t *pens)
 {
     struct ALine *l = m->FirstLine;
     struct ABlock *b;
@@ -843,7 +843,7 @@ void RemapMChunkyColors(struct MChunky *m, unsigned char *pens)
             if(b->Buffer) {
 // tolti i "register" per favorire il debugging
                 int i;
-                unsigned char *c = b->Buffer;
+                uint8_t *c = b->Buffer;
 
                 for(i = b->Length; i > 0; i--) {
                     *c = pens[*c];

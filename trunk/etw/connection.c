@@ -10,7 +10,7 @@
 extern uint8_t team_a, team_b;
 extern int8_t player_type[4], role[4], current_field;
 extern char shirt[2][24], palette[24], fieldname[24];
-extern LONG time_length;
+extern long int time_length;
 extern BOOL use_offside, highlight;
 int8_t field;
 extern int highsize, matchstatus_size;
@@ -648,7 +648,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
         
                         if(g)
                         {
-                            D(bug("Eseguo %lc sul giocatore n.%ld della squadra %ld\n"/*-*/,(LONG)op,num,t));
+                            D(bug("Eseguo %lc sul giocatore n.%d della squadra %d\n"/*-*/,(long int)op,num,t));
     
                             switch(op)
                             {

@@ -50,7 +50,7 @@ int send_netstart(void);
 void HandleNetwork(unsigned char, signed short);
 void SendNetwork(unsigned long);
 void SendChatMessage(void);
-int SendTeam(unsigned char);
+int SendTeam(int8_t);
 void SendQuit(void);
 void SendFinish(unsigned short);
 int ReceiveTeam(struct team_disk *);

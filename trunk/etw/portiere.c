@@ -127,35 +127,35 @@ void CheckPortiere(int n)
 
 void HandleGoalKick(keeper_t *g)
 {
-    if(p->show_panel&0xff00)
+    if(p->show_panel & 0xff00)
         return;
 
-    if(g->team->Joystick>=0)
+    if(g->team->Joystick >= 0)
     {
-        ULONG l=r_controls[g->team->Joystick][counter];
+        uint32_t l = r_controls[g->team->Joystick][counter];
 
         g->Tick--;
 
         if(g->Tick<0 )
             goto rinviocomputer;
     
-                if(l&MYBUTTONMASK)
-                {
-                        g->FirePressed=TRUE;
-                        g->TimePress++;
+        if(l&MYBUTTONMASK)
+        {
+                g->FirePressed=TRUE;
+                g->TimePress++;
 
-                        if(g->TimePress>6)
-                        {
-                goto rinvio;
-                        }
-                        return;
-                }
-                else if (g->FirePressed)
-rinvio:
+                if(g->TimePress>6)
                 {
+        goto rinvio;
+                }
+                return;
+        }
+        else if (g->FirePressed)
+rinvio:
+        {
             WORD olddir=g->dir;
 
-                        g->FirePressed=FALSE;
+            g->FirePressed=FALSE;
 
             DoSpecialAnim(g,PORTIERE_CORSA);
 
@@ -238,17 +238,17 @@ rinvio:
         {
 
 rinviocomputer:
-                        g->FirePressed=FALSE;
+            g->FirePressed=FALSE;
             DoSpecialAnim(g,PORTIERE_CORSA);
             g->ActualSpeed=1;
             pl->quota=0;
-                pl->Rimbalzi=0;
+            pl->Rimbalzi=0;
             pl->MaxQuota=18;
             pl->TipoTiro=TIRO_PALLONETTO;
             g->SpecialData=15+(GetTable()<<1);
             FermaPalla();
             pl->dir=(g->dir<<5)-10+(GetTable()<<2);
-                        g->TimePress=0;
+            g->TimePress=0;
             g->AnimFrame=3;
         }
     }
@@ -256,12 +256,12 @@ rinviocomputer:
 
 void HandleKeeperControlled(keeper_t *g)
 {
-    if(p->show_panel&0xff00)
+    if(p->show_panel & 0xff00)
         return;
 
-    if(g->team->Joystick>=0)
+    if(g->team->Joystick >= 0)
     {
-         ULONG l;
+        uint32_t l;
 
         g->Tick--;
 
@@ -270,22 +270,22 @@ void HandleKeeperControlled(keeper_t *g)
 
         l=r_controls[g->team->Joystick][counter];
 
-                if(l&MYBUTTONMASK)
-                {
-                        g->FirePressed=TRUE;
-                        g->TimePress++;
+        if(l&MYBUTTONMASK)
+        {
+            g->FirePressed=TRUE;
+            g->TimePress++;
 
-                        if(g->TimePress>10)
-                        {
+            if(g->TimePress>10)
+            {
                 goto rinvio;
-                        }
-                }
-                else if (g->FirePressed)
+            }
+        }
+        else if (g->FirePressed)
 rinvio:
-                {
+        {
             WORD olddir=g->dir;
 
-                        g->FirePressed=FALSE;
+            g->FirePressed=FALSE;
 
             if(g->dir==D_EST)
             {
@@ -362,8 +362,8 @@ rinvio:
             g->SpecialData=pl->velocita;
             FermaPalla();
             g->dir=olddir;
-                        g->TimePress=0;
-                }
+            g->TimePress=0;
+        }
     }
     else
     {

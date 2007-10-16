@@ -45,7 +45,7 @@ extern void os_stop_audio(void);
 extern void ReplaySound(struct SoundInfo *SoundInfo);
 extern void FreeSound(struct SoundInfo *SoundInfo);
 extern struct SoundInfo *LoadSound(char const *Name);
-extern LONG PlayBackSound(struct SoundInfo *si);
+extern int PlayBackSound(struct SoundInfo *si);
 extern struct SoundInfo *LoadRAWSample(char const *name, int rate);
 extern BOOL InitSoundSystem(void);
 extern void FreeSoundSystem(void);

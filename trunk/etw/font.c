@@ -35,10 +35,10 @@ struct Stats stats[] = {
 
 BOOL draw_r, replay_done;
 
-void PrintTeamName(player_t * g, LONG y)
+void PrintTeamName(player_t * g, int y)
 {
     char *c = g->team->name;
-    LONG l, x;
+    int l, x;
 
     l = strlen(c);
 
@@ -84,10 +84,10 @@ void FreeFonts(void)
             FreeGfxObj(verysmallfont);
 }
 
-void PrintSmall(bitmap dest, char *text, char len)
+void PrintSmall(uint8_t *dest, char *text, char len)
 {
     register char i;
-    register LONG x = 0;
+    register int x = 0;
 
     for (i = 0; i < len; i++) {
         if (text[i] >= 'A' && text[i] <= 'Z') {
@@ -101,10 +101,10 @@ void PrintSmall(bitmap dest, char *text, char len)
     }
 }
 
-void PrintVerySmall(bitmap dest, char *text, char len, int width)
+void PrintVerySmall(uint8_t *dest, char *text, char len, int width)
 {
     register char i;
-    register LONG x = 0;
+    register int x = 0;
 
     for (i = 0; i < len; i++) {
         if (text[i] >= 'A' && text[i] <= 'Z') {
@@ -114,7 +114,7 @@ void PrintVerySmall(bitmap dest, char *text, char len, int width)
             BltGfxObj(verysmallfont, (text[i] - '0' + 29) * VS_CHAR_X, 0,
                       dest, x, 1, VS_CHAR_X, VS_CHAR_Y, width);
         } else {
-            LONG code = 0;
+            int code = 0;
 
             switch (text[i]) {
             case '\'':
@@ -273,7 +273,7 @@ void ShowPanel(void)
     if ((p->show_panel & PANEL_CARD)
         && (p->referee.Comando == AMMONIZIONE
             || p->referee.Comando == ESPULSIONE)) {
-        LONG x, y, l;
+        int x, y, l;
         player_t *g;
 
         rectfill_pattern(main_bitmap, (font_width << 1),
@@ -315,7 +315,7 @@ void ShowPanel(void)
     }
 
     if (p->show_panel & PANEL_OFFSIDE) {
-        LONG x, y, l;
+        int x, y, l;
         char *p = "O F F S I D E";
 
         l = strlen(p);
@@ -329,7 +329,7 @@ void ShowPanel(void)
 
     if (p->show_panel & PANEL_TIME) {
         char buffer[8];
-        LONG mins, secs;
+        int mins, secs;
         mytimer temptime;
 
         if (first_kickoff) {
@@ -447,7 +447,7 @@ void ShowPanel(void)
 
         if (p->show_panel & PANEL_PLAY_INJURIED) {
             char buffer[80];
-            LONG x, y, l;
+            int x, y, l;
 
             sprintf(buffer, "%s INJURIED.", g->name);
 
@@ -467,7 +467,7 @@ void ShowPanel(void)
 
         if (p->show_panel & PANEL_INJURIED) {
             char buffer[80];
-            LONG x, y, l;
+            int x, y, l;
 
             sprintf(buffer, "%s INJURIED. SUBSTITUTE HIM:", g->surname);
 
@@ -525,7 +525,7 @@ void ShowPanel(void)
             TextShadow(x, y, c, l);
         } else if (p->show_panel & PANEL_SUBSTITUTION_2) {
             char *c = "SELECT THE NEW PLAYER";
-            LONG x, y, l;
+            int x, y, l;
 
             l = strlen(c);
 
@@ -601,7 +601,7 @@ void ShowPanel(void)
 
     if (p->show_panel & PANEL_STATS) {
         char buffer[20], c;
-        register LONG t, l, x, y, xs;
+        register int t, l, x, y, xs;
 
         t = (WINDOW_HEIGHT - ((font_height + 3) * 11)) >> 1;
 
@@ -662,7 +662,7 @@ void ShowPanel(void)
 
     if (p->show_panel & PANEL_RESULT) {
         char temp[4];
-        LONG x, y, l;
+        int x, y, l;
 
         rectfill_pattern(main_bitmap, (font_width << 1),
                          WINDOW_HEIGHT - (font_height << 3) + font_height,
@@ -738,7 +738,7 @@ void ShowPanel(void)
     }
 
     if (p->show_panel & PANEL_KICKOFF) {
-        LONG x, y;
+        int x, y;
 
         rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - 80,
                          (WINDOW_HEIGHT >> 1) - 40,
@@ -810,7 +810,7 @@ void ShowFinal(void)
          p->team[1]->Reti ? p->team[0] : p->team[1]);
 
     if (s->Joystick >= 0) {
-        bitmap mask;
+        uint8_t *mask;
 
         D(bug("Showing final sequence...\n"));
 
@@ -830,8 +830,8 @@ void ShowFinal(void)
         }
 
         if ((mask = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
-            extern UBYTE cols[2][4];
-            bitmap temp;
+            extern uint8_t cols[2][4];
+            uint8_t *temp;
             gfx_t *o;
             int i = s->players[0].SNum;
             char buffer[100];

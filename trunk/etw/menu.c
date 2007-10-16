@@ -5,7 +5,7 @@
 
 #include "chunky.h"
 
-WORD current_menu = 0, current_button = NESSUN_BOTTONE, actual_button = 0;
+int current_menu = 0, current_button = NESSUN_BOTTONE, actual_button = 0;
 struct GfxMenu *actual_menu = &menu[0];
 void *hwin = NULL;
 void CreaBottone(struct Bottone *b);
@@ -419,7 +419,7 @@ void DrawBox(WORD button)
 }
 
 
-void StampaTesto(struct Bottone *b, LONG xs, LONG ys, char *testo, int len,
+void StampaTesto(struct Bottone *b, int xs, int ys, char *testo, int len,
                  struct myfont *tf)
 {
     switch (*testo) {
@@ -1039,7 +1039,7 @@ void RedrawBottone(struct Bottone *b, UBYTE colore)
 {
     char *t = b->Testo;
     struct myfont *tf = smallfont;
-    LONG l, top = 1;
+    int l, top = 1;
 
     if (!t)
         return;
@@ -1156,7 +1156,7 @@ void ChangeMenu(WORD m)
 
     if (current_menu == MENU_TEAM_SETTINGS) {
         char *c = msg_80;
-        LONG l, l2;
+        int l, l2;
         int y = FixedScaledY(titlefont->height + 8);
 
         if (y <= titlefont->height)
@@ -1325,7 +1325,7 @@ void MoveMark(int k)
     while (!actual_menu->Bottone[actual_button].Testo);
 }
 
-BOOL HandleJoy(ULONG joystatus)
+BOOL HandleJoy(uint32_t joystatus)
 {
     static BOOL clicked = FALSE;
     WORD old_button = actual_button;

@@ -1,8 +1,8 @@
 #include "eat.h"
 
-void (*LongPass)(player_t *,ULONG);
+void (*LongPass)(player_t *, uint32_t);
 
-ULONG mov_inc_angolo[8][2]=
+uint32_t mov_inc_angolo[8][2]=
 {
     {JPF_JOY_RIGHT,JPF_JOY_LEFT},
     {JPF_JOY_RIGHT|JPF_JOY_DOWN,JPF_JOY_UP|JPF_JOY_LEFT},
@@ -14,7 +14,7 @@ ULONG mov_inc_angolo[8][2]=
     {JPF_JOY_UP|JPF_JOY_RIGHT,JPF_JOY_LEFT|JPF_JOY_DOWN}
 };
 
-ULONG mov_dec_angolo[8][2]=
+uint32_t mov_dec_angolo[8][2]=
 {
     {JPF_JOY_LEFT,JPF_JOY_RIGHT},
     {JPF_JOY_LEFT|JPF_JOY_UP,JPF_JOY_RIGHT|JPF_JOY_DOWN},
@@ -26,7 +26,7 @@ ULONG mov_dec_angolo[8][2]=
     {JPF_JOY_DOWN|JPF_JOY_LEFT,JPF_JOY_RIGHT|JPF_JOY_UP}
 };
 
-ULONG joy_opposto_neg[8]=
+uint32_t joy_opposto_neg[8]=
 {
     JPF_JOY_UP,
     JPF_JOY_RIGHT|JPF_JOY_UP,
@@ -41,7 +41,7 @@ ULONG joy_opposto_neg[8]=
 
 void CPUShot(player_t *g)
 {
-    ULONG state;
+    uint32_t state;
 
     switch(GetTable()>>1)
     {
@@ -80,7 +80,7 @@ void CPUShot(player_t *g)
     Tira(g);
 }
 
-void FreePass(player_t *g,ULONG joystate)
+void FreePass(player_t *g, uint32_t joystate)
 {
     pl->velocita=23;
 
@@ -121,7 +121,7 @@ void FreePass(player_t *g,ULONG joystate)
 
 }
 
-void TargetedPass(player_t *g,ULONG joystate)
+void TargetedPass(player_t *g, uint32_t joystate)
 {
     WORD d,old_x=g->world_x,old_y=g->world_y;
     player_t *g2;
@@ -269,7 +269,7 @@ void PreparaBarriera(char sq)
 
 void UpdateCornerLine(void)
 {
-    WORD cornerline[34];
+    int cornerline[34];
     register int i;
     register WORD vx,vy;
     WORD line_length;
@@ -762,7 +762,7 @@ void HandleRimessa(player_t *g)
 
     if(g->team->Joystick>=0)
     {
-        ULONG l;
+        uint32_t l;
 
         g->WaitForControl--;
 
@@ -941,7 +941,7 @@ void Rigore(player_t *g)
 
     if(g->team->Joystick>=0)
     {
-        ULONG l;
+        uint32_t l;
 
         g->WaitForControl--;
 
@@ -1046,7 +1046,7 @@ void PunizioneCorner(player_t *g)
     }
     else if(g->team->Joystick>=0)
     {
-        ULONG l;
+        uint32_t l;
 
         l=r_controls[g->team->Joystick][counter];
 
@@ -1316,9 +1316,9 @@ void ColpoDiTesta(player_t *g)
 
     if(CanScore(g)==CS_SI)
     {
-        WORD PortaDir,temp;
-        WORD Dir=g->dir;
-        ULONG state;
+        WORD PortaDir, temp;
+        WORD Dir = g->dir;
+        uint32_t state;
 
         PortaDir=FindDirection(g->world_x,g->world_y,G2P_X( ( g->SNum ? PORTA_E_X : PORTA_O_X) ),G2P_Y(PORTA_O_Y));
 

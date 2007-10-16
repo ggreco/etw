@@ -3,13 +3,13 @@
 #include "network.h"
 
 BOOL soft_scroll = TRUE, pause_mode = FALSE, use_sound = TRUE;
-BYTE scroll_type = 0;
+int8_t scroll_type = 0;
 
 #ifndef DEBUG_DISABLED
-LONG frames = 0;
+long int frames = 0;
 #endif
 
-long
+long int
 #ifdef DEMOVERSION
     time_length = (2 * 60), t_l = 2;
 #else

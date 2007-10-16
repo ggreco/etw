@@ -26,14 +26,13 @@ long OpenIFF(struct IFFHandle * iff, long rwMode)
 
         fseek(iff->iff_Stream, 0, SEEK_SET);
 
-        fread(&temp, sizeof(temp), 1, iff->iff_Stream);
-
-        SWAP_LONG(temp);
+        fread(&temp, sizeof(uint32_t), 1, iff->iff_Stream);
+        SWAP32(temp);
 
         if (temp == ID_FORM) {
             fseek(iff->iff_Stream, 4, SEEK_CUR);
-            fread(&temp, sizeof(temp), 1, iff->iff_Stream);
-            SWAP_LONG(temp);
+            fread(&temp, sizeof(uint32_t), 1, iff->iff_Stream);
+            SWAP32(temp);
             iff->Current.cn_Type = temp;
             return 0L;
         } else
@@ -55,16 +54,16 @@ long ParseIFF(struct IFFHandle * iff, long control)
     }
 
     for (;;) {
-        if (fread(&temp, sizeof(temp), 1, iff->iff_Stream) != 1)
+        if (fread(&temp, sizeof(uint32_t), 1, iff->iff_Stream) != 1)
             return 1L;
 
-        SWAP_LONG(temp);
+        SWAP32(temp);
 
         for (i = 0; i < iff->iff_Stops; i++) {
             if (temp == iff->stops[i * 2 + 1]) {
                 iff->Current.cn_ID = temp;
-                fread(&temp, sizeof(temp), 1, iff->iff_Stream);
-                SWAP_LONG(temp);
+                fread(&temp, sizeof(uint32_t), 1, iff->iff_Stream);
+                SWAP32(temp);
                 iff->Current.cn_Size = temp;
                 return 0L;
             }
@@ -85,20 +84,20 @@ void FreeIFF(struct IFFHandle *iff)
 
 /* Read/Write functions */
 
-LONG ReadChunkBytes(struct IFFHandle *iff, APTR buf, long numBytes)
+ssize_t ReadChunkBytes(struct IFFHandle *iff, void *buf, long numBytes)
 {
-    return (LONG) fread(buf, 1, numBytes, iff->iff_Stream);
+    return (ssize_t) fread(buf, 1, numBytes, iff->iff_Stream);
 }
 
-LONG ReadChunkRecords(struct IFFHandle * iff, APTR buf,
-                      long bytesPerRecord, long numRecords)
+ssize_t ReadChunkRecords(struct IFFHandle * iff, void *buf,
+                         long bytesPerRecord, long numRecords)
 {
-    return (LONG) fread(buf, bytesPerRecord, numRecords, iff->iff_Stream);
+    return (ssize_t) fread(buf, bytesPerRecord, numRecords, iff->iff_Stream);
 }
 
 /* Built-in chunk/property handlers */
 
-LONG StopChunks(struct IFFHandle * iff, LONG * propArray, long numPairs)
+ssize_t StopChunks(struct IFFHandle * iff, int32_t * propArray, long numPairs)
 {
     iff->stops = propArray;
     iff->iff_Stops = numPairs;

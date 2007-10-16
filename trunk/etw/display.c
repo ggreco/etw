@@ -102,8 +102,8 @@ void GriddedWipe(UBYTE Type,struct BitMap *source)
     /*                                                             */
     /*********************************************************************/   
     
-    register LONG IndexX,IndexY,IndexZ;
-    LONG TX=win->BorderLeft,TY=win->BorderTop;
+    register int IndexX,IndexY,IndexZ;
+    int TX=win->BorderLeft,TY=win->BorderTop;
     register struct RastPort *dest = public_screen ?  win->RPort : &screen->RastPort;
 
     /* This loop increases the difference between two adjoining wipe lines

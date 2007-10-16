@@ -6,8 +6,8 @@
 UBYTE colore_team[3]={P_GRIGIO0, P_ROSSO0, P_BLU2};
 UBYTE highlight_team[3]={P_BIANCO, P_ROSSO1, P_BLU1}, totale_giornate;
 
-BYTE teamarray[64], competition=MENU_TEAMS, turno=0, actual_team=-1;
-BYTE controllo[64], nteams, ruolo[64], ppv=3, pps=0, ppp=1;
+int8_t teamarray[64], competition=MENU_TEAMS, turno=0, actual_team=-1;
+int8_t controllo[64], nteams, ruolo[64], ppv=3, pps=0, ppp=1;
 char teamfile[128];
 
 BOOL saved=TRUE, random_draw=FALSE, special=FALSE;
@@ -31,7 +31,7 @@ void ReadTeam(FILE *fh, struct team_disk *s)
     int i;
 
     fread(&s->disponibilita, sizeof(uint32_t), 1, fh);
-    SWAP_LONG(s->disponibilita);
+    SWAP32(s->disponibilita);
     fread(&s->nplayers, sizeof(uint8_t), 1, fh);
     fread(&s->nkeepers, sizeof(uint8_t), 1, fh);
     fread(&s->nation, sizeof(uint8_t), 1, fh);
@@ -58,7 +58,7 @@ void ReadTeam(FILE *fh, struct team_disk *s)
         fread(s->keepers[i].name, sizeof(char), 20, fh);
         fread(s->keepers[i].surname, sizeof(char), 20, fh);
         fread(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
-        SWAP_LONG(s->keepers[i].value);
+        SWAP32(s->keepers[i].value);
         fread(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
         fread(&s->keepers[i].speed, sizeof(uint8_t), 1, fh);
         fread(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
@@ -74,7 +74,7 @@ void ReadTeam(FILE *fh, struct team_disk *s)
         fread(s->players[i].name, sizeof(char), 20, fh);
         fread(s->players[i].surname, sizeof(char), 20, fh);
         fread(&s->players[i].value, sizeof(uint32_t), 1, fh);
-        SWAP_LONG(s->players[i].value);
+        SWAP32(s->players[i].value);
         fread(&s->players[i].number, sizeof(uint8_t), 1, fh);
         fread(&s->players[i].speed, sizeof(uint8_t), 1, fh);
         fread(&s->players[i].tackle, sizeof(uint8_t), 1, fh);
@@ -97,9 +97,9 @@ void WriteTeam(FILE *fh, struct team_disk *s)
 {
     int i;
 
-    SWAP_LONG(s->disponibilita);
+    SWAP32(s->disponibilita);
     fwrite(&s->disponibilita, sizeof(uint32_t), 1, fh);
-    SWAP_LONG(s->disponibilita);
+    SWAP32(s->disponibilita);
     fwrite(&s->nplayers, sizeof(uint8_t), 1, fh);
     fwrite(&s->nkeepers, sizeof(uint8_t), 1, fh);
     fwrite(&s->nation, sizeof(uint8_t), 1, fh);
@@ -125,9 +125,9 @@ void WriteTeam(FILE *fh, struct team_disk *s)
     {
         fwrite(s->keepers[i].name, sizeof(char), 20, fh);
         fwrite(s->keepers[i].surname, sizeof(char), 20, fh);
-        SWAP_LONG(s->keepers[i].value);
+        SWAP32(s->keepers[i].value);
         fwrite(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
-        SWAP_LONG(s->keepers[i].value);
+        SWAP32(s->keepers[i].value);
         fwrite(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
         fwrite(&s->keepers[i].speed, sizeof(uint8_t), 1, fh);
         fwrite(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
@@ -142,9 +142,9 @@ void WriteTeam(FILE *fh, struct team_disk *s)
     {
         fwrite(s->players[i].name, sizeof(char), 20, fh);
         fwrite(s->players[i].surname, sizeof(char), 20, fh);
-        SWAP_LONG(s->players[i].value);
+        SWAP32(s->players[i].value);
         fwrite(&s->players[i].value, sizeof(uint32_t), 1, fh);
-        SWAP_LONG(s->players[i].value);
+        SWAP32(s->players[i].value);
         fwrite(&s->players[i].number, sizeof(uint8_t), 1, fh);
         fwrite(&s->players[i].speed, sizeof(uint8_t), 1, fh);
         fwrite(&s->players[i].tackle, sizeof(uint8_t), 1, fh);
@@ -343,10 +343,10 @@ BOOL LoadMenuTactic(char *name, tactic_t *t)
         for(j=0; j<PLAYERS; j++)
             for(k=0; k<(SECTORS+SPECIALS); k++)
             {
-                fread(&t->Position[i][j][k].x, 1, sizeof(WORD), fh);
-                fread(&t->Position[i][j][k].y, 1, sizeof(WORD), fh);
-                SWAP_WORD(t->Position[i][j][k].x);
-                SWAP_WORD(t->Position[i][j][k].y);
+                fread(&t->Position[i][j][k].x, 1, sizeof(uint16_t), fh);
+                fread(&t->Position[i][j][k].y, 1, sizeof(uint16_t), fh);
+                SWAP16(t->Position[i][j][k].x);
+                SWAP16(t->Position[i][j][k].y);
             }
 
     fclose(fh);

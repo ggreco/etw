@@ -2,7 +2,7 @@
 
 #include "highdirent.h"
 
-char team_name[2][16]={0};
+char team_name[2][16] = { { '\0' }, { '\0' } };
 int result_width,scivolate_modificate=0;
 linesman_t *linesman;
 
@@ -657,63 +657,63 @@ void ReadSquadra(FILE *fh, struct team_disk *s)
 {
     int i;
 
-    fread(&s->disponibilita,sizeof(long),1,fh);
-    SWAP_LONG(s->disponibilita);
-    fread(&s->nplayers,sizeof(char),1,fh);
-    fread(&s->nkeepers,sizeof(char),1,fh);
-    fread(&s->nation,sizeof(char),1,fh);
-    fread(&s->Flags,sizeof(char),1,fh);
+    fread(&s->disponibilita, sizeof(uint32_t), 1, fh);
+    SWAP32(s->disponibilita);
+    fread(&s->nplayers, sizeof(uint8_t), 1, fh);
+    fread(&s->nkeepers, sizeof(uint8_t), 1, fh);
+    fread(&s->nation, sizeof(uint8_t), 1, fh);
+    fread(&s->Flags, sizeof(uint8_t), 1, fh);
 
     for(i=0;i<2;i++)
     {
-        fread(&s->jerseys[i].type,sizeof(char),1,fh);
-        fread(&s->jerseys[i].color0,sizeof(char),1,fh);
-        fread(&s->jerseys[i].color1,sizeof(char),1,fh);
-        fread(&s->jerseys[i].color2,sizeof(char),1,fh);
+        fread(&s->jerseys[i].type, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color0, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color1, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color2, sizeof(uint8_t), 1, fh);
     }
 
     for(i=0;i<3;i++)
-        fread(&s->tactics[i],sizeof(char),16,fh);
+        fread(&s->tactics[i], sizeof(char), 16, fh);
 
-    fread(s->name,sizeof(char),52,fh);
-    fread(s->allenatore,sizeof(char),52,fh);
+    fread(s->name, sizeof(char), 52, fh);
+    fread(s->allenatore, sizeof(char), 52, fh);
 
     for(i=0;i<s->nkeepers;i++)
     {
-        fread(s->keepers[i].name,sizeof(char),20,fh);
-        fread(s->keepers[i].surname,sizeof(char),20,fh);
-        fread(&s->keepers[i].value,sizeof(long),1,fh);
-        SWAP_LONG(s->keepers[i].value);
-        fread(&s->keepers[i].number,sizeof(char),1,fh);
-        fread(&s->keepers[i].speed,sizeof(char),1,fh);
-        fread(&s->keepers[i].Parata,sizeof(char),1,fh);
-        fread(&s->keepers[i].Attenzione,sizeof(char),1,fh);
-        fread(&s->keepers[i].nation,sizeof(char),1,fh);
-        fread(&s->keepers[i].Eta,sizeof(char),1,fh);
-        fread(&s->keepers[i].injury,sizeof(char),1,fh);
-        fread(&s->keepers[i].Flags,sizeof(char),1,fh);
+        fread(s->keepers[i].name, sizeof(char), 20, fh);
+        fread(s->keepers[i].surname, sizeof(char), 20, fh);
+        fread(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
+        SWAP32(s->keepers[i].value);
+        fread(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].speed, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Attenzione, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].nation, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Eta, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].injury, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Flags, sizeof(uint8_t), 1, fh);
     }
 
     for(i=0;i<s->nplayers;i++)
     {
-        fread(s->players[i].name,sizeof(char),20,fh);
-        fread(s->players[i].surname,sizeof(char),20,fh);
-        fread(&s->players[i].value,sizeof(long),1,fh);
-        SWAP_LONG(s->players[i].value);
-        fread(&s->players[i].number,sizeof(char),1,fh);
-        fread(&s->players[i].speed,sizeof(char),1,fh);
-        fread(&s->players[i].tackle,sizeof(char),1,fh);
-        fread(&s->players[i].Tiro,sizeof(char),1,fh);
-        fread(&s->players[i].Durata,sizeof(char),1,fh);
-        fread(&s->players[i].stamina,sizeof(char),1,fh);
-        fread(&s->players[i].quickness,sizeof(char),1,fh);
-        fread(&s->players[i].nation,sizeof(char),1,fh);
-        fread(&s->players[i].creativity,sizeof(char),1,fh);
-        fread(&s->players[i].technique,sizeof(char),1,fh);
-        fread(&s->players[i].Eta,sizeof(char),1,fh);
-        fread(&s->players[i].injury,sizeof(char),1,fh);
-        fread(&s->players[i].Ammonizioni,sizeof(char),1,fh);
-        fread(&s->players[i].Posizioni,sizeof(char),1,fh);
+        fread(s->players[i].name, sizeof(char), 20, fh);
+        fread(s->players[i].surname, sizeof(char), 20, fh);
+        fread(&s->players[i].value, sizeof(uint32_t), 1, fh);
+        SWAP32(s->players[i].value);
+        fread(&s->players[i].number, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].speed, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].tackle, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Tiro, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Durata, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].stamina, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].quickness, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].nation, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].creativity, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].technique, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Eta, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].injury, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Ammonizioni, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Posizioni, sizeof(uint8_t), 1, fh);
     }
 }
 
@@ -864,12 +864,12 @@ team_t *CreateTeam(int num)
 
         if(sd.players[i].injury>0)
         {
-            char t=sd.players[i].injury;
+            uint8_t t = sd.players[i].injury;
 
-            if(t>3)
-                t=3;
+            if(t > 3)
+                t = 3;
     
-            t*=2;
+            t *= 2;
 
             sd.players[i].speed=max(1,sd.players[i].speed-t);
             sd.players[i].Durata=max(1,sd.players[i].Durata-t);

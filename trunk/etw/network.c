@@ -120,7 +120,7 @@ simplemsg *GetNextMsg(player *p)
 void UpdateNetStatus(char *string)
 {
     extern struct myfont *bigfont;
-    extern long WINDOW_WIDTH,WINDOW_HEIGHT;
+    extern int WINDOW_WIDTH, WINDOW_HEIGHT;
 
     MyRestoreBack();
     PrintShadow(FixedScaledX(1),FixedScaledY(210),string,strlen(string),bigfont);
@@ -159,7 +159,7 @@ int ReceiveTeam(struct team_disk *s)
     return FALSE;
 }
 
-int SendTeam(UBYTE team)
+int SendTeam(int8_t team)
 {
     simplemsg *m=(simplemsg *)network_player->packetbuffer;
     short l;
@@ -406,7 +406,7 @@ void stripmsg(simplemsg *m,int *len)
 
 struct NetData
 {
-    ULONG Control0,Control1;
+    uint32_t Control0, Control1;
 };
 
 struct NetData NetDatas[256];
@@ -415,28 +415,28 @@ void SendFinish(unsigned short result)
 {
     statusmsg msg;
 
-    memcpy(msg.hdr.hdr,SERVER_HEADER,4);
-    msg.hdr.type=MSG_QUIT;
-    msg.hdr.size=htons(sizeof(long));
-    msg.hdr.subtype=SUB_ENDGAME;
-    msg.joypos=htonl((result&0xff)|((result&0xff00)<<8));
+    memcpy(msg.hdr.hdr, SERVER_HEADER, 4);
+    msg.hdr.type = MSG_QUIT;
+    msg.hdr.size = htons(sizeof(uint32_t));
+    msg.hdr.subtype = SUB_ENDGAME;
+    msg.joypos = htonl((result&0xff)|((result&0xff00)<<8));
 
-    SockWrite(network_player->socket,&msg,sizeof(msg));
+    SockWrite(network_player->socket, &msg, sizeof(msg));
 }
 
 void SendQuit(void)
 {
     simplemsg msg;
 
-    memcpy(msg.hdr,SERVER_HEADER,4);
-    msg.type=MSG_QUIT;
-    msg.subtype=SUB_LOCAL_QUIT;
-    msg.size=0;
+    memcpy(msg.hdr, SERVER_HEADER, 4);
+    msg.type = MSG_QUIT;
+    msg.subtype = SUB_LOCAL_QUIT;
+    msg.size = 0;
 
-    SockWrite(network_player->socket,&msg,sizeof(msg));
+    SockWrite(network_player->socket, &msg, sizeof(msg));
 }
 
-static unsigned long network_frame=0,actual_frame=0, frames =0;
+static unsigned long network_frame = 0, actual_frame = 0, frames = 0;
 
 void HandleNetwork(unsigned char counter, signed short pallax)
 {

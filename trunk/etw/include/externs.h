@@ -5,7 +5,7 @@ extern struct player_disk Riserve[2][12];
 extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,team_b,TotaleRiserve[2],NumeroTattiche;
 extern char team_name[2][16],fieldname[24],palette[24],shirt[2][24];
 extern object_t *pezzi_porte[4],*bonus[MAX_ARCADE_ON_FIELD];
-extern BYTE need_release[MAX_PLAYERS],arcade_team[2],starting_team;
+extern int8_t need_release[MAX_PLAYERS], arcade_team[2], starting_team;
 extern int8_t Table[],strictness,current_field,slowdown[];
 extern struct RastPort Sq1RP,Sq2RP,PallaRP,*ProgressRP,ArcadeRP;
 extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,killer,
@@ -17,10 +17,11 @@ extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,k
     newpitches,network_game, game_start;
 extern char control[4],*controls[CONTROLS],tipo_porta, spk_basename[64];
 extern int32_t Pens[256];
-extern long framerate, time_length, t_l, game_status, urgent_status, situation_time, basepri;
+extern int framerate, game_status, urgent_status, basepri;
+extern long int time_length, t_l, situation_time;
 extern WORD velocita_x[3][10][8],cambio_x[8],inversione_x[8][8],arcade_frame_sequence[];
 extern WORD velocita_y[3][10][8],cambio_y[8],inversione_y[8][8];
-extern BYTE prontezza[10],opposto[],scroll_type,situation_result[2];
+extern int8_t prontezza[10],opposto[],scroll_type,situation_result[2];
 extern WORD avanzamento_x[],avanzamento_y[],quota_mod_x[],quota_mod_y[];
 extern WORD sin_table[256],cos_table[256],swaps;
 extern UWORD counter;
@@ -29,15 +30,15 @@ extern game_t *p;
 extern ball_t *pl;
 extern struct Animazione Animation[],ArbAnim[],PortAnim[],GLAnim[];
 extern WORD field_x,field_y,porte_x[],field_x_limit,field_y_limit;
-extern BYTE joy_opposto[],dir_pred[],dir_next[],CambioDirezione[8][8],player_type[4],role[4];
-extern long WINDOW_WIDTH, WINDOW_HEIGHT, wanted_sound;
+extern int8_t joy_opposto[],dir_pred[],dir_next[],CambioDirezione[8][8],player_type[4],role[4];
+extern int WINDOW_WIDTH, WINDOW_HEIGHT, wanted_sound;
 extern struct SoundInfo *sound[];
 extern char *soundname[],*tactics[];
 extern object_t *object_list[];
 extern struct DOggetto *c_list[];
 extern int totale_lista,totale_lista_c;
 extern struct SignalSemaphore listsem;
-extern ULONG detail_level,*r_controls[MAX_PLAYERS],ahimode;
+extern uint32_t detail_level, *r_controls[MAX_PLAYERS], ahimode;
 extern struct Rect ingombri[];
 extern struct DOggetto peoples[];
 extern gfx_t *last_obj,*pause_gfx;
@@ -47,15 +48,15 @@ extern linesman_t *linesman;
 extern struct MyFastScaleArgs *scaling;
 extern int font_width,font_height,result_width,FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
 
-extern void MakeRef(UBYTE *,int, int);
+extern void MakeRef(uint8_t *,int, int);
 extern tactic_t *LoadTactic(char *);
 extern void FreeTactic(tactic_t *);
 extern void InvertTactic(tactic_t *);
 extern game_t *SetupSquadre(void);
 extern void LiberaPartita(game_t *);
 extern WORD FindDirection(WORD,WORD,WORD,WORD);
-extern ULONG ReadKeyPort(ULONG port);
-extern ULONG ReadNetworkPort(ULONG port);
+extern uint32_t ReadKeyPort(uint32_t port);
+extern uint32_t ReadNetworkPort(uint32_t port);
 extern void ChangeControlled(team_t *, WORD);
 extern void HandleControlled(int);
 extern void HandleControlledJ2B(int);
@@ -92,11 +93,11 @@ extern void GL_Fuori(int);
 // control
 
 extern void MoveNonControlled(void);
-extern WORD GetJoyDirection(ULONG );
+extern WORD GetJoyDirection(uint32_t);
 extern void NoPlayerControl(player_t *);
 extern void CheckChange(player_t *);
-extern ULONG (*MyReadPort0)(ULONG);
-extern ULONG (*MyReadPort1)(ULONG);
+extern uint32_t (*MyReadPort0)(uint32_t);
+extern uint32_t (*MyReadPort1)(uint32_t);
 extern void UpdatePortStatus(void);
 
 // Special
@@ -104,9 +105,9 @@ extern void UpdatePortStatus(void);
 extern void EseguiEsultanza(int);
 extern void CPUShot(player_t *);
 extern void EseguiCross(player_t *);
-extern void (*LongPass)(player_t *,ULONG);
-extern void FreePass(player_t *,ULONG);
-extern void TargetedPass(player_t *,ULONG);
+extern void (*LongPass)(player_t *, uint32_t);
+extern void FreePass(player_t *, uint32_t);
+extern void TargetedPass(player_t *, uint32_t);
 extern void Tira(player_t *);
 extern void Passaggio(player_t *);
 extern void Passaggio2(player_t *,char);
@@ -148,10 +149,10 @@ extern UBYTE FindDirection256(WORD, WORD, WORD ,WORD );
 extern BOOL AllowRotation(player_t *,WORD);
 extern void RimuoviComandoSquadra(char , BYTE );
 extern void EseguiDopoComando(player_t *);
-extern void SetComando(player_t *,BYTE,BYTE,BYTE);
-extern BOOL InArea(BYTE,WORD,WORD);
-extern BOOL InAnyArea(WORD,WORD);
-extern WORD IndirizzaTiro(player_t *,ULONG );
+extern void SetComando(player_t *, BYTE, BYTE, BYTE);
+extern BOOL InArea(BYTE, WORD, WORD);
+extern BOOL InAnyArea(WORD, WORD);
+extern WORD IndirizzaTiro(player_t *, uint32_t);
 extern void SetShotSpeed(player_t *,WORD);
 
 extern void init_crowd(void);
@@ -170,8 +171,8 @@ extern void RimbalzoCasuale(void);
 // Fonts
 
 extern void PrintNames(void);
-extern void PrintSmall(bitmap, char *, char );
-extern void PrintVerySmall(bitmap, char *, char,int );
+extern void PrintSmall(uint8_t *, char *, char );
+extern void PrintVerySmall(uint8_t *, char *, char,int );
 extern void LoadLogo(char *);
 extern void LoadPLogo(char *);
 extern BOOL InitFonts(void);
@@ -192,7 +193,7 @@ extern void os_stop_audio(void);
 // Radar
 
 extern BOOL big;
-extern WORD radar_position;
+extern int radar_position;
 
 extern void (*HandleRadar)(void);
 extern void HandleRadarBig(void);
@@ -253,7 +254,7 @@ int os_get_screen_height(void);
 BOOL os_create_dbuffer(void);
 int os_get_inner_width(void);
 int os_get_inner_height(void);
-void os_load_palette(ULONG *);
+void os_load_palette(uint32_t *);
 void os_free_dbuffer(void);
 BOOL os_lock_bitmap(void);
 void os_unlock_bitmap(void);

@@ -1076,7 +1076,7 @@ void HandleExtras(void)
     if(*c_list)    {
         register struct Rect *r;
         register struct DOggetto *g;
-        register WORD px=pl->world_x,py=pl->world_y;
+        register int px = pl->world_x, py = pl->world_y;
 
         i=0;
 

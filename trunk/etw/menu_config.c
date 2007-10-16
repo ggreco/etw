@@ -10,7 +10,7 @@ extern char team_name[2][16];
 extern void SetCurrentResolution(void);
 char network_server[80]={0};
 
-WORD radar_position=7;
+int radar_position = 7;
 
 BOOL wb_game=FALSE,use_replay=TRUE,allow_replay=TRUE,nocpu=FALSE,arcade=FALSE,substitutions=TRUE,
     situation=FALSE,use_crowd=TRUE,use_speaker=FALSE,free_longpass=FALSE,injuries=TRUE,    
@@ -28,9 +28,9 @@ extern int screen_depth;
 
 int8_t situation_result[2]={0,0},strictness=10;
 
-long display_id = 0, situation_time = 0, wanted_width, wanted_height;
+int display_id = 0, wanted_width, wanted_height;
+long int situation_time = 0;
 char localename[40];
-ULONG ahimode = 0L;
 
 void OpenMenuScreen(void)
 {
@@ -87,7 +87,7 @@ void load_config(FILE *f)
 {
     char buffer[120];
     BOOL deny_audio_to_fast=FALSE;
-    LONG value;
+    int value;
 
     if(f)
     {
@@ -466,14 +466,14 @@ void write_config(char *dest)
         if(wb_game)
             fprintf(f,"workbench\n"/*-*/);
         else if(display_id)
-            fprintf(f,"displayid=%ld\noverscan=%ld\n"/*-*/,
+            fprintf(f,"displayid=%d\noverscan=%d\n"/*-*/,
                     display_id, overscan);
 
         if(!public_screen)
-            fprintf(f,"width=%ld\nheight=%ld\n"/*-*/,
+            fprintf(f,"width=%d\nheight=%d\n"/*-*/,
                     wanted_width, wanted_height);
         else if(wb_game)
-            fprintf(f,"width=%ld\nheight=%ld\n"/*-*/,
+            fprintf(f,"width=%d\nheight=%d\n"/*-*/,
                     WINDOW_WIDTH, WINDOW_HEIGHT);
 
         if(!(detail_level&USA_RADAR))

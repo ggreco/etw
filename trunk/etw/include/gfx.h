@@ -35,7 +35,7 @@ struct anim
     struct MChunky **Frames;    /* Le bitmap dei vari frames */
     unsigned char *Palette;         /* Puntatore alla palette, organizzata come RGB */
     int *Widths, *Heights;        /* Dimensioni dei singoli frames */
-    int32_t *Pens;       /* Nel caso di remapping conservo le penne che alloco */
+    int32_t *pens;       /* Nel caso di remapping conservo le penne che alloco */
     uint8_t *bg;           /* Sfondo, grande max_width*max_height */
     uint16_t max_width, max_height; /* Dimensioni massime dei frames */
     uint16_t nframes, current_frame;  /* Frame corrente e numero di frames */
@@ -66,7 +66,7 @@ struct gfx
 {
     uint8_t *bmap;
     unsigned char *Palette;
-    int32_t *Pens;
+    int32_t *pens;
     int width,height,realdepth;
 };
 
@@ -141,12 +141,12 @@ extern void AddAnimObj(anim_t *,WORD, WORD, WORD);
 extern void FreeAnimObj(anim_t *);
 extern BOOL LoadIFFPalette(char *);
 extern void RemapMColor(struct MChunky *,UBYTE, UBYTE);
-extern void RemapMChunkyColors(struct MChunky *, UBYTE *);
+extern void RemapMChunkyColors(struct MChunky *, uint8_t *);
 extern void RemapColor(uint8_t *, uint8_t, uint8_t, int);
 extern void RemapColors(uint8_t *, int32_t *, int);
 extern anim_t *CloneAnimObj(anim_t *);
 extern anim_t *CopyAnimObj(anim_t *);
-extern LONG RemapIFFPalette(char *, int32_t *);
+extern int RemapIFFPalette(char *, int32_t *);
 extern void FreeIFFPalette(void);
 extern void LoadGfxObjPalette(char *);
 #endif

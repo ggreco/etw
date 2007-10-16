@@ -8,9 +8,9 @@ extern struct SoundInfo *busy[];
 
 static struct SoundInfo *Cori[NUMERO_CORI] = {0}; // initialize everything to zero
 
-long wanted_sound = FONDO, playing = -1;
+int wanted_sound = FONDO, playing = -1;
 
-static LONG last_looped = FONDO, numero_loops = 0;
+static int last_looped = FONDO, numero_loops = 0;
 
 static char *CrowdName(int i)
 {

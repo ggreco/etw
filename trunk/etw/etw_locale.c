@@ -406,8 +406,6 @@ struct {void *Prev;int Cat_ID;char Str[(100)+1];} __LTool__190 = {&__LTool__189,
 
 #ifndef CROSSCOMPILER
 #include "mytypes.h"
-#else
-typedef void * APTR;
 #endif
 #include <string.h>
 
@@ -528,7 +526,7 @@ void AddCtgString(struct MyCatalog *cat,long id,long offset,long len)
     }
 }
 
-APTR OpenCatalog(char *catalog)
+void * OpenCatalog(char *catalog)
 {
     char buffer[100],*lang=GetLanguage(); // debug, dovrebbe essere la lingua di sistema
     FILE *f;
@@ -592,20 +590,19 @@ APTR OpenCatalog(char *catalog)
             }
 
 
-            fread(&clen,sizeof(long),1,f);
-
-            SWAP_LONG(clen);
+            fread(&clen,sizeof(int32_t),1,f);
+            SWAP32(clen);
 
             cat->offsetfirst=ftell(f);
 
             D(bug("Catalog length: %ld bytes\n",clen));
 
             while(clen>offset&&!feof(f)) {
-                fread(&id,sizeof(long),1,f);
-                SWAP_LONG(id);
+                fread(&id,sizeof(int32_t),1,f);
+                SWAP32(id);
 
-                fread(&slen,sizeof(long),1,f);
-                SWAP_LONG(slen);
+                fread(&slen,sizeof(int32_t),1,f);
+                SWAP32(slen);
 
                 offset+=8;
 
@@ -643,7 +640,7 @@ fallback:
     }
 }
 
-void CloseCatalog(APTR ctg)
+void CloseCatalog(void * ctg)
 {
     if(ctg)    {
         struct MyCatalog *c=ctg;
@@ -664,7 +661,7 @@ void CloseCatalog(APTR ctg)
     }
 }
 
-char *GetCatalogStr(APTR *Ctg, long num, char *def)
+char *GetCatalogStr(void *Ctg, long num, char *def)
 {
     struct MyCatalog *cat=(struct MyCatalog *)Ctg;
 
@@ -709,7 +706,7 @@ extern struct ExecBase *SysBase;
 
 void InitStrings(void)
 {
-   APTR Catalog;
+   void * Catalog;
    struct __LString *lstr=(struct __LString *)STR_BEGIN_ENTRY;
 
 #ifdef AMIGA

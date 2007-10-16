@@ -4,14 +4,15 @@
 
 #define NON_DECISA -1
 
-long game_status = S_NON_INIZIATO;
+int game_status = S_NON_INIZIATO;
 
 char *comment_file=NULL, *fondobase;
 
-LONG *Offsets, *Lengths = NULL, NumeroCommenti, 
-    frase = NON_DECISA, previous_status = NON_DECISA,
-    special_status, FondoOffset = 0, fondolen;
-long urgent_status = S_RESET;
+uint32_t *Offsets, *Lengths = NULL;
+uint32_t NumeroCommenti;
+int frase = NON_DECISA, previous_status = NON_DECISA,
+     special_status, FondoOffset = 0, fondolen;
+int urgent_status = S_RESET;
 
 BOOL c_played=FALSE;
 
@@ -282,9 +283,8 @@ void init_speaker(void)
         use_speaker=FALSE;
     }
 
-    fread(&NumeroCommenti,sizeof(LONG),1,f);
-
-    SWAP_LONG(NumeroCommenti);
+    fread(&NumeroCommenti,sizeof(uint32_t),1,f);
+    SWAP32(NumeroCommenti);
 
     D(bug("Alloco indice per %d frasi.\n", NumeroCommenti));
 
@@ -303,7 +303,7 @@ void init_speaker(void)
 
 // Faccio solo un'allocazione, per semplicita'.
 
-    if(!(Lengths=malloc(NumeroCommenti*sizeof(LONG)*2))) {
+    if(!(Lengths=malloc(NumeroCommenti*sizeof(uint32_t)*2))) {
         fclose(f);
         if(!audio2fast)
             fclose(commento);
@@ -317,12 +317,12 @@ void init_speaker(void)
 
     Offsets=&Lengths[NumeroCommenti];
 
-    fread(Lengths,sizeof(LONG),NumeroCommenti,f);
-    fread(Offsets,sizeof(LONG),NumeroCommenti,f);
+    fread(Lengths,sizeof(uint32_t),NumeroCommenti,f);
+    fread(Offsets,sizeof(uint32_t),NumeroCommenti,f);
 
     for(i=0; i<NumeroCommenti; i++) {
-        SWAP_LONG(Lengths[i]);
-        SWAP_LONG(Offsets[i]);
+        SWAP32(Lengths[i]);
+        SWAP32(Offsets[i]);
 //        D(bug("Commento %d: L:%ld O:%ld\n", i, Lengths[i], Offsets[i]));
     }
 
@@ -372,7 +372,7 @@ struct SoundInfo *handle_speaker(void)
 
     if(frase == NON_DECISA)
     {
-        LONG Length, Size = fondolen - FondoOffset;
+        int Length, Size = fondolen - FondoOffset;
 
         if(Size < 0)
             FondoOffset=0;

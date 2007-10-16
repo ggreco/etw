@@ -12,7 +12,7 @@ void Intro(void)
     {
         char buffer[20];
         BPTR fh2;
-        LONG t=RangeRand(NUMERO_INTRO);
+        long int t=RangeRand(NUMERO_INTRO);
 
         D(bug("Playo la intro %ld...\n",t));
 
@@ -22,7 +22,7 @@ void Intro(void)
         {
         struct AnimInstData *a;
         struct Screen *scr=NULL;
-        ULONG id;
+        unsigned int id;
 
         if(    WINDOW_WIDTH!=320    ||
             WINDOW_HEIGHT<256    ||
@@ -195,7 +195,7 @@ void Outro(void)
     {
         struct AnimInstData *a;
         struct Screen *scr=NULL;
-        ULONG id,i;
+        unsigned int id,i;
 
         if(    WINDOW_WIDTH!=320    ||
             WINDOW_HEIGHT<256    ||
@@ -286,7 +286,7 @@ void Outro(void)
 struct Stage
 {
     char *string[5];
-    LONG Tick;
+    long int Tick;
 };
 
 struct Stage stage[]=
@@ -336,8 +336,8 @@ void ShowCredits(void)
 {
     gfx_t *o;
     BOOL clean=TRUE;
-    LONG ticks=0,actual=0;
-    LONG top_x=WINDOW_WIDTH/4-MAXSTRINGLEN*bigfont->width/2,
+    long int ticks=0,actual=0;
+    int top_x=WINDOW_WIDTH/4-MAXSTRINGLEN*bigfont->width/2,
         top_y=WINDOW_HEIGHT/2-(bigfont->height+6)*3,
         width=(MAXSTRINGLEN*bigfont->width)+4,
         height=(bigfont->height+6)*6+4; // I +4 sono per sicurezza.
@@ -381,7 +381,7 @@ void ShowCredits(void)
 
             if(ticks>stage[actual].Tick)
             {
-                LONG i,x,y;
+                int i,x,y;
 
                 if(!clean)
                     bltchunkybitmap(back,top_x-2,top_y-2,
@@ -398,7 +398,7 @@ void ShowCredits(void)
                 {
                     if(stage[actual].string[i])
                     {
-                        LONG l=strlen(stage[actual].string[i]);
+                        int l=strlen(stage[actual].string[i]);
 
                         x=top_x+((MAXSTRINGLEN-l)*bigfont->width)/2;
 

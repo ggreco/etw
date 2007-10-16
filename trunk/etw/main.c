@@ -2,9 +2,9 @@
 #include <stdarg.h>
 #include "network.h"
 
-ULONG detail_level = 255;
-LONG Colors = 0;
-long WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 50;
+uint32_t detail_level = 0xffffffff;
+long Colors = 0;
+int WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 50;
 extern BOOL free_longpass;
 BOOL use_key0 = FALSE, use_key1 = FALSE;
 
@@ -626,7 +626,7 @@ BOOL LoadStuff(void)
                     //      back coords again
                     if ((detail_level & USA_FOTOGRAFI)
                             && peoples[i].Collisione) {
-                        extern UBYTE people_type[];
+                        extern uint8_t people_type[];
                         struct DOggetto *d;
 
                         if ((d = malloc(sizeof(struct DOggetto)))) {
