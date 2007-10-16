@@ -716,10 +716,10 @@ void HandleBall(void)
 
 void CheckPanels(void)
 {
-    if(p->player_injuried&&p->player_injuried->team->Joystick>=0)
+    if(p->player_injuried && p->player_injuried->team->Joystick >= 0)
     {
-        team_t *s=p->player_injuried->team;
-        ULONG l=r_controls[s->Joystick][counter];
+        team_t *s = p->player_injuried->team;
+        uint32_t l = r_controls[s->Joystick][counter];
 
 //        D(bug("CheckPanel: %ld\n",p->show_panel));
 
@@ -971,7 +971,7 @@ void CheckPanels(void)
     else if(!p->player_injuried)
     {
         D(bug("Pannelli settati senza giocatore di riferimento!\n"));
-        p->show_panel&=0xff;
+        p->show_panel &= 0xff;
     }
 }
 

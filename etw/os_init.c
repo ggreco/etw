@@ -15,10 +15,10 @@ extern SDL_Surface *screen;
 extern void FreeStuff(void);
 extern BOOL LoadStuff(void);
 
-ULONG(*MyReadPort0) (ULONG);
-ULONG(*MyReadPort1) (ULONG);
+uint32_t(*MyReadPort0) (uint32_t);
+uint32_t(*MyReadPort1) (uint32_t);
 
-ULONG MyReadJoyPort(ULONG);
+uint32_t MyReadJoyPort(uint32_t);
 
 #ifdef DEBUG_DISABLED
 #   ifdef USE_LOGFILE
@@ -201,7 +201,7 @@ unsigned long os_get_timer(void)
 }
 
 
-void os_wait_timer(ULONG clk)
+void os_wait_timer(uint32_t clk)
 {
     while (SDL_GetTicks() < clk);
 }
@@ -223,7 +223,7 @@ unsigned long os_get_timer(void)
 }
 
 
-void os_wait_timer(ULONG clk)
+void os_wait_timer(uint32_t clk)
 {
     while (clock() < clk);
 }

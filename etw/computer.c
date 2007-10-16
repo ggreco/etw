@@ -234,10 +234,10 @@ WORD ComputerMatch(BYTE a,BYTE b)
     return (WORD) (gol_a | (gol_b<<8) );
 }
 
-char *ElaboraRisultato(BYTE a,BYTE b,WORD risultato)
+char *ElaboraRisultato(int8_t a, int8_t b, uint16_t risultato)
 {
     static char res[10];
-    WORD gol_a,gol_b;
+    uint16_t gol_a, gol_b;
 
     gol_b=((risultato&0xff00)>>8);
     gol_a=risultato&0xff;
@@ -272,7 +272,7 @@ char *ElaboraRisultato(BYTE a,BYTE b,WORD risultato)
         DatiCampionato[b].Punti+=ppp;
     }
 
-    sprintf(res,"%d-%d",gol_a,gol_b);
+    sprintf(res,"%d-%d", gol_a, gol_b);
 
     return res;
 }

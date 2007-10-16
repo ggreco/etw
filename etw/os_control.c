@@ -45,17 +45,17 @@ void WaitOrKey(int secs)
 
 #endif
 
-ULONG ReadNetworkPort(ULONG l)
+uint32_t ReadNetworkPort(uint32_t l)
 {
 //    fprintf(stderr, "Read network %ld: %ld\n", l, NetJoyPos[l]);
     return NetJoyPos[l];
 }
 
-ULONG MyReadJoyPort(ULONG l)
+uint32_t MyReadJoyPort(uint32_t l)
 {    
 //    extern struct joy_config joycfg[];
     int xc,yc;
-    ULONG mask=0;
+    uint32_t mask=0;
 
     if(l<0 || !joy[l])
         return 0L;
@@ -321,7 +321,7 @@ int os_wait_end_pause(void)
 {
     extern SDL_Event lastevent;
     int ok=FALSE;
-    Uint8 key;
+    uint8_t key;
 
     switch(lastevent.type)
     {
@@ -697,10 +697,10 @@ void UpdatePortStatus(void)
     SDL_PumpEvents();
 }
 
-ULONG ReadKeyPort(ULONG port)
+uint32_t ReadKeyPort(uint32_t port)
 {
-    register ULONG v=0;
-    register Uint8 *keys;
+    register uint32_t v=0;
+    register uint8_t *keys;
     register int *q;
 
     keys=SDL_GetKeyState(NULL);

@@ -186,7 +186,7 @@ struct team
     anim_t *Marker;
     WORD Marker_X, Marker_Y, MarkerFrame;
     BOOL MarkerOnScreen;
-    bitmap NomeAttivo;
+    uint8_t *NomeAttivo;
     int8_t gioco_ruolo;
     char name[52];
     BOOL MarkerRed;
@@ -206,7 +206,7 @@ struct game
     struct ball ball;
     struct referee referee;
     struct team *team[2];
-    bitmap result;
+    uint8_t * result;
     struct player *player_injuried;
     anim_t *extras; // Ci metto bandierine, fotografi, poliziotti...
     struct team *possesso;
@@ -222,9 +222,9 @@ struct game
 
 struct DOggetto
 {
-    WORD X, Y, Range;
+    int X, Y, Range;
     BOOL Collisione;
-    BYTE *Frame;
+    int8_t *Frame;
 };
 
 // new defines used for better internationalization...

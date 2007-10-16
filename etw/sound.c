@@ -133,7 +133,7 @@ void SetCrowd(int s)
     }
 }
 
-LONG __saveds ETW_DiskPlay(void)
+int32_t __saveds ETW_DiskPlay(void)
 {
     D(bug("Warning called UNIMPLEMENTED DiskPlay!!!\n"));
 
@@ -147,7 +147,7 @@ LONG __saveds ETW_DiskPlay(void)
  * il suono che si vuole riprodurre.
  */
 
-LONG PlayBackSound(struct SoundInfo * si)
+int PlayBackSound(struct SoundInfo * si)
 {
     register int i;
 
@@ -188,8 +188,8 @@ void PlayIfNotPlaying(int s)
 #ifndef MACOSX
 static void convert_sound(struct SoundInfo *s)
 {
-    UBYTE *buffer, *destsnd;
-    long length;
+    uint8_t *buffer, *destsnd;
+    size_t length;
 
     if (s->Flags & SOUND_DISK) 
         return;
@@ -203,11 +203,11 @@ static void convert_sound(struct SoundInfo *s)
 
     // Sto giochetto per evitare overflow
 
-    length = (long)((((double)samplerate)/ ((double)s->Rate)) * ((double)s->Length));
+    length = (long)((((double)samplerate) / ((double)s->Rate)) * ((double)s->Length));
 
     if ((destsnd = malloc(length + 2048))) { // be sure about possible overflows
         register int l = s->Length, k = 0, t;
-        register unsigned char *src = s->SoundData, *dst = destsnd;
+        register uint8_t *src = s->SoundData, *dst = destsnd;
 
         while (l--) {
             t = buffer[k++];

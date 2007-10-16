@@ -43,45 +43,39 @@ void SetShotSpeed(player_t *g, WORD distance)
     }
 }
 
-BOOL InArea(BYTE area, WORD x,WORD y)
+BOOL InArea(BYTE area, WORD x, WORD y)
 {
-    if(y>AREA_RIGORE_Y_N &&
-        y<AREA_RIGORE_Y_S)
-    {
-        if(area && x<CENTROCAMPO_X &&
-            ((LONG)(y>>3))<(-((LONG)x>>3)*31+6197L)  ) // era 6157
-        {
-            return TRUE;
-        }
-        else if(!area && x>CENTROCAMPO_X &&
-            ((LONG)(y>>3))<( ((LONG)x>>3)*31-32963L ) ) // era 33003
+    if(y <= AREA_RIGORE_Y_N || y >= AREA_RIGORE_Y_S)
+        return FALSE;
 
-        {
-            return TRUE;
-        }
-    }
+    if(area && x < CENTROCAMPO_X &&
+       ((long int)(y>>3)) < (-((long int)x>>3) * 31 + 6197L)) // era 6157
+        return TRUE;
+
+    if(!area && x > CENTROCAMPO_X &&
+       ((long int)(y>>3)) < (((long int)x>>3) * 31 - 32963L)) // era 33003
+        return TRUE;
 
     return FALSE;
 }
 
 BOOL InAnyArea(WORD x,WORD y)
 {
-    if( y>AREA_RIGORE_Y_N &&
-        y<AREA_RIGORE_Y_S &&
-    (
-    (x<CENTROCAMPO_X &&
-       ((LONG)(y>>3))<(-((LONG)x>>3)*31+6197L)  ) ||
-       (x>CENTROCAMPO_X &&
-       ((LONG)(y>>3))<( ((LONG)x>>3)*31-32963L ) )
-      )
-     )
-    {
-            return TRUE;
-    }
+    if(y <= AREA_RIGORE_Y_N || y >= AREA_RIGORE_Y_S)
+        return FALSE;
+
+    if(x < CENTROCAMPO_X &&
+       ((long int)(y>>3)) < (-((long int)x>>3) * 31 + 6197L))
+        return TRUE;
+
+    if(x > CENTROCAMPO_X &&
+       ((long int)(y>>3)) < (((long int)x>>3) * 31 - 32963L))
+        return TRUE;
+
     return FALSE;
 }
 
-void SetComando(player_t *g,BYTE cmd,BYTE dopo,BYTE arg)
+void SetComando(player_t *g, BYTE cmd, BYTE dopo, BYTE arg)
 {
     switch(cmd)
     {
@@ -975,16 +969,16 @@ void EseguiDopoComando(player_t *g)
     }
 }
 
-WORD IndirizzaTiro(player_t *g,ULONG joystate)
+WORD IndirizzaTiro(player_t *g, uint32_t joystate)
 {
-    register WORD dest_y,dest_x;
+    register WORD dest_y, dest_x;
 
-    pl->velocita=8+GetTable()+g->Tiro;
+    pl->velocita = 8 + GetTable() + g->Tiro;
 
     if(g->SNum)
-        dest_x=G2P_X(PORTA_E_X);
+        dest_x = G2P_X(PORTA_E_X);
     else
-        dest_x=G2P_X(PORTA_O_X);
+        dest_x = G2P_X(PORTA_O_X);
 
     if(joystate&JPF_JOY_UP)
     {

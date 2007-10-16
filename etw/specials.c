@@ -311,13 +311,14 @@ SDLKey keys[] =
     /* Add any other keys here */
 };
 
-LONG jingle=-1;
+static int jingle = -1;
+
 extern struct GfxMenu *actual_menu;
 extern int FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
 
 BOOL make_setup=FALSE,game_start=FALSE,can_modify=TRUE,savehigh=FALSE,
     triple=FALSE,chunky_version=FALSE,use_gfx_scaling=FALSE;
-BYTE selected_number=0,wanted_number=0,duration=1,field_type=0,daytime=0;
+int8_t selected_number=0, wanted_number=0, duration=1, field_type=0, daytime=0;
 char *enabled=msg_7,*disabled=msg_8;
 extern struct SoundInfo *busy[];
 extern int os_videook(int,int);
@@ -2788,14 +2789,14 @@ BOOL HighSelection(WORD bottone)
 
             if ((fh=fopen(buffer,"rb")))    {
                 
-                LONG l;
+                ssize_t l;
 
                 freq.Title="Save highlight...";
                 freq.Save=TRUE;
 
                 if (FileRequest(&freq)) {
                     char buffer[130];
-                    APTR a;
+                    char *a;
 
                     fseek(fh,0,SEEK_END);
                     l=fseek(fh,0,SEEK_SET);

@@ -1,7 +1,7 @@
 #include "eat.h"
 #include "files.h"
 
-ULONG *r_controls[MAX_PLAYERS];
+uint32_t *r_controls[MAX_PLAYERS];
 // UWORD actual_control[MAX_PLAYERS];
 
 void EndReplay(void);
@@ -480,7 +480,7 @@ void StoreReplay(UBYTE Set)
 void LoadReplay(UBYTE Set)
 {
     register LONG i, j;
-    APTR *a = NULL;
+    void **a = NULL;
 
     i = 0;
 
@@ -499,7 +499,7 @@ void LoadReplay(UBYTE Set)
     if (highlight) {
 // Salvo tutti i puntatori...
 
-        a = (APTR *)malloc(sizeof(APTR) * (SQ_PTR * 2 + 6));
+        a = (void **)malloc(sizeof(void *) * (SQ_PTR * 2 + 6));
 
         if(!a) {
             quit_game = TRUE;
@@ -550,8 +550,8 @@ void LoadReplay(UBYTE Set)
         p->team[i]->MarkerOnScreen=FALSE;
 
         if (a) {
-            char *c;
-            ULONG d = (ULONG)p->team[i]->tactic, e;
+            uint8_t *c;
+            uint32_t d = (ULONG)p->team[i]->tactic, e;
 // first fix the pointers then the reference INSIDE them!
             p->team[i]->keepers.anim = a[i * SQ_PTR];
             p->team[i]->Marker = a[i * SQ_PTR + 12];

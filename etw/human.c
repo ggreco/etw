@@ -1,10 +1,10 @@
 #include "eat.h"
 
-BYTE need_release[MAX_PLAYERS]={1,1};
+int8_t need_release[MAX_PLAYERS]={1,1};
 
 // Il primo deve esserci, il secondo no!
 
-void DoLongPass(player_t *g,LONG joystate)
+void DoLongPass(player_t *g, uint32_t joystate)
 {
     LongPass(g,joystate);
 
@@ -24,7 +24,7 @@ void DoCross(player_t *g)
         SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->dir>>5);
 }
 
-void DoShot(player_t *g,LONG joystate)
+void DoShot(player_t *g, uint32_t joystate)
 {
     if( (g->SNum&&(joystate&JPF_JOY_LEFT))||(g->SNum==0&&(joystate&JPF_JOY_RIGHT)) )
     {
@@ -55,7 +55,7 @@ void DoShot(player_t *g,LONG joystate)
         SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->dir>>5);
 }
 
-void HumanShot(player_t *g, LONG joystate)
+void HumanShot(player_t *g, uint32_t joystate)
 {
     switch(CanScore(g))
     {
@@ -74,7 +74,7 @@ void HumanShot(player_t *g, LONG joystate)
 
 void HandleControlled(int squadra)
 {
-    register LONG joystate;
+    uint32_t joystate;
     register player_t *g=p->team[squadra]->attivo;
 
     //      g->WaitForControl++;
@@ -345,8 +345,8 @@ void HandleControlled(int squadra)
 
 void HandleControlledJ2B(int squadra)
 {
-    register LONG joystate;
-    register player_t *g=p->team[squadra]->attivo;
+    register uint32_t joystate;
+    register player_t *g = p->team[squadra]->attivo;
 
     //      g->WaitForControl++;
 
@@ -617,8 +617,8 @@ void HandleControlledJ2B(int squadra)
 
 void HandleControlledJoyPad(int squadra)
 {
-    register LONG joystate;
-    register player_t *g=p->team[squadra]->attivo;
+    register uint32_t joystate;
+    register player_t *g = p->team[squadra]->attivo;
 
     if(g->Special || g->Comando)
     {
@@ -880,35 +880,35 @@ void HandleControlledJoyPad(int squadra)
     }
 }
 
-WORD GetJoyDirection(ULONG joystate)
+WORD GetJoyDirection(uint32_t joystate)
 {
-        if(joystate&JPF_JOY_UP)
-        {
-                if(joystate&JPF_JOY_LEFT)
-                        return D_NORD_OVEST;
+    if(joystate & JPF_JOY_UP)
+    {
+        if(joystate & JPF_JOY_LEFT)
+            return D_NORD_OVEST;
 
-                if(joystate&JPF_JOY_RIGHT)
-                        return D_NORD_EST;
+        if(joystate & JPF_JOY_RIGHT)
+            return D_NORD_EST;
 
-                return D_NORD;
-        }
+        return D_NORD;
+    }
 
-        if(joystate&JPF_JOY_DOWN)
-        {
-                if(joystate&JPF_JOY_LEFT)
-                        return D_SUD_OVEST;
+    if(joystate & JPF_JOY_DOWN)
+    {
+        if(joystate & JPF_JOY_LEFT)
+            return D_SUD_OVEST;
 
-                if(joystate&JPF_JOY_RIGHT)
-                        return D_SUD_EST;
+        if(joystate & JPF_JOY_RIGHT)
+            return D_SUD_EST;
 
-                return D_SUD;
-        }
+        return D_SUD;
+    }
 
-        if(joystate&JPF_JOY_LEFT)
-        {
-                return D_OVEST;
-        }
+    if(joystate & JPF_JOY_LEFT)
+    {
+        return D_OVEST;
+    }
 
-        return D_EST;
+    return D_EST;
 }
 

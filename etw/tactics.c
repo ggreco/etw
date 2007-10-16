@@ -19,7 +19,7 @@ tactic_t *LoadTactic(char *name)
         return NULL;
     }
 
-    fread(&t->NameLen,sizeof(char),1,fh);
+    fread(&t->NameLen, sizeof(char), 1, fh);
     
     if(!(t->Name=malloc(t->NameLen+1)))
     {    
@@ -36,10 +36,10 @@ tactic_t *LoadTactic(char *name)
         for(j=0;j<PLAYERS;j++)
             for(k=0;k<(SECTORS+SPECIALS);k++)
             {
-                fread(&t->Position[i][j][k].x,sizeof(WORD),1,fh);
-                fread(&t->Position[i][j][k].y,sizeof(WORD),1,fh);
-                SWAP_WORD(t->Position[i][j][k].x);
-                SWAP_WORD(t->Position[i][j][k].y);
+                fread(&t->Position[i][j][k].x,sizeof(uint16_t),1,fh);
+                fread(&t->Position[i][j][k].y,sizeof(uint16_t),1,fh);
+                SWAP16(t->Position[i][j][k].x);
+                SWAP16(t->Position[i][j][k].y);
 
                 t->Position[i][j][k].x=(t->Position[i][j][k].x>>5)*31+280;
                 t->Position[i][j][k].y=(t->Position[i][j][k].y>>2)*3-96;

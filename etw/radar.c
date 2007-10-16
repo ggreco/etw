@@ -5,20 +5,20 @@
 #define BIG_MODIFIER 4
 #define START_AREA (149-137)
 
-extern WORD radar_position;
+extern int radar_position;
 
-WORD radar_xstart = 80, radar_ystart = 133, PBianca = 0;
-WORD radarlines[] = {/* 84, 137, */ 232, 137, 232, 194, 84, 194, 84, 137};
-WORD area1[] = {/* 84, 152, */ 104, 149, 104, 182, 84, 182};
-WORD area2[] = {/* 232, 152, */ 212, 149, 212, 182, 232, 182};
+int radar_xstart = 80, radar_ystart = 133, PBianca = 0;
+int radarlines[] = {/* 84, 137, */ 232, 137, 232, 194, 84, 194, 84, 137};
+int area1[] = {/* 84, 152, */ 104, 149, 104, 182, 84, 182};
+int area2[] = {/* 232, 152, */ 212, 149, 212, 182, 232, 182};
 
 BOOL big = TRUE;
 BOOL small_dot;
 
 void HandleRadarBig(void)
 {
-    bitmap bm = main_bitmap + radar_xstart + (radar_ystart*bitmap_width), bm2;
-    uint8_t *bmt;
+    uint8_t *bm = main_bitmap + radar_xstart + (radar_ystart*bitmap_width);
+    uint8_t *bm2, *bmt;
     uint8_t *main_bitmap_start = main_bitmap + bitmap_width;
     uint8_t *main_bitmap_end = main_bitmap + bitmap_width*(bitmap_height-1);
     int j, c0 = p->team[0]->MarkerRed, c1 = p->team[1]->MarkerRed;
@@ -182,8 +182,8 @@ void HandleRadarBig(void)
 
 void HandleRadarLittle(void)
 {
-    bitmap bm = main_bitmap+radar_xstart+(radar_ystart*bitmap_width), bm2;
-    uint8_t *bmt;
+    uint8_t *bm = main_bitmap+radar_xstart+(radar_ystart*bitmap_width);
+    uint8_t *bm2, *bmt;
     uint8_t *main_bitmap_start = main_bitmap+bitmap_width;
     uint8_t *main_bitmap_end = main_bitmap+bitmap_width*(bitmap_height-1);
     int j, c0 = p->team[0]->MarkerRed, c1 = p->team[1]->MarkerRed;

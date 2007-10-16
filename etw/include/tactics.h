@@ -16,8 +16,8 @@
 
 struct pos
 {
-    unsigned short x, y;
-    unsigned short settore;
+    uint16_t x, y;
+    uint16_t settore;
 };
 
 struct tactic

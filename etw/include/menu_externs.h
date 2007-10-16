@@ -34,7 +34,7 @@ extern void LoadTeams(char *);
 extern void RedrawBottone(struct Bottone *, UBYTE);
 extern void CancellaBottone(struct Bottone *);
 extern void ClearScores(void);
-extern void PrintShadow(LONG, LONG, char *, LONG, struct myfont *);
+extern void PrintShadow(int, int, char *, int, struct myfont *);
 extern void MyRestoreBack(void);
 extern void ClearScores(void);
 extern void LoadScores(void);
@@ -99,7 +99,7 @@ extern void SetupMatches(void);
 extern void PlayMatches(void);
 extern WORD ComputerMatch(BYTE, BYTE);
 extern WORD PlayMatch(BYTE, BYTE);
-char *ElaboraRisultato(BYTE, BYTE, WORD);
+char *ElaboraRisultato(int8_t, int8_t, uint16_t);
 extern BOOL GroupsClear(void);
 extern void request(char *);
 extern void EliminazioneDiretta(int);
@@ -118,18 +118,19 @@ extern BOOL no_sound, nosync, allow_replay, nocpu, saved, wb_game, big, injuries
     cgxmode, final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
     audio_to_fast, use_gfx_scaling, wpa8, triple, force_single, chunky_version;
 extern int32_t Pens[256];
-extern long framerate, t_l, display_id, situation_time, framerate, overscan;
-extern ULONG detail_level, ahimode;
+extern int framerate, display_id, framerate, overscan;
+extern long int t_l, situation_time;
+extern uint32_t detail_level, ahimode;
 extern struct Match turni[64][32];
 extern int arcade_score;
 
 extern int8_t competition, selected_number, wanted_number, actual_team, controllo[], p_control[],
     situation_result[2], strictness, field, duration, field_type, ruolo[];
 extern UBYTE totale_giornate;
-extern BYTE teamarray[], turno, nteams, daytime, league_pos[64], ppp, ppv, pps;
+extern int8_t teamarray[], turno, nteams, daytime, league_pos[64], ppp, ppv, pps;
 
-extern long WINDOW_WIDTH, WINDOW_HEIGHT, oldwidth, oldheight, wanted_width, wanted_height;
-extern WORD radar_position, players, current_menu;
+extern int WINDOW_WIDTH, WINDOW_HEIGHT, oldwidth, oldheight, wanted_width, wanted_height;
+extern int radar_position, players, current_menu;
 extern char control[], career_file[], *menu_soundname[], localename[], scontri, i_scontri;
 extern struct myfont *bigfont, *smallfont, *titlefont;
 extern struct GfxMenu menu[];
@@ -156,10 +157,10 @@ int drawtext(char *, int, int, int, int);
 void setfont(struct myfont *);
 struct myfont *openfont(char *);
 void closefont(struct myfont *);
-void freedraw(long, WORD, WORD, WORD, WORD);
-void freepolydraw(long, int, WORD *);
-void draw(long, WORD, WORD, WORD, WORD);
-void polydraw(long, WORD, WORD, int, WORD *);
+void freedraw(long, int, int, int, int);
+void freepolydraw(long, int, int *);
+void draw(long, int, int, int, int);
+void polydraw(long, int, int, int, int *);
 void bitmapFastScale(struct MyFastScaleArgs *);
 
 

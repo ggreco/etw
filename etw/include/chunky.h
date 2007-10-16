@@ -38,9 +38,9 @@ void bltchunkybitmap(uint8_t *, int, int, uint8_t *, int, int, int, int, int, in
 void bltbitmap_x(uint8_t *, int, int, uint8_t *, int, int, int, int, int, int, unsigned char);
 void bltanimobjclipped(struct MChunky *, int, int, uint8_t *, int, int, int, int, int);
 void bltanimobj(struct MChunky *, uint8_t *, int, int, int);
-struct MChunky *convert_mchunky(FILE *, FILE *, int, int, int, LONG *);
-struct MChunky *load_mchunky(FILE *, int, LONG *);
-void do_p2c(unsigned char **, uint8_t *, int, int, int, LONG *);
+struct MChunky *convert_mchunky(FILE *, FILE *, int, int, int, int32_t *);
+struct MChunky *load_mchunky(FILE *, int, int32_t *);
+void do_p2c(unsigned char **, uint8_t *, int, int, int, int32_t *);
 void free_mchunky(struct MChunky *);
 struct MChunky *CloneMChunky(struct MChunky *);
 void bltanimobjscale(struct scaleAnimObjArgs *args);

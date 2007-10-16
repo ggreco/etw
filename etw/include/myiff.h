@@ -33,7 +33,7 @@ struct IFFHandle
 {
     FILE *iff_Stream;
     unsigned long iff_Flags, iff_Stops;
-    LONG *stops;
+    int32_t *stops;
     struct ContextNode Current;
 };
 
@@ -52,24 +52,24 @@ struct IFFHandle
 /* Basic functions */
 
 struct IFFHandle *AllocIFF(void);
-long OpenIFF( struct IFFHandle *iff, long rwMode );
-long ParseIFF( struct IFFHandle *iff, long control );
-void CloseIFF( struct IFFHandle *iff );
-void FreeIFF( struct IFFHandle *iff );
+long OpenIFF(struct IFFHandle *iff, long rwMode);
+long ParseIFF(struct IFFHandle *iff, long control);
+void CloseIFF(struct IFFHandle *iff);
+void FreeIFF(struct IFFHandle *iff);
 
 /* Read/Write functions */
 
-LONG ReadChunkBytes( struct IFFHandle *iff, APTR buf, long numBytes );
-LONG ReadChunkRecords( struct IFFHandle *iff, APTR buf, long bytesPerRecord,
-                       long numRecords );
+ssize_t ReadChunkBytes(struct IFFHandle *iff, APTR buf, long numBytes);
+ssize_t ReadChunkRecords(struct IFFHandle *iff, APTR buf, long bytesPerRecord,
+                         long numRecords);
 
 /* Built-in chunk/property handlers */
 
-LONG StopChunks( struct IFFHandle *iff, LONG *propArray, long numPairs );
-struct ContextNode *CurrentChunk( struct IFFHandle *iff );
+ssize_t StopChunks(struct IFFHandle *iff, int32_t *propArray, long numPairs);
+struct ContextNode *CurrentChunk(struct IFFHandle *iff);
 
 /* IFFHandle initialization */
 
-void InitIFFasDOS( struct IFFHandle *iff );
+void InitIFFasDOS(struct IFFHandle *iff);
 
 #endif

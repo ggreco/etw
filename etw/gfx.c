@@ -99,7 +99,7 @@ void DrawAnimObj(void)
             bltanimobj(obj->Frames[cf], main_bitmap, obj->x_pos,
                        obj->y_pos, bitmap_width);
         } else {
-            LONG xs, ys, xd = obj->x_pos, yd = obj->y_pos, w =
+            int xs, ys, xd = obj->x_pos, yd = obj->y_pos, w =
                 obj->Widths[cf], h = obj->Heights[cf], clipped = FALSE;
 
             if (xd < 0) {
@@ -331,7 +331,7 @@ gfx_t *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
     FILE *fh;
     int i;
     uint16_t temp;
-    UBYTE *planes[8];
+    uint8_t *planes[8];
     BOOL ok = TRUE;
 
     D(bug("Loading %s...", name));
@@ -350,13 +350,13 @@ gfx_t *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
             }
 
             fread(&temp, sizeof(uint16_t), 1, fh);
-            SWAP_WORD(temp);
+            SWAP16(temp);
             obj->width = temp;
             fread(&temp, sizeof(uint16_t), 1, fh);
-            SWAP_WORD(temp);
+            SWAP16(temp);
             obj->height = temp;
             fread(&temp, sizeof(uint16_t), 1, fh);
-            SWAP_WORD(temp);
+            SWAP16(temp);
             obj->realdepth = temp;
 
             if (use_remapping && !pens) {
@@ -364,10 +364,10 @@ gfx_t *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
                     fread(obj->Palette, sizeof(char) * 3,
                           (1 << obj->realdepth), fh);
 
-                    if ((obj->Pens =
+                    if ((obj->pens =
                         malloc((1 << obj->realdepth) * sizeof(long)))) {
                         for (i = 0; i < (1 << obj->realdepth); i++) {
-                            obj->Pens[i] = obtain_pen(obj->Palette[i * 3],
+                            obj->pens[i] = obtain_pen(obj->Palette[i * 3],
                                                       obj->Palette[i * 3 +
                                                                    1],
                                                       obj->Palette[i * 3 +
@@ -384,7 +384,7 @@ gfx_t *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
                       ("Remapping disabilitato per problemi di memoria.\n"));
                 }
             } else {
-                obj->Pens = pens;
+                obj->pens = pens;
                 fseek(fh, (1 << obj->realdepth) * 3, SEEK_CUR);
             }
 
@@ -411,7 +411,7 @@ gfx_t *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
                           1, fh);
 
                 do_p2c(planes, obj->bmap, obj->width, obj->height,
-                       obj->realdepth, obj->Pens);
+                       obj->realdepth, obj->pens);
 
                 /* 15/06/04 - AC: After converting bitplanes in a bitmap, we should
                  * free them.
@@ -428,7 +428,7 @@ gfx_t *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
                 AddNode(&GfxList, obj, TYPE_GFXOBJ);
 
                 if (pens)
-                    obj->Pens = NULL;
+                    obj->pens = NULL;
 
                 return obj;
             } else {
@@ -453,7 +453,7 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
     anim_t *obj;
     FILE *fh, *fo = NULL;
     BOOL convert = FALSE;
-    LONG i;
+    int i;
 
     obj = calloc(1, sizeof(anim_t));
     if(!obj)
@@ -520,10 +520,10 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
         fwrite(&obj->max_height, sizeof(uint16_t), 1, fo);
         fwrite(&obj->real_depth, sizeof(uint16_t), 1, fo);
     }
-    SWAP_WORD(obj->nframes);
-    SWAP_WORD(obj->max_width);
-    SWAP_WORD(obj->max_height);
-    SWAP_WORD(obj->real_depth);
+    SWAP16(obj->nframes);
+    SWAP16(obj->max_width);
+    SWAP16(obj->max_height);
+    SWAP16(obj->real_depth);
 
     obj->bg = NULL;
 
@@ -567,10 +567,10 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
                 fwrite(obj->Palette, sizeof(char) * 3,
                        (1 << obj->real_depth), fo);
 
-            if ((obj->Pens =
+            if ((obj->pens =
                 malloc((1 << obj->real_depth) * sizeof(int32_t)))) {
                 for (i = 0; i < (1 << obj->real_depth); i++) {
-                    obj->Pens[i] =
+                    obj->pens[i] =
                         obtain_pen(obj->Palette[i * 3],
                                    obj->Palette[i * 3 + 1],
                                    obj->Palette[i * 3 + 2]);
@@ -604,7 +604,7 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
 
     if (use_remapping && pens) {
         obj->Flags |= AOBJ_SHAREPENS;
-        obj->Pens = pens;
+        obj->pens = pens;
     }
 
     if ((obj->Frames = calloc(obj->nframes, sizeof(APTR)))) {
@@ -620,16 +620,16 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
                    obj->max_height, obj->real_depth));
 
                 for (i = 0; i < obj->nframes; i++) {
-                    fread(&tempw, sizeof(WORD), 1, fh);
+                    fread(&tempw, sizeof(int16_t), 1, fh);
                     if (fo)
-                        fwrite(&tempw, sizeof(WORD), 1, fo);
-                    SWAP_WORD(tempw);
+                        fwrite(&tempw, sizeof(int16_t), 1, fo);
+                    SWAP16(tempw);
                     obj->Widths[i] = tempw;
 
-                    fread(&tempw, sizeof(WORD), 1, fh);
+                    fread(&tempw, sizeof(int16_t), 1, fh);
                     if (fo)
-                        fwrite(&tempw, sizeof(WORD), 1, fo);
-                    SWAP_WORD(tempw);
+                        fwrite(&tempw, sizeof(int16_t), 1, fo);
+                    SWAP16(tempw);
                     obj->Heights[i] = tempw;
 
                     if (convert) {
@@ -640,7 +640,7 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
                                              obj->Widths[i],
                                              obj->Heights[i],
                                              obj->real_depth,
-                                             obj->Pens))) {
+                                             obj->pens))) {
                             ok = FALSE;
                             D(bug
                               ("Non c'e' memoria per le bitmap!\n"));
@@ -651,7 +651,7 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
                         if (!
                             (obj->Frames[i] =
                              load_mchunky(fh, obj->Heights[i],
-                                          obj->Pens))) {
+                                          obj->pens))) {
                             ok = FALSE;
                             D(bug
                               ("Non c'e' memoria per le bitmap!\n"));
@@ -715,13 +715,13 @@ void FreeGfxObj(gfx_t * obj)
     if (obj->Palette) {
         free(obj->Palette);
 
-        if (obj->Pens) {
+        if (obj->pens) {
             int i;
 
             for (i = 0; i < (1 << obj->realdepth); i++)
-                release_pen(obj->Pens[i]);
+                release_pen(obj->pens[i]);
 
-            free(obj->Pens);
+            free(obj->pens);
         }
     }
     if (obj->bmap)
@@ -767,11 +767,11 @@ void FreeAnimObj(anim_t * obj)
 
     }
 
-    if (obj->Pens && ((obj->Flags & AOBJ_SHAREPENS) == 0)) {
+    if (obj->pens && ((obj->Flags & AOBJ_SHAREPENS) == 0)) {
         for (i = 0; i < (1 << obj->real_depth); i++)
-            release_pen(obj->Pens[i]);
+            release_pen(obj->pens[i]);
 
-        free(obj->Pens);
+        free(obj->pens);
     }
 
     if (obj->Frames)
@@ -835,7 +835,7 @@ void FreeGraphics(void)
 void RemapAnimObjColor(anim_t * o, UBYTE source_color, UBYTE dest_color)
 {
     int k;
-    unsigned char pens[256];
+    uint8_t pens[256];
 
     for (k = 0; k < 256; k++) {
         pens[k] = k;
@@ -851,7 +851,7 @@ void RemapAnimObjColor(anim_t * o, UBYTE source_color, UBYTE dest_color)
 void RemapMColor(struct MChunky *c, UBYTE source_color, UBYTE dest_color)
 {
     register int k;
-    unsigned char pens[256];
+    uint8_t pens[256];
 
     for (k = 0; k < 256; k++) {
         pens[k] = k;
@@ -901,7 +901,7 @@ BOOL LoadIFFPalette(char *filename)
 
                     if (!strncmp(buffer, "CMAP" /*-*/ , 4)) {
                         fread(&cmap_len, sizeof(uint32_t), 1, fh);
-                        SWAP_LONG(cmap_len);
+                        SWAP32(cmap_len);
                         cmap_len /= 3;
 
                         if (cmap_len > colors) {
@@ -986,7 +986,7 @@ anim_t *CopyAnimObj(anim_t * obj)
 // XXX this is a problem on pocketpc, still have to understand why
         o->Flags = AOBJ_COPIED | AOBJ_SHAREPENS;
                         
-        o->Pens = NULL;
+        o->pens = NULL;
         o->Palette = NULL;
 
         if (!
@@ -1032,7 +1032,7 @@ anim_t *CopyAnimObj(anim_t * obj)
     return NULL;
 }
 
-LONG RemapIFFPalette(char *filename, int32_t *Pens)
+int RemapIFFPalette(char *filename, int32_t *Pens)
 {
     FILE *fh;
     char buffer[8];
@@ -1059,7 +1059,7 @@ LONG RemapIFFPalette(char *filename, int32_t *Pens)
 
                     if (!strncmp(buffer, "CMAP" /*-*/ , 4)) {
                         fread(&cmap_len, sizeof(uint32_t), 1, fh);
-                        SWAP_LONG(cmap_len);
+                        SWAP32(cmap_len);
 
                         cmap_len /= 3;
 
@@ -1110,7 +1110,7 @@ void LoadGfxObjPalette(char *name)
         fread(&temp, sizeof(uint16_t), 1, fh);
         fread(&temp, sizeof(uint16_t), 1, fh);
         fread(&temp, sizeof(uint16_t), 1, fh);    // Questa e' realdepth
-        SWAP_WORD(temp);
+        SWAP16(temp);
 
         depth = min(screen_depth, temp);
 

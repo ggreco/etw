@@ -7,7 +7,7 @@ char shirt[2][24]={"gfx/playera.obj","gfx/playera.obj"};
 int highsize=0;
 
 extern BOOL wb_game;
-extern LONG display_id,overscan;
+extern int32_t display_id,overscan;
 
 BOOL audio2fast=FALSE,joyonly=FALSE,
     arcade_teams=FALSE,first_half=TRUE,extratime=FALSE,
@@ -18,19 +18,20 @@ int FIXED_SCALING_WIDTH=320,FIXED_SCALING_HEIGHT=256;
 
 struct MyFastScaleArgs *scaling=NULL;
 
-BYTE player_type[4]={1,
+int8_t player_type[4]={1,
 #ifdef DEMOVERSION
 -1,
 #else
 0,
 #endif
--1,-1},role[4],
-    current_field=0,arcade_team[2],starting_team;
+-1,-1};
+
+int8_t role[4], current_field=0, arcade_team[2], starting_team;
 
 /*
-extern LONG display_id=0,situation_time=0;
-extern LONG overscan;
-extern ULONG ahimode=0L;
+extern int32_t display_id = 0, situation_time = 0;
+extern int32_t overscan;
+extern uint32_t ahimode = 0;
 */
 
 extern void *screen;

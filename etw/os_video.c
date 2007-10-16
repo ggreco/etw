@@ -1,13 +1,13 @@
 #include "eat.h"
 #include "preinclude.h"
 
-APTR handle=NULL;
-bitmap bmap=NULL,original_bm;
+void * handle = NULL;
+uint8_t * bmap = NULL, * original_bm;
 
 SDL_Surface *screen=NULL;
 SDL_Event lastevent;
 extern int screen_depth;
-extern LONG display_id,Colors;
+extern int Colors;
 extern BOOL use_width,use_height,wb_game,use_direct;
 BOOL triple_buffering=FALSE,wpa8=FALSE,overscan=0;
 
@@ -32,9 +32,9 @@ void AdjustSDLPalette(void)
 
 void ResizeWin(SDL_Event *event)
 {
-    SDL_Surface *temp=screen;
-    bitmap newbm;
-    int old_width=WINDOW_WIDTH,old_height=WINDOW_HEIGHT,nw;
+    SDL_Surface *temp = screen;
+    uint8_t *newbm;
+    int old_width = WINDOW_WIDTH, old_height = WINDOW_HEIGHT, nw;
 
 // WINDOW_WIDTH e WINDOW_HEIGHT sono copiati qui;
 
@@ -72,7 +72,7 @@ void ResizeWin(SDL_Event *event)
     }
     else
     {
-        extern void MakeRef(UBYTE *,int,int);
+        extern void MakeRef(uint8_t *, int, int);
 
 //        free(scaling->Dest);
 
@@ -259,23 +259,23 @@ int os_get_innerheight(void)
     return screen->h;
 }
 
-void os_load_palette(ULONG *palette)
+void os_load_palette(uint32_t *palette)
 {
-    int colornum,first,i;
-    colornum=palette[0]>>16;
-    first=palette[0]&0xffff;
+    int colornum, first, i;
+    colornum = palette[0] >> 16;
+    first = palette[0] & 0xffff;
 
-    if(colornum>256)
+    if(colornum > 256)
         return;
 
-    for(i=0;i<colornum;i++)
+    for(i = 0; i < colornum; i++)
     {
-        SDL_palette[i+first].r=palette[1+i*3]>>24;
-        SDL_palette[i+first].g=palette[1+i*3+1]>>24;
-        SDL_palette[i+first].b=palette[1+i*3+2]>>24;
+        SDL_palette[i + first].r = palette[1 + i *3] >> 24;
+        SDL_palette[i + first].g = palette[1 + i *3 + 1] >> 24;
+        SDL_palette[i + first].b = palette[1 + i *3 + 2] >> 24;
     }
 
-    SDL_SetColors(screen,&SDL_palette[first],first,colornum);
+    SDL_SetColors(screen, &SDL_palette[first], first, colornum);
 }
 
 void ScreenSwap(void)

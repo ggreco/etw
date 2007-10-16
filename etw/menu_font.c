@@ -52,7 +52,7 @@ void FreeMenuFonts(void)
     }
 }
 
-void PrintShadow(LONG x,LONG y,char *t,LONG l,struct myfont *tf)
+void PrintShadow(int x, int y, char *t, int l, struct myfont *tf)
 {
     setfont(tf);
 

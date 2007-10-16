@@ -5,13 +5,13 @@
 
 int arcade_score=0,score_number=0;
 
-BYTE f98groups[8][4]={    {3,25,19,21},{15,6,5,1},{11,26,24,9},{28,20,22,4},
+int8_t f98groups[8][4]={    {3,25,19,21},{15,6,5,1},{11,26,24,9},{28,20,22,4},
             {13,2,27,18},{12,30,31,14},{23,7,10,29},{0,17,16,8}
               };
         
-BYTE groups[8][4];
-BYTE start_groups[8][4];
-BYTE league_pos[64];
+int8_t groups[8][4];
+int8_t start_groups[8][4];
+int8_t league_pos[64];
 
 BOOL GroupsClear(void)
 {
