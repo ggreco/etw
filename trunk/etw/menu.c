@@ -797,7 +797,9 @@ BOOL DoAction(WORD bottone)
                 FILE *f;
 
                 if (!(f = fopen("etw.cfg" /*-*/ , "w"))) {
-                    if (!(f = fopen(TEMP_DIR "etw.cfg" /*-*/ , "w"))) {
+                    char buf[1024];
+                    snprintf(buf, 1024, "%setw.cfg", TEMP_DIR);
+                    if (!(f = fopen(buf /*-*/ , "w"))) {
                         easy.es_TextFormat = msg_69;
                         easy.es_GadgetFormat = msg_58;
 
@@ -805,7 +807,7 @@ BOOL DoAction(WORD bottone)
                         break;
                     } else {
                         fclose(f);
-                        write_config(TEMP_DIR "etw.cfg" /*-*/ );
+                        write_config(buf /*-*/ );
                     }
                 } else {
                     fclose(f);

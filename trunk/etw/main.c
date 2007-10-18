@@ -1,5 +1,7 @@
 #include "eat.h"
+
 #include <stdarg.h>
+
 #include "network.h"
 
 uint32_t detail_level = 0xffffffff;
@@ -817,6 +819,8 @@ BOOL LoadStuff(void)
 
 int game_main(void)
 {
+    char buf[1024];
+
     progress_called = 0;
 
     read_config();
@@ -842,10 +846,11 @@ int game_main(void)
     
     quit_game = FALSE;
 
+    snprintf(buf, 1024, "%slock", TEMP_DIR);
 #ifdef __CODEGUARD__
-    if(access(TEMP_DIR "lock",0) != -1)
+    if(access(buf,0) != -1)
 #endif
-    remove(TEMP_DIR "lock");
+    remove(buf);
 
     D(bug("Match end!\n"));
 

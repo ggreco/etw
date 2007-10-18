@@ -27,15 +27,15 @@
 #define LOAD_ALL
 
 #ifndef AMIGA
-#   define TEMP_DIR        "t/"
+extern char *TEMP_DIR;
 #   define EXEC_DIR        ""
 #   define TCT_DIR         "tct/"
 #   define TEAMS_DIR       "teams/"
 #   define NEWGFX_DIR      "newgfx/"
-#   define HIGH_FILE       TEMP_DIR "high"
-#   define CONFIG_FILE     TEMP_DIR "thismatch"
+extern char *HIGH_FILE;
+extern char *CONFIG_FILE;
 #   define CONFIG_FILE_2   EXEC_DIR "etw.cfg"
-#   define RESULT_FILE     TEMP_DIR "result"
+extern char *RESULT_FILE;
 #   define KEY_BLUE_FILE   EXEC_DIR "key_blue"
 #   define KEY_RED_FILE    EXEC_DIR "key_red"
 #   define GAME_FONT       NEWGFX_DIR "game.font"

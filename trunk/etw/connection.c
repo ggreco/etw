@@ -123,6 +123,7 @@ void ReadGameConfig(FILE *f)
 
 BOOL StartGame(void)
 {
+    char buf[1024];
     extern void *screen;
     int i;
 
@@ -154,10 +155,11 @@ BOOL StartGame(void)
 
     game_start = FALSE;
 
+    snprintf(buf, 1024, "%sthismatch", TEMP_DIR);
 #ifdef __CODEGUARD__
-    if(access(TEMP_DIR "thismatch",0) != -1)
+    if(access(buf,0) != -1)
 #endif
-    remove(TEMP_DIR "thismatch"/*-*/);
+    remove(buf/*-*/);
 
     WINDOW_WIDTH=wanted_width;
     WINDOW_HEIGHT=wanted_height;
@@ -701,6 +703,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
 
 void LoadHigh(char *file)
 {
+    char buf[1024];
     FILE *f,*f2;
 
     if((f=fopen(file,"rb"))) {
@@ -715,7 +718,8 @@ void LoadHigh(char *file)
         
 // Here we handle the REAL highlight...
 
-        if(!(f2=fopen(TEMP_DIR "high"/*-*/,"wb"))) {
+        snprintf(buf, 1024, "%shigh", TEMP_DIR);
+        if(!(f2=fopen(buf/*-*/,"wb"))) {
             fclose(f);
             return;
         }

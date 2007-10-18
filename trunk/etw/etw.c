@@ -8,6 +8,10 @@
 #if defined(LINUX) || defined(SOLARIS_X86)
 #include <gtk/gtk.h>
 #include <unistd.h>
+
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <pwd.h> // For home directory
 #endif
 
 // char versione[]="\0$VER: ETW-Menu " ETW_VERSION " " __AMIGADATE__ " by Gabriele Greco - Hurricane Studios";
@@ -27,6 +31,7 @@ gfx_t *arcade_gfx[ARCADE_TEAMS + 1];
 uint8_t *back;
 int bitmap_width, bitmap_height;
 struct SoundInfo *music = NULL;
+char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE;
 
 void PlayMenuMusic(void)
 {
@@ -458,14 +463,56 @@ int main(int argc, char *argv[])
                 wcp[32 * 5 + 1 + i * 5].Testo = "GC" /*-*/ ;
         }
     } 
+
+#if defined(LINUX) || defined(SOLARIS_X86)
+    /* Find data and temporary directories */
+    {
+        struct passwd *pwd;
+        char *home = getenv("HOME");
+        if(home == NULL)
+        {
+            /* Try looking in password file for home dir. */
+            pwd = getpwuid(getuid());
+            if(pwd)
+                home = pwd->pw_dir;
+        }
+
+        /* Do not get fooled by a corrupted $HOME */
+        if(home && strlen(home) < PATH_MAX)
+        {
+            TEMP_DIR = malloc(strlen(home) + strlen("/.etw/") + 1);
+            sprintf(TEMP_DIR, "%s/.etw/", home);
+            /* Always try to make the directory, just to be sure. */
+            mkdir(TEMP_DIR, 0755);
+        }
+        else
+        {
+            TEMP_DIR = strdup("/tmp/");
+        }
+
+        l = opendir(TEMP_DIR);
+        if(!l)
+        {
+            printf("Unable to find temp directory %s!\n", TEMP_DIR);
+            return 20;
+        }
+        closedir(l);
+
+        HIGH_FILE = malloc(strlen(TEMP_DIR) + strlen("high") + 1);
+        sprintf(HIGH_FILE, "%shigh", TEMP_DIR);
+        CONFIG_FILE = malloc(strlen(TEMP_DIR) + strlen("thismatch") + 1);
+        sprintf(CONFIG_FILE, "%sthismatch", TEMP_DIR);
+        RESULT_FILE = malloc(strlen(TEMP_DIR) + strlen("result") + 1);
+        sprintf(RESULT_FILE, "%sresult", TEMP_DIR);
+    }
+#else
+    TEMP_DIR = "t/";
+    HIGH_FILE = "t/high";
+    CONFIG_FILE = "t/thismatch";
+    RESULT_FILE = "t/result";
+#endif
     
     read_menu_config();
-
-    if (!(l = opendir(TEMP_DIR))) {
-        printf("Unable to find temp directory %s!\n", TEMP_DIR);
-        return 20;
-    } else
-        closedir(l);
 
     LoadTeams(TEAMS_DIR "default" /*-*/ );
 
