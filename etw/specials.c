@@ -2774,10 +2774,9 @@ BOOL HighSelection(WORD bottone)
         ChangeMenu(MENU_HIGHLIGHT);
     }
     else {
-        char buffer[32];
+        char buffer[1024];
 
-        strcpy(buffer,TEMP_DIR "replay."/*-*/);
-        strcat(buffer,b->Testo);
+        snprintf(buffer, 1024, "%sreplay.%s", TEMP_DIR, b->Testo);
 
         if (!savehigh)    {
             D(bug("Load %s...\n",b->Testo));
@@ -2831,7 +2830,7 @@ void SetHighSelection(void)
     int righe,start;
     DIR *lock;
 
-    D(bug("Scan dir " TEMP_DIR "...\n"));
+    D(bug("Scan dir %s...\n", TEMP_DIR));
 
     for(i=0;i<64;i++)
         hl[i].Testo=NULL;

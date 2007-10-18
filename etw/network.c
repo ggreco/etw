@@ -129,6 +129,7 @@ void UpdateNetStatus(char *string)
 
 int ReceiveTeam(struct team_disk *s)
 {
+    char buf[1024];
     simplemsg *m;
 
     D(bug("Ricevo la squadra...\n"));
@@ -139,7 +140,8 @@ int ReceiveTeam(struct team_disk *s)
          if (m->type==MSG_TEAM) {
             FILE *f;
 
-            if ((f=fopen(TEMP_DIR "tempremteam"/*-*/,"wb+"))) {
+            snprintf(buf, 1024, "%stempremteam", TEMP_DIR);
+            if ((f=fopen(buf/*-*/,"wb+"))) {
                 fwrite(((char *)m)+sizeof(simplemsg),1,m->size,f);
                 fseek(f,0,SEEK_SET);
                 ReadTeam(f,s);
@@ -161,11 +163,13 @@ int ReceiveTeam(struct team_disk *s)
 
 int SendTeam(int8_t team)
 {
+    char buf[1024];
     simplemsg *m=(simplemsg *)network_player->packetbuffer;
     short l;
     FILE *f;
 
-    if((f=fopen(TEMP_DIR "tempteam"/*-*/,"wb+"))) {
+    snprintf(buf, 1024, "%stempteam", TEMP_DIR);
+    if((f=fopen(buf/*-*/,"wb+"))) {
         WriteTeam(f,&teamlist[team]);
         fseek(f,0,SEEK_SET);
         l=fread(network_player->packetbuffer+sizeof(simplemsg),1,SOCKETBUFFERSIZE,f);
@@ -197,6 +201,7 @@ int SendTeam(int8_t team)
 
 BOOL ConfigureSession(player *p)
 {
+    char buf[1024];
     simplemsg *m;
 
     D(bug("Aspetto il ping...\n"));
@@ -233,7 +238,8 @@ BOOL ConfigureSession(player *p)
         msg.subtype=0; // da cambiare x vedere il colore voluto.
         msg.size=0;
 
-        if ((f=fopen(TEMP_DIR "tempconfig"/*-*/,"wb+"/*-*/))) {
+        snprintf(buf, 1024, "%stempconfig", TEMP_DIR);
+        if ((f=fopen(buf/*-*/,"wb+"/*-*/))) {
             extern void load_config(FILE *);
 
             fwrite(((char *)m) + sizeof(simplemsg), 1, m->size, f);
