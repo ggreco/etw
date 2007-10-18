@@ -136,6 +136,9 @@ SYSTEM
    provokes a crash subsequently, when a valid file is loaded and then it is
    tried to begin a league.
 
+8) LoadReplay() in replay.c does not work at all on 64-bit.
+
+
 
 NETWORK
 -------
