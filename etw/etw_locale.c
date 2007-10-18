@@ -436,7 +436,7 @@ struct MyCatalog
     struct MyString *strings_ptr;
 };
 
-#define CAT_DIR "catalogs/"
+#define CAT_DIR GAME_DIR "catalogs/"
 
 #if defined(WIN)
 

@@ -249,10 +249,17 @@ void os_free_timer(void)
 
 FILE *os_open(char *name, char *mode)
 {
+    char buf[2048];
     char dir[120], *fn;
     struct dirent *e;
     FILE *f;
     DIR *d;
+
+    if(name[0] != '/')
+    {
+        sprintf(buf, GAME_DIR "%s", name);
+        name = buf;
+    }
 
     if (*mode == 'w')
         return fopen(name, mode);

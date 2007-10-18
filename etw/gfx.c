@@ -325,14 +325,17 @@ void ClearAnimObj(void)
     }
 }
 
-gfx_t *LoadGfxObject(char *name, int32_t * pens, uint8_t * dest)
+gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
 {
+    char name[1024];
     gfx_t *obj;
     FILE *fh;
     int i;
     uint16_t temp;
     uint8_t *planes[8];
     BOOL ok = TRUE;
+
+    sprintf(name, GAME_DIR "%s", _name);
 
     D(bug("Loading %s...", name));
 

@@ -29,6 +29,7 @@
 #ifndef AMIGA
 extern char *TEMP_DIR;
 #   define EXEC_DIR        ""
+#   define GAME_DIR        ""
 #   define TCT_DIR         "tct/"
 #   define TEAMS_DIR       "teams/"
 #   define NEWGFX_DIR      "newgfx/"

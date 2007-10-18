@@ -321,6 +321,7 @@ void FreeSound(struct SoundInfo *s)
 
 struct SoundInfo *LoadSound(char const *Name)
 {
+    char buf[1024];
     BOOL loop = FALSE;
     Uint8 *buffer;
     Uint32 len;
@@ -337,8 +338,9 @@ struct SoundInfo *LoadSound(char const *Name)
 
     D(bug("Loading a WAV sample... [%s]", Name));
 
+    sprintf(buf, GAME_DIR "%s", Name);
 
-    if ( SDL_LoadWAV(Name, &spec, &buffer, &len)) {
+    if ( SDL_LoadWAV(buf, &spec, &buffer, &len)) {
         struct SoundInfo *s;
         
         if ( (s = (struct SoundInfo *) calloc(sizeof(struct SoundInfo), 1))) {
