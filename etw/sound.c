@@ -31,7 +31,11 @@ void handle_sound(void *unused, Uint8 * stream, int len)
 {
     int i, amount;
 
-// il +2 e' xche' riservo un canale per il commento e uno per il tifo
+    if (!sound_loaded)
+        return;
+
+//  +2 is because one channel is reserved for speaker comment and another
+//  one for chorus.
     
     for (i = 0; i < (AVAILABLE_CHANNELS + 2); i++) {
         amount = 0;
@@ -46,17 +50,17 @@ void handle_sound(void *unused, Uint8 * stream, int len)
             if (amount > 0) {
 //              D(bug("Mixxo canale %ld, %ld bytes (st: %lx)\n",i,amount,stream));
 
-                if (busy[i]->Flags & SOUND_DISK) {
-                    unsigned char buffer[BUFFER_SIZE];
+				if (busy[i]->Flags & SOUND_DISK) {
+					Uint8 buffer[BUFFER_SIZE];
 
-                    fread(buffer, amount, 1, (FILE *) busy[i]->SoundData);
-                    SDL_MixAudio(stream, buffer, amount,
-                                 SDL_MIX_MAXVOLUME);
-                } else
-                    SDL_MixAudio(stream,
-                                 ((unsigned char *) busy[i]->SoundData) +
-                                 busy[i]->Offset, amount,
-                                 SDL_MIX_MAXVOLUME);
+					fread(buffer, amount, 1, (FILE *) busy[i]->SoundData);
+					SDL_MixAudio(stream, buffer, amount,
+								 SDL_MIX_MAXVOLUME);
+				} else
+					SDL_MixAudio(stream,
+								 ((Uint8 *) busy[i]->SoundData) +
+								 busy[i]->Offset, amount,
+								 SDL_MIX_MAXVOLUME);
 
                 busy[i]->Offset += amount;
             }
@@ -123,10 +127,11 @@ void SetCrowd(int s)
         else if (s >= 0) {
             extern int playing;
 
-            playing = s;
-            busy[AUDIO_CROWD] = sound[s];
-            sound[s]->Offset = 0;
-        }
+			playing = s;
+			busy[AUDIO_CROWD] = sound[s];
+            if (sound[s])
+    			sound[s]->Offset = 0;
+		}
 
         wanted_sound = s;
         SDL_UnlockAudio();
@@ -460,20 +465,25 @@ void LiberaSuoni(void)
     os_stop_audio();
 
     D(bug("Freeing sounds...\n"));
+    SDL_LockAudio();
 
-    while (soundname[i]) {
-        if (sound[i])
-            FreeSound(sound[i]);
-        i++;
+	while (soundname[i]) {
+		if (sound[i])
+			FreeSound(sound[i]);
+        sound[i] = NULL;
+		i++;
+	}
+
+	if (sound[NUMERO_SUONI + 1]) {
+		free(sound[NUMERO_SUONI + 1]);
+        sound[NUMERO_SUONI + 1] = NULL; 
     }
-
-    if (sound[NUMERO_SUONI + 1])
-        free(sound[NUMERO_SUONI + 1]);
 
     for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
         busy[i] = NULL;
 
-    D(bug("Ok.\n"));
+	SDL_UnlockAudio();
+	D(bug("Ok.\n"));
 }
 
 BOOL SoundStarted(void)
@@ -521,6 +531,9 @@ BOOL CaricaSuoniMenu(void)
             i++;
     }
 
+	for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
+		busy[i] = NULL;
+
     sound_loaded = TRUE;
 
     return TRUE;
@@ -536,16 +549,21 @@ void LiberaSuoniMenu(void)
     if(!sound_loaded)
         return;
 
-    while (menu_soundname[i]) {
-        if (menusound[i]) {
-            FreeSound(menusound[i]);
-            menusound[i] = NULL;
-        }
-        i++;
-    }
+	SDL_LockAudio();
+
+
+	while (menu_soundname[i]) {
+		if (menusound[i]) {
+			FreeSound(menusound[i]);
+			menusound[i] = NULL;
+		}
+		i++;
+	}
 
     for(i = 0; i < (AVAILABLE_CHANNELS + 2); i++)
         busy[i] = NULL;
 
-    sound_loaded = FALSE;
+	SDL_UnlockAudio();
+
+	sound_loaded = FALSE;
 }

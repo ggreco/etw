@@ -8,8 +8,8 @@ void EndReplay(void);
 
 extern int highsize;
 
-UBYTE ReplaySet = 0, smallcounter = 0, old_tc;
-UBYTE OriginalReplaySet, SetLimit, StartReplaySet;
+int ReplaySet = 0, smallcounter = 0, old_tc;
+int OriginalReplaySet, SetLimit, StartReplaySet;
 BOOL replay_mode = FALSE, start_replay = FALSE, was_using_radar = FALSE;
 BOOL was_using_nosound = FALSE, was_using_result = FALSE, slow_motion = FALSE;
 BOOL mantieni_distanza = FALSE, no_record = FALSE, replay_looped = FALSE;
@@ -550,7 +550,7 @@ void LoadReplay(UBYTE Set)
         p->team[i]->MarkerOnScreen=FALSE;
 
         if (a) {
-            uint8_t *c;
+            STRPTR c;
             uint32_t d = (ULONG)p->team[i]->tactic, e;
 // first fix the pointers then the reference INSIDE them!
             p->team[i]->keepers.anim = a[i * SQ_PTR];
@@ -607,10 +607,11 @@ void LoadReplay(UBYTE Set)
                    p->team[i]->players[j].anim->node.mln_Pred = NULL;
             }
         }
-        
-        PrintSmall(p->team[i]->NomeAttivo,
-                   p->team[i]->attivo->surname,
-                   p->team[i]->attivo->NameLen);
+       
+        if (p->team[i]->attivo)
+            PrintSmall(p->team[i]->NomeAttivo,
+                       p->team[i]->attivo->surname,
+                       p->team[i]->attivo->NameLen);
     }
 
 //per debug
@@ -670,9 +671,8 @@ void LoadReplay(UBYTE Set)
 
     p->referee.OnScreen = FALSE;
 
-    if(!pl->Hide) {
+    if(!pl->Hide && pl->anim) 
         AddAnimObj(pl->anim, 10, 10, 0);
-    }
 
     if(p->penalty_onscreen)
         AddAnimObj(p->extras, 0, 0, (p->marker_x>640 ? 1 : 0 ));
@@ -1003,22 +1003,31 @@ BOOL AllocReplayBuffers(void)
     for(i = 0; i < MAX_PLAYERS; i++)
     {
         if(!(r_controls[i] = malloc(size * 256 * sizeof(LONG)))) {
-            D(bug("Non ho memoria per allocare i r_controls buffers!\n"));
+            D(bug("No memory to allocate r_controls buffers!\n"));
             return FALSE;
         }
     }
 
     if(!(match = malloc(size * sizeof(struct MatchStatus)))) {
-        D(bug("Non ho memoria per allocare i match buffer!\n"));
+        D(bug("No memory to allocate match buffers!\n"));
         return FALSE;
     }
 
     if(arcade) {
         if(!(arcade_buf = malloc(size * sizeof(struct pos) * MAX_ARCADE_ON_FIELD))) {
-            D(bug("Non ho memoria per allocare gli arcade buffer!\n"));
+            D(bug("No memory to allocate arcade buffers!\n"));
             return FALSE;
         }
     }
+
+    // setting the various replay variables
+    counter = 0;
+    smallcounter = 0;
+    ReplaySet = 0;
+    replay_mode = FALSE; start_replay = FALSE; was_using_radar = FALSE;
+    was_using_nosound = FALSE; was_using_result = FALSE; slow_motion = FALSE;
+    mantieni_distanza = FALSE; no_record = FALSE; replay_looped = FALSE;
+    full_replay = FALSE; time_stopped = FALSE;
 
     D(bug("Replay configured: SetLimit:%ld CounterLimit:%ld\n", (LONG)SetLimit, (LONG)CounterLimit));
     return TRUE;

@@ -109,9 +109,9 @@ struct SoundInfo *handle_crowd(void)
         if (wanted_sound < 0)
             return NULL;
 
-        if (playing >= 0)
-            if (sound[playing]->Flags & SOUND_LOOP)
-                last_looped = playing;
+		if (playing >= 0 && sound[playing])
+			if (sound[playing]->Flags & SOUND_LOOP)
+				last_looped = playing;
 
         newloop = TRUE;
         playing = wanted_sound;

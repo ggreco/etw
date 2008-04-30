@@ -119,7 +119,7 @@ struct GfxMenu
     APTR SpecialFunction;
 };
 
-// Penne
+// Palette pens of the MENUs
 
 #ifndef SOUND_C
 

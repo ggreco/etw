@@ -193,13 +193,11 @@ void HandleRadarLittle(void)
     polydraw(Pens[P_NERO], radar_xstart+((BIG_MODIFIER+BIG_WIDTH)/2), radar_ystart+((BIG_MODIFIER+START_AREA)/2), 3, area2);
     draw(Pens[P_NERO], radar_xstart+(BIG_MODIFIER/2)+(BIG_WIDTH/4), radar_ystart+(BIG_MODIFIER/2), radar_xstart+(BIG_MODIFIER/2)+(BIG_WIDTH/4), radar_ystart+(BIG_MODIFIER+BIG_HEIGHT)/2);
 
-    
     if(small_dot)
     {
         for(j = 0; j < 10; j++)
         {
             bmt = bm+(p->team[0]->players[j].world_x >> 7)+(p->team[0]->players[j].world_y >> 7)*bitmap_width;
-
             if(bmt < main_bitmap_end && bmt > main_bitmap_start)
                 *bmt = c0;
 

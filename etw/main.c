@@ -708,13 +708,6 @@ BOOL LoadStuff(void)
         os_delay(200);
 #endif
 
-#ifdef DEMOVERSION
-        LoadPLogo("gfx/islona");
-        os_delay(60);
-#else
-        /* AC: I remove this Progress, in order to gain 20 blocks instead of 21
-           Progress();*/
-#endif
         if (SetupSquadre()) {
             Progress();
 

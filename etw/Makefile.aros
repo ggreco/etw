@@ -20,7 +20,7 @@ CROSSDIR = /usr/local/amiga/
 CXX = $(CROSSDIR)/bin/i686-aros-g++
 CC = $(CROSSDIR)/bin/i686-aros-gcc
 LFLAGS = -lSDL
-CFLAGS = -O3 -Wall -Wno-char-subscripts -g \
+CFLAGS = -Wall -Wno-char-subscripts -g \
 	     -fsigned-char -Iinclude \
          -I$(CROSSDIR)/i686-aros/sys-include/SDL 
 
@@ -35,7 +35,7 @@ DEFINES = -DAMIGA -DCD_VERSION -DHAVE_STDINT_H -DAROS -DFAKENET
 all: $(EXE) 
     
 $(EXE): $(OBJECTS)
-	$(CC) -s -o $@ $(OBJECTS) $(LFLAGS)
+	$(CC) -o $@ $(OBJECTS) $(LFLAGS)
 
 clean:
 	/bin/rm -f *.o $(EXE)
