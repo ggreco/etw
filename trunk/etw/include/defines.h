@@ -1,4 +1,4 @@
-#define AVAILABLE_CHANNELS 4
+#define AVAILABLE_CHANNELS 8
 #define AUDIO_CROWD AVAILABLE_CHANNELS
 #define AUDIO_SPEAK AVAILABLE_CHANNELS+1
 
@@ -80,9 +80,7 @@
 #define TIRO_RIMESSA    4
 #define TIRO_PASSAGGIO_SMARCANTE 5
 
-// Definizioni relative alle penne della palette
-
-// Il numero piu' basso corrisponde al colore piu' chiaro 
+// Palette pens of the GAME (not menus!)
 
 #define P_VERDE0 0
 #define P_BIANCO 1

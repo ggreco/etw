@@ -25,6 +25,7 @@ typedef unsigned int    BOOL;
 typedef uint8_t         BYTEBITS;
 typedef uint16_t        WORDBITS;
 typedef uint32_t        LONGBITS;
+typedef char * STRPTR;
 
 #else
 typedef void            *APTR;      /* 32-bit untyped pointer */
