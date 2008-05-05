@@ -27,5 +27,6 @@ struct tactic
     char NameLen;
 };
 
+typedef struct tactic tactic_t;
 
 #endif

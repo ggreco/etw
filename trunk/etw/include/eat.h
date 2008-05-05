@@ -237,7 +237,6 @@ typedef struct game game_t;
 typedef struct object object_t;
 typedef struct movingobject movingobject_t;
 typedef struct ball ball_t;
-typedef struct tactic tactic_t;
 
 #include "externs.h"
 

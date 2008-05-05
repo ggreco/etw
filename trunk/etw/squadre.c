@@ -2,6 +2,142 @@
 
 #include "highdirent.h"
 
+void ReadTeam(FILE *fh, struct team_disk *s)
+{
+    int i;
+
+    fread(&s->disponibilita, sizeof(uint32_t), 1, fh);
+    SWAP32(s->disponibilita);
+    fread(&s->nplayers, sizeof(uint8_t), 1, fh);
+    fread(&s->nkeepers, sizeof(uint8_t), 1, fh);
+    fread(&s->nation, sizeof(uint8_t), 1, fh);
+    fread(&s->Flags, sizeof(uint8_t), 1, fh);
+
+    for(i = 0; i < 2; i++)
+    {
+        fread(&s->jerseys[i].type, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color0, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color1, sizeof(uint8_t), 1, fh);
+        fread(&s->jerseys[i].color2, sizeof(uint8_t), 1, fh);
+    }
+
+    for(i = 0; i < 3; i++)
+        fread(&s->tactics[i], sizeof(char), 16, fh);
+
+    fread(s->name, sizeof(char), 52, fh);
+    fread(s->allenatore, sizeof(char), 52, fh);
+
+    // Teams always have 3 keepers and 21 players because their size is fixed!
+
+    for(i = 0; i < 3; i++)
+    {
+        fread(s->keepers[i].name, sizeof(char), 20, fh);
+        fread(s->keepers[i].surname, sizeof(char), 20, fh);
+        fread(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
+        SWAP32(s->keepers[i].value);
+        fread(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].speed, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Attenzione, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].nation, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Eta, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].injury, sizeof(uint8_t), 1, fh);
+        fread(&s->keepers[i].Flags, sizeof(uint8_t), 1, fh);
+    }
+
+    for(i = 0; i < 21; i++)
+    {
+        fread(s->players[i].name, sizeof(char), 20, fh);
+        fread(s->players[i].surname, sizeof(char), 20, fh);
+        fread(&s->players[i].value, sizeof(uint32_t), 1, fh);
+        SWAP32(s->players[i].value);
+        fread(&s->players[i].number, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].speed, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].tackle, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Tiro, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Durata, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].stamina, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].quickness, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].nation, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].creativity, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].technique, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Eta, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].injury, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Ammonizioni, sizeof(uint8_t), 1, fh);
+        fread(&s->players[i].Posizioni, sizeof(uint8_t), 1, fh);
+    }
+}
+
+
+void WriteTeam(FILE *fh, struct team_disk *s)
+{
+    int i;
+
+    SWAP32(s->disponibilita);
+    fwrite(&s->disponibilita, sizeof(uint32_t), 1, fh);
+    SWAP32(s->disponibilita);
+    fwrite(&s->nplayers, sizeof(uint8_t), 1, fh);
+    fwrite(&s->nkeepers, sizeof(uint8_t), 1, fh);
+    fwrite(&s->nation, sizeof(uint8_t), 1, fh);
+    fwrite(&s->Flags, sizeof(uint8_t), 1, fh);
+
+    for(i = 0; i < 2; i++)
+    {
+        fwrite(&s->jerseys[i].type, sizeof(uint8_t), 1, fh);
+        fwrite(&s->jerseys[i].color0, sizeof(uint8_t), 1, fh);
+        fwrite(&s->jerseys[i].color1, sizeof(uint8_t), 1, fh);
+        fwrite(&s->jerseys[i].color2, sizeof(uint8_t), 1, fh);
+    }
+
+    for(i = 0; i < 3; i++)
+        fwrite(&s->tactics[i], sizeof(char), 16, fh);
+
+    fwrite(s->name, sizeof(char), 52, fh);
+    fwrite(s->allenatore, sizeof(char), 52, fh);
+
+    // The number of keepers and players written is always the same
+
+    for(i = 0; i < 3; i++)
+    {
+        fwrite(s->keepers[i].name, sizeof(char), 20, fh);
+        fwrite(s->keepers[i].surname, sizeof(char), 20, fh);
+        SWAP32(s->keepers[i].value);
+        fwrite(&s->keepers[i].value, sizeof(uint32_t), 1, fh);
+        SWAP32(s->keepers[i].value);
+        fwrite(&s->keepers[i].number, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].speed, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Parata, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Attenzione, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].nation, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Eta, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].injury, sizeof(uint8_t), 1, fh);
+        fwrite(&s->keepers[i].Flags, sizeof(uint8_t), 1, fh);
+    }
+
+    for(i = 0; i < 21; i++)
+    {
+        fwrite(s->players[i].name, sizeof(char), 20, fh);
+        fwrite(s->players[i].surname, sizeof(char), 20, fh);
+        SWAP32(s->players[i].value);
+        fwrite(&s->players[i].value, sizeof(uint32_t), 1, fh);
+        SWAP32(s->players[i].value);
+        fwrite(&s->players[i].number, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].speed, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].tackle, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Tiro, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Durata, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].stamina, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].quickness, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].nation, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].creativity, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].technique, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Eta, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].injury, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Ammonizioni, sizeof(uint8_t), 1, fh);
+        fwrite(&s->players[i].Posizioni, sizeof(uint8_t), 1, fh);
+    }
+}
+
 char team_name[2][16] = { { '\0' }, { '\0' } };
 int result_width,scivolate_modificate=0;
 linesman_t *linesman;
