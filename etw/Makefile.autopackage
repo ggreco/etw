@@ -1,10 +1,11 @@
 CC ?= apgcc
 
 CFLAGS = -Wall -Wno-char-subscripts -Os \
-	`sdl-config --cflags` `gtk-config --cflags` \
+	`sdl-config --cflags` `pkg-config --cflags gtk+-2.0` \
 	-fsigned-char -Iinclude -DAUTOPACKAGED
 
-LDFLAGS = `sdl-config --libs` `gtk-config --libs`
+LDFLAGS = `sdl-config --libs` `pkg-config --libs gtk+-2.0`
+
 DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H -DDEBUG_DISABLED
 
 OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
