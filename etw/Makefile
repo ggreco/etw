@@ -21,6 +21,9 @@ all etw:
 	  "Linux") \
 	    $(MAKE) -f Makefile.linux $@ \
 	    ;; \
+	  "Darwin") \
+	    $(MAKE) -f Makefile.linux $@ \
+	    ;; \
 	  *) \
 	    echo "Error: please use the makefile for your platform:" \
 	    exit 1 \
