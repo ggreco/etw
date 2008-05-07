@@ -84,20 +84,20 @@ void FreeIFF(struct IFFHandle *iff)
 
 /* Read/Write functions */
 
-ssize_t ReadChunkBytes(struct IFFHandle *iff, void *buf, long numBytes)
+size_t ReadChunkBytes(struct IFFHandle *iff, void *buf, long numBytes)
 {
-    return (ssize_t) fread(buf, 1, numBytes, iff->iff_Stream);
+    return fread(buf, 1, numBytes, iff->iff_Stream);
 }
 
-ssize_t ReadChunkRecords(struct IFFHandle * iff, void *buf,
+size_t ReadChunkRecords(struct IFFHandle * iff, void *buf,
                          long bytesPerRecord, long numRecords)
 {
-    return (ssize_t) fread(buf, bytesPerRecord, numRecords, iff->iff_Stream);
+    return fread(buf, bytesPerRecord, numRecords, iff->iff_Stream);
 }
 
 /* Built-in chunk/property handlers */
 
-ssize_t StopChunks(struct IFFHandle * iff, int32_t * propArray, long numPairs)
+size_t StopChunks(struct IFFHandle * iff, int32_t * propArray, long numPairs)
 {
     iff->stops = propArray;
     iff->iff_Stops = numPairs;

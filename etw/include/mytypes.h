@@ -28,6 +28,7 @@ typedef uint32_t        LONGBITS;
 typedef char * STRPTR;
 
 #else
+typedef char * STRPTR;
 typedef void            *APTR;      /* 32-bit untyped pointer */
 #   if !defined(_WINNT_H) && !defined(_WINNT_)
 typedef signed long     LONG;       /* signed 32-bit quantity */

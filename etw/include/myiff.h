@@ -59,13 +59,13 @@ void FreeIFF(struct IFFHandle *iff);
 
 /* Read/Write functions */
 
-ssize_t ReadChunkBytes(struct IFFHandle *iff, APTR buf, long numBytes);
-ssize_t ReadChunkRecords(struct IFFHandle *iff, APTR buf, long bytesPerRecord,
+size_t ReadChunkBytes(struct IFFHandle *iff, APTR buf, long numBytes);
+size_t ReadChunkRecords(struct IFFHandle *iff, APTR buf, long bytesPerRecord,
                          long numRecords);
 
 /* Built-in chunk/property handlers */
 
-ssize_t StopChunks(struct IFFHandle *iff, int32_t *propArray, long numPairs);
+size_t StopChunks(struct IFFHandle *iff, int32_t *propArray, long numPairs);
 struct ContextNode *CurrentChunk(struct IFFHandle *iff);
 
 /* IFFHandle initialization */

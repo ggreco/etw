@@ -590,7 +590,7 @@ void * OpenCatalog(char *catalog)
             }
 
 
-            fread(&clen,sizeof(int32_t),1,f);
+            fread(&clen, 4, 1, f);
             SWAP32(clen);
 
             cat->offsetfirst=ftell(f);
@@ -598,10 +598,10 @@ void * OpenCatalog(char *catalog)
             D(bug("Catalog length: %ld bytes\n",clen));
 
             while(clen>offset&&!feof(f)) {
-                fread(&id,sizeof(int32_t),1,f);
+                fread(&id, 4, 1, f);
                 SWAP32(id);
 
-                fread(&slen,sizeof(int32_t),1,f);
+                fread(&slen, 4, 1, f);
                 SWAP32(slen);
 
                 offset+=8;
