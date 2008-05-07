@@ -710,7 +710,7 @@ void InitStrings(void)
    struct __LString *lstr=(struct __LString *)STR_BEGIN_ENTRY;
 
 #ifdef AMIGA
-   if (LocaleBase = OpenLibrary("locale.library",38)) {
+   if ((LocaleBase = (struct LocaleBase *) OpenLibrary("locale.library",38))) {
       Catalog  = OpenCatalog(NULL,"etw.catalog",
                              OC_BuiltInLanguage,"english",
                              OC_Version,0,
@@ -720,18 +720,15 @@ void InitStrings(void)
 #endif
 
    while(lstr) {
-         char *str;
-
-         str=GetCatalogStr(Catalog,lstr->CatalogID,NULL);
+         const char *str = GetCatalogStr(Catalog,lstr->CatalogID,NULL);
          /* We get NULL, if there is no translation ^^*/
 
          if(str) strcpy(lstr->Str,str); /* override builtin string */
          lstr=lstr->Next;
-
    }
    CloseCatalog(Catalog);
 #ifdef AMIGA
-      CloseLibrary(LocaleBase);
+      CloseLibrary((struct Library *)LocaleBase);
    }
 #endif
 }

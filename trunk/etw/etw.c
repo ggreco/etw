@@ -506,6 +506,11 @@ int main(int argc, char *argv[])
         RESULT_FILE = malloc(strlen(TEMP_DIR) + strlen("result") + 1);
         sprintf(RESULT_FILE, "%sresult", TEMP_DIR);
     }
+#elif defined(AMIGA)
+    TEMP_DIR = "t:";
+    HIGH_FILE = "t:high";
+    CONFIG_FILE = "t:thismatch";
+    RESULT_FILE = "t:result";    
 #else
     TEMP_DIR = "t/";
     HIGH_FILE = "t/high";
