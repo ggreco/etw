@@ -379,12 +379,12 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
                     } else {
                         use_remapping = FALSE;
                         D(bug
-                          ("Remapping disabilitato for low memory.\n"));
+                          ("Remapping disabled: low memory.\n"));
                     }
                 } else {
                     use_remapping = FALSE;
                     D(bug
-                      ("Remapping disabilitato per problemi di memoria.\n"));
+                      ("Remapping disabled: low memoriu.\n"));
                 }
             } else {
                 obj->pens = pens;
@@ -395,14 +395,17 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
                 obj->bmap = dest;
             } else {
                 if ((obj->bmap = malloc(obj->width * obj->height))) {
-                    for (i = 0; i < obj->realdepth; i++) {
-                        if (!
-                            (planes[i] =
-                             malloc(BITRASSIZE(obj->width, obj->height))))
-                            ok = FALSE;
+                    int planesize = BITRASSIZE(obj->width, obj->height);
+                    if ((planes[0] = malloc(planesize * obj->realdepth))) {
+                        for (i = 1; i < obj->realdepth; i++) 
+                            planes[i] = (unsigned char *)planes[0] + i * planesize;
+                    }
+                    else {
+                        free(obj->bmap);
+                        ok = FALSE;
                     }
                 } else {
-                    D(bug("Non c'e' memoria per la bitmap!\n"));
+                    D(bug("No memory for main bitmap!\n"));
                     ok = FALSE;
                 }
             }
@@ -419,8 +422,7 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
                 /* 15/06/04 - AC: After converting bitplanes in a bitmap, we should
                  * free them.
                  */
-                for (i = 0; i < obj->realdepth; i++)
-                    free(planes[i]);
+                free(planes[0]);
 
                 fclose(fh);
 
@@ -434,9 +436,8 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
                     obj->pens = NULL;
 
                 return obj;
-            } else {
-                D(bug("Non c'e' memoria per la bitmap temporanea...\n"));
-            }
+            } 
+            fclose(fh);
 
         } else {
             D(bug("File not found...\n"));
@@ -444,7 +445,7 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
 
         free(obj);
     } else {
-        D(bug("Fine memoria.\n"));
+        D(bug("Out of memory.\n"));
     }
 
     return NULL;
