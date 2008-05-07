@@ -19,3 +19,4 @@ all:
 clean:
 	rm -rf etw etw.exe *.o x86 ppc
 
+.FORCE:
