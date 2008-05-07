@@ -1,12 +1,14 @@
 # general makefile, tries autodetection if available
 
+SYSTEM=`uname -s 2>/dev/null`
+
 all:
-	@case "`uname -s 2>/dev/null`" in \
+	@case $(SYSTEM) in \
 	  "Linux") \
 	    $(MAKE) -f Makefile.linux $@ \
 	    ;; \
 	  "Darwin") \
-	    $(MAKE) -f Makefile.universal $@ \
+	    $(MAKE) -j2 -f Makefile.universal \
 	    ;; \
 	  *) \
 	    echo "Error: please use the makefile for your platform:" \
@@ -17,4 +19,3 @@ all:
 clean:
 	rm -rf etw etw.exe *.o x86 ppc
 
-.FORCE:
