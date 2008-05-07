@@ -36,7 +36,7 @@ void handle_sound(void *unused, Uint8 * stream, int len)
 
 //  +2 is because one channel is reserved for speaker comment and another
 //  one for chorus.
-    
+   
     for (i = 0; i < (AVAILABLE_CHANNELS + 2); i++) {
         amount = 0;
 
@@ -452,9 +452,9 @@ BOOL CaricaSuoni(void)
     }
 
     sound[COMMENTO] = calloc(sizeof(struct SoundInfo), 1);
+    sound_loaded = TRUE;
 
     return TRUE;
-
 }
 
 

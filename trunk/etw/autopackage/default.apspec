@@ -5,7 +5,7 @@
 #
 
 [Meta]
-RootName: @etw.sourceforge.net/etw:3.5
+RootName: @etw.sourceforge.net/etw:3.6
 DisplayName: Eat The Whistle
 ShortName: ETW
 Maintainer: Gabriele Greco <gabrielegreco@gmail.com>
@@ -13,7 +13,7 @@ Packager: Gabriele Greco <gabrielegreco@gmail.com>
 Summary: An opensource 2D soccer Game
 URL: http://etw.sourceforge.net
 License: GNU General Public License, Version 2
-SoftwareVersion: 3.5
+SoftwareVersion: 3.6
 # SoftwareVersion: @VERSION@
 #Repository: http://www.mysite.org/downloads/myproject.xml
 
@@ -84,7 +84,7 @@ echo '*' | import
 # identifies the interface version you need. Use as many of these
 # as you need.
 require @libsdl.org/sdl 1.2
-require @gtk.org/gtk 1.2
+require @gtk.org/gtk 2.0
 
 # The user may have already installed the program from an RPM.
 # Let's try and uninstall it first. We only need one call if 3rd party
