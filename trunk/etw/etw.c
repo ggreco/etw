@@ -401,11 +401,12 @@ int main(int argc, char *argv[])
     /* AC: Why if I include externs.h I obtain 55 compilation error? */
     extern void LoadKeyDef(int, char *);
     
-    DIR *l;
 
     /* LINUX programs aren't relocatable, except with this trick
      */
 #if defined(linux)
+    DIR *l;
+
     if ((l = opendir("newgfx"))) {
         closedir(l);
     }
