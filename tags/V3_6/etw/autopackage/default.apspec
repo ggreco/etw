@@ -1,0 +1,105 @@
+# -*-shell-script-*-
+
+#
+# This is an example specfile. Delete these comments when you're done.
+#
+
+[Meta]
+RootName: @etw.sourceforge.net/etw:3.6
+DisplayName: Eat The Whistle
+ShortName: ETW
+Maintainer: Gabriele Greco <gabrielegreco@gmail.com>
+Packager: Gabriele Greco <gabrielegreco@gmail.com>
+Summary: An opensource 2D soccer Game
+URL: http://etw.sourceforge.net
+License: GNU General Public License, Version 2
+SoftwareVersion: 3.6
+# SoftwareVersion: @VERSION@
+#Repository: http://www.mysite.org/downloads/myproject.xml
+
+# If you change the autopackage but not the software itself,
+# increment this number.
+
+# PackageVersion: 2
+
+# This is the version of the autopackage runtime this package is
+# written for. Increasing this number implies you have read the
+# "Migrating to 1.X" document and understand the impact it will have
+# on your package. Some APIs may change their behaviour and new
+# features will be enabled depending on what this is set to.
+AutopackageTarget: 1.2
+
+# Only uncomment InterfaceVersion if your package exposes interfaces
+# to other software, for instance if it includes DSOs or python/perl
+# modules. See the developer guide for more info, or ask on
+# autopackage-dev if you aren't sure about interface versioning.
+#
+# InterfaceVersion: 0.0
+
+[BuildPrepare]
+# For ./configure based systems this is a good default
+#prepareBuild --with-some-feature
+make CC=apgcc APBUILD_NO_STATIC_X=1 -f Makefile.autopackage
+cp etw etw.desktop $build_root
+cd ../data
+mkdir -p $build_root/etwdata
+cp -r arcadesnd crowd gfx menugfx newgfx snd tct catalogs etw.cfg intro music saves t teams $build_root/etwdata/
+find $build_root | grep .svn | xargs rm -rf 
+cd ../etw
+mkdir -p $build_root/share/icons/hicolor/48x48/apps
+cp etw.png $build_root/share/icons/hicolor/48x48/apps 
+
+[BuildUnprepare]
+#unprepareBuild
+# make clean non lo faccio
+
+[Globals]
+# Anything put here will be run during makeinstall and at
+# install/uninstall time. Define useful variables here:
+
+# export MY_VAR=1
+
+[Imports]
+# You may wish to delete some things first, eg libtool .la files or
+# development files (headers)
+
+# rm -r include
+# rm libs/*.la
+
+# This imports every file in 
+# (ie, that is installed by "make install")
+echo '*' | import
+
+
+[Prepare]
+# Dependency checking
+
+# You can use "require" and "recommend". They both try to find the
+# given dependency, and install it if missing. But require will return
+# 1 (causing failure) if it can't do that whereas recommend will
+# simply show a notice at the end of the install.
+
+# The second argument here identifies a skeleton file, which is
+# a file that encapsulates a dependency check. The second number
+# identifies the interface version you need. Use as many of these
+# as you need.
+require @libsdl.org/sdl 1.2
+require @gtk.org/gtk 2.0
+
+# The user may have already installed the program from an RPM.
+# Let's try and uninstall it first. We only need one call if 3rd party
+# packages have split the program up into multiple packages.
+
+removeOwningPackage $PREFIX/bin/etw
+
+[Install]
+# Put your installation script here. See the quickstart guide on
+# the website for an API cheat-sheet
+installExe etw
+installIcon share/icons/hicolor
+installMenuItem "Games" etw.desktop
+installData etwdata
+
+[Uninstall]
+# Usually just the following line is enough to uninstall everything
+uninstallFromLog

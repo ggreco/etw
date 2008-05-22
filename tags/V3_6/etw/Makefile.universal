@@ -1,0 +1,56 @@
+BUNDLE_CONTENTS=ETW.app/Contents
+
+UI=sdl
+UILIBS=-L/Library/Frameworks \
+	-framework Cocoa \
+	-framework SDL \
+	-lobjc
+    
+UIFLAGS=-F/Library/Frameworks \
+	-I/Library/Frameworks/SDL.framework/Headers 
+
+# Debugging
+#DEBUGCFLAGS=-ggdb
+# Optimising -faltivec
+DEBUGCFLAGS=-O2 
+INSTALL=install
+CC = ./gcc-fat.sh
+DEBUG = 
+CFLAGS = $(UIFLAGS) -Wno-char-subscripts -O2  -Iinclude
+# -Wall -g
+LFLAGS = $(UILIBS)
+DEFINES = -DMACOSX -DCD_VERSION -DHAVE_STDINT_H
+
+OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
+	anim.o crowd.o intro.o os_control.o squadre.o \
+	arbitro.o data.o league.o os_init.o	tables.o \
+	arcade.o dati_vel.o lists.o os_video.o tactics.o \
+	chunkyblitting.o display.o loops.o palla.o teams.o \
+	commento.o etw.o main.o portiere.o freq.o \
+	computer.o etw_locale.o	menu.o radar.o utility.o \
+	config.o font.o menu_config.o replay.o velocita_g.o \
+	connection.o generic_video.o menu_data.o sound.o wc.o \
+	control.o gfx.o menu_font.o special.o network.o \
+	highsocket.o SDLMain.o
+
+.m.o:
+	$(CC) $(CFLAGS) $(DEFINES) -c $<
+.c.o: etw.h menu.h
+	$(CC) $(CFLAGS) $(DEFINES) -c $<
+
+
+etw: $(OBJECTS)
+	$(CC) -o etw $(OBJECTS) $(LFLAGS)
+
+install: etw 
+	mkdir -p $(BUNDLE_CONTENTS)/MacOS
+	mkdir -p $(BUNDLE_CONTENTS)/Resources
+	mkdir -p $(BUNDLE_CONTENTS)/Resources/dtd
+	echo "APPL????" > $(BUNDLE_CONTENTS)/PkgInfo
+	cp Info.plist $(BUNDLE_CONTENTS)
+	cp ETW.icns $(BUNDLE_CONTENTS)/Resources
+	$(INSTALL) $< $(BUNDLE_CONTENTS)/MacOS
+	strip $(BUNDLE_CONTENTS)/MacOS/etw
+
+clean:
+	rm -rf *.o ppc x86

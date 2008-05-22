@@ -1,0 +1,150 @@
+Eat The Whistle Known BUGS
+==========================
+
+AUDIO
+-----
+
+1) When the user choose from the menu Audio Yes/No, the button of the Arcade teams,
+   becomes 'No'.
+   
+2) In some conditions, when the user comes back to the options after a match,
+   the Audio is OFF and if he tries to reactivate it the game crash. (FIXED)
+
+3) Mac version doesn't work correctly. (FIXED)
+   In truth the version for Mac continued to having problems, resolved
+   with the adoption of the 16bit format of the sounds.
+      
+4) Now also Windows version has problems.  (FIXED)
+
+5) Both versions have problems with spoken comment.
+
+6) In the menu Arcade, there are problems with the reproduction of
+   musics of the teams. Sometimes works, sometimes not. Moreover, leaving
+   an Arcade match, the music of the menu is disabled. (FIXED)
+
+
+VIDEO
+-----
+
+1) If in Video options is active the option People, during the second match
+   the game crach in the LoadStuff() during the 16/17 men loading. (FIXED?)
+
+2) The rotating triangle above the user active men some time doesn't match
+   the color of the selected control.
+    
+2) In the Video options, the loaded scaling resolution doesn't match to the
+   previously saved on file. (FIXED)
+
+3) If in window modality the scaling is activated and the game switch to screen
+   modality, the scaling is still signed active. (FIXED)
+
+4) Under Windows, if in screen modality, a load requester pops up the colors
+   are ruined. Under Mac the requester is showed on the Finder so the game
+   "hangs".
+
+5) In Arcade menu, there are problems with Show selected button, it appears and
+   disappears when it would not have.
+
+6) Some visualizations shows up only for few seconds (perhaps less), buffering
+   problems? (FIXED?)
+
+7) Some times, in the teams selection menu, remain selected a team, but the
+   Continue button does not appear.
+   
+8) In some options pages (Game, Video, Audio), where the buttons are "grouped", if
+   the exit requester is visualized, it have both the button selected. (FIXED)
+   
+9) In France '98 first round page (but not first page, after made a match) the
+   name of the header overlaps the name of the teams. (FIXED)
+   
+
+GAME
+----
+
+1) The defenders seem to begin to move when the ball has arrived to a well
+   determined distance.
+
+2) If the France '98 championship is selected (I do not know the other
+   seasons), turns out of the games are inverted. If it is gained it loses.
+   The problem must be or in the SetResult or the StartMatch one of the two,
+   if is necessary to swap the teams, or isn't made or is made an extra time.
+   (FIXED?)
+   
+2b) Sometimes, the names of the markers are attributed to the opposing
+    team! 
+
+3) Problems in the management of the offside. Often and gladly, above all
+   when the free kicks are struck, a man is put in offside and the game just
+   finds it. Nothing is worth, to disable the option Offside of the menu.
+   The problem seems a lot more present, if the opposing team occupies the
+   right part of the field. (FIXED?)
+
+4) In practice mode a ghost man appeared and after a little -> crash!
+
+5) During the substitutions, if the cursor key are pressed various times, the
+   game goes in crash.
+
+6) At end of game, the minute of the goals is mistaken. It goes ahead of
+   4min. As an example, 41 instead of 37.
+
+7) In 'Serie A' modality (but I think also in other modality) after four matches,
+   the game goes in crash in the HandleExtras() routine, does not import which
+   graphical options is selected. (FIXED)
+ 
+8) If the user browse the Arcade menu, and then return in the "Normal" menu,
+   for example loading a saved league, the first match played is in Arcade mode
+   (but not the following)!
+
+9) With some teams, to the kickoff, the computer sequence is always the same
+   one: passage and a shooting without sense that ends in lateral remittance.
+   
+10) With some teams, the tactics to obtain a practically sure goal is, to pass
+    very near the edge line field, the defenders does not move not even (works
+	only with the right bottom of the screen)!
+	
+11) Replays saved with a Mac doesn't work (currently testend only on Mac).
+
+12) Some times the game doesn't select the man nearest to the ball,
+    therefore happens that the man with the ball to the flank, remains
+    immovable like one statue...
+
+
+SYSTEM
+------
+
+1) Remember to use -fwritable-strings option. 
+
+2) If on Windows a team is loaded with the requester, the path of the program
+   is losed. (FIXED)
+
+3) For point 2, tactics did not come loaded, the game noticed that and tried to
+   visualize a requester, but the font have been freed and therefore crashes for
+   a null pointer. (WORKAROUND with the FIX of point 2)
+
+4) In Mac version file request doesn't exist. (FIXED)
+
+5) In Mac version reading the used localization is missing. (FIXED)
+
+6) Loading (or saving, is not clear), of the games has problems.
+   The variable numero_squadre is always zero and in the load routine there are
+    two cycles (with turno and totale_giornate) that they are based on it.
+	With a workaround for the cycles, the game does not go in loop and loads the
+	saved game but introduces remarkable problems (played games to replay and a
+	strange day with Argentine against all!).
+
+7) Loading a wrong Teams file, even if the game seems to manage the eventuality,
+   provokes a crash subsequently, when a valid file is loaded and then it is
+   tried to begin a league.
+
+8) LoadReplay() in replay.c does not work at all on 64-bit.
+
+
+
+NETWORK
+-------
+
+1) If a team is selected but the server doesn't respond, the team remains selected.
+
+2) In a test carried out with a WindowsNT system and a system Windows2000, the game
+   in the moment to visualize the field, it goes in crash on both the hosts.
+

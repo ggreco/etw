@@ -1,0 +1,39 @@
+CC = sc
+DEBUG = 
+DEFINES	= DEFINE=CD_VERSION DEFINE=inline=__inline DEBUG=FULL
+
+INCLUDES = IDIR=dh8:sdl-1.2.0/include
+CFLAGS= NOSTKCHK NOSTKEXT MATH=STD CPU=68020 DATA=FAR CODE=FAR
+LIBS = dh8:sdl-1.2.0/sassrc/sdl.lib lib:scm.lib lib:sc.lib lib:debug.lib lib:amiga.lib
+LFLAGS = NOICONS 
+#NODEBUG
+
+OBJS = Highdirent.o	  cpu.o		   human.o	  myiff.o	specials.o \
+	anim.o		  crowd.o	   intro.o	  os_control.o	squadre.o \
+	arbitro.o	  data.o	   league.o	  os_init.o	tables.o \
+	arcade.o	  dati_vel.o	   lists.o	  os_video.o	tactics.o \
+	chunkyblitting.o  display.o	   loops.o	  palla.o	teams.o \
+	commento.o	  etw.o		   main.o	  portiere.o	 \
+	computer.o	  etw_locale.o	   menu.o	  radar.o	utility.o \
+	config.o	  font.o	   menu_config.o  replay.o	velocita_g.o \
+	connection.o	  generic_video.o  menu_data.o	  sound.o	wc.o \
+	control.o	  gfx.o		   menu_font.o	  special.o     freq.o
+
+.c.o:
+	$(CC) $(CFLAGS) $(DEFINES) $(INCLUDES) OBJNAME=$*.o $*.c
+
+
+ETW: $(OBJS) dh8:sdl-1.2.0/sassrc/sdl.lib
+   slink with t:link <<!(t:link)
+	from
+	lib:c.o $(OBJS)
+	TO	
+	$@
+	LIB
+	$(LIBS)
+	$(LFLAGS)
+	<
+	copy etw dh1:etw/etwsdl
+
+clean:
+	delete *.o
