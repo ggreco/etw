@@ -149,7 +149,7 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\Eat The Whistle\*.*"
   Delete "$DESKTOP\Eat The Whistle.lnk"
   ; Remove directories used
-  RMDir "$SMPROGRAMS\EatTheWhistle"
+  RMDir "$SMPROGRAMS\Eat The Whistle"
   
   RMDir "$INSTDIR"
 
