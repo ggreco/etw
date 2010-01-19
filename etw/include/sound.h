@@ -8,8 +8,11 @@
 
     /* Double buffering chunk size. */
 
+#ifndef __AROS__
 #define BUFFER_SIZE    2048
-
+#else
+#define BUFFER_SIZE    4096
+#endif
 
     /* The voice header. */
 

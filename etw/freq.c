@@ -211,6 +211,7 @@ BOOL FileRequest(struct MyFileRequest *fr)
 #include <libraries/asl.h>
 #include <proto/asl.h>
 #include <proto/dos.h>
+#include <string.h>
 
 BOOL FileRequest(struct MyFileRequest *fr)
 {
