@@ -1,3 +1,5 @@
+# Makefile to build AROS ETW from a linux host
+
 OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
 	anim.o crowd.o intro.o os_control.o squadre.o \
 	arbitro.o data.o league.o os_init.o	tables.o \
@@ -16,14 +18,15 @@ EXE = etw
 PATH=$(CROSSDIR)/bin:/usr/local/bin:/usr/bin:/bin
 export PATH
 
-CROSSDIR = 
-CXX = g++
-CC = gcc
-LFLAGS = -lSDL_mixer -lSDL
-CFLAGS = -Wall -Wno-char-subscripts -O2 -fsigned-char -Iinclude -I/Development/include/sdl
-//CFLAGS = -Wall -Iinclude -I/Development/include/sdl -O2 -fomit-frame-pointer
+CROSSDIR = /usr/local/amiga/
+CXX = $(CROSSDIR)/bin/i686-aros-g++
+CC = $(CROSSDIR)/bin/i686-aros-gcc
+LFLAGS = -lSDL
+CFLAGS = -Wall -Wno-char-subscripts -g \
+	     -fsigned-char -Iinclude \
+         -I$(CROSSDIR)/i686-aros/sys-include/SDL 
 
-DEFINES = -DSUPER_DEBUG -DAMIGA -DCD_VERSION -DHAVE_STDINT_H -DAROS -DFAKENET
+DEFINES = -DAMIGA -DCD_VERSION -DHAVE_STDINT_H -DAROS -DFAKENET
 
 .cpp.o:
 	$(CXX) $(CFLAGS) $(DEFINES) -o $@ -c $<
@@ -34,7 +37,7 @@ DEFINES = -DSUPER_DEBUG -DAMIGA -DCD_VERSION -DHAVE_STDINT_H -DAROS -DFAKENET
 all: $(EXE) 
     
 $(EXE): $(OBJECTS)
-	$(CC) -o $@ $(OBJECTS) $(LFLAGS) -s
+	$(CC) -o $@ $(OBJECTS) $(LFLAGS)
 
 clean:
 	/bin/rm -f *.o $(EXE)
