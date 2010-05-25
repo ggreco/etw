@@ -318,10 +318,10 @@ void HandleBall(void)
 
         if(pl->InGioco)
         {
-            pl->settore = (pl->world_y/1450 << 2) + (pl->world_x/2560);
+            pl->sector = (pl->world_y/1450 << 2) + (pl->world_x/2560);
         }
 
-//        Printf("Settore  palla: %ld\n",pl->settore);
+//        Printf("Settore  palla: %ld\n",pl->sector);
 
 // Controllo se viene chiusa la finestra, solo se lo schermo e' pubblico...
 
@@ -392,7 +392,7 @@ void HandleBall(void)
                     {
                         if(!replay_mode)
                             game_status=S_RIMESSA_DAL_FONDO;
-                        pl->settore=GOALKICK;
+                        pl->sector=GOALKICK;
                         pl->sq_palla=p->team[1];
                         p->team[0]->Possesso=0;
                         p->team[1]->Possesso=1;
@@ -408,11 +408,11 @@ void HandleBall(void)
 
                         if(pl->world_y>(270*8) )
                         {
-                            pl->settore=CORNER_S;
+                            pl->sector=CORNER_S;
                         }
                         else
                         {
-                            pl->settore=CORNER_N;
+                            pl->sector=CORNER_N;
                         }
 
                         pl->sq_palla=p->team[0];
@@ -467,7 +467,7 @@ void HandleBall(void)
                         if(!replay_mode)
                             game_status=S_RIMESSA_DAL_FONDO;
 
-                        pl->settore=GOALKICK;
+                        pl->sector=GOALKICK;
                         pl->sq_palla=p->team[0];
                         p->team[1]->Possesso=0;
                         p->team[0]->Possesso=1;
@@ -482,11 +482,11 @@ void HandleBall(void)
 
                         if(pl->world_y>(270*8) )
                         {
-                            pl->settore=CORNER_S;
+                            pl->sector=CORNER_S;
                         }    
                         else
                         {
-                            pl->settore=CORNER_N;
+                            pl->sector=CORNER_N;
                         }
 
                         pl->sq_palla=p->team[1];

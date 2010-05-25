@@ -678,13 +678,13 @@ void DestroyTeam(team_t *s)
     D(bug("Ok.\n"));
 }
 
-void DisponiPortiere(team_t *s,int settore,BOOL possesso)
+void DisponiPortiere(team_t *s,int sector,BOOL possesso)
 {
 
-    s->keepers.world_x=portieri[(int)s->keepers.SNum][possesso][settore].x;
-    s->keepers.world_y=portieri[(int)s->keepers.SNum][possesso][settore].y;
+    s->keepers.world_x=portieri[(int)s->keepers.SNum][possesso][sector].x;
+    s->keepers.world_y=portieri[(int)s->keepers.SNum][possesso][sector].y;
 
-    if(settore==GOALKICK)
+    if(sector==GOALKICK)
     {
         if(possesso)
         {
@@ -712,7 +712,7 @@ void DisponiPortiere(team_t *s,int settore,BOOL possesso)
     }
 }
 
-void DisponiSquadra(team_t *s,int settore,BOOL possesso)
+void DisponiSquadra(team_t *s,int sector,BOOL possesso)
 {
     int i;
 
@@ -743,8 +743,8 @@ void DisponiSquadra(team_t *s,int settore,BOOL possesso)
 //            a[0]=1;
         }
 
-        s->players[i].world_x=s->tactic->Position[possesso][i][settore].x;
-        s->players[i].world_y=s->tactic->Position[possesso][i][settore].y;
+        s->players[i].world_x=s->tactic->Position[possesso][i][sector].x;
+        s->players[i].world_y=s->tactic->Position[possesso][i][sector].y;
 
 // Metto questa roba per vedere se risolvo il problema dell'omino ballerino!
 
@@ -764,7 +764,7 @@ void DisponiSquadra(team_t *s,int settore,BOOL possesso)
         }
     }
 
-    DisponiPortiere(s,settore,possesso);
+    DisponiPortiere(s,sector,possesso);
 }
 
 FILE *OpenTeam(char *name)
@@ -1378,7 +1378,7 @@ game_t *SetupSquadre(void)
         p->referee.world_y=(340*8);
         p->referee.Comando=FISCHIA_RIPRESA;
 
-        pl->settore=KICKOFF;
+        pl->sector=KICKOFF;
 
         starting_team=MyRangeRand(2);
 

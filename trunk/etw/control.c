@@ -417,7 +417,7 @@ skipchange:
                 {
                     /*
                        if(s!=pl->sq_palla)
-                       g->settore = (g->world_y/1450 << 2) + (g->world_x/2560);
+                       g->sector = (g->world_y/1450 << 2) + (g->world_x/2560);
                      */      
 
                     if(g->world_x<80)
@@ -433,17 +433,17 @@ skipchange:
                         g->world_x=1270*8;
                     }
 
-                    g->settore=s->tactic->Position[s->Possesso][i][p->ball.settore].settore;
+                    g->sector=s->tactic->Position[s->Possesso][i][p->ball.sector].sector;
 
                     g->Tick=0;
 
-                    if(g->settore!=pl->settore || s==pl->sq_palla || !pl->InGioco)
+                    if(g->sector!=pl->sector || s==pl->sq_palla || !pl->InGioco)
                     {
                         // Qui avevo messo degli 0 al posto di p->team[j]->Possesso, chissa' come mai...
 
-                        if(!IsNear(g->world_x,g->world_y,s->tactic->Position[s->Possesso][i][p->ball.settore].x,s->tactic->Position[s->Possesso][i][p->ball.settore].y) || !pl->InGioco)
+                        if(!IsNear(g->world_x,g->world_y,s->tactic->Position[s->Possesso][i][p->ball.sector].x,s->tactic->Position[s->Possesso][i][p->ball.sector].y) || !pl->InGioco)
                         {
-                            MoveTo(g,s->tactic->Position[s->Possesso][i][pl->settore].x,s->tactic->Position[s->Possesso][i][pl->settore].y);
+                            MoveTo(g,s->tactic->Position[s->Possesso][i][pl->sector].x,s->tactic->Position[s->Possesso][i][pl->sector].y);
                         }
                         else
                         {
@@ -1159,9 +1159,9 @@ void NoPlayerControl(player_t *g)
     {
         g->Tick=0;
 
-        if(!IsNear(g->world_x,g->world_y,g->team->tactic->Position[g->team->Possesso][g->GNum][p->ball.settore].x,g->team->tactic->Position[g->team->Possesso][g->GNum][p->ball.settore].y) )
+        if(!IsNear(g->world_x,g->world_y,g->team->tactic->Position[g->team->Possesso][g->GNum][p->ball.sector].x,g->team->tactic->Position[g->team->Possesso][g->GNum][p->ball.sector].y) )
         {
-            MoveTo(g,g->team->tactic->Position[g->team->Possesso][g->GNum][pl->settore].x,g->team->tactic->Position[g->team->Possesso][g->GNum][pl->settore].y);
+            MoveTo(g,g->team->tactic->Position[g->team->Possesso][g->GNum][pl->sector].x,g->team->tactic->Position[g->team->Possesso][g->GNum][pl->sector].y);
         }
         else
         {

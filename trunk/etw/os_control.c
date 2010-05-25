@@ -401,7 +401,7 @@ void CheckKeys(void)
                                     player_t *g=&s->players[i];
 
                                     D(bug("Parameters: Sp:%ld Cmd:%ld Dir:%ld Anim:%ld Spd:%ld Sect:%ld\n",
-                                                g->Special,g->Comando,g->dir,g->AnimType,g->ActualSpeed,g->settore));
+                                                g->Special,g->Comando,g->dir,g->AnimType,g->ActualSpeed,g->sector));
 
                                     for(j=0;j<(SECTORS+SPECIALS);j++)
                                     {

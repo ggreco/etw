@@ -43,7 +43,7 @@ tactic_t *LoadTactic(char *name)
 
                 t->Position[i][j][k].x=(t->Position[i][j][k].x>>5)*31+280;
                 t->Position[i][j][k].y=(t->Position[i][j][k].y>>2)*3-96;
-                t->Position[i][j][k].settore=t->Position[i][j][k].x/2560 + (t->Position[i][j][k].y/1450 << 2);
+                t->Position[i][j][k].sector=t->Position[i][j][k].x/2560 + (t->Position[i][j][k].y/1450 << 2);
             }
 
     fclose(fh);
@@ -71,7 +71,7 @@ void InvertTactic(tactic_t *t)
             {
                 t->Position[i][j][k].x= (((1280/4)*31)+200)-t->Position[i][j][k].x;
                 t->Position[i][j][k].y= ((544*7)+440)-t->Position[i][j][k].y;
-                t->Position[i][j][k].settore=t->Position[i][j][k].x/2560 + (t->Position[i][j][k].y/1450 << 2);
+                t->Position[i][j][k].sector=t->Position[i][j][k].x/2560 + (t->Position[i][j][k].y/1450 << 2);
             }
             
             for(k=0;k<3;k++)

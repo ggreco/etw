@@ -185,7 +185,7 @@ void HandleReferee(void)
 //                            t_l/=3; non lo divido per tre altrimenti arrivo al 45esimo anche nei supplementari
 
                             g->Comando=FISCHIA_RIPRESA;
-                            pl->settore=KICKOFF;
+                            pl->sector=KICKOFF;
 
                             p->team[starting_team]->Possesso=1;
                             p->team[starting_team^1]->Possesso=0;
@@ -257,7 +257,7 @@ void HandleReferee(void)
                             SwapTeams();
 
                             g->Comando=FISCHIA_RIPRESA;
-                            pl->settore=KICKOFF;
+                            pl->sector=KICKOFF;
 
 // E' sempre starting team ad avere la palla!
                             p->team[starting_team]->Possesso=1;
@@ -337,7 +337,7 @@ void HandleReferee(void)
 
                     }
 
-                    pl->settore=KICKOFF;
+                    pl->sector=KICKOFF;
 
 // Assegno gol e marcatore
 
@@ -422,12 +422,12 @@ void HandleReferee(void)
                         temp=Timer();
                         EndTime=temp+MY_CLOCKS_PER_SEC;
 
-                        pl->settore=KICKOFF;
+                        pl->sector=KICKOFF;
                     }
                     else
                     {
                         g->Comando=FISCHIA_RIPRESA;
-                        pl->settore=KICKOFF;
+                        pl->sector=KICKOFF;
                         g->Tick=100;
                     }
                     no_record=FALSE;
@@ -678,21 +678,21 @@ void HandleReferee(void)
                     {
                         pl->world_x=RIGORE_X_O;
                         pl->world_y=RIGORE_Y;
-                        pl->settore=PENALTY;
+                        pl->sector=PENALTY;
                     }
                     else
                     {
                         pl->world_x=piazzati[p->team[1]->Falli].x;
                         pl->world_y=piazzati[p->team[1]->Falli].y;
-                        pl->settore = (pl->world_y/1450 << 2) + (pl->world_x/2560);
+                        pl->sector = (pl->world_y/1450 << 2) + (pl->world_x/2560);
                     }
                     g->world_x=pl->world_x;
                     g->world_y=pl->world_y-320;
                     g->dir=4;
                     p->flash_pos=0;
                     p->flash_mode=TRUE;
-                    DisponiSquadra(p->team[0],pl->settore,TRUE);
-                    DisponiSquadra(p->team[1],pl->settore,FALSE);
+                    DisponiSquadra(p->team[0],pl->sector,TRUE);
+                    DisponiSquadra(p->team[1],pl->sector,FALSE);
                     break;
                 case FISCHIA_OFFSIDE:
                     if(g->Argomento<40)
@@ -860,7 +860,7 @@ void HandleReferee(void)
                                     UrgentSpeaker(S_CALCIO_DI_RIGORE);
                             }
 
-                            pl->settore=PENALTY;
+                            pl->sector=PENALTY;
                             pl->world_x=RIGORE_X_O;
                             pl->world_y=RIGORE_Y;
                         }
@@ -880,7 +880,7 @@ void HandleReferee(void)
                             p->team[1]->Rigori++;
 
                             PlayBackSound(sound[RIGORE]);
-                            pl->settore=PENALTY;
+                            pl->sector=PENALTY;
                             pl->world_x=RIGORE_X_E;
                             pl->world_y=RIGORE_Y;
                         }
@@ -895,14 +895,14 @@ void HandleReferee(void)
 
                         p->mantieni_distanza=TRUE;
 
-                        if(CanScore(g1)&&pl->settore!=PENALTY)
+                        if(CanScore(g1)&&pl->sector!=PENALTY)
                         {
 //                            SetCrowd(CORO1);
 
                             p->flash_mode=TRUE;
 
-                            DisponiSquadra(p->team[0],pl->settore,p->team[0]->Possesso);
-                            DisponiSquadra(p->team[1],pl->settore,p->team[1]->Possesso);
+                            DisponiSquadra(p->team[0],pl->sector,p->team[0]->Possesso);
+                            DisponiSquadra(p->team[1],pl->sector,p->team[1]->Possesso);
 
                             g1->dir=FindDirection(g1->world_x,g1->world_y, (g1->SNum ? PORTA_E_X : PORTA_O_X) ,PORTA_E_Y);
 
@@ -953,7 +953,7 @@ void HandleReferee(void)
 
                     StopTime();
 
-                    switch(pl->settore)
+                    switch(pl->sector)
                     {
                         case CORNER_N:
                             pl->world_y=CORNER_Y_N;

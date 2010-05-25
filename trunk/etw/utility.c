@@ -437,7 +437,7 @@ WORD FindDirection32(WORD xfrom, WORD yfrom,WORD xto,WORD yto)
 
     if(x>y8)
     {
-        if(y>(-x8)) /*1o settore */
+        if(y>(-x8)) /*1st sector */
         {
             if(y>(x-x8))
             {
@@ -475,7 +475,7 @@ WORD FindDirection32(WORD xfrom, WORD yfrom,WORD xto,WORD yto)
                 }
             }
         }
-        else /* 2o settore */
+        else /* 2nd sector */
         {
             if(x>(-y+y8))
             {
@@ -515,7 +515,7 @@ WORD FindDirection32(WORD xfrom, WORD yfrom,WORD xto,WORD yto)
     }
     else
     {
-        if(y < (-x8)) /* 3o settore */
+        if(y < (-x8)) /* 3rd sector */
         {
             if(y<(x-x8))
             {
@@ -552,7 +552,7 @@ WORD FindDirection32(WORD xfrom, WORD yfrom,WORD xto,WORD yto)
                 }
             }
         }
-        else /* 4o settore */
+        else /* 4th sector */
         {
             if(x<(-y+y8))
             {

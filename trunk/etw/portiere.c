@@ -424,10 +424,10 @@ void HandleKeeper(int num)
     {
         g->Tick=12;
 
-        if( ! (IsVeryNear(g->world_x,g->world_y,portieri[g->SNum][g->team->Possesso][pl->settore].x,portieri[g->SNum][g->team->Possesso][pl->settore].y) ) )
+        if( ! (IsVeryNear(g->world_x,g->world_y,portieri[g->SNum][g->team->Possesso][pl->sector].x,portieri[g->SNum][g->team->Possesso][pl->sector].y) ) )
         {
         g->ActualSpeed=1;
-        g->dir=FindDirection(g->world_x,g->world_y,portieri[g->SNum][g->team->Possesso][pl->settore].x,portieri[g->SNum][g->team->Possesso][pl->settore].y);
+        g->dir=FindDirection(g->world_x,g->world_y,portieri[g->SNum][g->team->Possesso][pl->sector].x,portieri[g->SNum][g->team->Possesso][pl->sector].y);
 
         if(g->AnimType!=PORTIERE_CORSA)
         {
@@ -544,7 +544,7 @@ void HandleKeeper(int num)
             {
                 FermaPalla();
                 pl->InGioco=FALSE;
-                pl->settore=GOALKICK;
+                pl->sector=GOALKICK;
                 g->team->Possesso=1;
                 p->team[g->SNum^1]->Possesso=0;
             }
@@ -745,7 +745,7 @@ void HandleKeeper(int num)
             {
                 FermaPalla();
                 pl->InGioco=FALSE;
-                pl->settore=GOALKICK;
+                pl->sector=GOALKICK;
                 g->team->Possesso=1;
                 p->team[g->SNum^1]->Possesso=0;
             }
@@ -985,7 +985,7 @@ skiptuffo:
                             pl->world_y=g->world_y+100;
                             pl->world_x=RIGORE_X_O;    
                             pl->world_y=RIGORE_Y;
-                            pl->settore=PENALTY;
+                            pl->sector=PENALTY;
                             pl->velocita=0;
                             g->Special=FALSE;
                             g->ActualSpeed=0;
