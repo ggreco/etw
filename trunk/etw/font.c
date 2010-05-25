@@ -847,11 +847,11 @@ void ShowFinal(void)
                     (current_field == 7 ? 's' : 'h'), cols[i][3]);
 
             if ((o = LoadGfxObject(buffer, Pens, NULL))) {
-                if (cols[i][0] != COLORE_STANDARD_MAGLIE)
-                    RemapColor(o->bmap, Pens[COLORE_STANDARD_MAGLIE],
+                if (cols[i][0] != COLOR_STANDARD_MAGLIE)
+                    RemapColor(o->bmap, Pens[COLOR_STANDARD_MAGLIE],
                                Pens[cols[i][0]], o->width * o->height);
-                if (cols[i][1] != COLORE_STANDARD_CALZONI)
-                    RemapColor(o->bmap, Pens[COLORE_STANDARD_CALZONI],
+                if (cols[i][1] != COLOR_STANDARD_CALZONI)
+                    RemapColor(o->bmap, Pens[COLOR_STANDARD_CALZONI],
                                Pens[cols[i][1]], o->width * o->height);
                 if (cols[i][2] != P_ARANCIO0)
                     RemapColor(o->bmap, Pens[P_ARANCIO0], Pens[cols[i][2]],

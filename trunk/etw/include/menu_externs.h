@@ -31,8 +31,8 @@ extern void InitTable(void);
 extern void UpdateLeagueTable(void);
 extern void SaveTeams(char *);
 extern void LoadTeams(char *);
-extern void RedrawButton(struct Bottone *, UBYTE);
-extern void CancellaBottone(struct Bottone *);
+extern void RedrawButton(struct Button *, UBYTE);
+extern void CancelButton(struct Button *);
 extern void ClearScores(void);
 extern void PrintShadow(int, int, char *, int, struct myfont *);
 extern void MyRestoreBack(void);
@@ -91,7 +91,7 @@ extern void UpdateButtonList(void);
 extern void StoreButtonList(void);
 
 extern void UpdatePrefs(BYTE);
-extern void SetupSpecialEvent(struct Bottone *);
+extern void SetupSpecialEvent(struct Button *);
 extern void ClearSelection(void);
 extern void ClearMatches(int);
 extern void GroupsUpdate(void);
@@ -109,7 +109,7 @@ extern void LoadHigh(char *);
 extern void SetHighSelection(void);
 
 extern player *network_player;
-extern struct Bottone teamselection[], teamsettings[], pannelli[], wcp[], league[], mp[], mb[], lb[],
+extern struct Button teamselection[], teamsettings[], pannelli[], wcp[], league[], mp[], mb[], lb[],
     asb[], cb[], cp[], wcfp[], mr[], scores[], hl[], sprefs_bottoni[];
 extern BOOL no_sound, nosync, allow_replay, nocpu, saved, wb_game, big, injuries, substitutions,
     arcade, situation, training, use_crowd, use_speaker, use_replay, bookings, free_longpass, offside,

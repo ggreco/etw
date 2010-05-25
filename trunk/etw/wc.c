@@ -148,25 +148,25 @@ void GroupsUpdate()
         {
             k=i*4+j;
 
-            if(!wcp[k*5+1].Testo)
+            if(!wcp[k*5+1].Text)
             {
                 char *t;
 
                 t=(char *)malloc(16);
-                wcp[k*5+1].Testo=t;
-                wcp[k*5+2].Testo=t+4;
-                wcp[k*5+3].Testo=t+8;
-                wcp[k*5+4].Testo=t+12;
+                wcp[k*5+1].Text=t;
+                wcp[k*5+2].Text=t+4;
+                wcp[k*5+3].Text=t+8;
+                wcp[k*5+4].Text=t+12;
             }
 
-            wcp[k*5].Testo=teamlist[groups[i][j]].name;
-            wcp[k*5].Colore=colore_team[controllo[groups[i][j]]+1];
+            wcp[k*5].Text=teamlist[groups[i][j]].name;
+            wcp[k*5].Color=colore_team[controllo[groups[i][j]]+1];
             wcp[k*5].Highlight=highlight_team[controllo[groups[i][j]]+1];
 
-            sprintf(wcp[k*5+1].Testo,"%d",(int) DatiCampionato[groups[i][j]].Giocate);
-            sprintf(wcp[k*5+2].Testo,"%d",(int) DatiCampionato[groups[i][j]].Punti);
-            sprintf(wcp[k*5+3].Testo,"%d",(int) DatiCampionato[groups[i][j]].GolFatti);
-            sprintf(wcp[k*5+4].Testo,"%d",(int) DatiCampionato[groups[i][j]].GolSubiti);
+            sprintf(wcp[k*5+1].Text,"%d",(int) DatiCampionato[groups[i][j]].Giocate);
+            sprintf(wcp[k*5+2].Text,"%d",(int) DatiCampionato[groups[i][j]].Punti);
+            sprintf(wcp[k*5+3].Text,"%d",(int) DatiCampionato[groups[i][j]].GolFatti);
+            sprintf(wcp[k*5+4].Text,"%d",(int) DatiCampionato[groups[i][j]].GolSubiti);
         }
     }
 }
@@ -224,17 +224,17 @@ void UpdateLeagueTable(void)
         {
             league_pos[j-1]=temp[best];
 
-            league[j*8].Testo=teamlist[temp[best]].name;
-            league[j*8].Colore=colore_team[controllo[temp[best]]+1];
+            league[j*8].Text=teamlist[temp[best]].name;
+            league[j*8].Color=colore_team[controllo[temp[best]]+1];
             league[j*8].Highlight=highlight_team[controllo[temp[best]]+1];
 
-            sprintf(league[j*8+1].Testo,"%d",(int) DatiCampionato[temp[best]].Giocate);
-            sprintf(league[j*8+2].Testo,"%d",(int) DatiCampionato[temp[best]].Punti);
-            sprintf(league[j*8+3].Testo,"%d",(int) DatiCampionato[temp[best]].Vittorie);
-            sprintf(league[j*8+4].Testo,"%d",(int) DatiCampionato[temp[best]].Pareggi);
-            sprintf(league[j*8+5].Testo,"%d",(int) DatiCampionato[temp[best]].Sconfitte);
-            sprintf(league[j*8+6].Testo,"%d",(int) DatiCampionato[temp[best]].GolFatti);
-            sprintf(league[j*8+7].Testo,"%d",(int) DatiCampionato[temp[best]].GolSubiti);
+            sprintf(league[j*8+1].Text,"%d",(int) DatiCampionato[temp[best]].Giocate);
+            sprintf(league[j*8+2].Text,"%d",(int) DatiCampionato[temp[best]].Punti);
+            sprintf(league[j*8+3].Text,"%d",(int) DatiCampionato[temp[best]].Vittorie);
+            sprintf(league[j*8+4].Text,"%d",(int) DatiCampionato[temp[best]].Pareggi);
+            sprintf(league[j*8+5].Text,"%d",(int) DatiCampionato[temp[best]].Sconfitte);
+            sprintf(league[j*8+6].Text,"%d",(int) DatiCampionato[temp[best]].GolFatti);
+            sprintf(league[j*8+7].Text,"%d",(int) DatiCampionato[temp[best]].GolSubiti);
 
             temp[best]=-1;
         }
@@ -257,27 +257,27 @@ void InitTable(void)
 
     for(j=8;j<(8*(ns+1));j+=8)
     {
-        if(!league[j+1].Testo)
+        if(!league[j+1].Text)
         {
             c=(char *)malloc(54); // 8 caratteri per ogni stringa;
         
             for(i=0;i<7;i++)
             {
-                league[j+i+1].Testo=&c[i*8];
+                league[j+i+1].Text=&c[i*8];
             }
         }
     }
 
     for(j=(8*(ns+1));j<(8*21);j+=8)
     {
-        league[j].Testo=NULL;
+        league[j].Text=NULL;
 
-        if(league[j+1].Testo)
+        if(league[j+1].Text)
         {
-            free(league[j+1].Testo);
+            free(league[j+1].Text);
 
             for(i=1;i<8;i++)
-                league[j+i].Testo=NULL;
+                league[j+i].Text=NULL;
         }
     }
 }
@@ -293,10 +293,10 @@ void ClearScores(void)
 
     for(i=0;i<score_number;i++)
     {
-        if(scores[i*2+1].Testo)
+        if(scores[i*2+1].Text)
         {
-            free(scores[i*2+1].Testo);
-            scores[i*2+1].Testo=NULL;
+            free(scores[i*2+1].Text);
+            scores[i*2+1].Text=NULL;
         }
     }
 }
@@ -318,13 +318,13 @@ void InsertScoreName(int i,char *buffer)
     int j;
     char *c;
 
-    scores[i*2+1].Testo=strdup(buffer);
+    scores[i*2+1].Text=strdup(buffer);
 
-    c=scores[i*2].Testo=&scores[i*2+1].Testo[6];
+    c=scores[i*2].Text=&scores[i*2+1].Text[6];
 
     for(j=0;j<6;j++)
-        if(scores[i*2+1].Testo[j]==' ')
-            scores[i*2+1].Testo[j]=0;
+        if(scores[i*2+1].Text[j]==' ')
+            scores[i*2+1].Text[j]=0;
 
     while(*c)
     {
@@ -382,15 +382,15 @@ void WriteScores(void)
 
         for(i=0;i<score_number;i++)        {
             for(j=0;j<6;j++)
-                if(scores[i*2+1].Testo[j]==0)
-                    scores[i*2+1].Testo[j]=' ';
+                if(scores[i*2+1].Text[j]==0)
+                    scores[i*2+1].Text[j]=' ';
 
-            scores[i*2+1].Testo[5]=' ';
-            fprintf(f,"%s\n",scores[i*2+1].Testo);
+            scores[i*2+1].Text[5]=' ';
+            fprintf(f,"%s\n",scores[i*2+1].Text);
 
             for(j=0;j<6;j++)
-                if(scores[i*2+1].Testo[j]==' ')
-                    scores[i*2+1].Testo[j]=0;
+                if(scores[i*2+1].Text[j]==' ')
+                    scores[i*2+1].Text[j]=0;
         }
 
         fclose(f);
@@ -405,7 +405,7 @@ void AddScore(UBYTE team)
     if(arcade_score<0)
         return;
 
-    while(i<score_number && arcade_score<atol(scores[i*2+1].Testo))
+    while(i<score_number && arcade_score<atol(scores[i*2+1].Text))
         i++;
 
     if(i>=20)
@@ -421,8 +421,8 @@ void AddScore(UBYTE team)
         {
             if(j<20)
             {
-                scores[j*2].Testo=scores[(j-1)*2].Testo;
-                scores[j*2+1].Testo=scores[(j-1)*2+1].Testo;
+                scores[j*2].Text=scores[(j-1)*2].Text;
+                scores[j*2+1].Text=scores[(j-1)*2+1].Text;
             }
         }
     }

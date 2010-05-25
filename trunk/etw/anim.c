@@ -74,10 +74,10 @@ void FreeFrames(struct AnimInstData *a)
 {
     register struct FrameNode *fn,*fnsucc;
 
-    for(fn=(struct FrameNode *)a->aid_FrameList.lh_Head;
-        fn->fn_Node.mln_Succ ; fn=fnsucc)
+    for(fn=(struct FrameNode *)a->aid_FrameList.pHead;
+        fn->fn_Node.mpNext ; fn=fnsucc)
     {
-            fnsucc=fn->fn_Node.mln_Succ;
+            fnsucc=fn->fn_Node.mpNext;
             free(fn->fn_BitMap);
             free(fn);
     }
@@ -88,8 +88,8 @@ struct FrameNode *GetFrameNode(struct AnimInstData *a,int n)
 {
     register struct FrameNode *fn;
 
-    for(fn=(struct FrameNode *)a->aid_FrameList.mlh_Head;
-        fn->fn_Node.mln_Succ && n>0; fn=(struct FrameNode *)fn->fn_Node.mln_Succ,n--);
+    for(fn=(struct FrameNode *)a->aid_FrameList.mpHead;
+        fn->fn_Node.mpNext && n>0; fn=(struct FrameNode *)fn->fn_Node.mpNext,n--);
 
     return fn;
 }
@@ -102,10 +102,10 @@ void DisplayAnim(struct AnimInstData *a)
 
     sclk=clock()-20;
 
-    CopyBitMap(((struct FrameNode *)a->aid_FrameList.mlh_Head)->fn_BitMap,Temp);
+    CopyBitMap(((struct FrameNode *)a->aid_FrameList.mpHead)->fn_BitMap,Temp);
 
-    for(fn=(struct FrameNode *)a->aid_FrameList.mlh_Head;
-        fn->fn_Node.mln_Succ;fn=(struct FrameNode *)fn->fn_Node.mln_Succ)
+    for(fn=(struct FrameNode *)a->aid_FrameList.mpHead;
+        fn->fn_Node.mpNext;fn=(struct FrameNode *)fn->fn_Node.mpNext)
     {
         if(!fn->fn_BitMap)
         {
@@ -126,12 +126,12 @@ void DisplayAnim(struct AnimInstData *a)
 
         t=(clock()-sclk);
 
-        if(fn->fn_Node.mln_Succ->mln_Succ && t>((struct FrameNode *)fn->fn_Node.mln_Succ)->Clock)
+        if(fn->fn_Node.mpNext->mpNext && t>((struct FrameNode *)fn->fn_Node.mpNext)->Clock)
         {
             s++;
             continue;
 /*
-            fn=(struct FrameNode *)fn->fn_Node.mln_Succ;
+            fn=(struct FrameNode *)fn->fn_Node.mpNext;
             DeltaUnpack(Temp,(LONG)fn->delta,0);
             fn->fn_BitMap=Temp;
     Proviamo cosi'...
@@ -354,8 +354,8 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
 
                                   fn -> fn_TimeStamp = timestamp++;
 
-                                  if(fn->fn_Node.mln_Pred)
-                                    fn -> Clock = ((struct FrameNode *)fn->fn_Node.mln_Pred)->Clock+(CLOCKS_PER_SEC/50);
+                                  if(fn->fn_Node.mpPrev)
+                                    fn -> Clock = ((struct FrameNode *)fn->fn_Node.mpPrev)->Clock+(CLOCKS_PER_SEC/50);
                                   else
                                     fn -> Clock = (CLOCKS_PER_SEC/50);
 
@@ -594,9 +594,9 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
               /* Renumber timestamps */
               timestamp = 0UL; /* again we count from 0 */
 
-              worknode = (struct FrameNode *)(aid -> aid_FrameList . mlh_Head);
+              worknode = (struct FrameNode *)(aid -> aid_FrameList . mpHead);
 
-              while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) )
+              while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mpNext) )
               {
                 ULONG duration = (worknode -> fn_AH . ah_RelTime) + shift - 1UL;
 
@@ -963,7 +963,7 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
                 fn -> fn_UseCount--;
 
                 /* Free an existing bitmap if it isn't in use and if it is NOT the first bitmap */
-                if( ((fn -> fn_UseCount) == 0) && (fn -> fn_BitMap) && (fn != (struct FrameNode *)(aid -> aid_FrameList . mlh_Head)) )
+                if( ((fn -> fn_UseCount) == 0) && (fn -> fn_BitMap) && (fn != (struct FrameNode *)(aid -> aid_FrameList . mpHead)) )
                 {
                   if( FALSE /*FreeAbleFrame( aid, fn )*/ )
                   {
@@ -1042,8 +1042,8 @@ static BOOL FreeAbleFrame( struct AnimInstData *aid, struct FrameNode *fn )
 
     /* Don't free the current nor the previous nor the next bitmap (to avoid problems with delta frames) */
     if( (fn == currfn) ||
-        (fn == (struct FrameNode *)(currfn -> fn_Node . mln_Succ)) ||
-        (fn == (struct FrameNode *)(currfn -> fn_Node . mln_Pred)) )
+        (fn == (struct FrameNode *)(currfn -> fn_Node . mpNext)) ||
+        (fn == (struct FrameNode *)(currfn -> fn_Node . mpPrev)) )
     {
       return( FALSE );
     }
@@ -1120,9 +1120,9 @@ struct FrameNode *FindFrameNode( struct MinList *fnl, ULONG timestamp )
                        *nextnode,
                        *prevnode;
 
-      prevnode = worknode = (struct FrameNode *)(fnl -> mlh_Head);
+      prevnode = worknode = (struct FrameNode *)(fnl -> mpHead);
 
-      while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) )
+      while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mpNext) )
       {
         if( (worknode -> fn_TimeStamp) > timestamp )
         {
@@ -1532,9 +1532,9 @@ struct FrameNode *GetPrevFrameNode( struct FrameNode *currfn, ULONG interleave )
     /* Get previous frame */
     worknode = currfn;
 
-    while( prevnode = (struct FrameNode *)(worknode -> fn_Node . mln_Pred) )
+    while( prevnode = (struct FrameNode *)(worknode -> fn_Node . mpPrev) )
     {
-      if( (interleave-- == 0U) || ((prevnode -> fn_Node . mln_Pred) == NULL) )
+      if( (interleave-- == 0U) || ((prevnode -> fn_Node . mpPrev) == NULL) )
       {
         break;
       }

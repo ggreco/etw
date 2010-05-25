@@ -44,18 +44,18 @@ void ViewEliminazioneDiretta(int n)
 
     for(i=0; i<n; i++)
     {
-        mp[i*4].Colore=colore_team[controllo[teamarray[i*2]]+1];
+        mp[i*4].Color=colore_team[controllo[teamarray[i*2]]+1];
         mp[i*4].Highlight=highlight_team[controllo[teamarray[i*2]]+1];
-        mp[i*4+2].Colore=colore_team[controllo[teamarray[i*2+1]]+1];
+        mp[i*4+2].Color=colore_team[controllo[teamarray[i*2+1]]+1];
         mp[i*4+2].Highlight=highlight_team[controllo[teamarray[i*2+1]]+1];
-        mp[i*4].Testo=teamlist[teamarray[i*2]].name;
-        mp[i*4+1].Testo="-"/*-*/;
-        mp[i*4+2].Testo=teamlist[teamarray[i*2+1]].name;
+        mp[i*4].Text=teamlist[teamarray[i*2]].name;
+        mp[i*4+1].Text="-"/*-*/;
+        mp[i*4+2].Text=teamlist[teamarray[i*2+1]].name;
 
-        if(mp[i*4+3].Testo)
+        if(mp[i*4+3].Text)
         {
-            free(mp[i*4+3].Testo);
-            mp[i*4+3].Testo=NULL;
+            free(mp[i*4+3].Text);
+            mp[i*4+3].Text=NULL;
         }
     }
     ClearMatches(n);
@@ -74,7 +74,7 @@ void EliminazioneDiretta(int n)
 
         risultato=PlayMatch(a, b);
 
-        mp[i*4+3].Testo=strdup(ElaboraRisultato(a, b, risultato));
+        mp[i*4+3].Text=strdup(ElaboraRisultato(a, b, risultato));
 
         if((risultato>>8)>(risultato&0xff))
         {
@@ -96,7 +96,7 @@ void EliminazioneDiretta(int n)
     nopari=FALSE;
 }
 
-void SetupSpecialEvent(struct Bottone *b)
+void SetupSpecialEvent(struct Button *b)
 {
     int i;
 
@@ -114,8 +114,8 @@ void SetupSpecialEvent(struct Bottone *b)
             competition=MENU_MATCHES;
             b->ID=MENU_TEAM_SELECTION;
             wanted_number=campionato.nteams;
-            menu[MENU_TEAM_SELECTION].Bottone[64].Testo=msg_0;
-            menu[MENU_TEAM_SELECTION].Bottone[66].Testo=NULL;
+            menu[MENU_TEAM_SELECTION].Button[64].Text=msg_0;
+            menu[MENU_TEAM_SELECTION].Button[66].Text=NULL;
             i_scontri=scontri=1; // campionato.Scontri; Non ancora supportato
             break;
         case CAMP_LEAGUE:
@@ -142,12 +142,12 @@ void SetupSpecialEvent(struct Bottone *b)
             pps=campionato.loss;
 
             i_scontri=scontri=campionato.Scontri;
-            menu[MENU_TEAM_SELECTION].Bottone[64].Testo=msg_0;
-            menu[MENU_TEAM_SELECTION].Bottone[66].Testo=NULL;
+            menu[MENU_TEAM_SELECTION].Button[64].Text=msg_0;
+            menu[MENU_TEAM_SELECTION].Button[66].Text=NULL;
             break;
         case CAMP_WORLDCUP:
-            menu[MENU_TEAM_SELECTION].Bottone[64].Testo=msg_1;
-            menu[MENU_TEAM_SELECTION].Bottone[66].Testo=msg_2;
+            menu[MENU_TEAM_SELECTION].Button[64].Text=msg_1;
+            menu[MENU_TEAM_SELECTION].Button[66].Text=msg_2;
 
             competition=MENU_WORLD_CUP;
             b->ID=MENU_TEAM_SELECTION;
@@ -172,7 +172,7 @@ void SetupSpecialEvent(struct Bottone *b)
 
     while(selected_number<wanted_number&&i<64)
     {
-        while(!teamselection[i].Testo&&i<64)
+        while(!teamselection[i].Text&&i<64)
             i++;
 
         if(competition==MENU_LEAGUE&&division)
@@ -181,7 +181,7 @@ void SetupSpecialEvent(struct Bottone *b)
 
         selected_number++;
 
-        teamselection[i].Colore=COLORE_COMPUTER;
+        teamselection[i].Color=COLOR_COMPUTER;
         i++;
     }
 
@@ -422,10 +422,10 @@ void AddName(struct player_disk *g, int posizione)
 
     *c=0;
 
-    if(teamsettings[posizione*2+1].Testo)
-        free(teamsettings[posizione*2+1].Testo);
+    if(teamsettings[posizione*2+1].Text)
+        free(teamsettings[posizione*2+1].Text);
 
-    teamsettings[posizione*2+1].Testo=strdup(namebuffer);
+    teamsettings[posizione*2+1].Text=strdup(namebuffer);
 
 
 }
@@ -434,9 +434,9 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
 {
     int i;
 
-    if(pannelli[posizione*3].Testo!=NULL &&
-        pannelli[posizione*3].Testo != empty)
-        free(pannelli[posizione*3].Testo);
+    if(pannelli[posizione*3].Text!=NULL &&
+        pannelli[posizione*3].Text != empty)
+        free(pannelli[posizione*3].Text);
 
     if(infortuni>0)
     {
@@ -447,9 +447,9 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
 
         D(bug("Mark %ld injuried for %ld\n", t, posizione));
 
-        pannelli[posizione*3].Testo=malloc(2);
+        pannelli[posizione*3].Text=malloc(2);
 
-        pannelli[posizione*3].Testo[0]=12+t;
+        pannelli[posizione*3].Text[0]=12+t;
         
     }
     else if(ammonizioni>0)
@@ -461,27 +461,27 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
 
         D(bug("Mark %ld yellow card for %ld\n", t, posizione));
 
-        pannelli[posizione*3].Testo=malloc(2);
+        pannelli[posizione*3].Text=malloc(2);
 
-        pannelli[posizione*3].Testo[0]=4+t;
+        pannelli[posizione*3].Text[0]=4+t;
     }
     else
     {
-        pannelli[posizione*3].Testo=empty;
+        pannelli[posizione*3].Text=empty;
     }
 
-    if(pannelli[posizione*3+2].Testo==NULL ||
-        pannelli[posizione*3+2].Testo == empty)
-        pannelli[posizione*3+2].Testo=malloc(6);
+    if(pannelli[posizione*3+2].Text==NULL ||
+        pannelli[posizione*3+2].Text == empty)
+        pannelli[posizione*3+2].Text=malloc(6);
 
-    pannelli[posizione*3+2].Testo[5]=13;
+    pannelli[posizione*3+2].Text[5]=13;
 
 // Deve dipendere dal valore!
 
     if(v<1)
     {
-        pannelli[posizione*3+2].Testo[0]=' ';
-        pannelli[posizione*3+2].Testo[1]=0;
+        pannelli[posizione*3+2].Text[0]=' ';
+        pannelli[posizione*3+2].Text[1]=0;
         return;
     }
     
@@ -495,9 +495,9 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
     for(i=0; i<10; i+=2)
     {
         if(i<=v)
-            pannelli[posizione*3+2].Testo[i/2]= ( (i<v) ? i/2 : (i/2 + 8) );
+            pannelli[posizione*3+2].Text[i/2]= ( (i<v) ? i/2 : (i/2 + 8) );
         else
-            pannelli[posizione*3+2].Testo[i/2]=13;
+            pannelli[posizione*3+2].Text[i/2]=13;
     }
 }
 
@@ -522,10 +522,10 @@ void AddPlayer(struct player_disk *g, int posizione)
         strcat(buffer, msg_5);
     }
 
-    if(pannelli[posizione*3+1].Testo&&pannelli[posizione*3+1].Testo!=empty)
-        free(pannelli[posizione*3+1].Testo);
+    if(pannelli[posizione*3+1].Text&&pannelli[posizione*3+1].Text!=empty)
+        free(pannelli[posizione*3+1].Text);
 
-    pannelli[posizione*3+1].Testo=strdup(buffer);
+    pannelli[posizione*3+1].Text=strdup(buffer);
 
     SetPlayerStatus(posizione, g->injury, g->Ammonizioni,
         (((g->Tiro+g->tackle+g->speed*2+g->technique+g->creativity-2*6+3)*10)/7)/6 );
@@ -539,8 +539,8 @@ void SetTeamSettings(WORD team, BOOL starting)
 
     for(i=0; i<11; i++)
     {
-        teamsettings[i*2+1].Colore=
-            teamsettings[i*2].Colore=pannelli[i*3].Colore=colore_team[controllo[team]+1];
+        teamsettings[i*2+1].Color=
+            teamsettings[i*2].Color=pannelli[i*3].Color=colore_team[controllo[team]+1];
 
         teamsettings[i*2+1].Highlight=
             teamsettings[i*2].Highlight=pannelli[i*3].Highlight=highlight_team[controllo[team]+1];
@@ -548,8 +548,8 @@ void SetTeamSettings(WORD team, BOOL starting)
 
     for(i=11; i<16; i++)
     {
-        teamsettings[i*2+1].Colore=
-            teamsettings[i*2].Colore=pannelli[i*3].Colore=highlight_team[controllo[team]+1];
+        teamsettings[i*2+1].Color=
+            teamsettings[i*2].Color=pannelli[i*3].Color=highlight_team[controllo[team]+1];
 
         teamsettings[i*2+1].Highlight=
             teamsettings[i*2].Highlight=pannelli[i*3].Highlight=colore_team[controllo[team]+1];
@@ -569,9 +569,9 @@ void SetTeamSettings(WORD team, BOOL starting)
 
     for(i=0; i<min(17, teamlist[team].nplayers+teamlist[team].nkeepers); i++)
     {
-        teamsettings[i*2].Testo=numero[i];
+        teamsettings[i*2].Text=numero[i];
         teamsettings[i*2].ID=i;
-//        pannelli[i*3].Testo=empty;
+//        pannelli[i*3].Text=empty;
     }
 
     if(teamlist[team].nplayers<15)
@@ -581,32 +581,32 @@ void SetTeamSettings(WORD team, BOOL starting)
         D(bug("teamlist[team].nplayers<15)"));
         for(i=k; i<17; i++)
         {
-            if(teamsettings[i*2+1].Testo)
-                free(teamsettings[i*2+1].Testo);
+            if(teamsettings[i*2+1].Text)
+                free(teamsettings[i*2+1].Text);
 
-            teamsettings[i*2+1].Testo=NULL;
-            teamsettings[i*2].Testo=NULL;
+            teamsettings[i*2+1].Text=NULL;
+            teamsettings[i*2].Text=NULL;
 
-            if(pannelli[i*3].Testo&&pannelli[i*3].Testo!=empty)
-                free(pannelli[i*3].Testo);
+            if(pannelli[i*3].Text&&pannelli[i*3].Text!=empty)
+                free(pannelli[i*3].Text);
 
-            if(pannelli[i*3+1].Testo&&pannelli[i*3+1].Testo!=empty)
-                free(pannelli[i*3+1].Testo);
+            if(pannelli[i*3+1].Text&&pannelli[i*3+1].Text!=empty)
+                free(pannelli[i*3+1].Text);
 
-            if(pannelli[i*3+2].Testo&&pannelli[i*3+2].Testo!=empty)
-                free(pannelli[i*3+2].Testo);
+            if(pannelli[i*3+2].Text&&pannelli[i*3+2].Text!=empty)
+                free(pannelli[i*3+2].Text);
 
-            pannelli[i*3+1].Testo=pannelli[i*3].Testo=pannelli[i*3+2].Testo=NULL;
+            pannelli[i*3+1].Text=pannelli[i*3].Text=pannelli[i*3+2].Text=NULL;
         }
     }
     D(bug("SetTeamSettings FREEING"));
     
     for(i=0; i<6; i++) {
-        if(!stricmp(teamsettings[34+i].Testo, teamlist[team].tactics[0]))
+        if(!stricmp(teamsettings[34+i].Text, teamlist[team].tactics[0]))
         {
-            teamsettings[34+i].Colore=COLORE_TATTICA_SELEZIONATA;
+            teamsettings[34+i].Color=COLOR_TATTICA_SELEZIONATA;
         }
-        else teamsettings[34+i].Colore=COLORE_TATTICA_NON_SELEZIONATA;
+        else teamsettings[34+i].Color=COLOR_TATTICA_NON_SELEZIONATA;
     }
 
     AddName((struct player_disk *)&teamlist[team].keepers[0], 0);
@@ -618,11 +618,11 @@ void SetTeamSettings(WORD team, BOOL starting)
     {
         D(bug("if(teamlist[team].nkeepers<2)"));
         
-        if(teamsettings[11*2+1].Testo)
-            free(teamsettings[11*2+1].Testo);
+        if(teamsettings[11*2+1].Text)
+            free(teamsettings[11*2+1].Text);
 
-        if(pannelli[11*3].Testo&&pannelli[11*3].Testo!=empty)
-            free(pannelli[11*3].Testo);
+        if(pannelli[11*3].Text&&pannelli[11*3].Text!=empty)
+            free(pannelli[11*3].Text);
 
 /*
  * This code could crash since it used to free a const char *,
@@ -632,17 +632,17 @@ void SetTeamSettings(WORD team, BOOL starting)
  * check about msg_141, the "G" letter, so that it's freed only
  * it we really need to free it.
  */
-        if(     pannelli[11*3+1].Testo &&
-                pannelli[11*3+1].Testo!=empty &&
-                pannelli[11*3+1].Testo != msg_141) {
-            free(pannelli[11*3+1].Testo);
+        if(     pannelli[11*3+1].Text &&
+                pannelli[11*3+1].Text!=empty &&
+                pannelli[11*3+1].Text != msg_141) {
+            free(pannelli[11*3+1].Text);
         }
 
-        if(pannelli[11*3+2].Testo&&pannelli[11*3+2].Testo!=empty)
-            free(pannelli[11*3+2].Testo);
+        if(pannelli[11*3+2].Text&&pannelli[11*3+2].Text!=empty)
+            free(pannelli[11*3+2].Text);
 
-        pannelli[11*3+2].Testo=pannelli[11*3+1].Testo=pannelli[11*3].Testo=NULL;
-        teamsettings[11*2].Testo=teamsettings[11*2+1].Testo=NULL;
+        pannelli[11*3+2].Text=pannelli[11*3+1].Text=pannelli[11*3].Text=NULL;
+        teamsettings[11*2].Text=teamsettings[11*2+1].Text=NULL;
     }
     else {
         AddName((struct player_disk *)&teamlist[team].keepers[1], 11);
@@ -651,9 +651,9 @@ void SetTeamSettings(WORD team, BOOL starting)
     }
 
     if (starting) 
-        teamsettings[42].Testo = msg_0;
+        teamsettings[42].Text = msg_0;
     else
-        teamsettings[42].Testo = msg_6;
+        teamsettings[42].Text = msg_6;
         
     D(bug("SetTeamSettings FINISH"));
 }
@@ -671,15 +671,15 @@ void SetTeamSelection(void)
 
     for(i=0; i<TS_RIGHE*TS_COLONNE; i++)
     {
-        teamselection[i].Testo=NULL;
-        teamselection[i].Colore=COLORE_UNSELECTED;
+        teamselection[i].Text=NULL;
+        teamselection[i].Color=COLOR_UNSELECTED;
         teamselection[i].ID=-65;
     }
 
     for(i=0; i<campionato.nteams; i++)
     {
         teamselection[i+start*TS_COLONNE].ID=-i-1;
-        teamselection[i+start*TS_COLONNE].Testo=teamlist[i].name;
+        teamselection[i+start*TS_COLONNE].Text=teamlist[i].name;
     }
 }
 
@@ -694,9 +694,9 @@ void LoadLeague(void)
     if(competition==MENU_WORLD_CUP)
         special=TRUE;
 /*
-    if(menu[current_menu].Bottone[4].Testo==NULL)
+    if(menu[current_menu].Button[4].Text==NULL)
     {
-        menu[current_menu].Bottone[4].Testo="SAVE";
+        menu[current_menu].Button[4].Text="SAVE";
         ChangeMenu(current_menu);
     }
 */
@@ -807,7 +807,7 @@ void LoadTeams(char *name)
 
             campionato.nteams++;
 
-            menu[MENU_SIMULATION].Bottone[0].Testo=(*campionato.name!=0) ? campionato.name : NULL;
+            menu[MENU_SIMULATION].Button[0].Text=(*campionato.name!=0) ? campionato.name : NULL;
 
             {
                 int i=0;

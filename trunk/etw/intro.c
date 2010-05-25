@@ -58,7 +58,7 @@ void Intro(void)
             {
                 if(!(id=MergeAnim(a,fh2)))
                 {
-                    register struct FrameNode *fn=(struct FrameNode *)a->aid_FrameList.mlh_Head;
+                    register struct FrameNode *fn=(struct FrameNode *)a->aid_FrameList.mpHead;
                     int i;
 
                     CurrentRP=&scr->RastPort;
@@ -99,13 +99,13 @@ void Intro(void)
 
                             i=1;
 
-                            while(fn->fn_Node.mln_Succ)
+                            while(fn->fn_Node.mpNext)
                             {
                                 fn->Clock+=(20*i);
 
                                 i++;
 
-                                fn=(struct FrameNode *)fn->fn_Node.mln_Succ;
+                                fn=(struct FrameNode *)fn->fn_Node.mpNext;
                             }
                             break;
                         case 2:
