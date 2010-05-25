@@ -21,7 +21,7 @@ extern BOOL LoadMenuStuff(void);
 extern BOOL LoadBack(void);
 extern BOOL LoadArcadeBack(void);
 extern void FreeMenuStuff(void);
-extern void InvertiSquadre(void);
+extern void SwapAllTeams(void);
 extern void MakeLeague(int);
 extern void LoadLeague(void);
 extern void LoadArcadeGfx(void);
@@ -31,7 +31,7 @@ extern void InitTable(void);
 extern void UpdateLeagueTable(void);
 extern void SaveTeams(char *);
 extern void LoadTeams(char *);
-extern void RedrawBottone(struct Bottone *, UBYTE);
+extern void RedrawButton(struct Bottone *, UBYTE);
 extern void CancellaBottone(struct Bottone *);
 extern void ClearScores(void);
 extern void PrintShadow(int, int, char *, int, struct myfont *);
@@ -131,7 +131,8 @@ extern int8_t teamarray[], turno, nteams, daytime, league_pos[64], ppp, ppv, pps
 
 extern int WINDOW_WIDTH, WINDOW_HEIGHT, oldwidth, oldheight, wanted_width, wanted_height;
 extern int radar_position, players, current_menu;
-extern char control[], career_file[], *menu_soundname[], localename[], scontri, i_scontri;
+extern uint8_t control[];
+extern char career_file[], *menu_soundname[], localename[], scontri, i_scontri;
 extern struct myfont *bigfont, *smallfont, *titlefont;
 extern struct GfxMenu menu[];
 extern anim_t *logos, *symbols;

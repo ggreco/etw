@@ -25,7 +25,7 @@ static int music_channel = -1;
 BOOL quit_game = FALSE, no_sound = FALSE;
 BOOL training = FALSE, nosync = FALSE, firsttime = TRUE, arcade_back =
     FALSE;
-char control[4] = { CTRL_JOY, CTRL_JOY, CTRL_JOY, CTRL_JOY };
+uint8_t control[4] = { CTRL_JOY, CTRL_JOY, CTRL_JOY, CTRL_JOY };
 anim_t *logos = NULL, *symbols = NULL;
 gfx_t *arcade_gfx[ARCADE_TEAMS + 1];
 uint8_t *back;

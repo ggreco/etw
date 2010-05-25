@@ -68,7 +68,7 @@ struct referee
     BOOL Special;
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    int8_t NameLen; // Lunghezza in int8_ts del cognome (per text) 
+    int8_t NameLen; // Lunghezza in chars del cognome (per text)
     int8_t Comando;  // Se ci sono falli o simili...
     int8_t velocita;
     int8_t abilita;
@@ -92,7 +92,7 @@ struct linesman
     BOOL Special;
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    char NameLen; // Lunghezza in chars del cognome (per text) 
+    char NameLen; // Lunghezza in chars del cognome (per text)
     char Comando;  // Se ci sono falli o simili...
 };
 
@@ -122,11 +122,11 @@ struct keeper
     int8_t dir;   // Direzione di movimento
     int8_t ActualSpeed; // Velocita' del tipo
     int8_t FrameLen; // Quando e' 0 posso cambiare frame
-    WORD Tick; 
+    WORD Tick;
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
     struct team *team;
-    int8_t NameLen; // Lunghezza in chars del cognome (per text) 
+    int8_t NameLen; // Lunghezza in chars del cognome (per text)
     int8_t SNum;
     BOOL Ammonito, Special, FirePressed;
     WORD SpecialData, TimePress;
@@ -146,11 +146,11 @@ struct player
     int8_t dir;   // Direzione di movimento
     int8_t ActualSpeed; // Velocita' del tipo
     int8_t FrameLen; // Quando e' 0 posso cambiare frame
-    WORD Tick; 
+    WORD Tick;
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
     struct team *team;
-    int8_t NameLen; // Lunghezza in chars del cognome (per text) 
+    int8_t NameLen; // Lunghezza in chars del cognome (per text)
     int8_t GNum;
     BOOL Ammonito, Special, FirePressed;
     WORD SpecialData, TimePress;

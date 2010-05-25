@@ -8,13 +8,13 @@
 
 //#define TESTING_RES_1024
 
-extern void MenuResizing(int,int);
-extern char joycfg_buttons[2][8];
+extern void MenuResizing(int, int);
+extern uint8_t joycfg_buttons[2][8];
 extern int query[20];
 
-int actual_joystick=0;
+int actual_joystick = 0;
 
-char *buttons[]=
+char *buttons[] =
 {
     "BUTTON 1",
     "BUTTON 2",
@@ -34,7 +34,8 @@ char *buttons[]=
 /* Space for the names of the configured keys */
 char keys_names[20][20];
 
-/* AC: Here it's possible to decide which keys to exclude from those possible ones */
+/* AC: Here it's possible to decide which keys to exclude from those possible
+ * ones */
 SDLKey keys[] =
 {
     /* The keyboard syms have been cleverly chosen to map to ASCII */
@@ -48,7 +49,7 @@ SDLKey keys[] =
     SDLK_PAUSE,
     //SDLK_ESCAPE,            // Playgame interruption and end game
     //SDLK_SPACE,            // Changes game visual
-    
+
     /* AC: Some older Macs have these keys obtained without pressing the shift
      * in place of the numbers */
     SDLK_EXCLAIM,
@@ -65,7 +66,7 @@ SDLKey keys[] =
     SDLK_MINUS,
     SDLK_PERIOD,
     SDLK_SLASH,
-    
+
     SDLK_0,
     SDLK_1,
     SDLK_2,
@@ -76,7 +77,7 @@ SDLKey keys[] =
     SDLK_7,
     SDLK_8,
     SDLK_9,
-    
+
     /* AC: This ones like the comment above */
     SDLK_COLON,
     SDLK_SEMICOLON,
@@ -86,7 +87,7 @@ SDLKey keys[] =
     SDLK_QUESTION,
     SDLK_AT,
 
-    /* 
+    /*
        Skip uppercase letters
      */
     //SDLK_LEFTBRACKET,
@@ -288,9 +289,9 @@ SDLKey keys[] =
     SDLK_LALT,
     SDLK_RMETA,
     SDLK_LMETA,
-    
+
     /* AC: I think isn't a good idea allowing the use of this keys */
-#if 0 
+#if 0
     SDLK_LSUPER,        /* Left "Windows" key */
     SDLK_RSUPER,        /* Right "Windows" key */
     SDLK_MODE,            /* "Alt Gr" key */
@@ -314,20 +315,23 @@ SDLKey keys[] =
 static int jingle = -1;
 
 extern struct GfxMenu *actual_menu;
-extern int FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
+extern int FIXED_SCALING_WIDTH, FIXED_SCALING_HEIGHT;
 
-BOOL make_setup=FALSE,game_start=FALSE,can_modify=TRUE,savehigh=FALSE,
-    triple=FALSE,chunky_version=FALSE,use_gfx_scaling=FALSE;
-int8_t selected_number=0, wanted_number=0, duration=1, field_type=0, daytime=0;
-char *enabled=msg_7,*disabled=msg_8;
+BOOL make_setup = FALSE, game_start = FALSE, can_modify = TRUE,
+     savehigh = FALSE, triple = FALSE, chunky_version = FALSE,
+     use_gfx_scaling = FALSE;
+int8_t selected_number = 0, wanted_number = 0, duration = 1,
+       field_type = 0, daytime = 0;
+char *enabled = msg_7, *disabled = msg_8;
 extern struct SoundInfo *busy[];
-extern int os_videook(int,int);
+extern int os_videook(int, int);
 
-BYTE arcade_sequence[]={0,1,2,3,4,5,6,7,8,9,10};
+BYTE arcade_sequence[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+BYTE mondiali[] = { 8, 4, 2, 2 };
 
-BYTE mondiali[]={8,4,2,2},current_resolution=0,current_scaling=0;
+BYTE current_resolution = 0, current_scaling = 0;
 
-char *resolutions[]=
+char *resolutions[] =
 {
     "320x200",
     "320X240",
@@ -335,28 +339,25 @@ char *resolutions[]=
     "640x400",
     "640X480",
     "800X600",
-#ifdef TESTING_RES_1024    
+#ifdef TESTING_RES_1024
     "1024X768",
 #endif
     NULL
 };
-
 
 void UpdateJoyCfg(int joy);
 void UpdateKeyCfg(void);
 
 void init_joy_config(void)
 {
-    int i,k;
+    int i, k;
 
-    for(i=0;i<2;i++)
-    {
-        for(k=0;k<8;k++)
-            joycfg_buttons[i][k]=k;
-    }
+    for (i = 0; i < 2; i++)
+        for (k = 0; k < 8; k++)
+            joycfg_buttons[i][k] = k;
 }
 
-char *scaling_resolutions[]=
+char *scaling_resolutions[] =
 {
     "320X240",
     "320X256",
@@ -368,7 +369,7 @@ char *scaling_resolutions[]=
     NULL
 };
 
-char *daytimes[]=
+char *daytimes[] =
 {
     msg_2,
     msg_9,
@@ -376,7 +377,7 @@ char *daytimes[]=
     NULL
 };
 
-char *field_types[]=
+char *field_types[] =
 {
     msg_2,
     "A"/*-*/,
@@ -390,29 +391,17 @@ char *field_types[]=
 
 void SetCurrentResolution(void)
 {
-    if(WINDOW_WIDTH<=360)
-    {
-        if(WINDOW_HEIGHT<210)
-            current_resolution=0;
-        else
-            current_resolution=1;
-    }
-    else if(WINDOW_WIDTH<=450)
-    {
-        current_resolution=2;
-    }
-    else if(WINDOW_WIDTH<700)
-    {
-        if(WINDOW_HEIGHT<410)
-            current_resolution=3;
-        else
-            current_resolution=4;
-    }
+    if (WINDOW_WIDTH <= 360)
+        current_resolution = (WINDOW_HEIGHT < 210) ? 0 : 1;
+    else if (WINDOW_WIDTH <= 450)
+        current_resolution = 2;
+    else if (WINDOW_WIDTH < 700)
+        current_resolution = (WINDOW_HEIGHT < 410) ? 3 : 4;
     else
-        current_resolution=5;
+        current_resolution = 5;
 }
 
-char *radar_options[]=
+char *radar_options[] =
 {
     msg_11,
     msg_12,
@@ -429,7 +418,7 @@ char *radar_options[]=
     NULL,
 };
 
-char *field_options[]=
+char *field_options[] =
 {
     msg_2,
     msg_23,
@@ -443,7 +432,7 @@ char *field_options[]=
     NULL,
 };
 
-char *time_options[]=
+char *time_options[] =
 {
     "1"/*-*/,
     "2"/*-*/,
@@ -459,54 +448,54 @@ char *time_options[]=
 
 void RandomDraw(int n)
 {
-    int i=RangeRand(50),k,s1,s2;
+    int i = RangeRand(50), k, s1, s2;
     BYTE temp;
 
-    for(k=0;k<i;k++)
+    for (k = 0; k < i; k++)
     {
-        s1=RangeRand(n);
-        s2=RangeRand(n);
+        s1 = RangeRand(n);
+        s2 = RangeRand(n);
 
-        if(s1==s2)
+        if (s1 == s2)
             continue;
 
-// We don't need to swap controllo because is fixed on the teams!
-        temp=teamarray[s1];
-        teamarray[s1]=teamarray[s2];
-        teamarray[s2]=temp;
+        // We don't need to swap controllo because is fixed on the teams!
+        temp = teamarray[s1];
+        teamarray[s1] = teamarray[s2];
+        teamarray[s2] = temp;
     }
 }
 
-void InvertiSquadre(void)
+void SwapAllTeams(void)
 {
-    int i,k;
+    int i, k;
     UBYTE t;
 
-    for(i=0;i<totale_giornate;i++)
+    for (i = 0; i < totale_giornate; i++)
     {
-        for(k=0;k<((nteams+1)/2);k++)
+        for (k = 0; k < (nteams + 1) / 2; k++)
         {
-            t=turni[i][k].t1;
-            turni[i][k].t1=turni[i][k].t2;
-            turni[i][k].t2=t;
+            t = turni[i][k].t1;
+            turni[i][k].t1 = turni[i][k].t2;
+            turni[i][k].t2 = t;
         }
     }
 }
 
 void ClearMatches(int k)
 {
-    int i,j;
+    int i, j;
 
-    for(i=k*4;i<64;i+=4)
+    for (i = k * 4; i < 64; i += 4)
     {
-        mp[i].Colore=P_VERDE1;
-        mp[i].Highlight=P_VERDE0;
+        mp[i].Colore = P_VERDE1;
+        mp[i].Highlight = P_VERDE0;
 
-        if(mp[i+3].Testo)
-            free(mp[i+3].Testo);
+        if (mp[i + 3].Testo)
+            free(mp[i + 3].Testo);
 
-        for(j=0;j<4;j++)
-            mp[i+j].Testo=NULL;
+        for (j = 0; j < 4; j++)
+            mp[i + j].Testo = NULL;
     }
 }
 
@@ -514,247 +503,257 @@ void ClearSelection(void)
 {
     int i;
 
-    selected_number=0;
+    selected_number = 0;
 
-    if(!arcade_teams)
+    if (!arcade_teams)
     {
-        for(i=0;i<64;i++)
-            teamselection[i].Colore=COLORE_UNSELECTED;
+        for (i = 0; i < 64; i++)
+            teamselection[i].Colore = COLORE_UNSELECTED;
     }
     else
     {
-        for(i=0;i<ARCADE_TEAMS;i++)
-            asb[i].Colore=asb[i].Highlight=COLORE_UNSELECTED;
+        for (i = 0; i < ARCADE_TEAMS; i++)
+            asb[i].Colore = asb[i].Highlight = COLORE_UNSELECTED;
     }
 }
 
 void NewTurn(void)
 {
-    register int i,j;
+    int i, j;
 
     turno++;
 
-    for(i=0;i<campionato.nteams;i++)
+    for (i = 0; i < campionato.nteams; i++)
     {
-        for(j=0;j<teamlist[i].nplayers;j++)
+        for (j = 0; j < teamlist[i].nplayers; j++)
         {
-            if(teamlist[i].players[j].injury>0)
+            if (teamlist[i].players[j].injury > 0)
                 teamlist[i].players[j].injury--;
 
-            if(teamlist[i].players[j].Ammonizioni>1)
-                teamlist[i].players[j].Ammonizioni-=2;
+            if (teamlist[i].players[j].Ammonizioni > 1)
+                teamlist[i].players[j].Ammonizioni -= 2;
         }
     }
 }
 
 BOOL CanContinue(void)
 {
-  if(wanted_number==0)
-  {
-    int i;
-
-    for(i=1;i<7;i++)
+    if (wanted_number == 0)
     {
-        if(selected_number==(1<<i))
-            return TRUE;
+        int i;
+
+        for (i = 1; i < 7; i++)
+        {
+            if (selected_number == (1 << i))
+                return TRUE;
+        }
+
+        return FALSE;
     }
 
-    return FALSE;
-  }
-
-  return (BOOL) ( (wanted_number>0&&selected_number==wanted_number) ||
-              (wanted_number<0&&selected_number>=(-wanted_number) ) );
+    return (BOOL)((wanted_number > 0 && selected_number == wanted_number) ||
+                  (wanted_number < 0 && selected_number >= -wanted_number));
 }
 
-BOOL ReturnFalse(WORD bottone)
+BOOL ReturnFalse(WORD button)
 {
     return FALSE;
 }
 
-BOOL TeamSelection(WORD bottone)
+BOOL TeamSelection(WORD button)
 {
-    static BYTE selected=-1;
-    static BOOL team1_selected=FALSE,team2_selected=FALSE;
+    static BYTE selected = -1;
+    static BOOL team1_selected = FALSE, team2_selected = FALSE;
     struct Bottone *b;
 
 
-    if(bottone<0)
+    if (button < 0)
         return TRUE;
 
-    b=&actual_menu->Bottone[bottone];
+    b = &actual_menu->Bottone[button];
 
-    if(bottone<64)
+    if (button < 64)
     {
-        struct Bottone *b2=&actual_menu->Bottone[64];
-        struct Bottone *b3=&actual_menu->Bottone[66];
+        struct Bottone *b2 = &actual_menu->Bottone[64];
+        struct Bottone *b3 = &actual_menu->Bottone[66];
 
-        if(selected>=0)
+        if (selected >= 0)
             MyRestoreBack();
-        
-        selected=bottone;
 
-        if(competition!=MENU_WORLD_CUP||wanted_number!=32)
+        selected = button;
+
+        if (competition != MENU_WORLD_CUP || wanted_number != 32)
         {
-            if(b->Colore!=COLORE_COMPUTER)
+            if (b->Colore != COLORE_COMPUTER)
             {
-                PrintShadow(FixedScaledX(1),FixedScaledY(210),b->Testo,strlen(b->Testo),bigfont);
+                PrintShadow(FixedScaledX(1), FixedScaledY(210),
+                            b->Testo, strlen(b->Testo), bigfont);
 
-                if(!b3->Testo)
+                if (!b3->Testo)
                 {
-                    b3->Testo=msg_31;
-                    RedrawBottone(b3,b3->Colore);
+                    b3->Testo = msg_31;
+                    RedrawButton(b3, b3->Colore);
                 }
             }
             else
             {
-                b3->Testo=NULL;
+                b3->Testo = NULL;
                 CancellaBottone(b3);
             }
         }
 
-        if(b->Colore==COLORE_UNSELECTED)
+        if (b->Colore == COLORE_UNSELECTED)
         {
             selected_number++;
 
-            controllo[-b->ID-1]=0;
+            controllo[-b->ID - 1] = 0;
 
-            if(!team1_selected || wanted_number>2 || wanted_number<=0 || selected_number>2)
+            if (!team1_selected || wanted_number > 2
+                || wanted_number <= 0 || selected_number > 2)
             {
-                team1_selected=TRUE;
-                controllo[-b->ID-1]=1;
-                b->Colore=COLORE_TEAM_A;
+                team1_selected = TRUE;
+                controllo[-b->ID - 1] = 1;
+                b->Colore = COLORE_TEAM_A;
             }
             else
             {
-                b->Colore=COLORE_TEAM_B;            
-                team2_selected=TRUE;
-                controllo[-b->ID-1]=0;
+                b->Colore = COLORE_TEAM_B;
+                team2_selected = TRUE;
+                controllo[-b->ID - 1] = 0;
             }
         }
-        else if(b->Colore==COLORE_COMPUTER)
+        else if (b->Colore == COLORE_COMPUTER)
         {
-            b->Colore=COLORE_UNSELECTED;
+            b->Colore = COLORE_UNSELECTED;
             selected_number--;
         }
-        else if(b->Colore==COLORE_TEAM_A && (!team2_selected || wanted_number>2 || wanted_number<=0 || selected_number>2) )
+        else if (b->Colore == COLORE_TEAM_A
+                 && (!team2_selected || wanted_number > 2
+                      || wanted_number <= 0 || selected_number > 2))
         {
-            team1_selected=FALSE;
-            controllo[-b->ID-1]=0;
-            b->Colore=COLORE_TEAM_B;
+            team1_selected = FALSE;
+            controllo[-b->ID - 1] = 0;
+            b->Colore = COLORE_TEAM_B;
         }
         else
         {
-            if(b->Colore==COLORE_TEAM_A)
-                team1_selected=FALSE;
+            if (b->Colore == COLORE_TEAM_A)
+                team1_selected = FALSE;
             else
-                team2_selected=FALSE;
+                team2_selected = FALSE;
 
-            b->Colore=COLORE_COMPUTER;
-            controllo[-b->ID-1]=-1;
+            b->Colore = COLORE_COMPUTER;
+            controllo[-b->ID - 1] = -1;
         }
 
-        RedrawBottone(b,b->Colore);
+        RedrawButton(b, b->Colore);
 
-        if( CanContinue() )
+        if (CanContinue())
         {
-            if(!b2->Testo)
+            if (!b2->Testo)
             {
-                if(competition!=MENU_WORLD_CUP||wanted_number!=32)
-                    b2->Testo=msg_0;
+                if (competition != MENU_WORLD_CUP || wanted_number != 32)
+                    b2->Testo = msg_0;
                 else
                 {
-                    b2->Testo=msg_1;
-                    b3->Testo=msg_2;
-                    RedrawBottone(b3,b3->Colore);
-
+                    b2->Testo = msg_1;
+                    b3->Testo = msg_2;
+                    RedrawButton(b3, b3->Colore);
                 }
 
-                RedrawBottone(b2,b2->Colore);
+                RedrawButton(b2, b2->Colore);
             }
         }
-        else if(b2->Testo)
+        else if (b2->Testo)
         {
-            b2->Testo=NULL;
+            b2->Testo = NULL;
             CancellaBottone(b2);
 
-            if(competition==MENU_WORLD_CUP&&wanted_number==32)
+            if (competition == MENU_WORLD_CUP && wanted_number == 32)
             {
-                b3->Testo=NULL;
+                b3->Testo = NULL;
                 CancellaBottone(b3);
             }
         }
     }
-    else if(bottone==66&&(competition!=MENU_WORLD_CUP||wanted_number!=32))
+    else if (button == 66
+              && (competition != MENU_WORLD_CUP || wanted_number != 32))
     {
-        if(selected>-1)
+        if (selected > -1)
         {
-            can_modify=FALSE;
-            SetTeamSettings( -actual_menu->Bottone[selected].ID-1, FALSE );
-            can_modify=TRUE;
+            can_modify = FALSE;
+            SetTeamSettings(-actual_menu->Bottone[selected].ID - 1, FALSE);
+            can_modify = TRUE;
 
             ChangeMenu(MENU_TEAM_SETTINGS);
         }
     }
-    else if(bottone==64 || (bottone==66 && competition==MENU_WORLD_CUP) )
+    else if (button == 64 || (button == 66 && competition == MENU_WORLD_CUP))
     {
-        int i,j;
+        int i, j;
 
-        team1_selected=FALSE;
-        team2_selected=FALSE;
+        team1_selected = FALSE;
+        team2_selected = FALSE;
 
-        for(i=0,j=0;i<64;i++)
-            if(actual_menu->Bottone[i].Colore!=COLORE_UNSELECTED)
+        for (i = 0, j = 0; i < 64; i++)
+            if (actual_menu->Bottone[i].Colore != COLORE_UNSELECTED)
             {
 /*
     This is disabled because controllo is fixed on the team!
 
-                if(actual_menu->Bottone[i].Colore==COLORE_TEAM_A)
-                    controllo[j]=0;
-                else if(actual_menu->Bottone[i].Colore==COLORE_TEAM_B)
-                    controllo[j]=1;
+                if (actual_menu->Bottone[i].Colore == COLORE_TEAM_A)
+                    controllo[j] = 0;
+                else if (actual_menu->Bottone[i].Colore == COLORE_TEAM_B)
+                    controllo[j] = 1;
                 else
-                    controllo[j]=-1;
+                    controllo[j] = -1;
 */
-                teamarray[j]=(-actual_menu->Bottone[i].ID)-1;
+                teamarray[j] = -actual_menu->Bottone[i].ID - 1;
 
                 j++;
             }
 
-        if(j!=selected_number)
-            D(bug("Warning, wrong number of teams selected! (%ld instead of %ld)\n",j,selected_number));
+        if (j != selected_number)
+            D(bug("Warning, wrong number of teams selected! (%ld instead of %ld)\n", j, selected_number));
 
-        actual_menu->Bottone[64].Testo=actual_menu->Bottone[66].Testo=NULL;
+        actual_menu->Bottone[64].Testo = actual_menu->Bottone[66].Testo = NULL;
 
-        if(friendly||training) {
+        if (friendly || training)
+        {
             goto singlematch;
         }
-        else if(competition==MENU_WORLD_CUP&&wanted_number==32) {
-            if(bottone==64)
-                random_draw=FALSE;
+        else if (competition == MENU_WORLD_CUP && wanted_number == 32)
+        {
+            if (button == 64)
+                random_draw = FALSE;
             else
-                random_draw=TRUE;
+                random_draw = TRUE;
 
-            if(GroupsClear()) {
+            if (GroupsClear())
+            {
                 GroupsUpdate();
                 ChangeMenu(MENU_WORLD_CUP);
             }
         }
-        else if(competition==MENU_MATCHES) {
-// Cup
+        else if (competition == MENU_MATCHES)
+        {
+            // Cup
             RandomDraw(selected_number);
 
-            nteams=selected_number;
+            nteams = selected_number;
 
-            menu[MENU_MATCHES].Titolo=msg_32;
-            ViewEliminazioneDiretta(nteams/2);
-            mb[0].ID=MENU_MATCHES;
+            menu[MENU_MATCHES].Titolo = msg_32;
+            ViewEliminazioneDiretta(nteams / 2);
+            mb[0].ID = MENU_MATCHES;
             ChangeMenu(MENU_MATCHES);
         }
-        else if(competition==MENU_LEAGUE) {
-// League
-            if(j>20) {
+        else if (competition == MENU_LEAGUE)
+        {
+            // League
+            if (j > 20)
+            {
                 request(msg_178);
-                j=20;
+                j = 20;
             }
 
             RandomDraw(j);
@@ -765,41 +764,47 @@ BOOL TeamSelection(WORD bottone)
 
             ChangeMenu(MENU_LEAGUE);
         }
-        else {
+        else
+        {
 singlematch:
+            team1_selected = FALSE;
+            team2_selected = FALSE;
 
-            team1_selected=FALSE;
-            team2_selected=FALSE;
-
-            if(j==1&&training)  {
-                StartMatch(teamarray[0],teamarray[0]);
+            if (j == 1 && training)
+            {
+                StartMatch(teamarray[0], teamarray[0]);
             }
-            else if(j==2) {
-                StartMatch(teamarray[0],teamarray[1]);
+            else if (j == 2)
+            {
+                StartMatch(teamarray[0], teamarray[1]);
             }
-            else if(network_game) {
-                if( (network_player=connect_server(network_server,teamarray[0])) )    {
-                    BYTE team=teamarray[0]!=0 ? 0 : 1;
-                    controllo[team]=-1;
-                    StartMatch(teamarray[0],team);
+            else if (network_game)
+            {
+                if ((network_player = connect_server(network_server, teamarray[0])))
+                {
+                    BYTE team = teamarray[0] != 0 ? 0 : 1;
+                    controllo[team] = -1;
+                    StartMatch(teamarray[0], team);
                 }
             }
-            else {
+            else
+            {
                 D(bug("Career not implemented yet!"/*-*/));
             }
         }
 
         // To finish!
     }
-    else if(bottone==65&&b->ID>=0) {
-        team1_selected=team2_selected=FALSE;
+    else if (button == 65 && b->ID >= 0)
+    {
+        team1_selected = team2_selected = FALSE;
 
-        selected=-1;
+        selected = -1;
 
-        actual_menu->Bottone[66].Testo=actual_menu->Bottone[64].Testo=NULL;
+        actual_menu->Bottone[66].Testo = actual_menu->Bottone[64].Testo = NULL;
 
-        special=FALSE;
-        competition=MENU_TEAMS;
+        special = FALSE;
+        competition = MENU_TEAMS;
 
         ClearSelection();
 
@@ -809,80 +814,85 @@ singlematch:
     return TRUE;
 }
 
-BOOL JoyCfg(WORD bottone)
+BOOL JoyCfg(WORD button)
 {
-    if(bottone>=(actual_menu->NumeroBottoni-1)&&actual_menu->Bottone[bottone].ID>=0)
-        ChangeMenu(actual_menu->Bottone[bottone].ID);
+    if (button >= (actual_menu->NumeroBottoni - 1)
+         && actual_menu->Bottone[button].ID >= 0)
+        ChangeMenu(actual_menu->Bottone[button].ID);
     else
     {
         char *temp;
         int k;
 
-        bottone/=2;
+        button /= 2;
 
-        temp=actual_menu->Bottone[bottone*2].Testo;
+        temp = actual_menu->Bottone[button * 2].Testo;
 
-        actual_menu->Bottone[bottone*2].Testo="WAITING BUTTON...";
+        actual_menu->Bottone[button * 2].Testo = "WAITING BUTTON...";
 
-        RedrawBottone(&actual_menu->Bottone[bottone*2],actual_menu->Bottone[bottone*2].Highlight);
+        RedrawButton(&actual_menu->Bottone[button * 2],
+                     actual_menu->Bottone[button * 2].Highlight);
 
         ScreenSwap();
 
-        k=os_get_joy_button(actual_joystick);
+        k = os_get_joy_button(actual_joystick);
 
-        if(k>=0)
+        if (k >= 0)
         {
-            actual_menu->Bottone[bottone*2+1].Testo=buttons[k];
-            joycfg_buttons[actual_joystick][bottone]=k;
-            RedrawBottone(&actual_menu->Bottone[bottone*2+1],actual_menu->Bottone[bottone*2+1].Colore);
+            actual_menu->Bottone[button * 2 + 1].Testo = buttons[k];
+            joycfg_buttons[actual_joystick][button] = k;
+            RedrawButton(&actual_menu->Bottone[button * 2 + 1],
+                         actual_menu->Bottone[button * 2 + 1].Colore);
         }
 
-        actual_menu->Bottone[bottone*2].Testo=temp;
+        actual_menu->Bottone[button * 2].Testo = temp;
 
-        RedrawBottone(&actual_menu->Bottone[bottone*2],actual_menu->Bottone[bottone*2].Colore);
+        RedrawButton(&actual_menu->Bottone[button * 2],
+                     actual_menu->Bottone[button * 2].Colore);
         ScreenSwap();
     }
 
     return TRUE;
 }
 
-BOOL KeyCfg(WORD bottone)
+BOOL KeyCfg(WORD button)
 {
     extern void *hwin;
-    extern BOOL MyEasyRequest(void *,struct EasyStruct *,void *);
+    extern BOOL MyEasyRequest(void *, struct EasyStruct *, void *);
 
     /* AC: 27/05/04 - First rudimental keyboard configuration */
-    if(bottone>=(actual_menu->NumeroBottoni-3)&&actual_menu->Bottone[bottone].ID>=0)
+    if (button>=(actual_menu->NumeroBottoni - 3)
+         && actual_menu->Bottone[button].ID >= 0)
     {
         /* Which "main" button the user have pressed? */
-        switch(actual_menu->Bottone[bottone].ID)
+        switch(actual_menu->Bottone[button].ID)
         {
             /* Why if I include externs.h I obtain 55 compilation error? */
             extern void SaveKeyDef(int, char *);
-            
+
             /* Save RED keyboard configuration */
             case 0:
-                SaveKeyDef(0,KEY_RED_FILE);
-                
+                SaveKeyDef(0, KEY_RED_FILE);
+
                 easy.es_TextFormat = msg_70;
                 easy.es_GadgetFormat = msg_58;
 
                 MyEasyRequest(hwin, &easy, NULL);
             break;
-            
+
             /* Save BLUE keyboard configuration */
             case 1:
-                SaveKeyDef(1,KEY_BLUE_FILE);
-                
+                SaveKeyDef(1, KEY_BLUE_FILE);
+
                 easy.es_TextFormat = msg_70;
                 easy.es_GadgetFormat = msg_58;
 
                 MyEasyRequest(hwin, &easy, NULL);
             break;
-            
+
             /* Go back to previuos menu */
             default:
-                ChangeMenu(actual_menu->Bottone[bottone].ID);
+                ChangeMenu(actual_menu->Bottone[button].ID);
             break;
         }
     }
@@ -890,36 +900,36 @@ BOOL KeyCfg(WORD bottone)
     {
         char *temp;
         int k = 0;
-        BOOL ok=FALSE;
+        BOOL ok = FALSE;
         SDL_Event e;
 
-        bottone/=2;
+        button /= 2;
 
         /* If we have selected a six keys RED control skip the configuration
-         * of the extended keys.
-         */
-        if(bottone >= 6 && bottone < 10 && control[1] == CTRL_KEY_1)
+         * of the extended keys. */
+        if (button >= 6 && button < 10 && control[1] == CTRL_KEY_1)
             return TRUE;
 
-        /* If we have selected a six keys BLUE control skip the configuration 
-         * of the extended keys.
-         */
-        if(bottone >= 16 && control[0] == CTRL_KEY_1)
-            return TRUE; 
-                        
+        /* If we have selected a six keys BLUE control skip the configuration
+         * of the extended keys. */
+        if (button >= 16 && control[0] == CTRL_KEY_1)
+            return TRUE;
+
 #ifdef ORIG_METHOD
-        temp=actual_menu->Bottone[bottone*2].Testo;
+        temp = actual_menu->Bottone[button * 2].Testo;
 
-        actual_menu->Bottone[bottone*2].Testo="WAITING BUTTON...";
+        actual_menu->Bottone[button * 2].Testo = "WAITING BUTTON...";
 
-        RedrawBottone(&actual_menu->Bottone[bottone*2],actual_menu->Bottone[bottone*2].Highlight);
+        RedrawButton(&actual_menu->Bottone[button * 2],
+                     actual_menu->Bottone[button * 2].Highlight);
 #else
         /* Alternative method that leaves visible the association of the key during key pressing */
-        temp=actual_menu->Bottone[bottone*2+1].Testo;
+        temp = actual_menu->Bottone[button * 2 + 1].Testo;
 
-        actual_menu->Bottone[bottone*2+1].Testo="WAITING BUTTON...";
+        actual_menu->Bottone[button * 2 + 1].Testo = "WAITING BUTTON...";
 
-        RedrawBottone(&actual_menu->Bottone[bottone*2+1],actual_menu->Bottone[bottone*2+1].Highlight);
+        RedrawButton(&actual_menu->Bottone[button * 2 + 1],
+                     actual_menu->Bottone[button * 2 + 1].Highlight);
 #endif
 
         ScreenSwap();
@@ -937,80 +947,83 @@ BOOL KeyCfg(WORD bottone)
                         e.key.keysym.mod,
                         e.key.keysym.unicode,
                         SDL_GetKeyName(e.key.keysym.sym)));
-                    
+
                     /* Hit ESC to quit the modification */
-                    if(e.key.keysym.sym == SDLK_ESCAPE)
+                    if (e.key.keysym.sym == SDLK_ESCAPE)
                     {
                         k = -1;
                     }
                     else
                     {
-                        int i,n_keys = sizeof(keys)/sizeof(SDLKey);
-                        
+                        int i, n_keys = sizeof(keys) / sizeof(SDLKey) ;
+
                         /* Search the key selected in the valid keys table */
-                        k = -2;                    
-                        for(i = 0;i < n_keys;i++)
-                            if(e.key.keysym.sym == keys[i])
+                        k = -2;
+                        for (i = 0; i < n_keys; i++)
+                            if (e.key.keysym.sym == keys[i])
                             {
                                 k = i;
                                 break;
                             }
                     }
 
-                    if(k>=0)
+                    if (k >= 0)
                     {
-                        int s = 0,i,n_keys = sizeof(query)/sizeof(int);
+                        int s = 0, i, n_keys = sizeof(query) / sizeof(int);
                         char *tmp;
                         /* Verify if the key selected is already used */
-                        while(s < n_keys)
+                        while (s < n_keys)
                         {
                             /* Skip the currently selected button */
-                            if(s != bottone)
-                            {                        
+                            if (s != button)
+                            {
                                 /* Key already mapped? */
-                                if(keys[k] == query[s])
+                                if (keys[k] == query[s])
                                 {
                                     /* Delete the old used association */
-                                    actual_menu->Bottone[s*2+1].Testo=NULL;
+                                    actual_menu->Bottone[s * 2 + 1].Testo = NULL;
                                     query[s] = 0;
-                                    CancellaBottone(&actual_menu->Bottone[s*2+1]);
+                                    CancellaBottone(&actual_menu->Bottone[s * 2 + 1]);
                                     break;
                                 }
                             }
                             s++;
                         }
-                        
+
                         /* Uppercase conversion for ETW font */
-                        tmp=SDL_GetKeyName(keys[k]);
+                        tmp = SDL_GetKeyName(keys[k]);
                         i = 0;
                         while(*tmp)
                         {
-                            keys_names[bottone][i]=toupper(*tmp);
+                            keys_names[button][i] = toupper(*tmp);
                             tmp++;
                             i++;
                         }
-                        keys_names[bottone][i] = 0;
-                        query[bottone] = keys[k];        
-                        actual_menu->Bottone[bottone*2+1].Testo=keys_names[bottone];
-                        RedrawBottone(&actual_menu->Bottone[bottone*2+1],actual_menu->Bottone[bottone*2+1].Colore);
+                        keys_names[button][i] = 0;
+                        query[button] = keys[k];
+                        actual_menu->Bottone[button * 2 + 1].Testo = keys_names[button];
+                        RedrawButton(&actual_menu->Bottone[button * 2 + 1],
+                                     actual_menu->Bottone[button * 2 + 1].Colore);
                     }
 #ifndef ORIG_METHOD
                     else
                     {
                         /* Restore the old button */
-                        actual_menu->Bottone[bottone*2+1].Testo=temp;
-                        RedrawBottone(&actual_menu->Bottone[bottone*2+1],actual_menu->Bottone[bottone*2+1].Colore);
+                        actual_menu->Bottone[button * 2 + 1].Testo = temp;
+                        RedrawButton(&actual_menu->Bottone[button * 2 + 1],
+                                     actual_menu->Bottone[button * 2 + 1].Colore);
                     }
 #endif
 
 #ifdef ORIG_METHOD
-                    actual_menu->Bottone[bottone*2].Testo=temp;
+                    actual_menu->Bottone[button * 2].Testo = temp;
 
-                    RedrawBottone(&actual_menu->Bottone[bottone*2],actual_menu->Bottone[bottone*2].Colore);
+                    RedrawButton(&actual_menu->Bottone[button * 2],
+                                 actual_menu->Bottone[button * 2].Colore);
 #endif
                     ScreenSwap();
                 break;
-                /* ...but exit when the key is released in order to skip this event 
+                /* ...but exit when the key is released in order to skip this event
                  * in the main cycle
                  */
                 case SDL_KEYUP:
@@ -1023,10 +1036,10 @@ BOOL KeyCfg(WORD bottone)
 
         /* Flush the event queue. *
          It doesn't work...
-        while(SDL_PollEvent(&e));*/
-        
+        while(SDL_PollEvent(&e)); */
+
         /* Signal the user he has pressed a reserved key */
-        if(k == -2)
+        if (k == -2)
         {
             easy.es_TextFormat = "SORRY, SELECTED KEY IS RESERVED";
             easy.es_GadgetFormat = msg_58;
@@ -1037,206 +1050,209 @@ BOOL KeyCfg(WORD bottone)
     return TRUE;
 }
 
-BOOL ArcadeTeamSelection(WORD bottone)
+BOOL ArcadeTeamSelection(WORD button)
 {
-    static BYTE selected=-1;
-    static BOOL team1_selected=FALSE,team2_selected=FALSE;
+    static BYTE selected = -1;
+    static BOOL team1_selected = FALSE, team2_selected = FALSE;
     struct Bottone *b;
 
-
-    if(bottone<0)
+    if (button < 0)
         return TRUE;
 
-    b=&actual_menu->Bottone[bottone];
+    b = &actual_menu->Bottone[button];
 
-    if(bottone<ARCADE_TEAMS)
+    if (button < ARCADE_TEAMS)
     {
-        struct Bottone *b2=&actual_menu->Bottone[ARCADE_TEAMS];
-        struct Bottone *b3=&actual_menu->Bottone[ARCADE_TEAMS+2];
+        struct Bottone *b2 = &actual_menu->Bottone[ARCADE_TEAMS];
+        struct Bottone *b3 = &actual_menu->Bottone[ARCADE_TEAMS + 2];
 
-        if(selected>=0)
+        if (selected >= 0)
             MyRestoreBack();
 
-        if(menu_music&&music_playing)
+        if (menu_music && music_playing)
             StopMenuMusic();
 
-        if(jingle>=0&&(selected!=bottone||b->Colore==COLORE_COMPUTER) )
+        if (jingle >= 0 && (selected != button || b->Colore == COLORE_COMPUTER))
         {
-            D(bug("Interrupt channel %ld\n",jingle));
+            D(bug("Interrupt channel %ld\n", jingle));
             SDL_LockAudio();
-// code that block the sample.
-            busy[jingle]=NULL;
+            // code that block the sample.
+            busy[jingle] = NULL;
             SDL_UnlockAudio();
-            jingle=-1;
+            jingle = -1;
         }
 
-        if(selected!=bottone&&b->Colore!=COLORE_COMPUTER&&!no_sound)
+        if (selected != button && b->Colore != COLORE_COMPUTER&&!no_sound)
         {
-            jingle=PlayBackSound(menusound[FIRST_ARCADE+b->ID]);
-            D(bug("Play sound %ld on channel %ld\n",FIRST_ARCADE+b->ID,jingle));
+            jingle = PlayBackSound(menusound[FIRST_ARCADE + b->ID]);
+            D(bug("Play sound %ld on channel %ld\n",
+                  FIRST_ARCADE + b->ID, jingle));
         }
 
-        selected=bottone;
+        selected = button;
 
-        if(b->Colore!=COLORE_COMPUTER)
+        if (b->Colore != COLORE_COMPUTER)
         {
-            int l=strlen(teamlist[b->ID].name);
+            int l = strlen(teamlist[b->ID].name);
 
+            PrintShadow((WINDOW_WIDTH - l * bigfont->width) / 2,
+                        FixedScaledY(120), teamlist[b->ID].name, l, bigfont);
 
-            PrintShadow((WINDOW_WIDTH-l*bigfont->width)/2,FixedScaledY(120),teamlist[b->ID].name,l,bigfont);
-
-            if(!b3->Testo)
+            if (!b3->Testo)
             {
-                b3->Testo=msg_31;
-                RedrawBottone(b3,b3->Colore);
+                b3->Testo = msg_31;
+                RedrawButton(b3, b3->Colore);
             }
             else
             {
-                b3->Testo=NULL;
+                b3->Testo = NULL;
                 CancellaBottone(b3);
             }
         }
 
-        if(b->Colore==COLORE_UNSELECTED)
+        if (b->Colore == COLORE_UNSELECTED)
         {
             selected_number++;
 
-            controllo[b->ID]=0;
+            controllo[b->ID] = 0;
 
-            if(!team1_selected || wanted_number>2 || wanted_number<=0 || selected_number>2)
+            if (!team1_selected || wanted_number > 2
+                 || wanted_number <= 0 || selected_number > 2)
             {
-                team1_selected=TRUE;
-                controllo[b->ID]=1;
-                b->Colore=COLORE_TEAM_A;
+                team1_selected = TRUE;
+                controllo[b->ID] = 1;
+                b->Colore = COLORE_TEAM_A;
             }
             else
             {
-                b->Colore=COLORE_TEAM_B;
-                team2_selected=TRUE;
-                controllo[b->ID]=0;
-            }            
+                b->Colore = COLORE_TEAM_B;
+                team2_selected = TRUE;
+                controllo[b->ID] = 0;
+            }
         }
-        else if(b->Colore==COLORE_COMPUTER)
+        else if (b->Colore == COLORE_COMPUTER)
         {
-            b->Colore=COLORE_UNSELECTED;
+            b->Colore = COLORE_UNSELECTED;
             selected_number--;
         }
-        else if(b->Colore==COLORE_TEAM_A && (!team2_selected || wanted_number>2 || wanted_number<=0 || selected_number>2) )
+        else if (b->Colore == COLORE_TEAM_A
+                  && (!team2_selected || wanted_number > 2
+                       || wanted_number <= 0 || selected_number > 2))
         {
-            team1_selected=FALSE;
-            controllo[b->ID]=0;
-            b->Colore=COLORE_TEAM_B;
+            team1_selected = FALSE;
+            controllo[b->ID] = 0;
+            b->Colore = COLORE_TEAM_B;
         }
         else
         {
-            if(b->Colore==COLORE_TEAM_A)
-                team1_selected=FALSE;
+            if (b->Colore == COLORE_TEAM_A)
+                team1_selected = FALSE;
             else
-                team2_selected=FALSE;
+                team2_selected = FALSE;
 
-            b->Colore=COLORE_COMPUTER;
-            controllo[b->ID]=-1;
+            b->Colore = COLORE_COMPUTER;
+            controllo[b->ID] = -1;
         }
 
-        b->Highlight=b->Colore;
-        RedrawBottone(b,b->Colore);
+        b->Highlight = b->Colore;
+        RedrawButton(b, b->Colore);
 
-        if( CanContinue() )
+        if (CanContinue())
         {
-            if(!b2->Testo)
+            if (!b2->Testo)
             {
-                b2->Testo=msg_0;
-
-                RedrawBottone(b2,b2->Colore);
+                b2->Testo = msg_0;
+                RedrawButton(b2, b2->Colore);
             }
         }
-        else if(b2->Testo)
+        else if (b2->Testo)
         {
-            b2->Testo=NULL;
+            b2->Testo = NULL;
             CancellaBottone(b2);
         }
     }
-    else if(bottone==ARCADE_TEAMS+2)
+    else if (button == ARCADE_TEAMS + 2)
     {
-        if(selected>-1&&selected<ARCADE_TEAMS)
+        if (selected > -1 && selected < ARCADE_TEAMS)
         {
-            if(jingle>=0)
+            if (jingle >= 0)
             {
-                D(bug("Interrupt channel %ld\n",jingle));
+                D(bug("Interrupt channel %ld\n", jingle));
                 SDL_LockAudio();
-// code that block the sample.
-                busy[jingle]=NULL;
+                // code that block the sample.
+                busy[jingle] = NULL;
                 SDL_UnlockAudio();
-                jingle=-1;
+                jingle = -1;
             }
 
-            can_modify=FALSE;
-            SetTeamSettings( actual_menu->Bottone[selected].ID, FALSE );
-            can_modify=TRUE;
+            can_modify = FALSE;
+            SetTeamSettings( actual_menu->Bottone[selected].ID, FALSE);
+            can_modify = TRUE;
 
             ChangeMenu(MENU_TEAM_SETTINGS);
         }
     }
-    else if(bottone==ARCADE_TEAMS )
+    else if (button == ARCADE_TEAMS)
     {
-        int i,j;
+        int i, j;
 
         D(bug("Continue selected\n"));
 
-        team1_selected=FALSE;
-        team2_selected=FALSE;
+        team1_selected = FALSE;
+        team2_selected = FALSE;
 
-        if(jingle>=0)
+        if (jingle >= 0)
         {
-            D(bug("Interrupt channel %ld\n",jingle));
+            D(bug("Interrupt channel %ld\n", jingle));
             SDL_LockAudio();
-// code that block the sample.
-            busy[jingle]=NULL;
+            // code that block the sample.
+            busy[jingle] = NULL;
             SDL_UnlockAudio();
-            jingle=-1;
+            jingle = -1;
         }
 
-        for(i=0,j=0;i<ARCADE_TEAMS;i++)
-            if(actual_menu->Bottone[i].Colore!=COLORE_UNSELECTED)
+        for (i = 0, j = 0; i < ARCADE_TEAMS; i++)
+            if (actual_menu->Bottone[i].Colore != COLORE_UNSELECTED)
             {
 /*
-                if(actual_menu->Bottone[i].Colore==COLORE_TEAM_A)
-                    controllo[j]=0;
-                else if(actual_menu->Bottone[i].Colore==COLORE_TEAM_B)
-                    controllo[j]=1;
+                if (actual_menu->Bottone[i].Colore == COLORE_TEAM_A)
+                    controllo[j] = 0;
+                else if (actual_menu->Bottone[i].Colore == COLORE_TEAM_B)
+                    controllo[j] = 1;
                 else
-                    controllo[j]=-1;
+                    controllo[j] = -1;
 */
-                teamarray[j]=actual_menu->Bottone[i].ID;
-                D(bug("Selected %ld team\n",teamarray[j]));
+                teamarray[j] = actual_menu->Bottone[i].ID;
+                D(bug("Selected %ld team\n", teamarray[j]));
                 j++;
             }
 
-        if(j!=selected_number)
-            D(bug("Warning, wrong number of selected teams! (%ld instead of %ld)\n",j,selected_number));
+        if (j != selected_number)
+            D(bug("Warning, wrong number of selected teams! (%ld instead of %ld)\n", j, selected_number));
 
-        if(friendly||training)
+        if (friendly || training)
         {
             goto friendlymatch;
         }
-        else if(competition==MENU_MATCHES)
+        else if (competition == MENU_MATCHES)
         {
-            actual_menu->Bottone[ARCADE_TEAMS].Testo=actual_menu->Bottone[ARCADE_TEAMS+2].Testo=NULL;
+            actual_menu->Bottone[ARCADE_TEAMS].Testo
+                = actual_menu->Bottone[ARCADE_TEAMS + 2].Testo = NULL;
 
             PlayMenuMusic();
 
-            nteams=selected_number;
+            nteams = selected_number;
 
-            menu[MENU_MATCHES].Titolo=msg_33;
-            ViewEliminazioneDiretta(nteams/2);
-            mb[0].ID=MENU_MATCHES;
+            menu[MENU_MATCHES].Titolo = msg_33;
+            ViewEliminazioneDiretta(nteams / 2);
+            mb[0].ID = MENU_MATCHES;
             ChangeMenu(MENU_MATCHES);
         }
-        else if(competition==MENU_CHALLENGE)
+        else if (competition == MENU_CHALLENGE)
         {
-// To do!
-            turno=0;
-            cb[0].ID=MENU_CHALLENGE;
+            // To do!
+            turno = 0;
+            cb[0].ID = MENU_CHALLENGE;
             SetupMatches();
             ChangeMenu(MENU_CHALLENGE);
         }
@@ -1244,21 +1260,22 @@ BOOL ArcadeTeamSelection(WORD bottone)
         {
 friendlymatch:
             D(bug("Starting friendly match/practice...\n"));
-            actual_menu->Bottone[ARCADE_TEAMS].Testo=actual_menu->Bottone[ARCADE_TEAMS+2].Testo=NULL;
+            actual_menu->Bottone[ARCADE_TEAMS].Testo
+                = actual_menu->Bottone[ARCADE_TEAMS + 2].Testo = NULL;
 
             PlayMenuMusic();
 
-            team1_selected=FALSE;
-            team2_selected=FALSE;
+            team1_selected = FALSE;
+            team2_selected = FALSE;
 
-            if(j==1&&training)
+            if (j == 1 && training)
             {
-                StartMatch(teamarray[0],teamarray[0]);
+                StartMatch(teamarray[0], teamarray[0]);
             }
-            else if(j==2)
+            else if (j == 2)
             {
                 D(bug("->Entering startmatch!\n"));
-                StartMatch(teamarray[0],teamarray[1]);
+                StartMatch(teamarray[0], teamarray[1]);
             }
             else
             {
@@ -1267,25 +1284,26 @@ friendlymatch:
         }
 
     }
-    else if(bottone==(ARCADE_TEAMS+1)&&b->ID>=0)
+    else if (button == (ARCADE_TEAMS + 1) && b->ID >= 0)
     {
-        team1_selected=team2_selected=FALSE;
+        team1_selected = team2_selected = FALSE;
 
-        selected=-1;
+        selected = -1;
 
-        competition=MENU_TEAMS;
+        competition = MENU_TEAMS;
 
-        if(jingle>=0)
+        if (jingle >= 0)
         {
-            D(bug("Interrupt channel %ld\n",jingle));
+            D(bug("Interrupt channel %ld\n", jingle));
             SDL_LockAudio();
-// code that block the sample.
-            busy[jingle]=NULL;
+            // code that blocks the sample.
+            busy[jingle] = NULL;
             SDL_UnlockAudio();
-            jingle=-1;
+            jingle = -1;
         }
 
-        actual_menu->Bottone[ARCADE_TEAMS].Testo=actual_menu->Bottone[ARCADE_TEAMS+2].Testo=NULL;
+        actual_menu->Bottone[ARCADE_TEAMS].Testo
+            = actual_menu->Bottone[ARCADE_TEAMS + 2].Testo = NULL;
 
         ClearSelection();
 
@@ -1297,217 +1315,222 @@ friendlymatch:
     return TRUE;
 }
 
-BOOL TeamSettings(WORD bottone)
+BOOL TeamSettings(WORD button)
 {
     struct Bottone *b;
-    static int sel1=-1;
+    static int sel1 = -1;
 
-    if(bottone<0)
+    if (button < 0)
         return TRUE;
 
-    b=&actual_menu->Bottone[bottone];
+    b = &actual_menu->Bottone[button];
 
-    if(bottone == 42) {
-        sel1=-1;
+    if (button == 42)
+    {
+        sel1 = -1;
 
-        if(teamsettings[42].Testo == msg_6)
+        if (teamsettings[42].Testo == msg_6)
             ChangeMenu(b->ID);
         else
             return FALSE;
     }
-    else if(bottone==43) {
-// "Default" To develop!        
+    else if (button == 43)
+    {
+        // "Default" To develop!
         D(bug("We shouldn't pass here!"));
     }
-
-    else if(controllo[actual_team]>=0&&can_modify)
+    else if (controllo[actual_team] >= 0 && can_modify)
     {
-        if(bottone<34)
+        if (button < 34)
         {
-            if(bottone==32)
+            if (button == 32)
             {
-                if(teamlist[actual_team].nplayers>15)
+                if (teamlist[actual_team].nplayers > 15)
                 {
                     int i;
 
-                    if(teamlist[actual_team].nplayers>(b->ID-1))
+                    if (teamlist[actual_team].nplayers > (b->ID - 1))
                     {
-                        AddPlayer(&teamlist[actual_team].players[b->ID-1],16);
+                        AddPlayer(&teamlist[actual_team].players[b->ID - 1], 16);
                         b->ID++;
                     }
                     else
                     {
-                        b->ID=16;
-                        AddPlayer(&teamlist[actual_team].players[14],16);
+                        b->ID = 16;
+                        AddPlayer(&teamlist[actual_team].players[14], 16);
                     }
 
-                    if(sel1==16)
-                        sel1=-1;
+                    if (sel1 == 16)
+                        sel1 = -1;
 
-                    RedrawBottone(&actual_menu->Bottone[33],actual_menu->Bottone[33].Colore);
+                    RedrawButton(&actual_menu->Bottone[33],
+                                 actual_menu->Bottone[33].Colore);
 
-                    for(i=0;i<3;i++)
-                        RedrawBottone(&pannelli[48+i],pannelli[48+i].Colore);
+                    for (i = 0; i < 3; i++)
+                        RedrawButton(&pannelli[48 + i],
+                                     pannelli[48 + i].Colore);
                 }
             }
             else
             {
                 struct Bottone *b2;
-                int pos,selected=bottone/2;
+                int pos, selected = button / 2;
 
-                b2=&actual_menu->Bottone[selected*2+1];
+                b2 = &actual_menu->Bottone[selected * 2 + 1];
 
-                if(sel1>=0)
+                if (sel1 >= 0)
                 {
 
-                    if(sel1==selected)
+                    if (sel1 == selected)
                     {
-                        if(!ruolo[actual_team] || ruolo[actual_team]!=selected )
-                            RedrawBottone(b2,b2->Colore);
+                        if (!ruolo[actual_team]
+                             || ruolo[actual_team] != selected)
+                            RedrawButton(b2, b2->Colore);
                         else
-                            RedrawBottone(b2,P_GIALLO);
+                            RedrawButton(b2, P_GIALLO);
                     }
                     else
                     {
-                        struct Bottone *b3=&actual_menu->Bottone[sel1*2+1];
+                        struct Bottone *b3 = &actual_menu->Bottone[sel1 * 2 + 1];
                         int i;
 
-                        pos=selected;
+                        pos = selected;
 
-                        if( (pos==0&&sel1==11) || (sel1==0&&pos==11) )
+                        if ( (pos == 0 && sel1 == 11) || (sel1 == 0 && pos == 11))
                         {
                             struct keeper_disk p;
 
-                            p=teamlist[actual_team].keepers[1];
-                            teamlist[actual_team].keepers[1]=teamlist[actual_team].keepers[0];
-                            teamlist[actual_team].keepers[0]=p;
+                            p = teamlist[actual_team].keepers[1];
+                            teamlist[actual_team].keepers[1] = teamlist[actual_team].keepers[0];
+                            teamlist[actual_team].keepers[0] = p;
 
-                            AddName((struct player_disk *)&teamlist[actual_team].keepers[0],0);
-                            SetPlayerStatus(0,teamlist[actual_team].keepers[0].injury,0,
-                                (((teamlist[actual_team].keepers[0].Parata*2+teamlist[actual_team].keepers[0].Attenzione-2*3+2)*10)/7)/3);
-                            AddName((struct player_disk *)&teamlist[actual_team].keepers[1],11);
-                            
-                            SetPlayerStatus(11,teamlist[actual_team].keepers[1].injury,0,
-                                (((teamlist[actual_team].keepers[0].Parata*2+teamlist[actual_team].keepers[1].Attenzione-2*3+2)*10)/7)/3);
-                            RedrawBottone(b2,b2->Colore);
+                            AddName((struct player_disk *)&teamlist[actual_team].keepers[0], 0);
+                            SetPlayerStatus(0, teamlist[actual_team].keepers[0].injury, 0,
+                                (((teamlist[actual_team].keepers[0].Parata * 2 + teamlist[actual_team].keepers[0].Attenzione - 2 * 3 + 2) * 10) / 7) / 3);
+                            AddName((struct player_disk *)&teamlist[actual_team].keepers[1], 11);
 
-                            for(i=0;i<3;i++)
+                            SetPlayerStatus(11, teamlist[actual_team].keepers[1].injury, 0,
+                                (((teamlist[actual_team].keepers[0].Parata * 2 + teamlist[actual_team].keepers[1].Attenzione - 2 * 3 + 2) * 10) / 7) / 3);
+                            RedrawButton(b2, b2->Colore);
+
+                            for (i = 0; i < 3; i++)
                             {
-                                RedrawBottone(&pannelli[33+i],pannelli[33+i].Colore);
-                                RedrawBottone(&pannelli[i],pannelli[i].Colore);
+                                RedrawButton(&pannelli[33 + i],
+                                             pannelli[33 + i].Colore);
+                                RedrawButton(&pannelli[i], pannelli[i].Colore);
                             }
                         }
-                        else if(pos!=0 && pos!=11 &&sel1!=0 &&sel1!=11)
+                        else if (pos != 0 && pos != 11 &&sel1 != 0 &&sel1 != 11)
                         {
                             struct player_disk g;
 
                             int pos2;
 
-                            if(selected==16)
+                            if (selected == 16)
                             {
-                                pos=actual_menu->Bottone[32].ID-2;
+                                pos = actual_menu->Bottone[32].ID - 2;
                             }
                             else
                             {
                                 pos--;
 
-                                if(pos>10)
+                                if (pos > 10)
                                     pos--;
                             }
 
-                            g=teamlist[actual_team].players[pos];
+                            g = teamlist[actual_team].players[pos];
 
-                            if(sel1==16)
-                                pos2=actual_menu->Bottone[32].ID-2;
+                            if (sel1 == 16)
+                                pos2 = actual_menu->Bottone[32].ID - 2;
                             else
                             {
-                                pos2=sel1-1;
+                                pos2 = sel1 - 1;
 
-                                if(pos2>10)
+                                if (pos2 > 10)
                                     pos2--;
                             }
 
-                            teamlist[actual_team].players[pos]=teamlist[actual_team].players[pos2];
-                            teamlist[actual_team].players[pos2]=g;
-                            AddPlayer(&teamlist[actual_team].players[pos],selected);
-                            AddPlayer(&teamlist[actual_team].players[pos2],sel1);
+                            teamlist[actual_team].players[pos] = teamlist[actual_team].players[pos2];
+                            teamlist[actual_team].players[pos2] = g;
+                            AddPlayer(&teamlist[actual_team].players[pos], selected);
+                            AddPlayer(&teamlist[actual_team].players[pos2], sel1);
 
-                            if(!ruolo[actual_team] || ruolo[actual_team]!=selected )
-                                RedrawBottone(b2,b2->Colore);
+                            if (!ruolo[actual_team] || ruolo[actual_team] != selected)
+                                RedrawButton(b2, b2->Colore);
                             else
-                                RedrawBottone(b2,P_GIALLO);
+                                RedrawButton(b2, P_GIALLO);
 
-                            for(i=0;i<3;i++)
+                            for (i = 0; i < 3; i++)
                             {
-                                RedrawBottone(&pannelli[selected*3+i],pannelli[selected*3+i].Colore);
-                                RedrawBottone(&pannelli[sel1*3+i],pannelli[sel1*3+i].Colore);
+                                RedrawButton(&pannelli[selected * 3 + i], pannelli[selected * 3 + i].Colore);
+                                RedrawButton(&pannelli[sel1 * 3 + i], pannelli[sel1 * 3 + i].Colore);
                             }
                         }
 
-                        if(!ruolo[actual_team] || ruolo[actual_team]!=sel1 )
-                            RedrawBottone(b3,b3->Colore);
+                        if (!ruolo[actual_team] || ruolo[actual_team] != sel1)
+                            RedrawButton(b3, b3->Colore);
                         else
-                            RedrawBottone(b3,P_GIALLO);
+                            RedrawButton(b3, P_GIALLO);
 
-                    }                    
-                    sel1=-1;
+                    }
+                    sel1 = -1;
                 }
                 else
                 {
-                    sel1=selected;
-                    RedrawBottone(b2,b2->Highlight);
+                    sel1 = selected;
+                    RedrawButton(b2, b2->Highlight);
                 }
                 ScreenSwap();
             }
         }
-        else if(bottone<40||bottone==41)
+        else if (button < 40 || button == 41)
         {
-            if(b->Colore!=COLORE_TATTICA_SELEZIONATA)
+            if (b->Colore != COLORE_TATTICA_SELEZIONATA)
 changetactic:
             {
                 int i;
 
-                strcpy(teamlist[actual_team].tactics[0],b->Testo);
-                bltchunkybitmap(back,actual_menu->X,actual_menu->Y,main_bitmap,
-                    actual_menu->X,actual_menu->Y,108,156,bitmap_width,bitmap_width);
-                BltAnimObj(logos,main_bitmap,actual_menu->Immagine,actual_menu->X,actual_menu->Y,bitmap_width);
-                DisplayTactic(0,0);
+                strcpy(teamlist[actual_team].tactics[0], b->Testo);
+                bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
+                    actual_menu->X, actual_menu->Y, 108, 156, bitmap_width, bitmap_width);
+                BltAnimObj(logos, main_bitmap, actual_menu->Immagine, actual_menu->X, actual_menu->Y, bitmap_width);
+                DisplayTactic(0, 0);
 
-                for(i=0;i<9;i++)
+                for (i = 0; i < 9; i++)
                 {
-                    if(teamsettings[34+i].Colore==COLORE_TATTICA_SELEZIONATA)
+                    if (teamsettings[34 + i].Colore == COLORE_TATTICA_SELEZIONATA)
                     {
-                        teamsettings[34+i].Colore=COLORE_TATTICA_NON_SELEZIONATA;
-                        RedrawBottone(&teamsettings[34+i],COLORE_TATTICA_NON_SELEZIONATA);
+                        teamsettings[34 + i].Colore = COLORE_TATTICA_NON_SELEZIONATA;
+                        RedrawButton(&teamsettings[34 + i], COLORE_TATTICA_NON_SELEZIONATA);
                     }
                 }
 
-                b->Colore=COLORE_TATTICA_SELEZIONATA;
+                b->Colore = COLORE_TATTICA_SELEZIONATA;
 
-                RedrawBottone(b,COLORE_TATTICA_SELEZIONATA);
+                RedrawButton(b, COLORE_TATTICA_SELEZIONATA);
                 ScreenSwap();
             }
         }
-        else if(bottone==40)
+        else if (button == 40)
         {
-            freq.Title=msg_34;
-            freq.Dir="tct/"/*-*/;
+            freq.Title = msg_34;
+            freq.Dir = "tct/"/*-*/;
 
-            if(FileRequest(&freq))
+            if (FileRequest(&freq))
             {
                 char *c;
 
-                b=&actual_menu->Bottone[41];
+                b = &actual_menu->Bottone[41];
 
-                if(b->Testo)
+                if (b->Testo)
                     free(b->Testo);
 
-                c=freq.File+strlen(freq.File)-1;
+                c = freq.File + strlen(freq.File)-1;
 
-                while(*c!='/' && *c!='\\' && c>freq.File)
+                while(*c != '/' && *c != '\\' && c > freq.File)
                     c--;
 
-                b->Testo=strdup(c);
+                b->Testo = strdup(c);
 
                 goto changetactic;
             }
@@ -1517,61 +1540,64 @@ changetactic:
     return TRUE;
 }
 
-BOOL GamePrefs(WORD bottone)
+BOOL GamePrefs(WORD button)
 {
-    if(bottone==(actual_menu->NumeroBottoni-1)&&actual_menu->Bottone[bottone].ID>=0)
+    if (button == (actual_menu->NumeroBottoni - 1)
+         && actual_menu->Bottone[button].ID >= 0)
     {
-        ChangeMenu(actual_menu->Bottone[bottone].ID);
+        ChangeMenu(actual_menu->Bottone[button].ID);
         return TRUE;
     }
 
-    bottone=((bottone>>1)<<1)+1;
+    button = ((button >> 1) << 1) + 1;
 
-    switch(bottone)
+    switch(button)
     {
         case 1:
             duration++;
 
-            if(!time_options[duration])
-                duration=0;
+            if (!time_options[duration])
+                duration = 0;
 
-            actual_menu->Bottone[bottone].Testo=time_options[duration];
+            actual_menu->Bottone[button].Testo = time_options[duration];
 
-            t_l=atol(time_options[duration]);
+            t_l = atol(time_options[duration]);
             break;
         case 3:
             field++;
 
-            if(!field_options[field])
-                field=0;
+            if (!field_options[field])
+                field = 0;
 
-            actual_menu->Bottone[bottone].Testo=field_options[field];
+            actual_menu->Bottone[button].Testo = field_options[field];
 
-            if(field>=7)
+            if (field >= 7)
             {
-                actual_menu->Bottone[20].Testo=actual_menu->Bottone[21].Testo=NULL;
+                actual_menu->Bottone[20].Testo = actual_menu->Bottone[21].Testo = NULL;
                 CancellaBottone(&actual_menu->Bottone[21]);
                 CancellaBottone(&actual_menu->Bottone[20]);
             }
-            else if(!actual_menu->Bottone[20].Testo)
+            else if (!actual_menu->Bottone[20].Testo)
             {
-                field_type=0;
-                actual_menu->Bottone[20].Testo=msg_35;
-                actual_menu->Bottone[21].Testo=field_types[0];
-                RedrawBottone(&actual_menu->Bottone[20],actual_menu->Bottone[20].Colore);
-                RedrawBottone(&actual_menu->Bottone[21],actual_menu->Bottone[21].Colore);
+                field_type = 0;
+                actual_menu->Bottone[20].Testo = msg_35;
+                actual_menu->Bottone[21].Testo = field_types[0];
+                RedrawButton(&actual_menu->Bottone[20],
+                             actual_menu->Bottone[20].Colore);
+                RedrawButton(&actual_menu->Bottone[21],
+                             actual_menu->Bottone[21].Colore);
             }
             break;
         case 5:
             strictness++;
 
-            if(strictness>10)
-                strictness=0;
+            if (strictness > 10)
+                strictness = 0;
 
-            if(strictness==10)
-                actual_menu->Bottone[bottone].Testo=msg_2;    
+            if (strictness == 10)
+                actual_menu->Bottone[button].Testo = msg_2;
             else
-                actual_menu->Bottone[bottone].Testo=numero[strictness];
+                actual_menu->Bottone[button].Testo = numero[strictness];
 
             break;
         case 7:
@@ -1579,12 +1605,12 @@ BOOL GamePrefs(WORD bottone)
         case 11:
         case 13:
         case 25:
-            if(actual_menu->Bottone[bottone].Testo==enabled)
-                actual_menu->Bottone[bottone].Testo=disabled;
+            if (actual_menu->Bottone[button].Testo == enabled)
+                actual_menu->Bottone[button].Testo = disabled;
             else
-                actual_menu->Bottone[bottone].Testo=enabled;
+                actual_menu->Bottone[button].Testo = enabled;
 
-            switch(bottone)
+            switch(button)
             {
                 case 7:
                     injuries = injuries ? FALSE : TRUE;
@@ -1596,99 +1622,101 @@ BOOL GamePrefs(WORD bottone)
                     bookings = bookings ? FALSE : TRUE;
                     break;
                 case 13:
-                    use_replay= use_replay ? FALSE : TRUE;
+                    use_replay = use_replay ? FALSE : TRUE;
                     break;
                 case 25:
-                    offside= offside ? FALSE : TRUE;
+                    offside = offside ? FALSE : TRUE;
                     break;
             }
 
             break;
         case 15:
-            if(free_longpass)
+            if (free_longpass)
             {
-                free_longpass=FALSE;
-                actual_menu->Bottone[bottone].Testo=msg_36;
+                free_longpass = FALSE;
+                actual_menu->Bottone[button].Testo = msg_36;
             }
             else
             {
-                free_longpass=TRUE;
-                actual_menu->Bottone[bottone].Testo=msg_37;
+                free_longpass = TRUE;
+                actual_menu->Bottone[button].Testo = msg_37;
             }
             break;
         case 21:
             field_type++;
 
-            if(!field_types[field_type])
-                field_type=0;
+            if (!field_types[field_type])
+                field_type = 0;
 
-            actual_menu->Bottone[bottone].Testo=field_types[field_type];
+            actual_menu->Bottone[button].Testo = field_types[field_type];
             break;
         case 17:
             daytime++;
 
-            if(!daytimes[daytime])
-                daytime=0;
+            if (!daytimes[daytime])
+                daytime = 0;
 
-            actual_menu->Bottone[bottone].Testo=daytimes[daytime];
+            actual_menu->Bottone[button].Testo = daytimes[daytime];
             break;
         case 19:
-            if(golden_gol)
+            if (golden_gol)
             {
-                golden_gol=FALSE;
-                actual_menu->Bottone[bottone].Testo=disabled;
+                golden_gol = FALSE;
+                actual_menu->Bottone[button].Testo = disabled;
             }
             else
             {
-                golden_gol=TRUE;
-                actual_menu->Bottone[bottone].Testo=enabled;
+                golden_gol = TRUE;
+                actual_menu->Bottone[button].Testo = enabled;
             }
             break;
         case 23:
-            if(newchange)
+            if (newchange)
             {
-                newchange=FALSE;
-                actual_menu->Bottone[bottone].Testo="CLASSIC";
+                newchange = FALSE;
+                actual_menu->Bottone[button].Testo = "CLASSIC";
             }
             else
             {
-                newchange=TRUE;
-                actual_menu->Bottone[bottone].Testo="ETW";
+                newchange = TRUE;
+                actual_menu->Bottone[button].Testo = "ETW";
             }
             break;
         default:
-            D(bug("Error, option (%ld) not previewed!\n"/*-*/,bottone));
+            D(bug("Error, option (%ld) not previewed!\n"/*-*/, button));
             return FALSE;
     }
 
-    RedrawBottone(&actual_menu->Bottone[bottone],actual_menu->Bottone[bottone].Colore);
+    RedrawButton(&actual_menu->Bottone[button],
+                 actual_menu->Bottone[button].Colore);
 
     return TRUE;
 }
 
-BOOL AudioPrefs(WORD bottone)
+BOOL AudioPrefs(WORD button)
 {
-    if(bottone==(actual_menu->NumeroBottoni-1)&&actual_menu->Bottone[bottone].ID>=0)
+    if (button == (actual_menu->NumeroBottoni - 1)
+         && actual_menu->Bottone[button].ID >= 0)
     {
-        ChangeMenu(actual_menu->Bottone[bottone].ID);
+        ChangeMenu(actual_menu->Bottone[button].ID);
         return TRUE;
     }
 
-    bottone=((bottone>>1)<<1)+1;
+    button = ((button >> 1) << 1) + 1;
 
-    switch(bottone)
+    switch(button)
     {
         case 1:
             /* AC: When the program starts with no_sound = true, but the options
              * are modified to no_sound = false, the sounds of the menu are not
              * loaded and the PlayBackSound is called with a NULL element
-             * (it has happened in the arcade menu). 
+             * (it has happened in the arcade menu).
              * According to me it must be called the CaricaSuoniMenu.
              */
             no_sound = no_sound ? FALSE : TRUE;
 
             /* If the sound is off, unload the sounds, else load them */
-            if(no_sound)
+            if (no_sound)
             {
                 LiberaSuoniMenu();
                 FreeSoundSystem();
@@ -1698,19 +1726,19 @@ BOOL AudioPrefs(WORD bottone)
                 /* AC: Surely some controls are needed */
                 InitSoundSystem();
                 CaricaSuoniMenu();
-            }    
+            }
 
             /* AC: I think this func is needed. */
             os_start_audio();
 
             break;
         case 3:
-            if(use_crowd)
-                use_crowd=FALSE;
+            if (use_crowd)
+                use_crowd = FALSE;
             else
             {
-                use_speaker=FALSE;
-                use_crowd=TRUE;
+                use_speaker = FALSE;
+                use_crowd = TRUE;
             }
 #ifdef CD_VERSION
             DeleteAudio2Fast();
@@ -1718,12 +1746,12 @@ BOOL AudioPrefs(WORD bottone)
             break;
         case 5:
 #ifdef CD_VERSION
-            if(use_speaker)
-                use_speaker=FALSE;
+            if (use_speaker)
+                use_speaker = FALSE;
             else
             {
-                use_speaker=TRUE;
-                use_crowd=FALSE;
+                use_speaker = TRUE;
+                use_crowd = FALSE;
             }
             DeleteAudio2Fast();
 #else
@@ -1733,9 +1761,9 @@ BOOL AudioPrefs(WORD bottone)
             break;
         case 7:
 #ifdef CD_VERSION
-            menu_music= menu_music ? FALSE : TRUE;
+            menu_music = menu_music ? FALSE : TRUE;
 
-            if(menu_music==FALSE)
+            if (menu_music == FALSE)
                 StopMenuMusic();
             else
                 PlayMenuMusic();
@@ -1756,28 +1784,32 @@ BOOL AudioPrefs(WORD bottone)
 
     UpdatePrefs(MENU_AUDIO_PREFS);
 
-    RedrawBottone(&actual_menu->Bottone[bottone],actual_menu->Bottone[bottone].Colore);
+    RedrawButton(&actual_menu->Bottone[button],
+                 actual_menu->Bottone[button].Colore);
 
-    switch(bottone)
+    switch(button)
     {
         case 5:
-            RedrawBottone(&actual_menu->Bottone[3],actual_menu->Bottone[3].Colore);
+            RedrawButton(&actual_menu->Bottone[3],
+                         actual_menu->Bottone[3].Colore);
             break;
         case 3:
-            RedrawBottone(&actual_menu->Bottone[5],actual_menu->Bottone[5].Colore);
+            RedrawButton(&actual_menu->Bottone[5],
+                         actual_menu->Bottone[5].Colore);
             break;
     }
 
     return TRUE;
 }
 
-BOOL SystemPrefs(WORD bottone)
+BOOL SystemPrefs(WORD button)
 {
-    if(bottone>=(actual_menu->NumeroBottoni-3)&&actual_menu->Bottone[bottone].ID>=0)
+    if (button >= (actual_menu->NumeroBottoni - 3)
+         && actual_menu->Bottone[button].ID >= 0)
     {
-        if(bottone==(actual_menu->NumeroBottoni-3))
+        if (button == (actual_menu->NumeroBottoni - 3))
         {
-            if(!os_check_joy(0))
+            if (!os_check_joy(0))
             {
                 request("NO JOYSTICK FOUND");
                 return TRUE;
@@ -1785,39 +1817,39 @@ BOOL SystemPrefs(WORD bottone)
             else UpdateJoyCfg(actual_joystick);
         }
         /* AC: Update keyboard configuration */
-        else if(bottone==(actual_menu->NumeroBottoni-2))
+        else if (button == (actual_menu->NumeroBottoni - 2))
         {
             UpdateKeyCfg();
         }
 
-        ChangeMenu(actual_menu->Bottone[bottone].ID);
+        ChangeMenu(actual_menu->Bottone[button].ID);
         return TRUE;
     }
 
-    bottone=((bottone>>1)<<1)+1;
+    button = ((button >> 1) << 1) + 1;
 
-    switch(bottone)
+    switch(button)
     {
         case 1:
             break;
         case 3:
-            chunky_version= chunky_version ? FALSE : TRUE;
+            chunky_version = chunky_version ? FALSE : TRUE;
             break;
         case 5:
         case 7:
-            control[(bottone-5)/2]++;
+            control[(button - 5) / 2]++;
 
 
-            if(!controls[control[(bottone-5)/2]])
-                control[(bottone-5)/2]=0;
+            if (!controls[control[(button - 5) / 2]])
+                control[(button - 5) / 2] = 0;
 
-            if(control[(bottone-5)/2]<CTRL_KEY_1)
+            if (control[(button - 5) / 2] < CTRL_KEY_1)
             {
-                if(!os_check_joy((bottone-5)/2))
-                    control[(bottone-5)/2]=CTRL_KEY_1;
+                if (!os_check_joy((button - 5) / 2))
+                    control[(button - 5) / 2] = CTRL_KEY_1;
             }
 
-            actual_menu->Bottone[bottone].Testo=controls[control[(bottone-5)/2]];
+            actual_menu->Bottone[button].Testo = controls[control[(button - 5) / 2]];
             break;
 
         case 9:
@@ -1826,117 +1858,127 @@ BOOL SystemPrefs(WORD bottone)
 
     UpdatePrefs(MENU_SYSTEM_PREFS);
 
-    RedrawBottone(&actual_menu->Bottone[bottone],actual_menu->Bottone[1].Colore);
+    RedrawButton(&actual_menu->Bottone[button],
+                 actual_menu->Bottone[1].Colore);
 
     return TRUE;
 }
 
-BOOL VideoPrefs(WORD bottone)
+BOOL VideoPrefs(WORD button)
 {
-    if(bottone==(actual_menu->NumeroBottoni-1)&&actual_menu->Bottone[bottone].ID>=0)
+    if (button == (actual_menu->NumeroBottoni - 1)
+         && actual_menu->Bottone[button].ID >= 0)
     {
-        ChangeMenu(actual_menu->Bottone[bottone].ID);
+        ChangeMenu(actual_menu->Bottone[button].ID);
         return TRUE;
     }
 
-    bottone=((bottone>>1)<<1)+1;
+    button = ((button >> 1) << 1) + 1;
 
-    switch(bottone)
+    switch(button)
     {
         case 1:
-            id_change=TRUE;
+            id_change = TRUE;
 
-            if(wb_game)
+            if (wb_game)
             {
-                wb_game=FALSE;
+                wb_game = FALSE;
                 /* AC: if we are on screen, disable the scaling */
                 use_gfx_scaling = FALSE;
 
-                MenuResizing(atol(resolutions[current_resolution]),atol(resolutions[current_resolution]+4));
+                MenuResizing(atol(resolutions[current_resolution]),
+                             atol(resolutions[current_resolution] + 4));
 
-                /* AC: Since these buttons are restored later on, I think that we don't
-                 * have to eliminate them. They are Scaling and Buffering.
-                 */
+                /* AC: Since these buttons are restored later on, I think
+                 * that we don't have to eliminate them. They are Scaling
+                 * and Buffering. */
                 //CancellaBottone(&actual_menu->Bottone[16]);
                 //CancellaBottone(&actual_menu->Bottone[17]);
                 CancellaBottone(&actual_menu->Bottone[18]);
                 CancellaBottone(&actual_menu->Bottone[19]);
-                
+
                 /* AC: The same one is said for these */
                 //CancellaBottone(&actual_menu->Bottone[20]);
                 //CancellaBottone(&actual_menu->Bottone[21]);
             }
             else
             {
-                wb_game=TRUE;    
+                wb_game = TRUE;
 
-                MenuResizing(atol(resolutions[current_resolution]),atol(resolutions[current_resolution]+4));
+                MenuResizing(atol(resolutions[current_resolution]),
+                             atol(resolutions[current_resolution] + 4));
 
-                RedrawBottone(&actual_menu->Bottone[16],actual_menu->Bottone[0].Colore);
-                RedrawBottone(&actual_menu->Bottone[17],actual_menu->Bottone[1].Colore);
-                RedrawBottone(&actual_menu->Bottone[20],actual_menu->Bottone[0].Colore);
-                RedrawBottone(&actual_menu->Bottone[21],actual_menu->Bottone[1].Colore);
+                RedrawButton(&actual_menu->Bottone[16],
+                             actual_menu->Bottone[0].Colore);
+                RedrawButton(&actual_menu->Bottone[17],
+                             actual_menu->Bottone[1].Colore);
+                RedrawButton(&actual_menu->Bottone[20],
+                             actual_menu->Bottone[0].Colore);
+                RedrawButton(&actual_menu->Bottone[21],
+                             actual_menu->Bottone[1].Colore);
 
-                if(use_gfx_scaling)
+                if (use_gfx_scaling)
                 {
-                    RedrawBottone(&actual_menu->Bottone[18],actual_menu->Bottone[0].Colore);
-                    RedrawBottone(&actual_menu->Bottone[19],actual_menu->Bottone[1].Colore);
+                    RedrawButton(&actual_menu->Bottone[18],
+                                 actual_menu->Bottone[0].Colore);
+                    RedrawButton(&actual_menu->Bottone[19],
+                                 actual_menu->Bottone[1].Colore);
                 }
             }
 #if 0
             {
                 struct ScreenModeRequester *Req;
 
-                if(Req=AllocFileRequest(ASL_ScreenModeRequest,NULL))
+                if (Req = AllocFileRequest(ASL_ScreenModeRequest, NULL))
                 {
-                if(!FileRequestTags(Req,ASLSM_InitialDisplayWidth,WINDOW_WIDTH,
-                    ASLSM_InitialDisplayHeight,WINDOW_HEIGHT,
-                    ASLSM_InitialDisplayDepth,4,
-                    ASLSM_InitialOverscanType,OSCAN_TEXT,
-                    ASLSM_MinWidth,300,
-                    ASLSM_MinHeight,180,
-                    ASLSM_MaxWidth,1280,
-                    ASLSM_MaxHeight,1024,
-                    ASLSM_InitialDisplayID,LORES_KEY,
-                    ASLSM_Screen,screen,
-                    ASLSM_DoHeight,TRUE,
-                    ASLSM_DoWidth,TRUE,
-                    ASLSM_DoOverscanType,TRUE,
+                if (!FileRequestTags(Req, ASLSM_InitialDisplayWidth, WINDOW_WIDTH,
+                    ASLSM_InitialDisplayHeight, WINDOW_HEIGHT,
+                    ASLSM_InitialDisplayDepth, 4,
+                    ASLSM_InitialOverscanType, OSCAN_TEXT,
+                    ASLSM_MinWidth, 300,
+                    ASLSM_MinHeight, 180,
+                    ASLSM_MaxWidth, 1280,
+                    ASLSM_MaxHeight, 1024,
+                    ASLSM_InitialDisplayID, LORES_KEY,
+                    ASLSM_Screen, screen,
+                    ASLSM_DoHeight, TRUE,
+                    ASLSM_DoWidth, TRUE,
+                    ASLSM_DoOverscanType, TRUE,
                     TAG_DONE))
                 {
-                    if(wb_game)
+                    if (wb_game)
                     {
-                        actual_menu->Bottone[bottone].Testo=msg_40;
-                        wb_game=FALSE;
-                        display_id=INVALID_ID;
+                        actual_menu->Bottone[button].Testo = msg_40;
+                        wb_game = FALSE;
+                        display_id = INVALID_ID;
                     }
                     else
                     {
-                        actual_menu->Bottone[bottone].Testo="WORKBENCH"/*-*/;
-                        wb_game=TRUE;
+                        actual_menu->Bottone[button].Testo = "WORKBENCH"/*-*/;
+                        wb_game = TRUE;
                     }
                 }
                 else
                 {
                     char *c;
 
-                    display_id=Req->sm_DisplayID;
-                    wb_game=FALSE;
-                    overscan=Req->sm_OverscanType;
-                    wanted_width=Req->sm_DisplayWidth;
-                    wanted_height=Req->sm_DisplayHeight;
+                    display_id = Req->sm_DisplayID;
+                    wb_game = FALSE;
+                    overscan = Req->sm_OverscanType;
+                    wanted_width = Req->sm_DisplayWidth;
+                    wanted_height = Req->sm_DisplayHeight;
 
-                    GetDisplayInfoData(FindDisplayInfo(display_id),(UBYTE *)&ni,sizeof(struct NameInfo),DTAG_NAME,NULL);
+                    GetDisplayInfoData(FindDisplayInfo(display_id), (UBYTE *)&ni, sizeof(struct NameInfo), DTAG_NAME, NULL);
 
-                    c=ni.Name;
+                    c = ni.Name;
 
                     while(*c)
                     {
-                        *c=toupper(*c);
+                        *c = toupper(*c);
                         c++;
                     }
 
-                    actual_menu->Bottone[bottone].Testo=ni.Name;
+                    actual_menu->Bottone[button].Testo = ni.Name;
                 }
 
                 FreeFileRequest(Req);
@@ -1945,76 +1987,66 @@ BOOL VideoPrefs(WORD bottone)
 #endif
         break;
         case 3:
-            if(detail_level&USA_RADAR)
+            if (detail_level & USA_RADAR)
             {
                 radar_position++;
 
-                if(radar_position>=12)
+                if (radar_position >= 12)
                 {
-                    detail_level&= ~USA_RADAR;
-                    radar_position=-1;
-                    actual_menu->Bottone[bottone].Testo=disabled;
+                    detail_level &= ~USA_RADAR;
+                    radar_position = -1;
+                    actual_menu->Bottone[button].Testo = disabled;
                 }
-                else actual_menu->Bottone[bottone].Testo=radar_options[radar_position];
+                else
+                    actual_menu->Bottone[button].Testo
+                        = radar_options[radar_position];
             }
             else
             {
-                radar_position=0;
-                detail_level|=USA_RADAR;
+                radar_position = 0;
+                detail_level |= USA_RADAR;
 
-                actual_menu->Bottone[bottone].Testo=radar_options[radar_position];
+                actual_menu->Bottone[button].Testo
+                    = radar_options[radar_position];
             }
             break;
         case 7:
-            if(detail_level&USA_ARBITRO)
-                detail_level&= ~USA_ARBITRO;
-            else
-                detail_level|=USA_ARBITRO;
+            detail_level ^= USA_ARBITRO;
             break;
         case 5:
-            if(detail_level&USA_RISULTATO)
-                detail_level&= ~USA_RISULTATO;
-            else
-                detail_level|=USA_RISULTATO;
+            detail_level ^= USA_RISULTATO;
             break;
         case 9:
-            if(detail_level&(USA_POLIZIOTTI|USA_FOTOGRAFI))
-                detail_level&= ~(USA_POLIZIOTTI|USA_FOTOGRAFI);
-            else
-                detail_level|=(USA_POLIZIOTTI|USA_FOTOGRAFI);
+            detail_level ^= USA_POLIZIOTTI | USA_FOTOGRAFI;
             break;
         case 11:
-            if(detail_level&USA_NOMI)
-                detail_level&= ~USA_NOMI;
-            else
-                detail_level|=USA_NOMI;
+            detail_level ^= USA_NOMI;
             break;
         case 13:
-            nointro= (nointro) ? FALSE : TRUE;
-            break;                    
+            nointro = (nointro) ? FALSE : TRUE;
+            break;
         case 15:
-            if(detail_level&USA_GUARDALINEE)
-                detail_level&= ~USA_GUARDALINEE;
-            else
-                detail_level|=USA_GUARDALINEE;
+            detail_level ^= USA_GUARDALINEE;
             break;
         case 17:
-            if(!use_gfx_scaling)
+            if (!use_gfx_scaling)
             {
-                if(wb_game)
+                if (wb_game)
                 {
-                    actual_menu->Bottone[18].Testo="SCALING RES";
-                    actual_menu->Bottone[19].Testo=scaling_resolutions[current_scaling];
-                    RedrawBottone(&actual_menu->Bottone[19],actual_menu->Bottone[1].Colore);
-                    RedrawBottone(&actual_menu->Bottone[18],actual_menu->Bottone[0].Colore);
-                    use_gfx_scaling=TRUE;
+                    actual_menu->Bottone[18].Testo = "SCALING RES";
+                    actual_menu->Bottone[19].Testo = scaling_resolutions[current_scaling];
+                    RedrawButton(&actual_menu->Bottone[19],
+                                 actual_menu->Bottone[1].Colore);
+                    RedrawButton(&actual_menu->Bottone[18],
+                                 actual_menu->Bottone[0].Colore);
+                    use_gfx_scaling = TRUE;
                 }
                 else
                     request("You can enable scaling only\nif you play in a window!");
             }
             else
             {
-                use_gfx_scaling=FALSE;
+                use_gfx_scaling = FALSE;
                 CancellaBottone(&actual_menu->Bottone[18]);
                 CancellaBottone(&actual_menu->Bottone[19]);
             }
@@ -2022,57 +2054,57 @@ BOOL VideoPrefs(WORD bottone)
         case 19:
             {
                 char buffer[20];
-                
+
                 current_scaling++;
-            
-                if(!scaling_resolutions[current_scaling])
-                    current_scaling=0;
-                
+
+                if (!scaling_resolutions[current_scaling])
+                    current_scaling = 0;
+
                 // AC: A small misprint :-)
-                //scaling_resolutions[current_scaling][3]=0;
+                //scaling_resolutions[current_scaling][3] = 0;
 
                 strncpy(buffer, scaling_resolutions[current_scaling], 3);
 
                 buffer[3] = 0;
-                
-                FIXED_SCALING_WIDTH=atol(buffer);
-                FIXED_SCALING_HEIGHT=atol(scaling_resolutions[current_scaling]+4);
+
+                FIXED_SCALING_WIDTH = atol(buffer);
+                FIXED_SCALING_HEIGHT = atol(scaling_resolutions[current_scaling] + 4);
             }
             break;
         case 21:
-            if(force_single)
+            if (force_single)
             {
-// Using DBuffering
-                force_single=FALSE;
-                triple=FALSE;
+                // Using DBuffering
+                force_single = FALSE;
+                triple = FALSE;
             }
-            else if(triple)
+            else if (triple)
             {
-// Using Single buffering
-                triple=FALSE;
-                force_single=TRUE;
+                // Using Single buffering
+                triple = FALSE;
+                force_single = TRUE;
             }
             else
             {
-// Using triple buffering
-                force_single=FALSE;
-                triple=TRUE;
+                // Using triple buffering
+                force_single = FALSE;
+                triple = TRUE;
             }
             break;
         case 23:
-            if(newpitches)
+            if (newpitches)
             {
-                newpitches=FALSE;
+                newpitches = FALSE;
 
-                if(!wb_game)
-                    id_change=TRUE;
+                if (!wb_game)
+                    id_change = TRUE;
             }
-            else if(CheckNewPitches())
+            else if (CheckNewPitches())
             {
-                if(!wb_game)
-                    id_change=TRUE;
+                if (!wb_game)
+                    id_change = TRUE;
 
-                newpitches=TRUE;
+                newpitches = TRUE;
             }
             break;
         case 25:
@@ -2080,449 +2112,337 @@ BOOL VideoPrefs(WORD bottone)
             {
                 current_resolution++;
 
-                if(!resolutions[current_resolution])
-                    current_resolution=0;
+                if (!resolutions[current_resolution])
+                    current_resolution = 0;
 
-                wanted_width=atol(resolutions[current_resolution]);
-                wanted_height=atol(resolutions[current_resolution]+4);    
-                
-#ifdef TESTING_RES_1024                
+                wanted_width = atol(resolutions[current_resolution]);
+                wanted_height = atol(resolutions[current_resolution] + 4);
+
+#ifdef TESTING_RES_1024
                 /* AC: Trying to increase screen resolution upto 1024x768 */
-                if(wanted_height == 0)
-                    wanted_height=atol(resolutions[current_resolution]+5);
+                if (wanted_height == 0)
+                    wanted_height = atol(resolutions[current_resolution] + 5);
 #endif
             }
-            while (!os_videook(wanted_width,wanted_height));
+            while (!os_videook(wanted_width, wanted_height));
 
-            MenuResizing(wanted_width,wanted_height);
+            MenuResizing(wanted_width, wanted_height);
 
             break;
     }
 
     UpdatePrefs(MENU_VIDEO_PREFS);
 
-    RedrawBottone(&actual_menu->Bottone[bottone],actual_menu->Bottone[1].Colore);
+    RedrawButton(&actual_menu->Bottone[button],
+                 actual_menu->Bottone[1].Colore);
 
     return TRUE;
 }
 
 void UpdatePrefs(BYTE set)
 {
-  struct GfxMenu *m=&menu[set];
+    struct GfxMenu *m = &menu[set];
 
-  switch(set)
-  {
-    case MENU_GAME_PREFS:
-    m->Bottone[1].Testo=time_options[duration];
-    m->Bottone[3].Testo=field_options[field];
-
-    if(field<7)
+    switch(set)
     {
-        m->Bottone[20].Testo=msg_35;
-        m->Bottone[21].Testo=field_types[field_type];
-    }
-    else
-        m->Bottone[20].Testo=m->Bottone[21].Testo=NULL;
-
-    if(strictness==10)
-        m->Bottone[5].Testo=msg_2;
-    else
-        m->Bottone[5].Testo=numero[strictness];
-
-    if(injuries)
-        m->Bottone[7].Testo=enabled;
-    else
-        m->Bottone[7].Testo=disabled;
-
-    if(substitutions)
-        m->Bottone[9].Testo=enabled;
-    else
-        m->Bottone[9].Testo=disabled;
-
-    if(bookings)
-        m->Bottone[11].Testo=enabled;
-    else
-        m->Bottone[11].Testo=disabled;
-
-    if(use_replay)
-        m->Bottone[13].Testo=enabled;
-    else
-        m->Bottone[13].Testo=disabled;
-
-    if(!free_longpass)
-        m->Bottone[15].Testo=msg_36;
-    else
-        m->Bottone[15].Testo=msg_37;
-
-    m->Bottone[17].Testo=daytimes[daytime];
-
-    if(golden_gol)
-        m->Bottone[19].Testo=enabled;
-    else
-        m->Bottone[19].Testo=disabled;
-
-    if(newchange)
-        m->Bottone[23].Testo="ETW";
-    else
-        m->Bottone[23].Testo="CLASSIC";
-
-    if(offside)
-        m->Bottone[25].Testo=enabled;
-    else
-        m->Bottone[25].Testo=disabled;
-
-    break;
+    case MENU_GAME_PREFS:
+        m->Bottone[1].Testo = time_options[duration];
+        m->Bottone[3].Testo = field_options[field];
+        m->Bottone[5].Testo = (strictness == 10) ? msg_2 : numero[strictness];
+        m->Bottone[7].Testo = injuries ? enabled : disabled;
+        m->Bottone[9].Testo = substitutions ? enabled : disabled;
+        m->Bottone[11].Testo = bookings ? enabled : disabled;
+        m->Bottone[13].Testo = use_replay ? enabled : disabled;
+        m->Bottone[15].Testo = free_longpass ? msg_37 : msg_36;
+        m->Bottone[17].Testo = daytimes[daytime];
+        m->Bottone[19].Testo = golden_gol ? enabled : disabled;
+        m->Bottone[20].Testo = (field < 7) ? msg_36 : NULL;
+        m->Bottone[21].Testo = (field < 7) ? field_types[field_type] : NULL;
+        m->Bottone[23].Testo = newchange ? "ETW" : "CLASSIC";
+        m->Bottone[25].Testo = offside ? enabled : disabled;
+        break;
 
     case MENU_AUDIO_PREFS:
-    if(!no_sound)
-        m->Bottone[1].Testo=enabled;
-    else
-        m->Bottone[1].Testo=disabled;
+        m->Bottone[1].Testo = no_sound ? disabled : enabled;
+        m->Bottone[3].Testo = use_crowd ? enabled : disabled;
+        m->Bottone[5].Testo = use_speaker ? enabled : disabled;
+        m->Bottone[7].Testo = menu_music ? enabled : disabled;
+        break;
 
-    if(use_crowd)
-        m->Bottone[3].Testo=enabled;
-    else
-        m->Bottone[3].Testo=disabled;
-
-    if(use_speaker)
-        m->Bottone[5].Testo=enabled;
-    else
-        m->Bottone[5].Testo=disabled;
-
-    if(menu_music)
-        m->Bottone[7].Testo=enabled;
-    else
-        m->Bottone[7].Testo=disabled;
-
-    break;
     case MENU_VIDEO_PREFS:
-    if(wb_game)
-        m->Bottone[1].Testo="WINDOW"/*-*/;
-    else
-        m->Bottone[1].Testo="FULLSCREEN"/*-*/;
-    
-    if(detail_level&USA_RADAR)
-        m->Bottone[3].Testo=radar_options[radar_position]; 
-    else
-        m->Bottone[3].Testo=disabled;
-
-    if(detail_level&USA_RISULTATO)
-        m->Bottone[5].Testo=enabled;
-    else
-        m->Bottone[5].Testo=disabled;
-
-    if(detail_level&USA_ARBITRO)
-        m->Bottone[7].Testo=enabled;
-    else
-        m->Bottone[7].Testo=disabled;
-
-    if(detail_level&USA_POLIZIOTTI)
-        m->Bottone[9].Testo=enabled;
-    else
-        m->Bottone[9].Testo=disabled;
-
-    if(detail_level&USA_NOMI)
-        m->Bottone[11].Testo=enabled;
-    else
-        m->Bottone[11].Testo=disabled;
-    if(nointro)
-        m->Bottone[13].Testo=disabled;
-    else
-        m->Bottone[13].Testo=enabled;
-
-    if(detail_level&USA_GUARDALINEE)
-        m->Bottone[15].Testo=enabled;
-    else
-        m->Bottone[15].Testo=disabled;
-    if(use_gfx_scaling)
-        m->Bottone[17].Testo=enabled;
-    else
-        m->Bottone[17].Testo=disabled;
-
-    if(triple)
-        m->Bottone[21].Testo="TRIPLE";
-    else if(force_single)
-        m->Bottone[21].Testo="SINGLE";
-    else
-        m->Bottone[21].Testo="DOUBLE";
-
-    if(newpitches)
-        m->Bottone[23].Testo=enabled;
-    else
-        m->Bottone[23].Testo=disabled;
-
-    m->Bottone[25].Testo=resolutions[current_resolution];
-
-    if(use_gfx_scaling)
-    {
-        m->Bottone[18].Testo="SCALING RES";
-        m->Bottone[19].Testo=scaling_resolutions[current_scaling];
-    }
-    else
-    {
-        m->Bottone[18].Testo=NULL;
-        m->Bottone[19].Testo=NULL;
-    }
-    break;
+        m->Bottone[1].Testo = wb_game ? "WINDOW"/*-*/ : "FULLSCREEN"/*-*/;
+        m->Bottone[3].Testo = (detail_level & USA_RADAR)
+                            ? radar_options[radar_position] : disabled;
+        m->Bottone[5].Testo = (detail_level & USA_RISULTATO)
+                            ? enabled : disabled;
+        m->Bottone[7].Testo = (detail_level & USA_ARBITRO)
+                            ? enabled : disabled;
+        m->Bottone[9].Testo = (detail_level & USA_POLIZIOTTI)
+                            ? enabled : disabled;
+        m->Bottone[11].Testo = (detail_level & USA_NOMI) ? enabled : disabled;
+        m->Bottone[13].Testo = nointro ? enabled : disabled;
+        m->Bottone[15].Testo = (detail_level & USA_GUARDALINEE)
+                             ? enabled : disabled;
+        m->Bottone[17].Testo = use_gfx_scaling ? enabled : disabled;
+        m->Bottone[18].Testo = use_gfx_scaling ? "SCALING RES" : NULL;
+        m->Bottone[19].Testo = use_gfx_scaling
+                             ? scaling_resolutions[current_scaling] : NULL;
+        m->Bottone[21].Testo = triple ? "TRIPLE"
+                             : force_single ? "SINGLE"
+                             : "DOUBLE";
+        m->Bottone[23].Testo = newpitches ? enabled : disabled;
+        m->Bottone[25].Testo = resolutions[current_resolution];
+        break;
 
     case MENU_SYSTEM_PREFS:
-
-    if(chunky_version)
-        m->Bottone[3].Testo=enabled;
-    else
-        m->Bottone[3].Testo=disabled;
-        
-    m->Bottone[5].Testo=controls[control[0]];
-    m->Bottone[7].Testo=controls[control[1]];
-
-    break;
+        m->Bottone[3].Testo = chunky_version ? enabled : disabled;
+        m->Bottone[5].Testo = controls[control[0]];
+        m->Bottone[7].Testo = controls[control[1]];
+        break;
   }
 }
 
 void SetupMatches(void)
 {
-    make_setup=FALSE;
+    make_setup = FALSE;
 
     switch(competition)
     {
         case MENU_CHALLENGE:
 
-// Reset the control for all except the team in use...
-
-            if(turno==0)
+            // Reset the control for all except the team in use...
+            if (turno == 0)
             {
                 int i;
 
-                cp[6].Testo=NULL;
+                cp[6].Testo = NULL;
 
-                for(i=0;i<ARCADE_TEAMS+1;i++)
-                    if(i!=*teamarray)
-                        controllo[i]=-1;
+                for (i = 0; i < ARCADE_TEAMS + 1; i++)
+                    if (i != *teamarray)
+                        controllo[i] = -1;
             }
 
-            if(*teamarray==arcade_sequence[turno])
+            if (*teamarray == arcade_sequence[turno])
                 turno++;
 
-            cb[0].ID=MENU_CHALLENGE;
+            cb[0].ID = MENU_CHALLENGE;
 
-            if(turno<10)
+            if (turno < 10)
             {
-                struct team_disk *s=&teamlist[arcade_sequence[turno]];
+                struct team_disk *s = &teamlist[arcade_sequence[turno]];
                 int i;
 
-                menu[MENU_CHALLENGE].Titolo=msg_41;
+                menu[MENU_CHALLENGE].Titolo = msg_41;
 
-                for(i=0;i<s->nkeepers;i++)
+                for (i = 0; i < s->nkeepers; i++)
                 {
-                    s->keepers[i].Parata=min(9,s->keepers[i].Parata+(turno+1)/2);
-                    s->keepers[i].speed=min(9,s->keepers[i].speed+(turno+1)/2);
-                    s->keepers[i].Attenzione=min(9,s->keepers[i].Attenzione+(turno+1)/2);
+                    s->keepers[i].Parata = min(9, s->keepers[i].Parata + (turno + 1) / 2);
+                    s->keepers[i].speed = min(9, s->keepers[i].speed + (turno + 1) / 2);
+                    s->keepers[i].Attenzione = min(9, s->keepers[i].Attenzione + (turno + 1) / 2);
                 }
 
-                for(i=0;i<s->nplayers;i++)
+                for (i = 0; i < s->nplayers; i++)
                 {
-                    s->players[i].speed=min(9,s->players[i].speed+(turno+1)/2);
-                    s->players[i].Tiro=min(9,s->players[i].Tiro+(turno+1)/2);
-                    s->players[i].tackle=min(9,s->players[i].tackle+(turno+1)/2);
-                    s->players[i].quickness=min(9,s->players[i].quickness+(turno+1)/2);
-                    s->players[i].technique=min(9,s->players[i].technique+(turno+1)/2);
+                    s->players[i].speed = min(9, s->players[i].speed + (turno + 1) / 2);
+                    s->players[i].Tiro = min(9, s->players[i].Tiro + (turno + 1) / 2);
+                    s->players[i].tackle = min(9, s->players[i].tackle + (turno + 1) / 2);
+                    s->players[i].quickness = min(9, s->players[i].quickness + (turno + 1) / 2);
+                    s->players[i].technique = min(9, s->players[i].technique + (turno + 1) / 2);
                 }
             }
-            else if(turno==10)
-                menu[MENU_CHALLENGE].Titolo=msg_42;
+            else if (turno == 10)
+                menu[MENU_CHALLENGE].Titolo = msg_42;
             else
             {
-// Add here the final visualization one of the arcade.
-
+                // Add here the final visualization one of the arcade.
 #ifdef CD_VERSION
                 Outro();
 #else
                 ShowCredits();
 #endif
-                arcade_score+=500; // Final bonus
+                arcade_score += 500; // Final bonus
 
                 AddScore(*teamarray);
                 LoadTeams("teams/arcade"/*-*/);
-                turno=0;
-                competition=MENU_TEAMS;
-                cb[0].ID=MENU_ARCADE;
+                turno = 0;
+                competition = MENU_TEAMS;
+                cb[0].ID = MENU_ARCADE;
             }
-// Team A
-            cp[0].Testo[1]=*teamarray;
-            cp[4].Colore=cp[0].Colore=cp[0].Highlight=cp[2].Colore=colore_team[controllo[*teamarray]+1];
-            cp[2].Testo=teamlist[*teamarray].name;
-            cp[4].Highlight=cp[2].Highlight=highlight_team[controllo[*teamarray]+1];
+            // Team A
+            cp[0].Testo[1] = *teamarray;
+            cp[4].Colore = cp[0].Colore = cp[0].Highlight = cp[2].Colore = colore_team[controllo[*teamarray] + 1];
+            cp[2].Testo = teamlist[*teamarray].name;
+            cp[4].Highlight = cp[2].Highlight = highlight_team[controllo[*teamarray] + 1];
 
-            jingle=PlayBackSound(menusound[FIRST_ARCADE+arcade_sequence[turno]]);
-            D(bug("Playo il suono %ld sul canale %ld...\n",FIRST_ARCADE+arcade_sequence[turno],jingle));
+            jingle = PlayBackSound(menusound[FIRST_ARCADE + arcade_sequence[turno]]);
+            D(bug("Playo il suono %ld sul canale %ld...\n", FIRST_ARCADE + arcade_sequence[turno], jingle));
 
-            if(cp[4].Testo)
+            if (cp[4].Testo)
             {
                 free(cp[4].Testo);
-                cp[4].Testo=NULL;
-                cp[5].Testo=NULL;
+                cp[4].Testo = NULL;
+                cp[5].Testo = NULL;
             }
-// Team B
-            cp[1].Testo[1]=arcade_sequence[turno];
-            cp[3].Testo=teamlist[arcade_sequence[turno]].name;
-            cp[5].Colore=cp[1].Colore=cp[1].Highlight=cp[3].Colore=colore_team[0];
-            cp[5].Highlight=cp[3].Highlight=highlight_team[0];
+            // Team B
+            cp[1].Testo[1] = arcade_sequence[turno];
+            cp[3].Testo = teamlist[arcade_sequence[turno]].name;
+            cp[5].Colore = cp[1].Colore = cp[1].Highlight = cp[3].Colore = colore_team[0];
+            cp[5].Highlight = cp[3].Highlight = highlight_team[0];
 
             break;
         case MENU_MATCHES:
-            mb[0].ID=MENU_MATCHES;
+            mb[0].ID = MENU_MATCHES;
 
-            if(arcade)
-                menu[MENU_MATCHES].Titolo=msg_33;
+            if (arcade)
+                menu[MENU_MATCHES].Titolo = msg_33;
             else
-                menu[MENU_MATCHES].Titolo=msg_43;
+                menu[MENU_MATCHES].Titolo = msg_43;
 
-            ViewEliminazioneDiretta(nteams/2);
+            ViewEliminazioneDiretta(nteams / 2);
             break;
         case MENU_LEAGUE:
-            menu[MENU_MATCHES].Titolo=msg_44;
+            menu[MENU_MATCHES].Titolo = msg_44;
 
-            if(turno<totale_giornate)
+            if (turno < totale_giornate)
             {
-                BYTE a,b;
+                BYTE a, b;
                 int k;
 
-                for(k=0;k<nteams/2;k++)
+                for (k = 0; k < nteams / 2; k++)
                 {
-                    a=teamarray[turni[turno][k].t1-1];
-                    b=teamarray[turni[turno][k].t2-1];
+                    a = teamarray[turni[turno][k].t1 - 1];
+                    b = teamarray[turni[turno][k].t2 - 1];
 
-                    ClearMatches((nteams+1)/2);
+                    ClearMatches((nteams + 1) / 2);
 
-                    if(a==FAKE_TEAM)
+                    if (a == FAKE_TEAM)
                     {
-                        a=b;
-                        b=FAKE_TEAM;
+                        a = b;
+                        b = FAKE_TEAM;
                     }
 
-                    if(b==FAKE_TEAM)
+                    if (b == FAKE_TEAM)
                     {
-                        mp[k*4].Testo=teamlist[a].name;
-                        mp[k*4].Colore=colore_team[controllo[a]+1];
-                        mp[k*4].Highlight=highlight_team[controllo[a]+1];
-                        mp[k*4+1].Testo=NULL;
-                        mp[k*4+2].Testo="NO GAME"/*-*/;
-                        mp[k*4+2].Colore=colore_team[0];
-                        mp[k*4+2].Highlight=highlight_team[0];
+                        mp[k * 4].Testo = teamlist[a].name;
+                        mp[k * 4].Colore = colore_team[controllo[a] + 1];
+                        mp[k * 4].Highlight = highlight_team[controllo[a] + 1];
+                        mp[k * 4 + 1].Testo = NULL;
+                        mp[k * 4 + 2].Testo = "NO GAME"/*-*/;
+                        mp[k * 4 + 2].Colore = colore_team[0];
+                        mp[k * 4 + 2].Highlight = highlight_team[0];
 
                     }
                     else
                     {
-                        mp[k*4].Colore=colore_team[controllo[a]+1];
-                        mp[k*4].Highlight=highlight_team[controllo[a]+1];
-                        mp[k*4+2].Colore=colore_team[controllo[b]+1];
-                        mp[k*4+2].Highlight=highlight_team[controllo[b]+1];
+                        mp[k * 4].Colore = colore_team[controllo[a] + 1];
+                        mp[k * 4].Highlight = highlight_team[controllo[a] + 1];
+                        mp[k * 4 + 2].Colore = colore_team[controllo[b] + 1];
+                        mp[k * 4 + 2].Highlight = highlight_team[controllo[b] + 1];
 
-                        mp[k*4].Testo=teamlist[a].name;
-                        mp[k*4+1].Testo="-"/*-*/;
-                        mp[k*4+2].Testo=teamlist[b].name;
+                        mp[k * 4].Testo = teamlist[a].name;
+                        mp[k * 4 + 1].Testo = "-"/*-*/;
+                        mp[k * 4 + 2].Testo = teamlist[b].name;
                     }
 
-                    if(mp[k*4+3].Testo)
+                    if (mp[k * 4 + 3].Testo)
                     {
-                        free(mp[k*4+3].Testo);
-                        mp[k*4+3].Testo=NULL;
+                        free(mp[k * 4 + 3].Testo);
+                        mp[k * 4 + 3].Testo = NULL;
                     }
                 }
 
-                if(turno<totale_giornate)
-                    mb[0].ID=MENU_MATCHES;
-                else if(scontri<2)
+                if (turno < totale_giornate)
+                    mb[0].ID = MENU_MATCHES;
+                else if (scontri < 2)
                 {
-                    mb[0].ID=MENU_LEAGUE;
-                    turno=0;
-                    competition=MENU_TEAMS;
+                    mb[0].ID = MENU_LEAGUE;
+                    turno = 0;
+                    competition = MENU_TEAMS;
                 }
-                else 
+                else
                 {
-                    mb[0].ID=MENU_MATCHES;
-                    InvertiSquadre();
-                    turno=0;
+                    mb[0].ID = MENU_MATCHES;
+                    SwapAllTeams();
+                    turno = 0;
                     scontri--;
                 }
             }
             else
             {
-                    mb[0].ID=MENU_SIMULATION;
-                    competition=MENU_TEAMS;
-                    turno=0;
+                mb[0].ID = MENU_SIMULATION;
+                competition = MENU_TEAMS;
+                turno = 0;
             }
             break;
         case MENU_WORLD_CUP:
-            if(turno<3)
+            if (turno < 3)
             {
-                int i,j,k=0;
+                int i, j, k = 0;
                 extern struct Match camp4[3][2];
                 extern BYTE start_groups[8][4];
 
-                
-                menu[MENU_MATCHES].Titolo= ( turno==0 ? msg_45 : (turno==1 ? msg_46 : msg_47) );
+                menu[MENU_MATCHES].Titolo = ( turno == 0 ? msg_45 : (turno == 1 ? msg_46 : msg_47));
 
-                for(i=0;i<8;i++)
+                for (i = 0; i < 8; i++)
                 {
-                    for(j=0;j<2;j++)
+                    for (j = 0; j < 2; j++)
                     {
-                        mp[k*4].Testo=teamlist[start_groups[i][camp4[turno][j].t1-1]].name;
-                        mp[k*4+1].Testo="-"/*-*/;
-                        mp[k*4+2].Testo=teamlist[start_groups[i][camp4[turno][j].t2-1]].name;
-                        mp[k*4].Colore=colore_team[controllo[start_groups[i][camp4[turno][j].t1-1]]+1];
-                        mp[k*4].Highlight=highlight_team[controllo[start_groups[i][camp4[turno][j].t1-1]]+1];
-                        mp[k*4+2].Colore=colore_team[controllo[start_groups[i][camp4[turno][j].t2-1]]+1];
-                        mp[k*4+2].Highlight=highlight_team[controllo[start_groups[i][camp4[turno][j].t2-1]]+1];
+                        mp[k * 4].Testo = teamlist[start_groups[i][camp4[turno][j].t1 - 1]].name;
+                        mp[k * 4 + 1].Testo = "-"/*-*/;
+                        mp[k * 4 + 2].Testo = teamlist[start_groups[i][camp4[turno][j].t2 - 1]].name;
+                        mp[k * 4].Colore = colore_team[controllo[start_groups[i][camp4[turno][j].t1 - 1]] + 1];
+                        mp[k * 4].Highlight = highlight_team[controllo[start_groups[i][camp4[turno][j].t1 - 1]] + 1];
+                        mp[k * 4 + 2].Colore = colore_team[controllo[start_groups[i][camp4[turno][j].t2 - 1]] + 1];
+                        mp[k * 4 + 2].Highlight = highlight_team[controllo[start_groups[i][camp4[turno][j].t2 - 1]] + 1];
 
-                        if(mp[k*4+3].Testo)
+                        if (mp[k * 4 + 3].Testo)
                         {
-                            free(mp[k*4+3].Testo);
-                            mp[k*4+3].Testo=NULL;
+                            free(mp[k * 4 + 3].Testo);
+                            mp[k * 4 + 3].Testo = NULL;
                         }
 
                         k++;
                     }
                 }
-                mb[0].ID=MENU_MATCHES;
+                mb[0].ID = MENU_MATCHES;
             }
-            else if(turno<7)
+            else if (turno < 7)
             {
-                ViewEliminazioneDiretta(mondiali[turno-3]);
+                ViewEliminazioneDiretta(mondiali[turno - 3]);
 
 
-                if(turno!=6)
-                    menu[MENU_MATCHES].Titolo=msg_48;
+                if (turno != 6)
+                    menu[MENU_MATCHES].Titolo = msg_48;
                 else
-                {    
+                {
                     int i;
 
-                    menu[MENU_MATCHES].Titolo=msg_49;
+                    menu[MENU_MATCHES].Titolo = msg_49;
 
-                    for(i=0;i<4;i++)
+                    for (i = 0; i < 4; i++)
                     {
-                        mp[5*4+i].Testo=mp[1*4+i].Testo;
-                        mp[2*4+i].Testo=mp[i].Testo;
-                        mp[2*4+i].Colore=mp[i].Colore;
-                        mp[2*4+i].Highlight=mp[i].Highlight;
-                        mp[5*4+i].Colore=mp[4+i].Colore;
-                        mp[5*4+i].Highlight=mp[4+i].Highlight;
-                        mp[i].Testo=NULL;
-                        mp[4+i].Testo=NULL;
-                        mp[3*4+i].Testo=NULL;
-                        mp[4*4+i].Testo=NULL;
+                        mp[5 * 4 + i].Testo = mp[1 * 4 + i].Testo;
+                        mp[2 * 4 + i].Testo = mp[i].Testo;
+                        mp[2 * 4 + i].Colore = mp[i].Colore;
+                        mp[2 * 4 + i].Highlight = mp[i].Highlight;
+                        mp[5 * 4 + i].Colore = mp[4 + i].Colore;
+                        mp[5 * 4 + i].Highlight = mp[4 + i].Highlight;
+                        mp[i].Testo = NULL;
+                        mp[4 + i].Testo = NULL;
+                        mp[3 * 4 + i].Testo = NULL;
+                        mp[4 * 4 + i].Testo = NULL;
                     }
 
-                    mp[4].Testo=msg_50;
-                    mp[4].Colore=P_GIALLO;
-                    mp[4].Highlight=P_BIANCO;
+                    mp[4].Testo = msg_50;
+                    mp[4].Colore = P_GIALLO;
+                    mp[4].Highlight = P_BIANCO;
 
-                    mp[4*4].Testo=msg_51;
-                    mp[4*4].Colore=P_GIALLO;
-                    mp[4*4].Highlight=P_BIANCO;
+                    mp[4 * 4].Testo = msg_51;
+                    mp[4 * 4].Colore = P_GIALLO;
+                    mp[4 * 4].Highlight = P_BIANCO;
                 }
 
-                mb[0].ID=MENU_MATCHES;
+                mb[0].ID = MENU_MATCHES;
             }
 
             break;
@@ -2540,156 +2460,150 @@ void PlayMatches(void)
                 WORD result;
                 char *c;
 
-                if(jingle>=0)
+                if (jingle >= 0)
                 {
-                    D(bug("Interrupt channel %ld\n",jingle));
+                    D(bug("Interrupt channel %ld\n", jingle));
                     SDL_LockAudio();
-// code that block the sample.
-                    busy[jingle]=NULL;
+                    // code that blocks the sample.
+                    busy[jingle] = NULL;
                     SDL_UnlockAudio();
-                    jingle=-1;
+                    jingle = -1;
                 }
 
-                if(turno==10)
-                    final=TRUE;
+                if (turno == 10)
+                    final = TRUE;
 
-                result=PlayMatch(*teamarray,arcade_sequence[turno]);
-    
-                
-                cp[2].Testo=teamlist[*teamarray].name;
-                cp[3].Testo=teamlist[arcade_sequence[turno]].name;
+                result = PlayMatch(*teamarray, arcade_sequence[turno]);
 
-                c=cp[4].Testo=strdup(ElaboraRisultato(*teamarray,arcade_sequence[turno],result));
 
-                while(*c!='-')
+                cp[2].Testo = teamlist[*teamarray].name;
+                cp[3].Testo = teamlist[arcade_sequence[turno]].name;
+
+                c = cp[4].Testo = strdup(ElaboraRisultato(*teamarray, arcade_sequence[turno], result));
+
+                while(*c != '-')
                     c++;
 
-                *c=0;
+                *c++ = 0;
 
-                c++;
+                cp[5].Testo = c;
 
-                cp[5].Testo=c;
+                make_setup = TRUE;
 
-                make_setup=TRUE;
+                arcade_score -= ((result >> 8) * 10);
+                arcade_score += ((result & 0xff) * 15);
 
-                arcade_score-=( (result>>8) *10);
-                arcade_score+=((result&0xff)*15);
-
-                if((result&0xff)>(result>>8))
+                if ((result & 0xff) > (result >> 8))
                 {
-                    cb[0].ID=MENU_CHALLENGE;
-                    arcade_score+=turno*20;
+                    cb[0].ID = MENU_CHALLENGE;
+                    arcade_score += turno * 20;
                     turno++;
                 }
                 else
                 {
-                    if(turno>0)
+                    if (turno > 0)
                         AddScore(*teamarray);
-                    turno=0;
-                    competition=MENU_TEAMS;                    
+                    turno = 0;
+                    competition = MENU_TEAMS;
                     LoadTeams("teams/arcade"/*-*/); // Reload original teams...
-                    cp[2].Testo=teamlist[*teamarray].name;
-                    cp[3].Testo=teamlist[arcade_sequence[turno]].name;
-                    cp[6].Testo=msg_52;
-                    cb[0].ID=MENU_ARCADE;
+                    cp[2].Testo = teamlist[*teamarray].name;
+                    cp[3].Testo = teamlist[arcade_sequence[turno]].name;
+                    cp[6].Testo = msg_52;
+                    cb[0].ID = MENU_ARCADE;
                 }
             }
             break;
         case MENU_MATCHES:
-            if(arcade)
-                menu[MENU_MATCHES].Titolo=msg_53;
-            else
-                menu[MENU_MATCHES].Titolo=msg_54;
+            menu[MENU_MATCHES].Titolo = arcade ? msg_53 : msg_54;
 
-            if(nteams==2)
-                final=TRUE;
+            if (nteams == 2)
+                final = TRUE;
 
-            EliminazioneDiretta(nteams/2);
+            EliminazioneDiretta(nteams / 2);
 
-            nteams/=2;
+            nteams /= 2;
 
-            if(nteams>1)
+            if (nteams > 1)
             {
                 NewTurn();
-                make_setup=TRUE;
-
+                make_setup = TRUE;
             }
             else
             {
-                if(!arcade)
-                    mb[0].ID=MENU_SIMULATION;
+                if (!arcade)
+                    mb[0].ID = MENU_SIMULATION;
                 else
-                    mb[0].ID=MENU_ARCADE;
+                    mb[0].ID = MENU_ARCADE;
 
-                turno=0;
-                competition=MENU_TEAMS;
+                turno = 0;
+                competition = MENU_TEAMS;
             }
             break;
         case MENU_LEAGUE:
-            menu[MENU_MATCHES].Titolo=msg_55;
+            menu[MENU_MATCHES].Titolo = msg_55;
 
-            if(turno<totale_giornate)
+            if (turno < totale_giornate)
             {
                 WORD risultato;
-                BYTE a,b;
+                BYTE a, b;
                 int k;
 
-                nopari=FALSE;
+                nopari = FALSE;
 
-                for(k=0;k<nteams/2;k++)
+                for (k = 0; k < nteams / 2; k++)
                 {
-                    a=teamarray[turni[turno][k].t1-1];
-                    b=teamarray[turni[turno][k].t2-1];
+                    a = teamarray[turni[turno][k].t1 - 1];
+                    b = teamarray[turni[turno][k].t2 - 1];
 
-                    if(a!=FAKE_TEAM&&b!=FAKE_TEAM)
+                    if (a != FAKE_TEAM && b != FAKE_TEAM)
                     {
-                        risultato=PlayMatch(a,b);
-                        mp[k*4+3].Testo=strdup(ElaboraRisultato(a,b,risultato));
+                        risultato = PlayMatch(a, b);
+                        mp[k * 4 + 3].Testo = strdup(ElaboraRisultato(a, b, risultato));
                     }
                 }
 
                 NewTurn();
                 UpdateLeagueTable();
-                mb[0].ID=MENU_LEAGUE;
+                mb[0].ID = MENU_LEAGUE;
 
-                if(turno==totale_giornate)
+                if (turno == totale_giornate)
                 {
-                    turno=0;
+                    turno = 0;
 
-                    if(scontri<2)
+                    if (scontri < 2)
                     {
-                        lb[0].ID=MENU_LEAGUE;
-                        competition=MENU_TEAMS;
+                        lb[0].ID = MENU_LEAGUE;
+                        competition = MENU_TEAMS;
                     }
                     else
                     {
                         scontri--;
-                        InvertiSquadre();
+                        SwapAllTeams();
                     }
                 }
             }
             break;
         case MENU_WORLD_CUP:
-            menu[MENU_MATCHES].Titolo=msg_56;
+            menu[MENU_MATCHES].Titolo = msg_56;
 
-            if(turno<3)
+            if (turno < 3)
             {
-                int j,k=0;
-                BYTE a,b;
+                int j, k = 0;
+                BYTE a, b;
                 WORD risultato;
                 extern struct Match camp4[3][2];
-                extern BYTE start_groups[8][4],groups[8][4];
+                extern BYTE start_groups[8][4], groups[8][4];
 
-                for(i=0;i<8;i++)
+                for (i = 0; i < 8; i++)
                 {
-                    for(j=0;j<2;j++)
+                    for (j = 0; j < 2; j++)
                     {
-                        a=start_groups[i][camp4[turno][j].t1-1];
-                        b=start_groups[i][camp4[turno][j].t2-1];
+                        a = start_groups[i][camp4[turno][j].t1 - 1];
+                        b = start_groups[i][camp4[turno][j].t2 - 1];
 
-                        risultato=PlayMatch(a,b);
+                        risultato = PlayMatch(a, b);
 
-                        mp[k*4+3].Testo=strdup(ElaboraRisultato(a,b,risultato));
+                        mp[k * 4 + 3].Testo = strdup(ElaboraRisultato(a, b, risultato));
 
                         k++;
                     }
@@ -2697,50 +2611,49 @@ void PlayMatches(void)
 
                 NewTurn();
                 GroupsUpdate();
-                mb[0].ID=MENU_WORLD_CUP;
+                mb[0].ID = MENU_WORLD_CUP;
 
-// Create array to use for direct elimination
-
-                if(turno==3)
+                // Create array to use for direct elimination
+                if (turno == 3)
                 {
-                    for(i=0;i<8;i++)
+                    for (i = 0; i < 8; i++)
                     {
-                        teamarray[i*2]=groups[i][0];
-                        teamarray[i*2+1]=groups[7-i][1];
+                        teamarray[i * 2] = groups[i][0];
+                        teamarray[i * 2 + 1] = groups[7 - i][1];
                     }
                 }
             }
-            else if(turno<7)
+            else if (turno < 7)
             {
-                if(turno==7)
-                    final=TRUE;
+                if (turno == 7)
+                    final = TRUE;
 
-                EliminazioneDiretta(mondiali[turno-3]);
-                make_setup=TRUE;
+                EliminazioneDiretta(mondiali[turno - 3]);
+                make_setup = TRUE;
                 NewTurn();
 
-                if(turno==7)
+                if (turno == 7)
                 {
-                    BYTE temp=teamarray[2];
+                    BYTE temp = teamarray[2];
 
-                    teamarray[2]=teamarray[1];
-                    teamarray[1]=temp;
+                    teamarray[2] = teamarray[1];
+                    teamarray[1] = temp;
 
-                    mb[0].ID=MENU_WORLD_CUP_END;
+                    mb[0].ID = MENU_WORLD_CUP_END;
 
-                    mp[5*4+3].Testo=mp[4+3].Testo;
-                    mp[2*4+3].Testo=mp[3].Testo;
-                    mp[3].Testo=mp[4+3].Testo=NULL;
+                    mp[5 * 4 + 3].Testo = mp[4 + 3].Testo;
+                    mp[2 * 4 + 3].Testo = mp[3].Testo;
+                    mp[3].Testo = mp[4 + 3].Testo = NULL;
 
-                    for(i=0;i<4;i++)
+                    for (i = 0; i < 4; i++)
                     {
-                        wcfp[i].Testo=teamlist[teamarray[i]].name;
-                        wcfp[i].Colore=colore_team[controllo[teamarray[i]]+1];
-                        wcfp[i].Highlight=highlight_team[controllo[teamarray[i]]+1];
+                        wcfp[i].Testo = teamlist[teamarray[i]].name;
+                        wcfp[i].Colore = colore_team[controllo[teamarray[i]] + 1];
+                        wcfp[i].Highlight = highlight_team[controllo[teamarray[i]] + 1];
                     }
 
-                    turno=0;
-                    competition=MENU_TEAMS;
+                    turno = 0;
+                    competition = MENU_TEAMS;
                 }
             }
             else
@@ -2755,60 +2668,67 @@ void FreeHighSelection(void)
 {
     register int i;
 
-    for(i=0;i<64;i++)
-        if(hl[i].Testo)
+    for (i = 0; i < 64; i++)
+        if (hl[i].Testo)
             free(hl[i].Testo);
 }
 
-BOOL HighSelection(WORD bottone)
+BOOL HighSelection(WORD button)
 {
     struct Bottone *b;
 
-    if(bottone<0)
+    if (button < 0)
         return TRUE;
 
-    b=&actual_menu->Bottone[bottone];
+    b = &actual_menu->Bottone[button];
 
-    if (bottone == 64)    {
+    if (button == 64)
+    {
         FreeHighSelection();
         ChangeMenu(MENU_HIGHLIGHT);
     }
-    else {
+    else
+    {
         char buffer[1024];
 
         snprintf(buffer, 1024, "%sreplay.%s", TEMP_DIR, b->Testo);
 
-        if (!savehigh)    {
-            D(bug("Load %s...\n",b->Testo));
+        if (!savehigh)
+        {
+            D(bug("Load %s...\n", b->Testo));
 
             LoadHigh(buffer);
         }
-        else {
+        else
+        {
             FILE *fh;
 
-            if ((fh=fopen(buffer,"rb")))    {
-                
+            if ((fh = fopen(buffer, "rb")))
+            {
                 ssize_t l;
 
-                freq.Title="Save highlight...";
-                freq.Save=TRUE;
+                freq.Title = "Save highlight...";
+                freq.Save = TRUE;
 
-                if (FileRequest(&freq)) {
+                if (FileRequest(&freq))
+                {
                     char buffer[130];
                     char *a;
 
-                    fseek(fh,0,SEEK_END);
-                    l=fseek(fh,0,SEEK_SET);
+                    fseek(fh, 0, SEEK_END);
+                    l = fseek(fh, 0, SEEK_SET);
 
-                    strcpy(buffer,freq.File);
+                    strcpy(buffer, freq.File);
 
-                    if ((a=malloc(l))) {
+                    if ((a = malloc(l)))
+                    {
                         FILE *f2;
 
-                        fread(a,1,l,fh);
+                        fread(a, 1, l, fh);
 
-                        if ((f2=fopen(buffer,"wb"))) {
-                            fwrite(a,1,l,f2);
+                        if ((f2 = fopen(buffer, "wb")))
+                        {
+                            fwrite(a, 1, l, f2);
                             fclose(f2);
                         }
                         free(a);
@@ -2825,38 +2745,42 @@ BOOL HighSelection(WORD bottone)
 
 void SetHighSelection(void)
 {
-    register int i,n=0;
+    register int i, n = 0;
     char *highs[64];
-    int righe,start;
+    int righe, start;
     DIR *lock;
 
     D(bug("Scan dir %s...\n", TEMP_DIR));
 
-    for(i=0;i<64;i++)
-        hl[i].Testo=NULL;
+    for (i = 0; i < 64; i++)
+        hl[i].Testo = NULL;
 
-    if ((lock=opendir(TEMP_DIR))) {
+    if ((lock = opendir(TEMP_DIR)))
+    {
         struct dirent *ent;
 
-        while( (ent=readdir(lock))!=NULL) {
-            if(!strnicmp(ent->d_name,"replay."/*-*/,7))    {
-                highs[n]=strdup(ent->d_name+7);
+        while( (ent = readdir(lock)) != NULL)
+        {
+            if (!strnicmp(ent->d_name, "replay."/*-*/, 7))
+            {
+                highs[n] = strdup(ent->d_name + 7);
                 n++;
             }
         }
         closedir(lock);
     }
 
-    righe=n/TS_COLONNE;
+    righe = n / TS_COLONNE;
 
-    if((righe*TS_COLONNE)<n)
+    if ((righe * TS_COLONNE) < n)
         righe++;
 
-    start=TS_RIGHE/2-righe/2;
+    start = TS_RIGHE / 2 - righe / 2;
 
-    for(i=0;i<n;i++) {
-        hl[i+start*TS_COLONNE].ID=i;
-        hl[i+start*TS_COLONNE].Testo=highs[i];
+    for (i = 0; i < n; i++)
+    {
+        hl[i + start * TS_COLONNE].ID = i;
+        hl[i + start * TS_COLONNE].Testo = highs[i];
     }
 }
 
@@ -2865,9 +2789,9 @@ void UpdateJoyCfg(int joy)
     extern struct Bottone joycfg_bottoni[];
     int i;
 
-    for(i=0;i<7;i++)
+    for (i = 0; i < 7; i++)
     {
-        joycfg_bottoni[i*2+1].Testo=buttons[joycfg_buttons[joy][i]];
+        joycfg_bottoni[i * 2 + 1].Testo = buttons[joycfg_buttons[joy][i]];
     }
 }
 
@@ -2875,29 +2799,30 @@ void UpdateKeyCfg(void)
 {
     extern struct Bottone keycfg_bottoni[];
     int i;
-    
-    for(i=0;i<20;i++)
-    {     
+
+    for (i = 0; i < 20; i++)
+    {
         /* Uppercase conversion for ETW font */
         char *tmp = SDL_GetKeyName(query[i]);
         int j = 0;
         while(*tmp)
         {
-            keys_names[i][j]=toupper(*tmp);
+            keys_names[i][j] = toupper(*tmp);
             tmp++;
             j++;
         }
         keys_names[i][j] = 0;
-        keycfg_bottoni[i*2+1].Testo=keys_names[i];
+        keycfg_bottoni[i * 2 + 1].Testo = keys_names[i];
     }
-    
+
     /* If we have selected a six keys BLUE control */
-    if(control[0] == CTRL_KEY_1)
-        for(i=16;i<20;i++)
-            keycfg_bottoni[i*2+1].Testo=NULL;
-            
+    if (control[0] == CTRL_KEY_1)
+        for (i = 16; i < 20; i++)
+            keycfg_bottoni[i * 2 + 1].Testo = NULL;
+
     /* If we have selected a six keys RED control */
-    if(control[1] == CTRL_KEY_1)
-        for(i=6;i<10;i++)
-            keycfg_bottoni[i*2+1].Testo=NULL;
+    if (control[1] == CTRL_KEY_1)
+        for (i = 6; i < 10; i++)
+            keycfg_bottoni[i * 2 + 1].Testo = NULL;
 }
+

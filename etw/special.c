@@ -210,13 +210,13 @@ void EseguiCross(player_t *g)
     g->SpecialData=g2->GNum;
 }
 
-void PreparaBarriera(char sq)
+void PreparaBarriera(int8_t team_id)
 {
-    team_t *s=p->team[sq];
+    team_t *s=p->team[team_id];
     player_t *g;
 // La barriera la metto sul primo o sul secondo palo a seconda della posizione del pallone
     UBYTE dir=FindDirection256(pl->world_x,pl->world_y,
-        (sq ? PORTA_O_X : PORTA_E_X),pl->world_y>CENTROCAMPO_Y ? GOAL_Y_S : GOAL_Y_N);
+        (team_id ? PORTA_O_X : PORTA_E_X),pl->world_y>CENTROCAMPO_Y ? GOAL_Y_S : GOAL_Y_N);
     WORD fuoco_x=pl->world_x,fuoco_y=pl->world_y,get_position,i;
 
 // 128 pixel di distanza
@@ -224,7 +224,7 @@ void PreparaBarriera(char sq)
     fuoco_x+=G2P_X((sin_table[dir]<<3));
     fuoco_y+=G2P_Y(-(cos_table[dir]<<3));
 
-    if(sq)
+    if(team_id)
     {
         dir+=64;
         get_position=CENTROCAMPO_X+2000;

@@ -1,6 +1,6 @@
 #include "eat.h"
 
-char tipo_porta;
+uint8_t tipo_porta;
 
 void RimbalzoCasuale(void)
 {

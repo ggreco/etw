@@ -15,7 +15,8 @@ extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,k
     no_record,penalties,free_kicks,arcade_teams,first_half,extratime,left_sel,right_sel,
     friendly,golden_gol,use_key0,use_key1,joyonly,audio2fast,use_offside,
     newpitches,network_game, game_start;
-extern char control[4],*controls[CONTROLS],tipo_porta, spk_basename[64];
+extern uint8_t control[4], tipo_porta;
+extern char *controls[CONTROLS], spk_basename[64];
 extern int32_t Pens[256];
 extern int framerate, game_status, urgent_status, basepri;
 extern long int time_length, t_l, situation_time;
@@ -116,7 +117,7 @@ extern void RimessaLaterale(player_t *);
 extern void PunizioneCorner(player_t *);
 extern void UpdateCornerLine(void);
 extern void ColpoDiTesta(player_t *);
-extern void PreparaBarriera(char);
+extern void PreparaBarriera(int8_t);
 extern BOOL IsOffside(player_t *);
 
 // Utils
