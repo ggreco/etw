@@ -193,51 +193,38 @@ int strnicmp(const char *a, const char *b, size_t l)
 
 unsigned long MY_CLOCKS_PER_SEC = 0, MY_CLOCKS_PER_SEC_50;
 
-#ifndef STANDARD_CLOCK
-
 unsigned long os_get_timer(void)
 {
+#ifndef STANDARD_CLOCK
     return SDL_GetTicks();
+#else
+    return clock();
+#endif
 }
-
 
 void os_wait_timer(uint32_t clk)
 {
+#ifndef STANDARD_CLOCK
     while (SDL_GetTicks() < clk);
+#else
+    while (clock() < clk);
+#endif
 }
 
 void os_init_timer(void)
 {
+#ifndef STANDARD_CLOCK
     MY_CLOCKS_PER_SEC = 1000;
     MY_CLOCKS_PER_SEC_50 = 1000 / framerate;
-}
-
-
-void os_free_timer(void)
-{
-}
 #else
-unsigned long os_get_timer(void)
-{
-    return clock();
-}
-
-
-void os_wait_timer(uint32_t clk)
-{
-    while (clock() < clk);
-}
-
-void os_init_timer(void)
-{
     MY_CLOCKS_PER_SEC = CLOCKS_PER_SEC;
     MY_CLOCKS_PER_SEC_50 = CLOCKS_PER_SEC / framerate;
+#endif
 }
 
 void os_free_timer(void)
 {
 }
-#endif
 
 #if defined(LINUX) || defined(SOLARIS_X86)
 #if defined(LINUX) && !defined(SOLARIS_X86)
@@ -306,3 +293,4 @@ FILE *os_open(char *name, char *mode)
 }
 
 #endif
+
