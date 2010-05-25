@@ -109,7 +109,7 @@ struct ball
     int8_t velocita;
     uint8_t dir;
     int8_t quota;
-    int8_t settore;
+    int8_t sector;
 };
 
 struct keeper
@@ -155,7 +155,7 @@ struct player
     BOOL Ammonito, Special, FirePressed;
     WORD SpecialData, TimePress;
     int8_t number, speed, tackle, Tiro;
-    int8_t Durata, stamina, quickness, settore;
+    int8_t Durata, stamina, quickness, sector;
     int8_t creativity, technique, Posizioni, SNum;
     BOOL Controlled, Marker;
     WORD WaitForControl;

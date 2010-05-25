@@ -17,7 +17,7 @@
 struct pos
 {
     uint16_t x, y;
-    uint16_t settore;
+    uint16_t sector;
 };
 
 struct tactic

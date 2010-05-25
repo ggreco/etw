@@ -1040,7 +1040,7 @@ void PunizioneCorner(player_t *g)
     if(p->show_panel&0xff00)
         return;
 
-    if(pl->settore==PENALTY)
+    if(pl->sector==PENALTY)
     {
         Rigore(g);
     }

@@ -107,7 +107,7 @@ static void ReadATeam(FILE *f, team_t *s)
         g->Durata = fread_u8(f);
         g->stamina = fread_u8(f);
         g->quickness = fread_u8(f);
-        g->settore = fread_u8(f);
+        g->sector = fread_u8(f);
         g->creativity = fread_u8(f);
         g->technique = fread_u8(f);
         g->Posizioni = fread_u8(f);
@@ -160,7 +160,7 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
     m->game.ball.velocita = fread_u8(f);
     m->game.ball.dir = fread_u8(f);
     m->game.ball.quota = fread_u8(f);
-    m->game.ball.settore = fread_u8(f);
+    m->game.ball.sector = fread_u8(f);
 
 // write refree related datas
     m->game.referee.world_x = fread_u16(f);    
@@ -298,7 +298,7 @@ static void WriteATeam(FILE *f, team_t *s)
         fwrite_u8(g->Durata , f);
         fwrite_u8(g->stamina , f);
         fwrite_u8(g->quickness , f);
-        fwrite_u8(g->settore , f);
+        fwrite_u8(g->sector , f);
         fwrite_u8(g->creativity , f);
         fwrite_u8(g->technique , f);
         fwrite_u8(g->Posizioni , f);
@@ -352,7 +352,7 @@ void WriteMatch(FILE *f, struct MatchStatus *m)
     fwrite_u8(m->game.ball.velocita, f);
     fwrite_u8(m->game.ball.dir, f);
     fwrite_u8(m->game.ball.quota, f);
-    fwrite_u8(m->game.ball.settore, f);
+    fwrite_u8(m->game.ball.sector, f);
 
 // write refree related datas
     fwrite_u16(m->game.referee.world_x, f);    

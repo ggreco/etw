@@ -1124,9 +1124,9 @@ BOOL ArcadeTeamSelection(WORD button)
             }
             else
             {
-                b->Color = COLOR_TEAM_B;
                 team2_selected = TRUE;
                 controllo[b->ID] = 0;
+                b->Color = COLOR_TEAM_B;
             }
         }
         else if (b->Color == COLOR_COMPUTER)
@@ -1548,7 +1548,7 @@ BOOL GamePrefs(WORD button)
         return TRUE;
     }
 
-    button = ((button >> 1) << 1) + 1;
+    button |= 1;
 
     switch(button)
     {
@@ -1677,7 +1677,7 @@ BOOL AudioPrefs(WORD button)
         return TRUE;
     }
 
-    button = ((button >> 1) << 1) + 1;
+    button |= 1;
 
     switch(button)
     {
@@ -1801,7 +1801,7 @@ BOOL SystemPrefs(WORD button)
         return TRUE;
     }
 
-    button = ((button >> 1) << 1) + 1;
+    button |= 1;
 
     switch(button)
     {
@@ -1848,7 +1848,7 @@ BOOL VideoPrefs(WORD button)
         return TRUE;
     }
 
-    button = ((button >> 1) << 1) + 1;
+    button |= 1;
 
     switch(button)
     {
