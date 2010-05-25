@@ -5,7 +5,7 @@
 extern struct Window *win;
 SDL_Joystick *joy[2] = {NULL, NULL};
 char joybuttons[2];
-char joycfg_buttons[2][8];
+uint8_t joycfg_buttons[2][8];
 char num_joys=0;
 BOOL has_joystick=FALSE;
 extern unsigned long NetJoyPos[];

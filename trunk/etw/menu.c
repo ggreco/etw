@@ -1037,7 +1037,7 @@ void CreaBottone(struct Bottone *b)
     PrintButtonType(b, 0, top, tf);
 }
 
-void RedrawBottone(struct Bottone *b, UBYTE colore)
+void RedrawButton(struct Bottone *b, UBYTE colore)
 {
     char *t = b->Testo;
     struct myfont *tf = smallfont;
@@ -1266,7 +1266,7 @@ void SelezionaBottone(WORD bottone)
             draw(Pens[b->Colore], b->X1, b->Y2, b->X1, b->Y1);
             draw(Pens[b->Colore], b->X1, b->Y1, b->X2, b->Y1);
         } else
-            RedrawBottone(b, b->Highlight);
+            RedrawButton(b, b->Highlight);
     }
 }
 
@@ -1284,7 +1284,7 @@ void DeselezionaBottone(WORD bottone)
                     (UBYTE) Pens[P_BIANCO];
             }
         } else
-            RedrawBottone(b, b->Colore);
+            RedrawButton(b, b->Colore);
     }
 }
 
@@ -1654,17 +1654,17 @@ BOOL HandleMenuIDCMP(void)
                     break;
 
                 if (ruolo[actual_team]) {
-                    RedrawBottone(&actual_menu->
-                                  Bottone[ruolo[actual_team] * 2 + 1],
-                                  actual_menu->Bottone[ruolo[actual_team] *
-                                                       2 + 1].Colore);
+                    RedrawButton(&actual_menu->
+                                 Bottone[ruolo[actual_team] * 2 + 1],
+                                 actual_menu->Bottone[ruolo[actual_team] *
+                                                      2 + 1].Colore);
                     ruolo[actual_team] = 0;
                     ScreenSwap();
                 } else if (actual_button < 22 && actual_button > 1) {
                     ruolo[actual_team] = actual_button / 2;
-                    RedrawBottone(&actual_menu->
-                                  Bottone[ruolo[actual_team] * 2 + 1],
-                                  P_GIALLO);
+                    RedrawButton(&actual_menu->
+                                 Bottone[ruolo[actual_team] * 2 + 1],
+                                 P_GIALLO);
                     ScreenSwap();
                 }
                 break;

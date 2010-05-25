@@ -926,7 +926,7 @@ void LoadTeams(char *name)
 
                     if(i_scontri>1&&i_scontri!=scontri)    {
 // Significa che devo fare uno swap delle squadre...
-                        InvertiSquadre();
+                        SwapAllTeams();
                     }
 
                     fread(teamarray, sizeof(teamarray), 1, fh);
