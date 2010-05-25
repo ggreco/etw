@@ -47,7 +47,7 @@ BOOL InList(struct MyList * l, APTR ptr)
 {
     register struct MyNode *n;
 
-    for (n = l->lh_Head; n->ln_Succ; n = n->ln_Succ) {
+    for (n = l->pHead; n->pNext; n = n->pNext) {
         if (n == ptr)
             return TRUE;
     }
@@ -59,7 +59,7 @@ struct MyNode *InAList(struct MyList *l, APTR ptr)
 {
     register struct MyNode *n;
 
-    for (n = l->lh_Head; n->ln_Succ; n = n->ln_Succ) {
+    for (n = l->pHead; n->pNext; n = n->pNext) {
         if (n->ln_Name == ptr)
             return n;
     }
@@ -78,8 +78,8 @@ void DrawAnimObj(void)
     register anim_t *obj;
     register WORD cf;
 
-    for (obj = (anim_t *) DrawList.lh_Head; obj->node.mln_Succ;
-         obj = (anim_t *) obj->node.mln_Succ) {
+    for (obj = (anim_t *) DrawList.pHead; obj->node.mpNext;
+         obj = (anim_t *) obj->node.mpNext) {
         cf = obj->current_frame;
 
         if (!use_clipping) {
@@ -165,7 +165,7 @@ BOOL InAnimList(anim_t *obj)
 {
     struct MyNode *n;
     
-    for (n = DrawList.lh_Head; n->ln_Succ != NULL; n = n->ln_Succ) {
+    for (n = DrawList.pHead; n->pNext != NULL; n = n->pNext) {
         if (n == (struct MyNode *)obj)
             return TRUE;
     }
@@ -210,16 +210,16 @@ void SortDrawList(void)
 
 // Non uso NewList per la velocita'!
 
-    TempList.lh_TailPred = (struct MyNode *) &TempList;
-    TempList.lh_Head = (struct MyNode *) &TempList.lh_Tail;
-    TempList.lh_Tail = NULL;
+    TempList.pTailPred = (struct MyNode *) &TempList;
+    TempList.pHead = (struct MyNode *) &TempList.pTail;
+    TempList.pTail = NULL;
 
-    while (DrawList.lh_TailPred != (struct MyNode *) &DrawList) {
+    while (DrawList.pTailPred != (struct MyNode *) &DrawList) {
         best = NULL;
         best_bottom = 30000;
 
-        for (o = (anim_t *) DrawList.lh_Head; o->node.mln_Succ;
-             o = (anim_t *) o->node.mln_Succ) {
+        for (o = (anim_t *) DrawList.pHead; o->node.mpNext;
+             o = (anim_t *) o->node.mpNext) {
             if (o->Flags & AOBJ_BEHIND) {
                 best = o;
                 break;
@@ -232,52 +232,52 @@ void SortDrawList(void)
         if (best) {
 // Stacco il nodo dalla lista.
 
-            best->node.mln_Succ->mln_Pred = best->node.mln_Pred;
-            best->node.mln_Pred->mln_Succ = best->node.mln_Succ;
+            best->node.mpNext->mpPrev = best->node.mpPrev;
+            best->node.mpPrev->mpNext = best->node.mpNext;
 
 // Lo attacco in coda alla templist
 
 #ifdef OLDCODE
-            best->node.mln_Pred =
-                (struct MyMinNode *) TempList.lh_TailPred;
-            best->node.mln_Succ = (struct MyMinNode *) &TempList.lh_Tail;
-            best->node.mln_Succ->mln_Pred = best->node.mln_Pred->mln_Succ =
+            best->node.mpPrev =
+                (struct MyMinNode *) TempList.pTailPred;
+            best->node.mpNext = (struct MyMinNode *) &TempList.pTail;
+            best->node.mpNext->mpPrev = best->node.mpPrev->mpNext =
                 (struct MyMinNode *) best;
 #else
-            best->node.mln_Succ = (struct MyMinNode *) &TempList.lh_Tail;
-            best->node.mln_Pred =
-                (struct MyMinNode *) TempList.lh_TailPred;
-            TempList.lh_TailPred->ln_Succ = (struct MyNode *) best;
-            TempList.lh_TailPred = (struct MyNode *) best;
+            best->node.mpNext = (struct MyMinNode *) &TempList.pTail;
+            best->node.mpPrev =
+                (struct MyMinNode *) TempList.pTailPred;
+            TempList.pTailPred->pNext = (struct MyNode *) best;
+            TempList.pTailPred = (struct MyNode *) best;
 #endif
         } else {
 // Non c'e' best, quindi probabilmente sono finiti i nodi della lista o ci sono solo nodi OVER
 
-            while (DrawList.lh_TailPred != (struct MyNode *) &DrawList) {
-                best = (anim_t *) DrawList.lh_Head;
+            while (DrawList.pTailPred != (struct MyNode *) &DrawList) {
+                best = (anim_t *) DrawList.pHead;
 
 // Stacco il nodo dalla list
 
-                best->node.mln_Succ->mln_Pred = best->node.mln_Pred;
-                best->node.mln_Pred->mln_Succ = best->node.mln_Succ;
+                best->node.mpNext->mpPrev = best->node.mpPrev;
+                best->node.mpPrev->mpNext = best->node.mpNext;
 
 // Lo attacco in coda alla templist
 
 #ifdef OLDCODE
-                best->node.mln_Pred =
-                    (struct MyMinNode *) TempList.lh_TailPred;
-                best->node.mln_Succ =
-                    (struct MyMinNode *) &TempList.lh_Tail;
-                best->node.mln_Succ->mln_Pred =
-                    best->node.mln_Pred->mln_Succ =
+                best->node.mpPrev =
+                    (struct MyMinNode *) TempList.pTailPred;
+                best->node.mpNext =
+                    (struct MyMinNode *) &TempList.pTail;
+                best->node.mpNext->mpPrev =
+                    best->node.mpPrev->mpNext =
                     (struct MyMinNode *) best;
 #else
-                best->node.mln_Succ =
-                    (struct MyMinNode *) &TempList.lh_Tail;
-                best->node.mln_Pred =
-                    (struct MyMinNode *) TempList.lh_TailPred;
-                TempList.lh_TailPred->ln_Succ = (struct MyNode *) best;
-                TempList.lh_TailPred = (struct MyNode *) best;
+                best->node.mpNext =
+                    (struct MyMinNode *) &TempList.pTail;
+                best->node.mpPrev =
+                    (struct MyMinNode *) TempList.pTailPred;
+                TempList.pTailPred->pNext = (struct MyNode *) best;
+                TempList.pTailPred = (struct MyNode *) best;
 #endif
             }
             break;
@@ -286,12 +286,12 @@ void SortDrawList(void)
 
 // Necessario perche' non e' possibile copiare una lista!
 
-    if (TempList.lh_TailPred != (struct MyNode *) &TempList) {
-        DrawList.lh_Head = TempList.lh_Head;
-        DrawList.lh_Head->ln_Pred = (struct MyNode *) &DrawList;
-        DrawList.lh_TailPred = TempList.lh_TailPred;
-        DrawList.lh_TailPred->ln_Succ =
-            (struct MyNode *) &DrawList.lh_Tail;
+    if (TempList.pTailPred != (struct MyNode *) &TempList) {
+        DrawList.pHead = TempList.pHead;
+        DrawList.pHead->pPrev = (struct MyNode *) &DrawList;
+        DrawList.pTailPred = TempList.pTailPred;
+        DrawList.pTailPred->pNext =
+            (struct MyNode *) &DrawList.pTail;
     }
 }
 
@@ -307,8 +307,8 @@ void ClearAnimObj(void)
 
     /* Leggo la lista al contrario per cancellare correttamente tutto */
 
-    for (obj = (anim_t *) DrawList.lh_TailPred; obj->node.mln_Pred;
-         obj = (anim_t *) obj->node.mln_Pred) {
+    for (obj = (anim_t *) DrawList.pTailPred; obj->node.mpPrev;
+         obj = (anim_t *) obj->node.mpPrev) {
         if (obj->bg) {
             bltchunkybitmap(obj->bg, 0, 0, main_bitmap, obj->x_back,
                             obj->y_back, obj->max_width, obj->max_height,
@@ -801,8 +801,8 @@ void FreeGraphics(void)
     
     D(bug("Entering loop...\n"));
 
-    for (n = GfxList.lh_Head; n->ln_Succ; n = next) {
-        next = n->ln_Succ;
+    for (n = GfxList.pHead; n->pNext; n = next) {
+        next = n->pNext;
 
         MyRemove(n);
 
@@ -959,7 +959,7 @@ anim_t *CloneAnimObj(anim_t * obj)
     if ((o = malloc(sizeof(anim_t)))) {
         memcpy(o, obj, sizeof(anim_t));
         o->Flags |= AOBJ_CLONED;
-        o->node.mln_Succ = o->node.mln_Pred = NULL;
+        o->node.mpNext = o->node.mpPrev = NULL;
 
         if (save_back)
             if (!(o->bg = malloc(o->max_width * o->max_height))) {
@@ -984,7 +984,7 @@ anim_t *CopyAnimObj(anim_t * obj)
         register int i;
 
         memcpy(o, obj, sizeof(anim_t));
-        o->node.mln_Succ = o->node.mln_Pred = NULL;
+        o->node.mpNext = o->node.mpPrev = NULL;
 
 
 // XXX this is a problem on pocketpc, still have to understand why

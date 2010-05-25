@@ -46,7 +46,7 @@
 
 #define FAKE_TEAM 127
 
-#define NESSUN_BOTTONE -1
+#define NO_BUTTON -1
 #define ID_QUIT_GAME -127
 #define MAX_PLAYERS 2
 
@@ -85,37 +85,37 @@
 
 // Defines per teamselection
 
-#define TS_RIGHE    16
-#define TS_COLONNE    4
+#define TS_RIGHE   16
+#define TS_COLONNE 4
 
 
 struct EasyStruct
 {
     int es_Size, es_Flags;
-    char *es_Title,*es_TextFormat,*es_GadgetFormat;
+    char *es_Title, *es_TextFormat, *es_GadgetFormat;
 };
 
-struct Bottone
+struct Button
 {
-    WORD X1,Y1,X2,Y2,ID;
-    UBYTE Colore,Highlight;
-    char *Testo;
+    int16_t X1, Y1, X2, Y2, ID;
+    uint8_t Color, Highlight;
+    char *Text;
 };
 
 struct Match
 {
-    UBYTE t1,t2;
+    uint8_t t1, t2;
 };
 
 struct GfxMenu
 {
-    char *Titolo;
-    struct Bottone *Bottone;
-    struct Bottone *Pannello;
-    WORD NumeroBottoni,NumeroPannelli,ID;
-    WORD X,Y;
+    char *Title;
+    struct Button *Button;
+    struct Button *Pannello;
+    WORD NumeroBottoni, NumeroPannelli, ID;
+    WORD X, Y;
     BYTE Immagine;
-    UBYTE Colore,Highlight;
+    uint8_t Color, Highlight;
     APTR SpecialFunction;
 };
 
@@ -142,13 +142,13 @@ struct GfxMenu
 
 #endif
 
-#define COLORE_UNSELECTED P_GRIGIO1
-#define COLORE_TEAM_A P_BLU1
-#define COLORE_TEAM_B P_ROSSO1
-#define COLORE_COMPUTER P_GRIGIO0
+#define COLOR_UNSELECTED P_GRIGIO1
+#define COLOR_TEAM_A P_BLU1
+#define COLOR_TEAM_B P_ROSSO1
+#define COLOR_COMPUTER P_GRIGIO0
 
-#define COLORE_TATTICA_NON_SELEZIONATA P_GRIGIO1
-#define COLORE_TATTICA_SELEZIONATA P_BLU2
+#define COLOR_TATTICA_NON_SELEZIONATA P_GRIGIO1
+#define COLOR_TATTICA_SELEZIONATA P_BLU2
 
 // Tipi di controlli
 

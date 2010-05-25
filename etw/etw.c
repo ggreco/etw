@@ -460,8 +460,8 @@ int main(int argc, char *argv[])
         int i;
 
         for (i = 0; i < 8; i++) {
-            if (wcp[32 * 5 + 1 + i * 5].Testo == NULL)
-                wcp[32 * 5 + 1 + i * 5].Testo = "GC" /*-*/ ;
+            if (wcp[32 * 5 + 1 + i * 5].Text == NULL)
+                wcp[32 * 5 + 1 + i * 5].Text = "GC" /*-*/ ;
         }
     } 
 

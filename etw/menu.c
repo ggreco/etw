@@ -5,14 +5,14 @@
 
 #include "chunky.h"
 
-int current_menu = 0, current_button = NESSUN_BOTTONE, actual_button = 0;
+int current_menu = 0, current_button = NO_BUTTON, actual_button = 0;
 struct GfxMenu *actual_menu = &menu[0];
 void *hwin = NULL;
-void CreaBottone(struct Bottone *b);
-void SelezionaBottone(WORD bottone);
+void CreateButton(struct Button *b);
+void SelectButton(WORD button);
 void DrawBox(WORD button);
 
-struct Bottone req_bottoni[4];
+struct Button req_bottoni[4];
 BOOL reqqing = FALSE;
 
 struct MyFileRequest freq = { 0 };
@@ -44,8 +44,7 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
     else
         tf = smallfont;
 
-// Calcolo quante linee di testo ci sono.
-
+    // Compute how many lines of text there are.
     c = text;
 
     while (*c) {
@@ -132,14 +131,14 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
         req_bottoni[i].X1 = x;
         req_bottoni[i].X2 = x + button_width;
         x += (button_width + y);
-        req_bottoni[i].Colore = Pens[P_VERDE1];
+        req_bottoni[i].Color = Pens[P_VERDE1];
         req_bottoni[i].Highlight = Pens[P_VERDE0];
-        req_bottoni[i].Testo = strdup(c);
+        req_bottoni[i].Text = strdup(c);
         req_bottoni[i].Y1 =
             topedge + height - tf->height - FixedScaledY(14);
         req_bottoni[i].Y2 = topedge + height - FixedScaledY(6);
 
-        CreaBottone(&req_bottoni[i]);
+        CreateButton(&req_bottoni[i]);
 
         c += strlen(c);
 
@@ -148,10 +147,8 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
         c++;
     }
 
-// Scrivo il testo
-
+    // Write the text
     c = text;
-
     y = topedge + FixedScaledY(10);
 
     setfont(tf);
@@ -177,7 +174,7 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
     actual_menu = &fake_menu;
 
     fake_menu.NumeroBottoni = bottoni;
-    fake_menu.Bottone = req_bottoni;
+    fake_menu.Button = req_bottoni;
     actual_button = 0;
 
     D(bug("Creating requester with %d buttons\n", bottoni));
@@ -212,7 +209,7 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
     ChangeMenu(current_menu);
 
     for (i = 0; i < bottoni; i++)
-        free(req_bottoni[i].Testo);
+        free(req_bottoni[i].Text);
 
     if (linee < (bottoni - 1))
         return linee + 1;
@@ -290,10 +287,10 @@ void StoreButtonList()
 
     for (i = 0, k = 0; i < MENUS; i++) {
         for (j = 0; j < menu[i].NumeroBottoni; j++) {
-            menubase[k] = menu[i].Bottone[j].X1;
-            menubase[k + 1] = menu[i].Bottone[j].Y1;
-            menubase[k + 2] = menu[i].Bottone[j].X2;
-            menubase[k + 3] = menu[i].Bottone[j].Y2;
+            menubase[k] = menu[i].Button[j].X1;
+            menubase[k + 1] = menu[i].Button[j].Y1;
+            menubase[k + 2] = menu[i].Button[j].X2;
+            menubase[k + 3] = menu[i].Button[j].Y2;
             k += 4;
         }
 
@@ -323,10 +320,10 @@ void UpdateButtonList()
 
     for (i = 0, k = 0; i < MENUS; i++) {
         for (j = 0; j < menu[i].NumeroBottoni; j++) {
-            menu[i].Bottone[j].X1 = FixedScaledX(menubase[k]);
-            menu[i].Bottone[j].Y1 = FixedScaledY(menubase[k + 1]);
-            menu[i].Bottone[j].X2 = FixedScaledX(menubase[k + 2]);
-            menu[i].Bottone[j].Y2 = FixedScaledY(menubase[k + 3]);
+            menu[i].Button[j].X1 = FixedScaledX(menubase[k]);
+            menu[i].Button[j].Y1 = FixedScaledY(menubase[k + 1]);
+            menu[i].Button[j].X2 = FixedScaledX(menubase[k + 2]);
+            menu[i].Button[j].Y2 = FixedScaledY(menubase[k + 3]);
             k += 4;
         }
 
@@ -350,7 +347,7 @@ void EraseBox(WORD button)
 {
     if (reqqing) {
 // Il colore di fondo del requester e' sempre: Pens[P_ROSSO1]
-        struct Bottone *b = &actual_menu->Bottone[button];
+        struct Button *b = &actual_menu->Button[button];
 
         draw(Pens[P_ROSSO1], b->X1 - 1, b->Y1 - 1, b->X2 + 1, b->Y1 - 1);
         draw(Pens[P_ROSSO1], b->X2 + 1, b->Y1 - 1, b->X2 + 1, b->Y2 + 1);
@@ -359,7 +356,7 @@ void EraseBox(WORD button)
     } else if (current_menu < MENU_GAME_PREFS
                || current_menu > MENU_AUDIO_PREFS
                || button == actual_menu->NumeroBottoni - 1) {
-        struct Bottone *b = &actual_menu->Bottone[button];
+        struct Button *b = &actual_menu->Button[button];
 
         bltchunkybitmap(back, b->X1 - 1, b->Y1 - 1, main_bitmap,
                         b->X1 - 1, b->Y1 - 1, b->X2 - b->X1 + 2, 1,
@@ -374,9 +371,9 @@ void EraseBox(WORD button)
                         b->Y1 - 1, 1, b->Y2 - b->Y1 + 3, bitmap_width,
                         bitmap_width);
     } else {
-        struct Bottone *b = &actual_menu->Bottone[(button >> 1) << 1];
-        struct Bottone *b2 =
-            &actual_menu->Bottone[((button >> 1) << 1) + 1];
+        struct Button *b = &actual_menu->Button[(button >> 1) << 1];
+        struct Button *b2 =
+            &actual_menu->Button[((button >> 1) << 1) + 1];
 
         bltchunkybitmap(back, b->X1 - 1, b->Y1 - 1, main_bitmap,
                         b->X1 - 1, b->Y1 - 1, b2->X2 - b->X1 + 2, 1,
@@ -397,16 +394,16 @@ void DrawBox(WORD button)
 {
     if (current_menu < MENU_GAME_PREFS || current_menu > MENU_AUDIO_PREFS
         || button == actual_menu->NumeroBottoni - 1) {
-        struct Bottone *b = &actual_menu->Bottone[button];
+        struct Button *b = &actual_menu->Button[button];
 
         draw(Pens[P_GIALLO], b->X1 - 1, b->Y1 - 1, b->X2 + 1, b->Y1 - 1);
         draw(Pens[P_GIALLO], b->X2 + 1, b->Y1 - 1, b->X2 + 1, b->Y2 + 1);
         draw(Pens[P_GIALLO], b->X2 + 1, b->Y2 + 1, b->X1 - 1, b->Y2 + 1);
         draw(Pens[P_GIALLO], b->X1 - 1, b->Y2 + 1, b->X1 - 1, b->Y1);
     } else {
-        struct Bottone *b = &actual_menu->Bottone[(button >> 1) << 1];
-        struct Bottone *b2 =
-            &actual_menu->Bottone[((button >> 1) << 1) + 1];
+        struct Button *b = &actual_menu->Button[(button >> 1) << 1];
+        struct Button *b2 =
+            &actual_menu->Button[((button >> 1) << 1) + 1];
 
         draw(Pens[P_GIALLO], b->X1 - 1, b->Y1 - 1, b2->X2 + 1, b->Y1 - 1);
         draw(Pens[P_GIALLO], b2->X2 + 1, b->Y1 - 1, b2->X2 + 1,
@@ -419,10 +416,10 @@ void DrawBox(WORD button)
 }
 
 
-void StampaTesto(struct Bottone *b, int xs, int ys, char *testo, int len,
+void DisplayText(struct Button *b, int xs, int ys, char *text, int len,
                  struct myfont *tf)
 {
-    switch (*testo) {
+    switch (*text) {
 // A destra
     case '_':
         {
@@ -431,7 +428,7 @@ void StampaTesto(struct Bottone *b, int xs, int ys, char *testo, int len,
 // Con questo gestisco decentemente la team selection arcade
 
             if (current_menu == MENU_ARCADE_SELECTION) {
-                c = b->Colore;
+                c = b->Color;
                 y = ys + b->Y2 - b->Y1 - 3;    /* +tf_Baseline */
             } else {
                 c = P_BIANCO;
@@ -439,23 +436,23 @@ void StampaTesto(struct Bottone *b, int xs, int ys, char *testo, int len,
                     1 /*+tf->tf_Baseline */ ;
             }
 
-            testo++;
+            text++;
             len--;
             ColorTextShadow(xs + (b->X2 - b->X1 - tf->width * len - 2), y,
-                            testo, len, c);
+                            text, len, c);
         }
         break;
     case '-':
 // A sinistra
         if (len > 1) {
-            testo++;
+            text++;
             len--;
         } else
             goto fallback;
 
         TextShadow(xs + 3,
                    ys + (b->Y2 - b->Y1 - tf->height) / 2 + tf->height -
-                   1 /*+tf->tf_Baseline */ , testo, len);
+                   1 /*+tf->tf_Baseline */ , text, len);
         break;
     case 0:
     case 1:
@@ -467,10 +464,10 @@ void StampaTesto(struct Bottone *b, int xs, int ys, char *testo, int len,
     case 10:
     case 11:
     case 12:
-        while (*testo < 13) {
-            BltAnimObj(symbols, main_bitmap, *testo, xs, ys, bitmap_width);
-            xs += symbols->Widths[*testo];
-            testo++;
+        while (*text < 13) {
+            BltAnimObj(symbols, main_bitmap, *text, xs, ys, bitmap_width);
+            xs += symbols->Widths[*text];
+            text++;
         }
         break;
     case 5:
@@ -479,16 +476,16 @@ void StampaTesto(struct Bottone *b, int xs, int ys, char *testo, int len,
     case 13:
     case 14:
     case 15:
-        BltAnimObj(symbols, main_bitmap, *testo, xs, ys, bitmap_width);
+        BltAnimObj(symbols, main_bitmap, *text, xs, ys, bitmap_width);
         break;
     case 16:
-        testo++;
+        text++;
 
-        if (*testo < ARCADE_TEAMS) {
+        if (*text < ARCADE_TEAMS) {
             struct MyScaleArgs scale;
             gfx_t *o;
 
-            if (!(o = arcade_gfx[*testo]))
+            if (!(o = arcade_gfx[*text]))
                 break;
 
             scale.SrcX = scale.SrcY = 0;
@@ -510,13 +507,13 @@ void StampaTesto(struct Bottone *b, int xs, int ys, char *testo, int len,
       fallback:
         TextShadow(xs + (b->X2 - b->X1 - len * tf->width) / 2,
                    ys + (b->Y2 - b->Y1 - tf->height) / 2 + tf->height -
-                   1 /*+tf->tf_Baseline */ , testo, len);
+                   1 /*+tf->tf_Baseline */ , text, len);
     }
 }
 
-BOOL DoAction(WORD bottone)
+BOOL DoAction(WORD button)
 {
-    struct Bottone *b = &actual_menu->Bottone[bottone];
+    struct Button *b = &actual_menu->Button[button];
 
 // i requester non hanno azioni associate con i tasti
     if (reqqing)
@@ -539,7 +536,7 @@ BOOL DoAction(WORD bottone)
 
         func = (BOOL(*)(WORD)) actual_menu->SpecialFunction;
 
-        value = func(bottone);
+        value = func(button);
         ScreenSwap();
         return value;
     } else if (b->ID >= 0) {
@@ -551,23 +548,23 @@ BOOL DoAction(WORD bottone)
         case MENU_HIGHLIGHT:
             savehigh = FALSE;
 
-            if (bottone == 0) {
+            if (button == 0) {
                 SetHighSelection();
-                menu[MENU_HIGH_SELECTION].Titolo = msg_63;
-            } else if (bottone == 1) {
+                menu[MENU_HIGH_SELECTION].Title = msg_63;
+            } else if (button == 1) {
                 SetHighSelection();
                 savehigh = TRUE;
-                menu[MENU_HIGH_SELECTION].Titolo = msg_64;
+                menu[MENU_HIGH_SELECTION].Title = msg_64;
             }
             break;
         case MENU_SELECTION_TYPE:
-            if (bottone == 0 && !arcade_teams) {
+            if (button == 0 && !arcade_teams) {
                 if (!DoWarning((special || competition != MENU_TEAMS))) {
                     LoadTeams("teams/arcade");
                     arcade_teams = TRUE;
                 } else
                     return TRUE;
-            } else if (bottone == 1 && arcade_teams) {
+            } else if (button == 1 && arcade_teams) {
                 if (!DoWarning(competition != MENU_TEAMS)) {
                     LoadTeams("teams/default");
                     arcade_teams = FALSE;
@@ -576,7 +573,7 @@ BOOL DoAction(WORD bottone)
             }
             break;
         case MENU_GAME_START:
-            if (bottone == 0) {
+            if (button == 0) {
                 if (!arcade_gfx[0])
                     LoadArcadeGfx();
 
@@ -586,7 +583,7 @@ BOOL DoAction(WORD bottone)
                 LoadBack();
             }
 
-            if (bottone == 3) {
+            if (button == 3) {
                 network_game = TRUE;
                 friendly = TRUE;
                 ClearSelection();
@@ -598,11 +595,11 @@ BOOL DoAction(WORD bottone)
             arcade = TRUE;
             training = FALSE;
 
-            if (bottone == 0) {
+            if (button == 0) {
                 friendly = TRUE;
                 ClearSelection();
                 wanted_number = 2;
-            } else if (bottone == 1)    // Whistle tour
+            } else if (button == 1)    // Whistle tour
             {
                 friendly = FALSE;
                 if (!DoWarning(((special || competition != MENU_MATCHES)
@@ -615,7 +612,7 @@ BOOL DoAction(WORD bottone)
                         b->ID = MENU_MATCHES;
                 } else
                     return TRUE;
-            } else if (bottone == 2)    // Challenge
+            } else if (button == 2)    // Challenge
             {
                 friendly = FALSE;
 
@@ -638,7 +635,7 @@ BOOL DoAction(WORD bottone)
 
             }
 
-            if (bottone > 2) {
+            if (button > 2) {
                 if (arcade_back)
                     LoadBack();
 
@@ -655,7 +652,7 @@ BOOL DoAction(WORD bottone)
             friendly = FALSE;
             network_game = FALSE;
 
-            if (arcade_teams && bottone < 4) {
+            if (arcade_teams && button < 4) {
                 if (!DoWarning
                     ((competition == MENU_MATCHES
                       || competition == MENU_CHALLENGE))) {
@@ -665,16 +662,16 @@ BOOL DoAction(WORD bottone)
                     return TRUE;
             }
 
-            if (bottone == 0) {
+            if (button == 0) {
                 if (!DoWarning((!special && competition != MENU_TEAMS)))
                     SetupSpecialEvent(b);
                 else
                     return TRUE;
-            } else if (bottone == 1) {
+            } else if (button == 1) {
                 friendly = TRUE;
                 ClearSelection();
                 wanted_number = 2;
-            } else if (bottone == 2) {
+            } else if (button == 2) {
                 if (!DoWarning(((special || competition != MENU_LEAGUE)
                                 && competition != MENU_TEAMS))) {
                     if (competition != MENU_LEAGUE) {
@@ -691,7 +688,7 @@ BOOL DoAction(WORD bottone)
                 } else
                     return TRUE;
 
-            } else if (bottone == 3) {
+            } else if (button == 3) {
                 if (!DoWarning(((special || competition != MENU_MATCHES)
                                 && competition != MENU_TEAMS))) {
                     if (competition != MENU_MATCHES) {
@@ -706,7 +703,7 @@ BOOL DoAction(WORD bottone)
             }
             break;
         case MENU_PREFS:
-            if (bottone < 4) {
+            if (button < 4) {
                 UpdatePrefs(b->ID);
             }
             break;
@@ -714,7 +711,7 @@ BOOL DoAction(WORD bottone)
             arcade = FALSE;
             training = FALSE;
 
-            if (bottone >= 0 && bottone < 3) {
+            if (button >= 0 && button < 3) {
                 selected_number = 0;
                 wanted_number = 1;
             }
@@ -723,15 +720,15 @@ BOOL DoAction(WORD bottone)
             arcade = FALSE;
             training = TRUE;
 
-            if (arcade_teams && bottone < 3) {
+            if (arcade_teams && button < 3) {
                 LoadTeams("teams/default");
                 arcade_teams = FALSE;
             }
 
-            if (bottone >= 0 && bottone < 3) {
-                if (bottone == 2)
+            if (button >= 0 && button < 3) {
+                if (button == 2)
                     penalties = TRUE;
-                else if (bottone == 1)
+                else if (button == 1)
                     free_kicks = TRUE;
 
                 ClearSelection();
@@ -770,7 +767,7 @@ BOOL DoAction(WORD bottone)
         case MENU_MATCHES:
         case MENU_LEAGUE:
         case MENU_WORLD_CUP:
-            if (bottone != 1)
+            if (button != 1)
                 break;
 
             if (arcade) {
@@ -793,7 +790,7 @@ BOOL DoAction(WORD bottone)
             }
             break;
         case MENU_PREFS:
-            if (bottone == 5) {
+            if (button == 5) {
                 FILE *f;
 
                 if (!(f = fopen("etw.cfg" /*-*/ , "w"))) {
@@ -822,7 +819,7 @@ BOOL DoAction(WORD bottone)
             }
             break;
         case MENU_TEAMS:
-            if (bottone == 1) {
+            if (button == 1) {
                 char buffer[130];
 
                 if (competition != MENU_TEAMS) {
@@ -844,7 +841,7 @@ BOOL DoAction(WORD bottone)
 
                     competition = MENU_TEAMS;
                 }
-            } else if (bottone == 2) {
+            } else if (button == 2) {
                 char buffer[130];
                 UBYTE temp = competition;
 
@@ -861,7 +858,7 @@ BOOL DoAction(WORD bottone)
 
                     competition = temp;
                 }
-            } else if (bottone == 3) {
+            } else if (button == 3) {
                 extern char teamfile[];
 
                 if (competition != MENU_TEAMS) {
@@ -885,7 +882,7 @@ BOOL DoAction(WORD bottone)
             }
             break;
         case MENU_HIGHLIGHT:
-            if (bottone == 2) {
+            if (button == 2) {
                 char buffer[130];
 
                 freq.Title = msg_74;
@@ -898,19 +895,19 @@ BOOL DoAction(WORD bottone)
             }
             break;
         case MENU_GAME_START:
-            if (bottone == 2)
+            if (button == 2)
                 request(msg_75);
             break;
         case MENU_MAIN_MENU:
-            if (bottone == 5)
+            if (button == 5)
                 ShowCredits();
             break;
         case MENU_SIMULATION:
         case MENU_CAREER:
             if (current_menu == MENU_SIMULATION)
-                bottone--;
+                button--;
 
-            if (bottone == 3) {
+            if (button == 3) {
                 if (*career_file) {
                     easy.es_TextFormat = msg_61;
                     easy.es_GadgetFormat = msg_62;
@@ -927,7 +924,7 @@ BOOL DoAction(WORD bottone)
 
                     LoadLeague();
                 }
-            } else if (bottone == 4) {
+            } else if (button == 4) {
                 if (current_menu == MENU_SIMULATION) {
                     if (competition == MENU_TEAMS)
                         break;
@@ -963,32 +960,32 @@ BOOL DoAction(WORD bottone)
     return TRUE;
 }
 
-void CancellaBottone(struct Bottone *b)
+void CancelButton(struct Button *b)
 {
     bltchunkybitmap(back, b->X1, b->Y1, main_bitmap,
                     b->X1, b->Y1, b->X2 - b->X1 + 1, b->Y2 - b->Y1 + 1,
                     bitmap_width, bitmap_width);
 }
 
-void PrintButtonType(struct Bottone *b, WORD bl, WORD bt,
+void PrintButtonType(struct Button *b, WORD bl, WORD bt,
                      struct myfont *tf)
 {
     char *c;
 
     if ((current_menu != MENU_TEAM_SELECTION
-         || b > &actual_menu->Bottone[63])
+         || b > &actual_menu->Button[63])
         && (current_menu != MENU_ARCADE_SELECTION
-            || b > &actual_menu->Bottone[ARCADE_TEAMS - 1]))
+            || b > &actual_menu->Button[ARCADE_TEAMS - 1]))
         return;
 
-    switch (b->Colore) {
-    case COLORE_TEAM_A:
+    switch (b->Color) {
+    case COLOR_TEAM_A:
         c = "_J2" /*-*/ ;
         break;
-    case COLORE_TEAM_B:
+    case COLOR_TEAM_B:
         c = "_J1" /*-*/ ;
         break;
-    case COLORE_COMPUTER:
+    case COLOR_COMPUTER:
         c = "_C" /*-*/ ;
         break;
     default:
@@ -996,20 +993,20 @@ void PrintButtonType(struct Bottone *b, WORD bl, WORD bt,
     }
 
     if (c) {
-        StampaTesto(b, bl + b->X1, bt + b->Y1, c, strlen(c), tf);
+        DisplayText(b, bl + b->X1, bt + b->Y1, c, strlen(c), tf);
     }
 }
 
-void CreaBottone(struct Bottone *b)
+void CreateButton(struct Button *b)
 {
-    char *t = b->Testo;
+    char *t = b->Text;
     struct myfont *tf = smallfont;
     int l, top = 1;
 
     if (!t)
         return;
 
-    rectfill(main_bitmap, b->X1, b->Y1, b->X2, b->Y2, Pens[b->Colore],
+    rectfill(main_bitmap, b->X1, b->Y1, b->X2, b->Y2, Pens[b->Color],
              bitmap_width);
 
     if ((b->Y2 - b->Y1) > 9) {
@@ -1033,13 +1030,13 @@ void CreaBottone(struct Bottone *b)
         l = (b->X2 - b->X1) / tf->width;
     }
 
-    StampaTesto(b, b->X1, b->Y1 + top, t, l, tf);
+    DisplayText(b, b->X1, b->Y1 + top, t, l, tf);
     PrintButtonType(b, 0, top, tf);
 }
 
-void RedrawButton(struct Bottone *b, UBYTE colore)
+void RedrawButton(struct Button *b, UBYTE colore)
 {
-    char *t = b->Testo;
+    char *t = b->Text;
     struct myfont *tf = smallfont;
     int l, top = 1;
 
@@ -1070,7 +1067,7 @@ void RedrawButton(struct Bottone *b, UBYTE colore)
         l = (b->X2 - b->X1) / tf->width;
     }
 
-    StampaTesto(b, b->X1, b->Y1 + top, t, l, tf);
+    DisplayText(b, b->X1, b->Y1 + top, t, l, tf);
     PrintButtonType(b, 0, top, tf);
 }
 
@@ -1109,16 +1106,16 @@ void ChangeMenu(WORD m)
         if (m != MENU_TEAM_SELECTION
             || (current_menu != MENU_TEAM_SETTINGS
                 && current_menu != MENU_MATCH_RESULT)) {
-            if (actual_menu->Bottone == teamselection) {
+            if (actual_menu->Button == teamselection) {
                 teamselection[65].ID = current_menu;
-            } else if (actual_menu->Bottone == teamsettings) {
+            } else if (actual_menu->Button == teamsettings) {
                 teamsettings[42].ID = current_menu;
             }
         }
 
         if (m == MENU_ARCADE_SELECTION
             && current_menu != MENU_TEAM_SETTINGS) {
-            actual_menu->Bottone[ARCADE_TEAMS + 1].ID = current_menu;
+            actual_menu->Button[ARCADE_TEAMS + 1].ID = current_menu;
         }
         current_menu = m;
     }
@@ -1126,7 +1123,7 @@ void ChangeMenu(WORD m)
     setfont(titlefont);
 
     rectfill(main_bitmap, 0, FixedScaledY(7), WINDOW_WIDTH - 1,
-             FixedScaledY(16), Pens[actual_menu->Colore], bitmap_width);
+             FixedScaledY(16), Pens[actual_menu->Color], bitmap_width);
     rectfill(main_bitmap, 0, FixedScaledY(6), WINDOW_WIDTH - 1,
              FixedScaledY(7) - 1, Pens[actual_menu->Highlight],
              bitmap_width);
@@ -1185,8 +1182,8 @@ void ChangeMenu(WORD m)
         TextShadow(WINDOW_WIDTH - l2 - FixedScaledX(4),
                    FixedScaledY(titlefont->height + 8),
                    teamlist[actual_team].allenatore, i);
-    } else if (actual_menu->Titolo) {
-        char *t = actual_menu->Titolo;
+    } else if (actual_menu->Title) {
+        char *t = actual_menu->Title;
         int y = FixedScaledY(titlefont->height + 3);
 
         if (y <= titlefont->height)
@@ -1206,10 +1203,10 @@ void ChangeMenu(WORD m)
     }
 
     for (i = 0; i < actual_menu->NumeroBottoni; i++)
-        CreaBottone(&actual_menu->Bottone[i]);
+        CreateButton(&actual_menu->Button[i]);
 
     for (i = 0; i < actual_menu->NumeroPannelli; i++)
-        CreaBottone(&actual_menu->Pannello[i]);
+        CreateButton(&actual_menu->Pannello[i]);
 
     actual_button = 0;
 
@@ -1220,14 +1217,14 @@ void ChangeMenu(WORD m)
             UBYTE oldpen;
 
             oldpen =
-                actual_menu->Bottone[ruolo[actual_team] * 2 + 1].Colore;
+                actual_menu->Button[ruolo[actual_team] * 2 + 1].Color;
 
-            actual_menu->Bottone[ruolo[actual_team] * 2 + 1].Colore =
+            actual_menu->Button[ruolo[actual_team] * 2 + 1].Color =
                 P_GIALLO;
 
-            CreaBottone(&actual_menu->Bottone[ruolo[actual_team] * 2 + 1]);
+            CreateButton(&actual_menu->Button[ruolo[actual_team] * 2 + 1]);
 
-            actual_menu->Bottone[ruolo[actual_team] * 2 + 1].Colore =
+            actual_menu->Button[ruolo[actual_team] * 2 + 1].Color =
                 oldpen;
         }
 
@@ -1249,7 +1246,7 @@ void ChangeMenu(WORD m)
 //      bltchunkybitmap(main_bitmap,0,0,main_bitmap,0,0,WINDOW_WIDTH,WINDOW_HEIGHT,bitmap_width,bitmap_width);
 //      GriddedWipe(1,main_bitmap);
 
-    while (!actual_menu->Bottone[actual_button].Testo)
+    while (!actual_menu->Button[actual_button].Text)
         actual_button++;
 
 
@@ -1257,23 +1254,23 @@ void ChangeMenu(WORD m)
     ScreenSwap();
 }
 
-void SelezionaBottone(WORD bottone)
+void SelectButton(WORD button)
 {
-    if (bottone != NESSUN_BOTTONE) {
-        struct Bottone *b = &actual_menu->Bottone[bottone];
+    if (button != NO_BUTTON) {
+        struct Button *b = &actual_menu->Button[button];
 
         if ((b->Y2 - b->Y1) > 9) {
-            draw(Pens[b->Colore], b->X1, b->Y2, b->X1, b->Y1);
-            draw(Pens[b->Colore], b->X1, b->Y1, b->X2, b->Y1);
+            draw(Pens[b->Color], b->X1, b->Y2, b->X1, b->Y1);
+            draw(Pens[b->Color], b->X1, b->Y1, b->X2, b->Y1);
         } else
             RedrawButton(b, b->Highlight);
     }
 }
 
-void DeselezionaBottone(WORD bottone)
+void DeselectButton(WORD button)
 {
-    if (bottone != NESSUN_BOTTONE) {
-        struct Bottone *b = &actual_menu->Bottone[bottone];
+    if (button != NO_BUTTON) {
+        struct Button *b = &actual_menu->Button[button];
 
         if ((b->Y2 - b->Y1) > 9) {
             draw(Pens[b->Highlight], b->X1, b->Y2 - 1, b->X1, b->Y1);
@@ -1284,23 +1281,23 @@ void DeselezionaBottone(WORD bottone)
                     (UBYTE) Pens[P_BIANCO];
             }
         } else
-            RedrawButton(b, b->Colore);
+            RedrawButton(b, b->Color);
     }
 }
 
-WORD GetBottone(WORD x, WORD y)
+WORD GetButton(WORD x, WORD y)
 {
     WORD i;
 
     for (i = 0; i < actual_menu->NumeroBottoni; i++) {
-        struct Bottone *b = &actual_menu->Bottone[i];
+        struct Button *b = &actual_menu->Button[i];
 
-        if (b->Testo && x < b->X2 && x > b->X1 && y < b->Y2 && y > b->Y1) {
+        if (b->Text && x < b->X2 && x > b->X1 && y < b->Y2 && y > b->Y1) {
             return i;
         }
     }
 
-    return NESSUN_BOTTONE;
+    return NO_BUTTON;
 }
 
 void MoveMark(int k)
@@ -1324,7 +1321,7 @@ void MoveMark(int k)
             return;
         }
     }
-    while (!actual_menu->Bottone[actual_button].Testo);
+    while (!actual_menu->Button[actual_button].Text);
 }
 
 BOOL HandleJoy(uint32_t joystatus)
@@ -1339,12 +1336,12 @@ BOOL HandleJoy(uint32_t joystatus)
 #endif
 
     if (joystatus & JPF_BUTTON_RED) {
-        SelezionaBottone(actual_button);
+        SelectButton(actual_button);
         ScreenSwap();
         clicked = TRUE;
     } else if (clicked) {
         clicked = FALSE;
-        DeselezionaBottone(actual_button);
+        DeselectButton(actual_button);
         ScreenSwap();
 // questo serve perche' il requester usa current button
 // per capire se si vuole uscire
@@ -1655,15 +1652,15 @@ BOOL HandleMenuIDCMP(void)
 
                 if (ruolo[actual_team]) {
                     RedrawButton(&actual_menu->
-                                 Bottone[ruolo[actual_team] * 2 + 1],
-                                 actual_menu->Bottone[ruolo[actual_team] *
-                                                      2 + 1].Colore);
+                                 Button[ruolo[actual_team] * 2 + 1],
+                                 actual_menu->Button[ruolo[actual_team] *
+                                                      2 + 1].Color);
                     ruolo[actual_team] = 0;
                     ScreenSwap();
                 } else if (actual_button < 22 && actual_button > 1) {
                     ruolo[actual_team] = actual_button / 2;
                     RedrawButton(&actual_menu->
-                                 Bottone[ruolo[actual_team] * 2 + 1],
+                                 Button[ruolo[actual_team] * 2 + 1],
                                  P_GIALLO);
                     ScreenSwap();
                 }
@@ -1682,8 +1679,8 @@ BOOL HandleMenuIDCMP(void)
         case SDL_MOUSEBUTTONUP:
         case SDL_MOUSEBUTTONDOWN:
             if (e.button.state == SDL_PRESSED) {
-                current_button = GetBottone(e.button.x, e.button.y);
-                SelezionaBottone(current_button);
+                current_button = GetButton(e.button.x, e.button.y);
+                SelectButton(current_button);
 
                 if (actual_button != current_button && current_button >= 0) {
                     EraseBox(actual_button);
@@ -1694,13 +1691,13 @@ BOOL HandleMenuIDCMP(void)
                     ScreenSwap();
                 }
             } else if (e.button.state == SDL_RELEASED
-                       && current_button != NESSUN_BOTTONE) {
+                       && current_button != NO_BUTTON) {
                 WORD temp;
 
-                DeselezionaBottone(current_button);
+                DeselectButton(current_button);
                 ScreenSwap();
 
-                temp = GetBottone(e.button.x, e.button.y);
+                temp = GetButton(e.button.x, e.button.y);
 
                 if (current_button == temp) {
                     returncode = DoAction(current_button);

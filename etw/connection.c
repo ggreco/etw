@@ -524,16 +524,16 @@ WORD StartMatch(BYTE team1,BYTE team2)
                 *d=0;
 
 
-                mr[2].Colore=mr[0].Colore=colore_team[controllo[team1]+1];
+                mr[2].Color=mr[0].Color=colore_team[controllo[team1]+1];
                 mr[2].Highlight=mr[0].Highlight=highlight_team[controllo[team1]+1];
-                mr[1].Colore=mr[3].Colore=colore_team[controllo[team2]+1];
+                mr[1].Color=mr[3].Color=colore_team[controllo[team2]+1];
                 mr[1].Highlight=mr[3].Highlight=highlight_team[controllo[team2]+1];
 
-                mr[0].Testo=teamlist[team1].name;
-                mr[1].Testo=teamlist[team2].name;
+                mr[0].Text=teamlist[team1].name;
+                mr[1].Text=teamlist[team2].name;
 
-                mr[2].Testo=buffer;
-                mr[3].Testo=c;
+                mr[2].Text=buffer;
+                mr[3].Text=c;
 
                 ChangeMenu(MENU_MATCH_RESULT);
 

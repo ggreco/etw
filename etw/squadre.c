@@ -941,12 +941,12 @@ team_t *CreateTeam(int num)
     cols[snum][1]=sd.jerseys[0].color1;
     cols[snum][2]=sd.jerseys[0].color2;
 
-    if(sd.jerseys[0].color0!=COLORE_STANDARD_MAGLIE)
-        RemapAnimObjColor(players[snum],Pens[COLORE_STANDARD_MAGLIE],Pens[sd.jerseys[0].color0]);
-    if(sd.jerseys[0].color1!=COLORE_STANDARD_CALZONI)
-        RemapAnimObjColor(players[snum],Pens[COLORE_STANDARD_CALZONI],Pens[sd.jerseys[0].color1]);
-    if(sd.jerseys[0].color2!=COLORE_STANDARD_AUSILIARIO&&sd.jerseys[0].type>0)
-        RemapAnimObjColor(players[snum],Pens[COLORE_STANDARD_AUSILIARIO],Pens[sd.jerseys[0].color2]);
+    if(sd.jerseys[0].color0!=COLOR_STANDARD_MAGLIE)
+        RemapAnimObjColor(players[snum],Pens[COLOR_STANDARD_MAGLIE],Pens[sd.jerseys[0].color0]);
+    if(sd.jerseys[0].color1!=COLOR_STANDARD_CALZONI)
+        RemapAnimObjColor(players[snum],Pens[COLOR_STANDARD_CALZONI],Pens[sd.jerseys[0].color1]);
+    if(sd.jerseys[0].color2!=COLOR_STANDARD_AUSILIARIO&&sd.jerseys[0].type>0)
+        RemapAnimObjColor(players[snum],Pens[COLOR_STANDARD_AUSILIARIO],Pens[sd.jerseys[0].color2]);
 
 // Copio i dati dei giocatori.
 

@@ -556,16 +556,16 @@ void LoadReplay(UBYTE Set)
             p->team[i]->keepers.anim = a[i * SQ_PTR];
             p->team[i]->Marker = a[i * SQ_PTR + 12];
 
-            p->team[i]->keepers.anim->node.mln_Succ = 
-                p->team[i]->keepers.anim->node.mln_Pred = NULL;
+            p->team[i]->keepers.anim->node.mpNext = 
+                p->team[i]->keepers.anim->node.mpPrev = NULL;
 
             p->team[i]->keepers.team  = p->team[i];
             p->team[i]->keepers.name     = a[i * SQ_PTR + 34];
             p->team[i]->keepers.surname  = a[i * SQ_PTR + 35];
 
             p->team[i]->tactic = a[i * SQ_PTR + 11];
-            p->team[i]->Marker->node.mln_Succ = 
-                p->team[i]->Marker->node.mln_Pred = NULL;
+            p->team[i]->Marker->node.mpNext = 
+                p->team[i]->Marker->node.mpPrev = NULL;
 
 
             p->team[i]->NomeAttivo = a[i * SQ_PTR + 13];
@@ -603,8 +603,8 @@ void LoadReplay(UBYTE Set)
                 p->team[i]->players[j].name     = a[j + 14 + i * SQ_PTR];
                 p->team[i]->players[j].surname  = a[j + 24 + i * SQ_PTR];
 
-                p->team[i]->players[j].anim->node.mln_Succ = 
-                   p->team[i]->players[j].anim->node.mln_Pred = NULL;
+                p->team[i]->players[j].anim->node.mpNext = 
+                   p->team[i]->players[j].anim->node.mpPrev = NULL;
             }
         }
        
@@ -637,12 +637,12 @@ void LoadReplay(UBYTE Set)
         p->team[0]      = a[SQ_PTR * 2 + 4];
         p->team[1]      = a[SQ_PTR * 2 + 5];
     
-        p->referee.anim->node.mln_Succ =
-            p->referee.anim->node.mln_Pred = NULL;
-        p->ball.anim->node.mln_Succ =
-            p->ball.anim->node.mln_Pred = NULL;
-        p->extras->node.mln_Succ =
-            p->extras->node.mln_Pred = NULL;
+        p->referee.anim->node.mpNext =
+            p->referee.anim->node.mpPrev = NULL;
+        p->ball.anim->node.mpNext =
+            p->ball.anim->node.mpPrev = NULL;
+        p->extras->node.mpNext =
+            p->extras->node.mpPrev = NULL;
 
         // setting serialized "match" pointers: possesso, player_injuried, sq_palla, gioc_palla
         p->possesso = p->team[(LONG)p->possesso];

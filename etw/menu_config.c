@@ -60,7 +60,7 @@ void OpenMenuScreen(void)
         screen_depth=8;
 
     if(os_check_joy(0))
-        sprefs_bottoni[menu[MENU_SYSTEM_PREFS].NumeroBottoni-3].Testo="JOYSTICK CONFIG";
+        sprefs_bottoni[menu[MENU_SYSTEM_PREFS].NumeroBottoni-3].Text="JOYSTICK CONFIG";
 
 }
 

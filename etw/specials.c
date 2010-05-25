@@ -488,14 +488,14 @@ void ClearMatches(int k)
 
     for (i = k * 4; i < 64; i += 4)
     {
-        mp[i].Colore = P_VERDE1;
+        mp[i].Color = P_VERDE1;
         mp[i].Highlight = P_VERDE0;
 
-        if (mp[i + 3].Testo)
-            free(mp[i + 3].Testo);
+        if (mp[i + 3].Text)
+            free(mp[i + 3].Text);
 
         for (j = 0; j < 4; j++)
-            mp[i + j].Testo = NULL;
+            mp[i + j].Text = NULL;
     }
 }
 
@@ -508,12 +508,12 @@ void ClearSelection(void)
     if (!arcade_teams)
     {
         for (i = 0; i < 64; i++)
-            teamselection[i].Colore = COLORE_UNSELECTED;
+            teamselection[i].Color = COLOR_UNSELECTED;
     }
     else
     {
         for (i = 0; i < ARCADE_TEAMS; i++)
-            asb[i].Colore = asb[i].Highlight = COLORE_UNSELECTED;
+            asb[i].Color = asb[i].Highlight = COLOR_UNSELECTED;
     }
 }
 
@@ -564,18 +564,17 @@ BOOL TeamSelection(WORD button)
 {
     static BYTE selected = -1;
     static BOOL team1_selected = FALSE, team2_selected = FALSE;
-    struct Bottone *b;
-
+    struct Button *b;
 
     if (button < 0)
         return TRUE;
 
-    b = &actual_menu->Bottone[button];
+    b = &actual_menu->Button[button];
 
     if (button < 64)
     {
-        struct Bottone *b2 = &actual_menu->Bottone[64];
-        struct Bottone *b3 = &actual_menu->Bottone[66];
+        struct Button *b2 = &actual_menu->Button[64];
+        struct Button *b3 = &actual_menu->Button[66];
 
         if (selected >= 0)
             MyRestoreBack();
@@ -584,25 +583,25 @@ BOOL TeamSelection(WORD button)
 
         if (competition != MENU_WORLD_CUP || wanted_number != 32)
         {
-            if (b->Colore != COLORE_COMPUTER)
+            if (b->Color != COLOR_COMPUTER)
             {
                 PrintShadow(FixedScaledX(1), FixedScaledY(210),
-                            b->Testo, strlen(b->Testo), bigfont);
+                            b->Text, strlen(b->Text), bigfont);
 
-                if (!b3->Testo)
+                if (!b3->Text)
                 {
-                    b3->Testo = msg_31;
-                    RedrawButton(b3, b3->Colore);
+                    b3->Text = msg_31;
+                    RedrawButton(b3, b3->Color);
                 }
             }
             else
             {
-                b3->Testo = NULL;
-                CancellaBottone(b3);
+                b3->Text = NULL;
+                CancelButton(b3);
             }
         }
 
-        if (b->Colore == COLORE_UNSELECTED)
+        if (b->Color == COLOR_UNSELECTED)
         {
             selected_number++;
 
@@ -613,66 +612,66 @@ BOOL TeamSelection(WORD button)
             {
                 team1_selected = TRUE;
                 controllo[-b->ID - 1] = 1;
-                b->Colore = COLORE_TEAM_A;
+                b->Color = COLOR_TEAM_A;
             }
             else
             {
-                b->Colore = COLORE_TEAM_B;
+                b->Color = COLOR_TEAM_B;
                 team2_selected = TRUE;
                 controllo[-b->ID - 1] = 0;
             }
         }
-        else if (b->Colore == COLORE_COMPUTER)
+        else if (b->Color == COLOR_COMPUTER)
         {
-            b->Colore = COLORE_UNSELECTED;
+            b->Color = COLOR_UNSELECTED;
             selected_number--;
         }
-        else if (b->Colore == COLORE_TEAM_A
+        else if (b->Color == COLOR_TEAM_A
                  && (!team2_selected || wanted_number > 2
                       || wanted_number <= 0 || selected_number > 2))
         {
             team1_selected = FALSE;
             controllo[-b->ID - 1] = 0;
-            b->Colore = COLORE_TEAM_B;
+            b->Color = COLOR_TEAM_B;
         }
         else
         {
-            if (b->Colore == COLORE_TEAM_A)
+            if (b->Color == COLOR_TEAM_A)
                 team1_selected = FALSE;
             else
                 team2_selected = FALSE;
 
-            b->Colore = COLORE_COMPUTER;
+            b->Color = COLOR_COMPUTER;
             controllo[-b->ID - 1] = -1;
         }
 
-        RedrawButton(b, b->Colore);
+        RedrawButton(b, b->Color);
 
         if (CanContinue())
         {
-            if (!b2->Testo)
+            if (!b2->Text)
             {
                 if (competition != MENU_WORLD_CUP || wanted_number != 32)
-                    b2->Testo = msg_0;
+                    b2->Text = msg_0;
                 else
                 {
-                    b2->Testo = msg_1;
-                    b3->Testo = msg_2;
-                    RedrawButton(b3, b3->Colore);
+                    b2->Text = msg_1;
+                    b3->Text = msg_2;
+                    RedrawButton(b3, b3->Color);
                 }
 
-                RedrawButton(b2, b2->Colore);
+                RedrawButton(b2, b2->Color);
             }
         }
-        else if (b2->Testo)
+        else if (b2->Text)
         {
-            b2->Testo = NULL;
-            CancellaBottone(b2);
+            b2->Text = NULL;
+            CancelButton(b2);
 
             if (competition == MENU_WORLD_CUP && wanted_number == 32)
             {
-                b3->Testo = NULL;
-                CancellaBottone(b3);
+                b3->Text = NULL;
+                CancelButton(b3);
             }
         }
     }
@@ -682,7 +681,7 @@ BOOL TeamSelection(WORD button)
         if (selected > -1)
         {
             can_modify = FALSE;
-            SetTeamSettings(-actual_menu->Bottone[selected].ID - 1, FALSE);
+            SetTeamSettings(-actual_menu->Button[selected].ID - 1, FALSE);
             can_modify = TRUE;
 
             ChangeMenu(MENU_TEAM_SETTINGS);
@@ -696,19 +695,19 @@ BOOL TeamSelection(WORD button)
         team2_selected = FALSE;
 
         for (i = 0, j = 0; i < 64; i++)
-            if (actual_menu->Bottone[i].Colore != COLORE_UNSELECTED)
+            if (actual_menu->Button[i].Color != COLOR_UNSELECTED)
             {
 /*
     This is disabled because controllo is fixed on the team!
 
-                if (actual_menu->Bottone[i].Colore == COLORE_TEAM_A)
+                if (actual_menu->Button[i].Color == COLOR_TEAM_A)
                     controllo[j] = 0;
-                else if (actual_menu->Bottone[i].Colore == COLORE_TEAM_B)
+                else if (actual_menu->Button[i].Color == COLOR_TEAM_B)
                     controllo[j] = 1;
                 else
                     controllo[j] = -1;
 */
-                teamarray[j] = -actual_menu->Bottone[i].ID - 1;
+                teamarray[j] = -actual_menu->Button[i].ID - 1;
 
                 j++;
             }
@@ -716,7 +715,7 @@ BOOL TeamSelection(WORD button)
         if (j != selected_number)
             D(bug("Warning, wrong number of teams selected! (%ld instead of %ld)\n", j, selected_number));
 
-        actual_menu->Bottone[64].Testo = actual_menu->Bottone[66].Testo = NULL;
+        actual_menu->Button[64].Text = actual_menu->Button[66].Text = NULL;
 
         if (friendly || training)
         {
@@ -742,7 +741,7 @@ BOOL TeamSelection(WORD button)
 
             nteams = selected_number;
 
-            menu[MENU_MATCHES].Titolo = msg_32;
+            menu[MENU_MATCHES].Title = msg_32;
             ViewEliminazioneDiretta(nteams / 2);
             mb[0].ID = MENU_MATCHES;
             ChangeMenu(MENU_MATCHES);
@@ -801,7 +800,7 @@ singlematch:
 
         selected = -1;
 
-        actual_menu->Bottone[66].Testo = actual_menu->Bottone[64].Testo = NULL;
+        actual_menu->Button[66].Text = actual_menu->Button[64].Text = NULL;
 
         special = FALSE;
         competition = MENU_TEAMS;
@@ -817,8 +816,8 @@ singlematch:
 BOOL JoyCfg(WORD button)
 {
     if (button >= (actual_menu->NumeroBottoni - 1)
-         && actual_menu->Bottone[button].ID >= 0)
-        ChangeMenu(actual_menu->Bottone[button].ID);
+         && actual_menu->Button[button].ID >= 0)
+        ChangeMenu(actual_menu->Button[button].ID);
     else
     {
         char *temp;
@@ -826,12 +825,12 @@ BOOL JoyCfg(WORD button)
 
         button /= 2;
 
-        temp = actual_menu->Bottone[button * 2].Testo;
+        temp = actual_menu->Button[button * 2].Text;
 
-        actual_menu->Bottone[button * 2].Testo = "WAITING BUTTON...";
+        actual_menu->Button[button * 2].Text = "WAITING BUTTON...";
 
-        RedrawButton(&actual_menu->Bottone[button * 2],
-                     actual_menu->Bottone[button * 2].Highlight);
+        RedrawButton(&actual_menu->Button[button * 2],
+                     actual_menu->Button[button * 2].Highlight);
 
         ScreenSwap();
 
@@ -839,16 +838,16 @@ BOOL JoyCfg(WORD button)
 
         if (k >= 0)
         {
-            actual_menu->Bottone[button * 2 + 1].Testo = buttons[k];
+            actual_menu->Button[button * 2 + 1].Text = buttons[k];
             joycfg_buttons[actual_joystick][button] = k;
-            RedrawButton(&actual_menu->Bottone[button * 2 + 1],
-                         actual_menu->Bottone[button * 2 + 1].Colore);
+            RedrawButton(&actual_menu->Button[button * 2 + 1],
+                         actual_menu->Button[button * 2 + 1].Color);
         }
 
-        actual_menu->Bottone[button * 2].Testo = temp;
+        actual_menu->Button[button * 2].Text = temp;
 
-        RedrawButton(&actual_menu->Bottone[button * 2],
-                     actual_menu->Bottone[button * 2].Colore);
+        RedrawButton(&actual_menu->Button[button * 2],
+                     actual_menu->Button[button * 2].Color);
         ScreenSwap();
     }
 
@@ -862,10 +861,10 @@ BOOL KeyCfg(WORD button)
 
     /* AC: 27/05/04 - First rudimental keyboard configuration */
     if (button>=(actual_menu->NumeroBottoni - 3)
-         && actual_menu->Bottone[button].ID >= 0)
+         && actual_menu->Button[button].ID >= 0)
     {
         /* Which "main" button the user have pressed? */
-        switch(actual_menu->Bottone[button].ID)
+        switch(actual_menu->Button[button].ID)
         {
             /* Why if I include externs.h I obtain 55 compilation error? */
             extern void SaveKeyDef(int, char *);
@@ -892,7 +891,7 @@ BOOL KeyCfg(WORD button)
 
             /* Go back to previuos menu */
             default:
-                ChangeMenu(actual_menu->Bottone[button].ID);
+                ChangeMenu(actual_menu->Button[button].ID);
             break;
         }
     }
@@ -916,20 +915,20 @@ BOOL KeyCfg(WORD button)
             return TRUE;
 
 #ifdef ORIG_METHOD
-        temp = actual_menu->Bottone[button * 2].Testo;
+        temp = actual_menu->Button[button * 2].Text;
 
-        actual_menu->Bottone[button * 2].Testo = "WAITING BUTTON...";
+        actual_menu->Button[button * 2].Text = "WAITING BUTTON...";
 
-        RedrawButton(&actual_menu->Bottone[button * 2],
-                     actual_menu->Bottone[button * 2].Highlight);
+        RedrawButton(&actual_menu->Button[button * 2],
+                     actual_menu->Button[button * 2].Highlight);
 #else
         /* Alternative method that leaves visible the association of the key during key pressing */
-        temp = actual_menu->Bottone[button * 2 + 1].Testo;
+        temp = actual_menu->Button[button * 2 + 1].Text;
 
-        actual_menu->Bottone[button * 2 + 1].Testo = "WAITING BUTTON...";
+        actual_menu->Button[button * 2 + 1].Text = "WAITING BUTTON...";
 
-        RedrawButton(&actual_menu->Bottone[button * 2 + 1],
-                     actual_menu->Bottone[button * 2 + 1].Highlight);
+        RedrawButton(&actual_menu->Button[button * 2 + 1],
+                     actual_menu->Button[button * 2 + 1].Highlight);
 #endif
 
         ScreenSwap();
@@ -981,9 +980,9 @@ BOOL KeyCfg(WORD button)
                                 if (keys[k] == query[s])
                                 {
                                     /* Delete the old used association */
-                                    actual_menu->Bottone[s * 2 + 1].Testo = NULL;
+                                    actual_menu->Button[s * 2 + 1].Text = NULL;
                                     query[s] = 0;
-                                    CancellaBottone(&actual_menu->Bottone[s * 2 + 1]);
+                                    CancelButton(&actual_menu->Button[s * 2 + 1]);
                                     break;
                                 }
                             }
@@ -1001,25 +1000,25 @@ BOOL KeyCfg(WORD button)
                         }
                         keys_names[button][i] = 0;
                         query[button] = keys[k];
-                        actual_menu->Bottone[button * 2 + 1].Testo = keys_names[button];
-                        RedrawButton(&actual_menu->Bottone[button * 2 + 1],
-                                     actual_menu->Bottone[button * 2 + 1].Colore);
+                        actual_menu->Button[button * 2 + 1].Text = keys_names[button];
+                        RedrawButton(&actual_menu->Button[button * 2 + 1],
+                                     actual_menu->Button[button * 2 + 1].Color);
                     }
 #ifndef ORIG_METHOD
                     else
                     {
                         /* Restore the old button */
-                        actual_menu->Bottone[button * 2 + 1].Testo = temp;
-                        RedrawButton(&actual_menu->Bottone[button * 2 + 1],
-                                     actual_menu->Bottone[button * 2 + 1].Colore);
+                        actual_menu->Button[button * 2 + 1].Text = temp;
+                        RedrawButton(&actual_menu->Button[button * 2 + 1],
+                                     actual_menu->Button[button * 2 + 1].Color);
                     }
 #endif
 
 #ifdef ORIG_METHOD
-                    actual_menu->Bottone[button * 2].Testo = temp;
+                    actual_menu->Button[button * 2].Text = temp;
 
-                    RedrawButton(&actual_menu->Bottone[button * 2],
-                                 actual_menu->Bottone[button * 2].Colore);
+                    RedrawButton(&actual_menu->Button[button * 2],
+                                 actual_menu->Button[button * 2].Color);
 #endif
                     ScreenSwap();
                 break;
@@ -1054,17 +1053,17 @@ BOOL ArcadeTeamSelection(WORD button)
 {
     static BYTE selected = -1;
     static BOOL team1_selected = FALSE, team2_selected = FALSE;
-    struct Bottone *b;
+    struct Button *b;
 
     if (button < 0)
         return TRUE;
 
-    b = &actual_menu->Bottone[button];
+    b = &actual_menu->Button[button];
 
     if (button < ARCADE_TEAMS)
     {
-        struct Bottone *b2 = &actual_menu->Bottone[ARCADE_TEAMS];
-        struct Bottone *b3 = &actual_menu->Bottone[ARCADE_TEAMS + 2];
+        struct Button *b2 = &actual_menu->Button[ARCADE_TEAMS];
+        struct Button *b3 = &actual_menu->Button[ARCADE_TEAMS + 2];
 
         if (selected >= 0)
             MyRestoreBack();
@@ -1072,7 +1071,7 @@ BOOL ArcadeTeamSelection(WORD button)
         if (menu_music && music_playing)
             StopMenuMusic();
 
-        if (jingle >= 0 && (selected != button || b->Colore == COLORE_COMPUTER))
+        if (jingle >= 0 && (selected != button || b->Color == COLOR_COMPUTER))
         {
             D(bug("Interrupt channel %ld\n", jingle));
             SDL_LockAudio();
@@ -1082,7 +1081,7 @@ BOOL ArcadeTeamSelection(WORD button)
             jingle = -1;
         }
 
-        if (selected != button && b->Colore != COLORE_COMPUTER&&!no_sound)
+        if (selected != button && b->Color != COLOR_COMPUTER&&!no_sound)
         {
             jingle = PlayBackSound(menusound[FIRST_ARCADE + b->ID]);
             D(bug("Play sound %ld on channel %ld\n",
@@ -1091,26 +1090,26 @@ BOOL ArcadeTeamSelection(WORD button)
 
         selected = button;
 
-        if (b->Colore != COLORE_COMPUTER)
+        if (b->Color != COLOR_COMPUTER)
         {
             int l = strlen(teamlist[b->ID].name);
 
             PrintShadow((WINDOW_WIDTH - l * bigfont->width) / 2,
                         FixedScaledY(120), teamlist[b->ID].name, l, bigfont);
 
-            if (!b3->Testo)
+            if (!b3->Text)
             {
-                b3->Testo = msg_31;
-                RedrawButton(b3, b3->Colore);
+                b3->Text = msg_31;
+                RedrawButton(b3, b3->Color);
             }
             else
             {
-                b3->Testo = NULL;
-                CancellaBottone(b3);
+                b3->Text = NULL;
+                CancelButton(b3);
             }
         }
 
-        if (b->Colore == COLORE_UNSELECTED)
+        if (b->Color == COLOR_UNSELECTED)
         {
             selected_number++;
 
@@ -1121,54 +1120,54 @@ BOOL ArcadeTeamSelection(WORD button)
             {
                 team1_selected = TRUE;
                 controllo[b->ID] = 1;
-                b->Colore = COLORE_TEAM_A;
+                b->Color = COLOR_TEAM_A;
             }
             else
             {
-                b->Colore = COLORE_TEAM_B;
+                b->Color = COLOR_TEAM_B;
                 team2_selected = TRUE;
                 controllo[b->ID] = 0;
             }
         }
-        else if (b->Colore == COLORE_COMPUTER)
+        else if (b->Color == COLOR_COMPUTER)
         {
-            b->Colore = COLORE_UNSELECTED;
+            b->Color = COLOR_UNSELECTED;
             selected_number--;
         }
-        else if (b->Colore == COLORE_TEAM_A
+        else if (b->Color == COLOR_TEAM_A
                   && (!team2_selected || wanted_number > 2
                        || wanted_number <= 0 || selected_number > 2))
         {
             team1_selected = FALSE;
             controllo[b->ID] = 0;
-            b->Colore = COLORE_TEAM_B;
+            b->Color = COLOR_TEAM_B;
         }
         else
         {
-            if (b->Colore == COLORE_TEAM_A)
+            if (b->Color == COLOR_TEAM_A)
                 team1_selected = FALSE;
             else
                 team2_selected = FALSE;
 
-            b->Colore = COLORE_COMPUTER;
+            b->Color = COLOR_COMPUTER;
             controllo[b->ID] = -1;
         }
 
-        b->Highlight = b->Colore;
-        RedrawButton(b, b->Colore);
+        b->Highlight = b->Color;
+        RedrawButton(b, b->Color);
 
         if (CanContinue())
         {
-            if (!b2->Testo)
+            if (!b2->Text)
             {
-                b2->Testo = msg_0;
-                RedrawButton(b2, b2->Colore);
+                b2->Text = msg_0;
+                RedrawButton(b2, b2->Color);
             }
         }
-        else if (b2->Testo)
+        else if (b2->Text)
         {
-            b2->Testo = NULL;
-            CancellaBottone(b2);
+            b2->Text = NULL;
+            CancelButton(b2);
         }
     }
     else if (button == ARCADE_TEAMS + 2)
@@ -1186,7 +1185,7 @@ BOOL ArcadeTeamSelection(WORD button)
             }
 
             can_modify = FALSE;
-            SetTeamSettings( actual_menu->Bottone[selected].ID, FALSE);
+            SetTeamSettings( actual_menu->Button[selected].ID, FALSE);
             can_modify = TRUE;
 
             ChangeMenu(MENU_TEAM_SETTINGS);
@@ -1212,17 +1211,17 @@ BOOL ArcadeTeamSelection(WORD button)
         }
 
         for (i = 0, j = 0; i < ARCADE_TEAMS; i++)
-            if (actual_menu->Bottone[i].Colore != COLORE_UNSELECTED)
+            if (actual_menu->Button[i].Color != COLOR_UNSELECTED)
             {
 /*
-                if (actual_menu->Bottone[i].Colore == COLORE_TEAM_A)
+                if (actual_menu->Button[i].Color == COLOR_TEAM_A)
                     controllo[j] = 0;
-                else if (actual_menu->Bottone[i].Colore == COLORE_TEAM_B)
+                else if (actual_menu->Button[i].Color == COLOR_TEAM_B)
                     controllo[j] = 1;
                 else
                     controllo[j] = -1;
 */
-                teamarray[j] = actual_menu->Bottone[i].ID;
+                teamarray[j] = actual_menu->Button[i].ID;
                 D(bug("Selected %ld team\n", teamarray[j]));
                 j++;
             }
@@ -1236,14 +1235,14 @@ BOOL ArcadeTeamSelection(WORD button)
         }
         else if (competition == MENU_MATCHES)
         {
-            actual_menu->Bottone[ARCADE_TEAMS].Testo
-                = actual_menu->Bottone[ARCADE_TEAMS + 2].Testo = NULL;
+            actual_menu->Button[ARCADE_TEAMS].Text
+                = actual_menu->Button[ARCADE_TEAMS + 2].Text = NULL;
 
             PlayMenuMusic();
 
             nteams = selected_number;
 
-            menu[MENU_MATCHES].Titolo = msg_33;
+            menu[MENU_MATCHES].Title = msg_33;
             ViewEliminazioneDiretta(nteams / 2);
             mb[0].ID = MENU_MATCHES;
             ChangeMenu(MENU_MATCHES);
@@ -1260,8 +1259,8 @@ BOOL ArcadeTeamSelection(WORD button)
         {
 friendlymatch:
             D(bug("Starting friendly match/practice...\n"));
-            actual_menu->Bottone[ARCADE_TEAMS].Testo
-                = actual_menu->Bottone[ARCADE_TEAMS + 2].Testo = NULL;
+            actual_menu->Button[ARCADE_TEAMS].Text
+                = actual_menu->Button[ARCADE_TEAMS + 2].Text = NULL;
 
             PlayMenuMusic();
 
@@ -1302,8 +1301,8 @@ friendlymatch:
             jingle = -1;
         }
 
-        actual_menu->Bottone[ARCADE_TEAMS].Testo
-            = actual_menu->Bottone[ARCADE_TEAMS + 2].Testo = NULL;
+        actual_menu->Button[ARCADE_TEAMS].Text
+            = actual_menu->Button[ARCADE_TEAMS + 2].Text = NULL;
 
         ClearSelection();
 
@@ -1317,19 +1316,19 @@ friendlymatch:
 
 BOOL TeamSettings(WORD button)
 {
-    struct Bottone *b;
+    struct Button *b;
     static int sel1 = -1;
 
     if (button < 0)
         return TRUE;
 
-    b = &actual_menu->Bottone[button];
+    b = &actual_menu->Button[button];
 
     if (button == 42)
     {
         sel1 = -1;
 
-        if (teamsettings[42].Testo == msg_6)
+        if (teamsettings[42].Text == msg_6)
             ChangeMenu(b->ID);
         else
             return FALSE;
@@ -1363,20 +1362,20 @@ BOOL TeamSettings(WORD button)
                     if (sel1 == 16)
                         sel1 = -1;
 
-                    RedrawButton(&actual_menu->Bottone[33],
-                                 actual_menu->Bottone[33].Colore);
+                    RedrawButton(&actual_menu->Button[33],
+                                 actual_menu->Button[33].Color);
 
                     for (i = 0; i < 3; i++)
                         RedrawButton(&pannelli[48 + i],
-                                     pannelli[48 + i].Colore);
+                                     pannelli[48 + i].Color);
                 }
             }
             else
             {
-                struct Bottone *b2;
+                struct Button *b2;
                 int pos, selected = button / 2;
 
-                b2 = &actual_menu->Bottone[selected * 2 + 1];
+                b2 = &actual_menu->Button[selected * 2 + 1];
 
                 if (sel1 >= 0)
                 {
@@ -1385,13 +1384,13 @@ BOOL TeamSettings(WORD button)
                     {
                         if (!ruolo[actual_team]
                              || ruolo[actual_team] != selected)
-                            RedrawButton(b2, b2->Colore);
+                            RedrawButton(b2, b2->Color);
                         else
                             RedrawButton(b2, P_GIALLO);
                     }
                     else
                     {
-                        struct Bottone *b3 = &actual_menu->Bottone[sel1 * 2 + 1];
+                        struct Button *b3 = &actual_menu->Button[sel1 * 2 + 1];
                         int i;
 
                         pos = selected;
@@ -1411,13 +1410,13 @@ BOOL TeamSettings(WORD button)
 
                             SetPlayerStatus(11, teamlist[actual_team].keepers[1].injury, 0,
                                 (((teamlist[actual_team].keepers[0].Parata * 2 + teamlist[actual_team].keepers[1].Attenzione - 2 * 3 + 2) * 10) / 7) / 3);
-                            RedrawButton(b2, b2->Colore);
+                            RedrawButton(b2, b2->Color);
 
                             for (i = 0; i < 3; i++)
                             {
                                 RedrawButton(&pannelli[33 + i],
-                                             pannelli[33 + i].Colore);
-                                RedrawButton(&pannelli[i], pannelli[i].Colore);
+                                             pannelli[33 + i].Color);
+                                RedrawButton(&pannelli[i], pannelli[i].Color);
                             }
                         }
                         else if (pos != 0 && pos != 11 &&sel1 != 0 &&sel1 != 11)
@@ -1428,7 +1427,7 @@ BOOL TeamSettings(WORD button)
 
                             if (selected == 16)
                             {
-                                pos = actual_menu->Bottone[32].ID - 2;
+                                pos = actual_menu->Button[32].ID - 2;
                             }
                             else
                             {
@@ -1441,7 +1440,7 @@ BOOL TeamSettings(WORD button)
                             g = teamlist[actual_team].players[pos];
 
                             if (sel1 == 16)
-                                pos2 = actual_menu->Bottone[32].ID - 2;
+                                pos2 = actual_menu->Button[32].ID - 2;
                             else
                             {
                                 pos2 = sel1 - 1;
@@ -1456,19 +1455,19 @@ BOOL TeamSettings(WORD button)
                             AddPlayer(&teamlist[actual_team].players[pos2], sel1);
 
                             if (!ruolo[actual_team] || ruolo[actual_team] != selected)
-                                RedrawButton(b2, b2->Colore);
+                                RedrawButton(b2, b2->Color);
                             else
                                 RedrawButton(b2, P_GIALLO);
 
                             for (i = 0; i < 3; i++)
                             {
-                                RedrawButton(&pannelli[selected * 3 + i], pannelli[selected * 3 + i].Colore);
-                                RedrawButton(&pannelli[sel1 * 3 + i], pannelli[sel1 * 3 + i].Colore);
+                                RedrawButton(&pannelli[selected * 3 + i], pannelli[selected * 3 + i].Color);
+                                RedrawButton(&pannelli[sel1 * 3 + i], pannelli[sel1 * 3 + i].Color);
                             }
                         }
 
                         if (!ruolo[actual_team] || ruolo[actual_team] != sel1)
-                            RedrawButton(b3, b3->Colore);
+                            RedrawButton(b3, b3->Color);
                         else
                             RedrawButton(b3, P_GIALLO);
 
@@ -1485,12 +1484,12 @@ BOOL TeamSettings(WORD button)
         }
         else if (button < 40 || button == 41)
         {
-            if (b->Colore != COLORE_TATTICA_SELEZIONATA)
+            if (b->Color != COLOR_TATTICA_SELEZIONATA)
 changetactic:
             {
                 int i;
 
-                strcpy(teamlist[actual_team].tactics[0], b->Testo);
+                strcpy(teamlist[actual_team].tactics[0], b->Text);
                 bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
                     actual_menu->X, actual_menu->Y, 108, 156, bitmap_width, bitmap_width);
                 BltAnimObj(logos, main_bitmap, actual_menu->Immagine, actual_menu->X, actual_menu->Y, bitmap_width);
@@ -1498,16 +1497,16 @@ changetactic:
 
                 for (i = 0; i < 9; i++)
                 {
-                    if (teamsettings[34 + i].Colore == COLORE_TATTICA_SELEZIONATA)
+                    if (teamsettings[34 + i].Color == COLOR_TATTICA_SELEZIONATA)
                     {
-                        teamsettings[34 + i].Colore = COLORE_TATTICA_NON_SELEZIONATA;
-                        RedrawButton(&teamsettings[34 + i], COLORE_TATTICA_NON_SELEZIONATA);
+                        teamsettings[34 + i].Color = COLOR_TATTICA_NON_SELEZIONATA;
+                        RedrawButton(&teamsettings[34 + i], COLOR_TATTICA_NON_SELEZIONATA);
                     }
                 }
 
-                b->Colore = COLORE_TATTICA_SELEZIONATA;
+                b->Color = COLOR_TATTICA_SELEZIONATA;
 
-                RedrawButton(b, COLORE_TATTICA_SELEZIONATA);
+                RedrawButton(b, COLOR_TATTICA_SELEZIONATA);
                 ScreenSwap();
             }
         }
@@ -1520,17 +1519,17 @@ changetactic:
             {
                 char *c;
 
-                b = &actual_menu->Bottone[41];
+                b = &actual_menu->Button[41];
 
-                if (b->Testo)
-                    free(b->Testo);
+                if (b->Text)
+                    free(b->Text);
 
                 c = freq.File + strlen(freq.File)-1;
 
                 while(*c != '/' && *c != '\\' && c > freq.File)
                     c--;
 
-                b->Testo = strdup(c);
+                b->Text = strdup(c);
 
                 goto changetactic;
             }
@@ -1543,9 +1542,9 @@ changetactic:
 BOOL GamePrefs(WORD button)
 {
     if (button == (actual_menu->NumeroBottoni - 1)
-         && actual_menu->Bottone[button].ID >= 0)
+         && actual_menu->Button[button].ID >= 0)
     {
-        ChangeMenu(actual_menu->Bottone[button].ID);
+        ChangeMenu(actual_menu->Button[button].ID);
         return TRUE;
     }
 
@@ -1559,7 +1558,7 @@ BOOL GamePrefs(WORD button)
             if (!time_options[duration])
                 duration = 0;
 
-            actual_menu->Bottone[button].Testo = time_options[duration];
+            actual_menu->Button[button].Text = time_options[duration];
 
             t_l = atol(time_options[duration]);
             break;
@@ -1569,23 +1568,23 @@ BOOL GamePrefs(WORD button)
             if (!field_options[field])
                 field = 0;
 
-            actual_menu->Bottone[button].Testo = field_options[field];
+            actual_menu->Button[button].Text = field_options[field];
 
             if (field >= 7)
             {
-                actual_menu->Bottone[20].Testo = actual_menu->Bottone[21].Testo = NULL;
-                CancellaBottone(&actual_menu->Bottone[21]);
-                CancellaBottone(&actual_menu->Bottone[20]);
+                actual_menu->Button[20].Text = actual_menu->Button[21].Text = NULL;
+                CancelButton(&actual_menu->Button[21]);
+                CancelButton(&actual_menu->Button[20]);
             }
-            else if (!actual_menu->Bottone[20].Testo)
+            else if (!actual_menu->Button[20].Text)
             {
                 field_type = 0;
-                actual_menu->Bottone[20].Testo = msg_35;
-                actual_menu->Bottone[21].Testo = field_types[0];
-                RedrawButton(&actual_menu->Bottone[20],
-                             actual_menu->Bottone[20].Colore);
-                RedrawButton(&actual_menu->Bottone[21],
-                             actual_menu->Bottone[21].Colore);
+                actual_menu->Button[20].Text = msg_35;
+                actual_menu->Button[21].Text = field_types[0];
+                RedrawButton(&actual_menu->Button[20],
+                             actual_menu->Button[20].Color);
+                RedrawButton(&actual_menu->Button[21],
+                             actual_menu->Button[21].Color);
             }
             break;
         case 5:
@@ -1595,9 +1594,9 @@ BOOL GamePrefs(WORD button)
                 strictness = 0;
 
             if (strictness == 10)
-                actual_menu->Bottone[button].Testo = msg_2;
+                actual_menu->Button[button].Text = msg_2;
             else
-                actual_menu->Bottone[button].Testo = numero[strictness];
+                actual_menu->Button[button].Text = numero[strictness];
 
             break;
         case 7:
@@ -1605,42 +1604,34 @@ BOOL GamePrefs(WORD button)
         case 11:
         case 13:
         case 25:
-            if (actual_menu->Bottone[button].Testo == enabled)
-                actual_menu->Bottone[button].Testo = disabled;
+            if (actual_menu->Button[button].Text == enabled)
+                actual_menu->Button[button].Text = disabled;
             else
-                actual_menu->Bottone[button].Testo = enabled;
+                actual_menu->Button[button].Text = enabled;
 
             switch(button)
             {
                 case 7:
-                    injuries = injuries ? FALSE : TRUE;
+                    injuries = !injuries;
                     break;
                 case 9:
-                    substitutions = substitutions ? FALSE : TRUE;
+                    substitutions = !substitutions;
                     break;
                 case 11:
-                    bookings = bookings ? FALSE : TRUE;
+                    bookings = !bookings;
                     break;
                 case 13:
-                    use_replay = use_replay ? FALSE : TRUE;
+                    use_replay = !use_replay;
                     break;
                 case 25:
-                    offside = offside ? FALSE : TRUE;
+                    offside = !offside;
                     break;
             }
 
             break;
         case 15:
-            if (free_longpass)
-            {
-                free_longpass = FALSE;
-                actual_menu->Bottone[button].Testo = msg_36;
-            }
-            else
-            {
-                free_longpass = TRUE;
-                actual_menu->Bottone[button].Testo = msg_37;
-            }
+            free_longpass = !free_longpass;
+            actual_menu->Button[button].Text = free_longpass ? msg_37 : msg_36;
             break;
         case 21:
             field_type++;
@@ -1648,7 +1639,7 @@ BOOL GamePrefs(WORD button)
             if (!field_types[field_type])
                 field_type = 0;
 
-            actual_menu->Bottone[button].Testo = field_types[field_type];
+            actual_menu->Button[button].Text = field_types[field_type];
             break;
         case 17:
             daytime++;
@@ -1656,39 +1647,23 @@ BOOL GamePrefs(WORD button)
             if (!daytimes[daytime])
                 daytime = 0;
 
-            actual_menu->Bottone[button].Testo = daytimes[daytime];
+            actual_menu->Button[button].Text = daytimes[daytime];
             break;
         case 19:
-            if (golden_gol)
-            {
-                golden_gol = FALSE;
-                actual_menu->Bottone[button].Testo = disabled;
-            }
-            else
-            {
-                golden_gol = TRUE;
-                actual_menu->Bottone[button].Testo = enabled;
-            }
+            golden_gol = !golden_gol;
+            actual_menu->Button[button].Text = golden_gol ? enabled : disabled;
             break;
         case 23:
-            if (newchange)
-            {
-                newchange = FALSE;
-                actual_menu->Bottone[button].Testo = "CLASSIC";
-            }
-            else
-            {
-                newchange = TRUE;
-                actual_menu->Bottone[button].Testo = "ETW";
-            }
+            newchange = !newchange;
+            actual_menu->Button[button].Text = newchange ? "ETW" : "CLASSIC";
             break;
         default:
             D(bug("Error, option (%ld) not previewed!\n"/*-*/, button));
             return FALSE;
     }
 
-    RedrawButton(&actual_menu->Bottone[button],
-                 actual_menu->Bottone[button].Colore);
+    RedrawButton(&actual_menu->Button[button],
+                 actual_menu->Button[button].Color);
 
     return TRUE;
 }
@@ -1696,9 +1671,9 @@ BOOL GamePrefs(WORD button)
 BOOL AudioPrefs(WORD button)
 {
     if (button == (actual_menu->NumeroBottoni - 1)
-         && actual_menu->Bottone[button].ID >= 0)
+         && actual_menu->Button[button].ID >= 0)
     {
-        ChangeMenu(actual_menu->Bottone[button].ID);
+        ChangeMenu(actual_menu->Button[button].ID);
         return TRUE;
     }
 
@@ -1784,18 +1759,18 @@ BOOL AudioPrefs(WORD button)
 
     UpdatePrefs(MENU_AUDIO_PREFS);
 
-    RedrawButton(&actual_menu->Bottone[button],
-                 actual_menu->Bottone[button].Colore);
+    RedrawButton(&actual_menu->Button[button],
+                 actual_menu->Button[button].Color);
 
     switch(button)
     {
         case 5:
-            RedrawButton(&actual_menu->Bottone[3],
-                         actual_menu->Bottone[3].Colore);
+            RedrawButton(&actual_menu->Button[3],
+                         actual_menu->Button[3].Color);
             break;
         case 3:
-            RedrawButton(&actual_menu->Bottone[5],
-                         actual_menu->Bottone[5].Colore);
+            RedrawButton(&actual_menu->Button[5],
+                         actual_menu->Button[5].Color);
             break;
     }
 
@@ -1805,7 +1780,7 @@ BOOL AudioPrefs(WORD button)
 BOOL SystemPrefs(WORD button)
 {
     if (button >= (actual_menu->NumeroBottoni - 3)
-         && actual_menu->Bottone[button].ID >= 0)
+         && actual_menu->Button[button].ID >= 0)
     {
         if (button == (actual_menu->NumeroBottoni - 3))
         {
@@ -1822,7 +1797,7 @@ BOOL SystemPrefs(WORD button)
             UpdateKeyCfg();
         }
 
-        ChangeMenu(actual_menu->Bottone[button].ID);
+        ChangeMenu(actual_menu->Button[button].ID);
         return TRUE;
     }
 
@@ -1849,7 +1824,7 @@ BOOL SystemPrefs(WORD button)
                     control[(button - 5) / 2] = CTRL_KEY_1;
             }
 
-            actual_menu->Bottone[button].Testo = controls[control[(button - 5) / 2]];
+            actual_menu->Button[button].Text = controls[control[(button - 5) / 2]];
             break;
 
         case 9:
@@ -1858,8 +1833,8 @@ BOOL SystemPrefs(WORD button)
 
     UpdatePrefs(MENU_SYSTEM_PREFS);
 
-    RedrawButton(&actual_menu->Bottone[button],
-                 actual_menu->Bottone[1].Colore);
+    RedrawButton(&actual_menu->Button[button],
+                 actual_menu->Button[1].Color);
 
     return TRUE;
 }
@@ -1867,9 +1842,9 @@ BOOL SystemPrefs(WORD button)
 BOOL VideoPrefs(WORD button)
 {
     if (button == (actual_menu->NumeroBottoni - 1)
-         && actual_menu->Bottone[button].ID >= 0)
+         && actual_menu->Button[button].ID >= 0)
     {
-        ChangeMenu(actual_menu->Bottone[button].ID);
+        ChangeMenu(actual_menu->Button[button].ID);
         return TRUE;
     }
 
@@ -1892,14 +1867,14 @@ BOOL VideoPrefs(WORD button)
                 /* AC: Since these buttons are restored later on, I think
                  * that we don't have to eliminate them. They are Scaling
                  * and Buffering. */
-                //CancellaBottone(&actual_menu->Bottone[16]);
-                //CancellaBottone(&actual_menu->Bottone[17]);
-                CancellaBottone(&actual_menu->Bottone[18]);
-                CancellaBottone(&actual_menu->Bottone[19]);
+                //CancelButton(&actual_menu->Button[16]);
+                //CancelButton(&actual_menu->Button[17]);
+                CancelButton(&actual_menu->Button[18]);
+                CancelButton(&actual_menu->Button[19]);
 
                 /* AC: The same one is said for these */
-                //CancellaBottone(&actual_menu->Bottone[20]);
-                //CancellaBottone(&actual_menu->Bottone[21]);
+                //CancelButton(&actual_menu->Button[20]);
+                //CancelButton(&actual_menu->Button[21]);
             }
             else
             {
@@ -1908,21 +1883,21 @@ BOOL VideoPrefs(WORD button)
                 MenuResizing(atol(resolutions[current_resolution]),
                              atol(resolutions[current_resolution] + 4));
 
-                RedrawButton(&actual_menu->Bottone[16],
-                             actual_menu->Bottone[0].Colore);
-                RedrawButton(&actual_menu->Bottone[17],
-                             actual_menu->Bottone[1].Colore);
-                RedrawButton(&actual_menu->Bottone[20],
-                             actual_menu->Bottone[0].Colore);
-                RedrawButton(&actual_menu->Bottone[21],
-                             actual_menu->Bottone[1].Colore);
+                RedrawButton(&actual_menu->Button[16],
+                             actual_menu->Button[0].Color);
+                RedrawButton(&actual_menu->Button[17],
+                             actual_menu->Button[1].Color);
+                RedrawButton(&actual_menu->Button[20],
+                             actual_menu->Button[0].Color);
+                RedrawButton(&actual_menu->Button[21],
+                             actual_menu->Button[1].Color);
 
                 if (use_gfx_scaling)
                 {
-                    RedrawButton(&actual_menu->Bottone[18],
-                                 actual_menu->Bottone[0].Colore);
-                    RedrawButton(&actual_menu->Bottone[19],
-                                 actual_menu->Bottone[1].Colore);
+                    RedrawButton(&actual_menu->Button[18],
+                                 actual_menu->Button[0].Color);
+                    RedrawButton(&actual_menu->Button[19],
+                                 actual_menu->Button[1].Color);
                 }
             }
 #if 0
@@ -1948,13 +1923,13 @@ BOOL VideoPrefs(WORD button)
                 {
                     if (wb_game)
                     {
-                        actual_menu->Bottone[button].Testo = msg_40;
+                        actual_menu->Button[button].Text = msg_40;
                         wb_game = FALSE;
                         display_id = INVALID_ID;
                     }
                     else
                     {
-                        actual_menu->Bottone[button].Testo = "WORKBENCH"/*-*/;
+                        actual_menu->Button[button].Text = "WORKBENCH"/*-*/;
                         wb_game = TRUE;
                     }
                 }
@@ -1978,7 +1953,7 @@ BOOL VideoPrefs(WORD button)
                         c++;
                     }
 
-                    actual_menu->Bottone[button].Testo = ni.Name;
+                    actual_menu->Button[button].Text = ni.Name;
                 }
 
                 FreeFileRequest(Req);
@@ -1995,10 +1970,10 @@ BOOL VideoPrefs(WORD button)
                 {
                     detail_level &= ~USA_RADAR;
                     radar_position = -1;
-                    actual_menu->Bottone[button].Testo = disabled;
+                    actual_menu->Button[button].Text = disabled;
                 }
                 else
-                    actual_menu->Bottone[button].Testo
+                    actual_menu->Button[button].Text
                         = radar_options[radar_position];
             }
             else
@@ -2006,7 +1981,7 @@ BOOL VideoPrefs(WORD button)
                 radar_position = 0;
                 detail_level |= USA_RADAR;
 
-                actual_menu->Bottone[button].Testo
+                actual_menu->Button[button].Text
                     = radar_options[radar_position];
             }
             break;
@@ -2033,12 +2008,12 @@ BOOL VideoPrefs(WORD button)
             {
                 if (wb_game)
                 {
-                    actual_menu->Bottone[18].Testo = "SCALING RES";
-                    actual_menu->Bottone[19].Testo = scaling_resolutions[current_scaling];
-                    RedrawButton(&actual_menu->Bottone[19],
-                                 actual_menu->Bottone[1].Colore);
-                    RedrawButton(&actual_menu->Bottone[18],
-                                 actual_menu->Bottone[0].Colore);
+                    actual_menu->Button[18].Text = "SCALING RES";
+                    actual_menu->Button[19].Text = scaling_resolutions[current_scaling];
+                    RedrawButton(&actual_menu->Button[19],
+                                 actual_menu->Button[1].Color);
+                    RedrawButton(&actual_menu->Button[18],
+                                 actual_menu->Button[0].Color);
                     use_gfx_scaling = TRUE;
                 }
                 else
@@ -2047,8 +2022,8 @@ BOOL VideoPrefs(WORD button)
             else
             {
                 use_gfx_scaling = FALSE;
-                CancellaBottone(&actual_menu->Bottone[18]);
-                CancellaBottone(&actual_menu->Bottone[19]);
+                CancelButton(&actual_menu->Button[18]);
+                CancelButton(&actual_menu->Button[19]);
             }
             break;
         case 19:
@@ -2133,8 +2108,8 @@ BOOL VideoPrefs(WORD button)
 
     UpdatePrefs(MENU_VIDEO_PREFS);
 
-    RedrawButton(&actual_menu->Bottone[button],
-                 actual_menu->Bottone[1].Colore);
+    RedrawButton(&actual_menu->Button[button],
+                 actual_menu->Button[1].Color);
 
     return TRUE;
 }
@@ -2146,58 +2121,58 @@ void UpdatePrefs(BYTE set)
     switch(set)
     {
     case MENU_GAME_PREFS:
-        m->Bottone[1].Testo = time_options[duration];
-        m->Bottone[3].Testo = field_options[field];
-        m->Bottone[5].Testo = (strictness == 10) ? msg_2 : numero[strictness];
-        m->Bottone[7].Testo = injuries ? enabled : disabled;
-        m->Bottone[9].Testo = substitutions ? enabled : disabled;
-        m->Bottone[11].Testo = bookings ? enabled : disabled;
-        m->Bottone[13].Testo = use_replay ? enabled : disabled;
-        m->Bottone[15].Testo = free_longpass ? msg_37 : msg_36;
-        m->Bottone[17].Testo = daytimes[daytime];
-        m->Bottone[19].Testo = golden_gol ? enabled : disabled;
-        m->Bottone[20].Testo = (field < 7) ? msg_36 : NULL;
-        m->Bottone[21].Testo = (field < 7) ? field_types[field_type] : NULL;
-        m->Bottone[23].Testo = newchange ? "ETW" : "CLASSIC";
-        m->Bottone[25].Testo = offside ? enabled : disabled;
+        m->Button[1].Text = time_options[duration];
+        m->Button[3].Text = field_options[field];
+        m->Button[5].Text = (strictness == 10) ? msg_2 : numero[strictness];
+        m->Button[7].Text = injuries ? enabled : disabled;
+        m->Button[9].Text = substitutions ? enabled : disabled;
+        m->Button[11].Text = bookings ? enabled : disabled;
+        m->Button[13].Text = use_replay ? enabled : disabled;
+        m->Button[15].Text = free_longpass ? msg_37 : msg_36;
+        m->Button[17].Text = daytimes[daytime];
+        m->Button[19].Text = golden_gol ? enabled : disabled;
+        m->Button[20].Text = (field < 7) ? msg_36 : NULL;
+        m->Button[21].Text = (field < 7) ? field_types[field_type] : NULL;
+        m->Button[23].Text = newchange ? "ETW" : "CLASSIC";
+        m->Button[25].Text = offside ? enabled : disabled;
         break;
 
     case MENU_AUDIO_PREFS:
-        m->Bottone[1].Testo = no_sound ? disabled : enabled;
-        m->Bottone[3].Testo = use_crowd ? enabled : disabled;
-        m->Bottone[5].Testo = use_speaker ? enabled : disabled;
-        m->Bottone[7].Testo = menu_music ? enabled : disabled;
+        m->Button[1].Text = no_sound ? disabled : enabled;
+        m->Button[3].Text = use_crowd ? enabled : disabled;
+        m->Button[5].Text = use_speaker ? enabled : disabled;
+        m->Button[7].Text = menu_music ? enabled : disabled;
         break;
 
     case MENU_VIDEO_PREFS:
-        m->Bottone[1].Testo = wb_game ? "WINDOW"/*-*/ : "FULLSCREEN"/*-*/;
-        m->Bottone[3].Testo = (detail_level & USA_RADAR)
-                            ? radar_options[radar_position] : disabled;
-        m->Bottone[5].Testo = (detail_level & USA_RISULTATO)
-                            ? enabled : disabled;
-        m->Bottone[7].Testo = (detail_level & USA_ARBITRO)
-                            ? enabled : disabled;
-        m->Bottone[9].Testo = (detail_level & USA_POLIZIOTTI)
-                            ? enabled : disabled;
-        m->Bottone[11].Testo = (detail_level & USA_NOMI) ? enabled : disabled;
-        m->Bottone[13].Testo = nointro ? enabled : disabled;
-        m->Bottone[15].Testo = (detail_level & USA_GUARDALINEE)
-                             ? enabled : disabled;
-        m->Bottone[17].Testo = use_gfx_scaling ? enabled : disabled;
-        m->Bottone[18].Testo = use_gfx_scaling ? "SCALING RES" : NULL;
-        m->Bottone[19].Testo = use_gfx_scaling
-                             ? scaling_resolutions[current_scaling] : NULL;
-        m->Bottone[21].Testo = triple ? "TRIPLE"
-                             : force_single ? "SINGLE"
-                             : "DOUBLE";
-        m->Bottone[23].Testo = newpitches ? enabled : disabled;
-        m->Bottone[25].Testo = resolutions[current_resolution];
+        m->Button[1].Text = wb_game ? "WINDOW"/*-*/ : "FULLSCREEN"/*-*/;
+        m->Button[3].Text = (detail_level & USA_RADAR)
+                          ? radar_options[radar_position] : disabled;
+        m->Button[5].Text = (detail_level & USA_RISULTATO)
+                          ? enabled : disabled;
+        m->Button[7].Text = (detail_level & USA_ARBITRO)
+                          ? enabled : disabled;
+        m->Button[9].Text = (detail_level & USA_POLIZIOTTI)
+                          ? enabled : disabled;
+        m->Button[11].Text = (detail_level & USA_NOMI) ? enabled : disabled;
+        m->Button[13].Text = nointro ? enabled : disabled;
+        m->Button[15].Text = (detail_level & USA_GUARDALINEE)
+                           ? enabled : disabled;
+        m->Button[17].Text = use_gfx_scaling ? enabled : disabled;
+        m->Button[18].Text = use_gfx_scaling ? "SCALING RES" : NULL;
+        m->Button[19].Text = use_gfx_scaling
+                           ? scaling_resolutions[current_scaling] : NULL;
+        m->Button[21].Text = triple ? "TRIPLE"
+                           : force_single ? "SINGLE"
+                           : "DOUBLE";
+        m->Button[23].Text = newpitches ? enabled : disabled;
+        m->Button[25].Text = resolutions[current_resolution];
         break;
 
     case MENU_SYSTEM_PREFS:
-        m->Bottone[3].Testo = chunky_version ? enabled : disabled;
-        m->Bottone[5].Testo = controls[control[0]];
-        m->Bottone[7].Testo = controls[control[1]];
+        m->Button[3].Text = chunky_version ? enabled : disabled;
+        m->Button[5].Text = controls[control[0]];
+        m->Button[7].Text = controls[control[1]];
         break;
   }
 }
@@ -2215,7 +2190,7 @@ void SetupMatches(void)
             {
                 int i;
 
-                cp[6].Testo = NULL;
+                cp[6].Text = NULL;
 
                 for (i = 0; i < ARCADE_TEAMS + 1; i++)
                     if (i != *teamarray)
@@ -2232,7 +2207,7 @@ void SetupMatches(void)
                 struct team_disk *s = &teamlist[arcade_sequence[turno]];
                 int i;
 
-                menu[MENU_CHALLENGE].Titolo = msg_41;
+                menu[MENU_CHALLENGE].Title = msg_41;
 
                 for (i = 0; i < s->nkeepers; i++)
                 {
@@ -2251,7 +2226,7 @@ void SetupMatches(void)
                 }
             }
             else if (turno == 10)
-                menu[MENU_CHALLENGE].Titolo = msg_42;
+                menu[MENU_CHALLENGE].Title = msg_42;
             else
             {
                 // Add here the final visualization one of the arcade.
@@ -2269,24 +2244,24 @@ void SetupMatches(void)
                 cb[0].ID = MENU_ARCADE;
             }
             // Team A
-            cp[0].Testo[1] = *teamarray;
-            cp[4].Colore = cp[0].Colore = cp[0].Highlight = cp[2].Colore = colore_team[controllo[*teamarray] + 1];
-            cp[2].Testo = teamlist[*teamarray].name;
+            cp[0].Text[1] = *teamarray;
+            cp[4].Color = cp[0].Color = cp[0].Highlight = cp[2].Color = colore_team[controllo[*teamarray] + 1];
+            cp[2].Text = teamlist[*teamarray].name;
             cp[4].Highlight = cp[2].Highlight = highlight_team[controllo[*teamarray] + 1];
 
             jingle = PlayBackSound(menusound[FIRST_ARCADE + arcade_sequence[turno]]);
             D(bug("Playo il suono %ld sul canale %ld...\n", FIRST_ARCADE + arcade_sequence[turno], jingle));
 
-            if (cp[4].Testo)
+            if (cp[4].Text)
             {
-                free(cp[4].Testo);
-                cp[4].Testo = NULL;
-                cp[5].Testo = NULL;
+                free(cp[4].Text);
+                cp[4].Text = NULL;
+                cp[5].Text = NULL;
             }
             // Team B
-            cp[1].Testo[1] = arcade_sequence[turno];
-            cp[3].Testo = teamlist[arcade_sequence[turno]].name;
-            cp[5].Colore = cp[1].Colore = cp[1].Highlight = cp[3].Colore = colore_team[0];
+            cp[1].Text[1] = arcade_sequence[turno];
+            cp[3].Text = teamlist[arcade_sequence[turno]].name;
+            cp[5].Color = cp[1].Color = cp[1].Highlight = cp[3].Color = colore_team[0];
             cp[5].Highlight = cp[3].Highlight = highlight_team[0];
 
             break;
@@ -2294,14 +2269,14 @@ void SetupMatches(void)
             mb[0].ID = MENU_MATCHES;
 
             if (arcade)
-                menu[MENU_MATCHES].Titolo = msg_33;
+                menu[MENU_MATCHES].Title = msg_33;
             else
-                menu[MENU_MATCHES].Titolo = msg_43;
+                menu[MENU_MATCHES].Title = msg_43;
 
             ViewEliminazioneDiretta(nteams / 2);
             break;
         case MENU_LEAGUE:
-            menu[MENU_MATCHES].Titolo = msg_44;
+            menu[MENU_MATCHES].Title = msg_44;
 
             if (turno < totale_giornate)
             {
@@ -2323,31 +2298,31 @@ void SetupMatches(void)
 
                     if (b == FAKE_TEAM)
                     {
-                        mp[k * 4].Testo = teamlist[a].name;
-                        mp[k * 4].Colore = colore_team[controllo[a] + 1];
+                        mp[k * 4].Text = teamlist[a].name;
+                        mp[k * 4].Color = colore_team[controllo[a] + 1];
                         mp[k * 4].Highlight = highlight_team[controllo[a] + 1];
-                        mp[k * 4 + 1].Testo = NULL;
-                        mp[k * 4 + 2].Testo = "NO GAME"/*-*/;
-                        mp[k * 4 + 2].Colore = colore_team[0];
+                        mp[k * 4 + 1].Text = NULL;
+                        mp[k * 4 + 2].Text = "NO GAME"/*-*/;
+                        mp[k * 4 + 2].Color = colore_team[0];
                         mp[k * 4 + 2].Highlight = highlight_team[0];
 
                     }
                     else
                     {
-                        mp[k * 4].Colore = colore_team[controllo[a] + 1];
+                        mp[k * 4].Color = colore_team[controllo[a] + 1];
                         mp[k * 4].Highlight = highlight_team[controllo[a] + 1];
-                        mp[k * 4 + 2].Colore = colore_team[controllo[b] + 1];
+                        mp[k * 4 + 2].Color = colore_team[controllo[b] + 1];
                         mp[k * 4 + 2].Highlight = highlight_team[controllo[b] + 1];
 
-                        mp[k * 4].Testo = teamlist[a].name;
-                        mp[k * 4 + 1].Testo = "-"/*-*/;
-                        mp[k * 4 + 2].Testo = teamlist[b].name;
+                        mp[k * 4].Text = teamlist[a].name;
+                        mp[k * 4 + 1].Text = "-"/*-*/;
+                        mp[k * 4 + 2].Text = teamlist[b].name;
                     }
 
-                    if (mp[k * 4 + 3].Testo)
+                    if (mp[k * 4 + 3].Text)
                     {
-                        free(mp[k * 4 + 3].Testo);
-                        mp[k * 4 + 3].Testo = NULL;
+                        free(mp[k * 4 + 3].Text);
+                        mp[k * 4 + 3].Text = NULL;
                     }
                 }
 
@@ -2381,24 +2356,24 @@ void SetupMatches(void)
                 extern struct Match camp4[3][2];
                 extern BYTE start_groups[8][4];
 
-                menu[MENU_MATCHES].Titolo = ( turno == 0 ? msg_45 : (turno == 1 ? msg_46 : msg_47));
+                menu[MENU_MATCHES].Title = ( turno == 0 ? msg_45 : (turno == 1 ? msg_46 : msg_47));
 
                 for (i = 0; i < 8; i++)
                 {
                     for (j = 0; j < 2; j++)
                     {
-                        mp[k * 4].Testo = teamlist[start_groups[i][camp4[turno][j].t1 - 1]].name;
-                        mp[k * 4 + 1].Testo = "-"/*-*/;
-                        mp[k * 4 + 2].Testo = teamlist[start_groups[i][camp4[turno][j].t2 - 1]].name;
-                        mp[k * 4].Colore = colore_team[controllo[start_groups[i][camp4[turno][j].t1 - 1]] + 1];
+                        mp[k * 4].Text = teamlist[start_groups[i][camp4[turno][j].t1 - 1]].name;
+                        mp[k * 4 + 1].Text = "-"/*-*/;
+                        mp[k * 4 + 2].Text = teamlist[start_groups[i][camp4[turno][j].t2 - 1]].name;
+                        mp[k * 4].Color = colore_team[controllo[start_groups[i][camp4[turno][j].t1 - 1]] + 1];
                         mp[k * 4].Highlight = highlight_team[controllo[start_groups[i][camp4[turno][j].t1 - 1]] + 1];
-                        mp[k * 4 + 2].Colore = colore_team[controllo[start_groups[i][camp4[turno][j].t2 - 1]] + 1];
+                        mp[k * 4 + 2].Color = colore_team[controllo[start_groups[i][camp4[turno][j].t2 - 1]] + 1];
                         mp[k * 4 + 2].Highlight = highlight_team[controllo[start_groups[i][camp4[turno][j].t2 - 1]] + 1];
 
-                        if (mp[k * 4 + 3].Testo)
+                        if (mp[k * 4 + 3].Text)
                         {
-                            free(mp[k * 4 + 3].Testo);
-                            mp[k * 4 + 3].Testo = NULL;
+                            free(mp[k * 4 + 3].Text);
+                            mp[k * 4 + 3].Text = NULL;
                         }
 
                         k++;
@@ -2412,33 +2387,33 @@ void SetupMatches(void)
 
 
                 if (turno != 6)
-                    menu[MENU_MATCHES].Titolo = msg_48;
+                    menu[MENU_MATCHES].Title = msg_48;
                 else
                 {
                     int i;
 
-                    menu[MENU_MATCHES].Titolo = msg_49;
+                    menu[MENU_MATCHES].Title = msg_49;
 
                     for (i = 0; i < 4; i++)
                     {
-                        mp[5 * 4 + i].Testo = mp[1 * 4 + i].Testo;
-                        mp[2 * 4 + i].Testo = mp[i].Testo;
-                        mp[2 * 4 + i].Colore = mp[i].Colore;
+                        mp[5 * 4 + i].Text = mp[1 * 4 + i].Text;
+                        mp[2 * 4 + i].Text = mp[i].Text;
+                        mp[2 * 4 + i].Color = mp[i].Color;
                         mp[2 * 4 + i].Highlight = mp[i].Highlight;
-                        mp[5 * 4 + i].Colore = mp[4 + i].Colore;
+                        mp[5 * 4 + i].Color = mp[4 + i].Color;
                         mp[5 * 4 + i].Highlight = mp[4 + i].Highlight;
-                        mp[i].Testo = NULL;
-                        mp[4 + i].Testo = NULL;
-                        mp[3 * 4 + i].Testo = NULL;
-                        mp[4 * 4 + i].Testo = NULL;
+                        mp[i].Text = NULL;
+                        mp[4 + i].Text = NULL;
+                        mp[3 * 4 + i].Text = NULL;
+                        mp[4 * 4 + i].Text = NULL;
                     }
 
-                    mp[4].Testo = msg_50;
-                    mp[4].Colore = P_GIALLO;
+                    mp[4].Text = msg_50;
+                    mp[4].Color = P_GIALLO;
                     mp[4].Highlight = P_BIANCO;
 
-                    mp[4 * 4].Testo = msg_51;
-                    mp[4 * 4].Colore = P_GIALLO;
+                    mp[4 * 4].Text = msg_51;
+                    mp[4 * 4].Color = P_GIALLO;
                     mp[4 * 4].Highlight = P_BIANCO;
                 }
 
@@ -2476,17 +2451,17 @@ void PlayMatches(void)
                 result = PlayMatch(*teamarray, arcade_sequence[turno]);
 
 
-                cp[2].Testo = teamlist[*teamarray].name;
-                cp[3].Testo = teamlist[arcade_sequence[turno]].name;
+                cp[2].Text = teamlist[*teamarray].name;
+                cp[3].Text = teamlist[arcade_sequence[turno]].name;
 
-                c = cp[4].Testo = strdup(ElaboraRisultato(*teamarray, arcade_sequence[turno], result));
+                c = cp[4].Text = strdup(ElaboraRisultato(*teamarray, arcade_sequence[turno], result));
 
                 while(*c != '-')
                     c++;
 
                 *c++ = 0;
 
-                cp[5].Testo = c;
+                cp[5].Text = c;
 
                 make_setup = TRUE;
 
@@ -2506,15 +2481,15 @@ void PlayMatches(void)
                     turno = 0;
                     competition = MENU_TEAMS;
                     LoadTeams("teams/arcade"/*-*/); // Reload original teams...
-                    cp[2].Testo = teamlist[*teamarray].name;
-                    cp[3].Testo = teamlist[arcade_sequence[turno]].name;
-                    cp[6].Testo = msg_52;
+                    cp[2].Text = teamlist[*teamarray].name;
+                    cp[3].Text = teamlist[arcade_sequence[turno]].name;
+                    cp[6].Text = msg_52;
                     cb[0].ID = MENU_ARCADE;
                 }
             }
             break;
         case MENU_MATCHES:
-            menu[MENU_MATCHES].Titolo = arcade ? msg_53 : msg_54;
+            menu[MENU_MATCHES].Title = arcade ? msg_53 : msg_54;
 
             if (nteams == 2)
                 final = TRUE;
@@ -2540,7 +2515,7 @@ void PlayMatches(void)
             }
             break;
         case MENU_LEAGUE:
-            menu[MENU_MATCHES].Titolo = msg_55;
+            menu[MENU_MATCHES].Title = msg_55;
 
             if (turno < totale_giornate)
             {
@@ -2558,7 +2533,7 @@ void PlayMatches(void)
                     if (a != FAKE_TEAM && b != FAKE_TEAM)
                     {
                         risultato = PlayMatch(a, b);
-                        mp[k * 4 + 3].Testo = strdup(ElaboraRisultato(a, b, risultato));
+                        mp[k * 4 + 3].Text = strdup(ElaboraRisultato(a, b, risultato));
                     }
                 }
 
@@ -2584,7 +2559,7 @@ void PlayMatches(void)
             }
             break;
         case MENU_WORLD_CUP:
-            menu[MENU_MATCHES].Titolo = msg_56;
+            menu[MENU_MATCHES].Title = msg_56;
 
             if (turno < 3)
             {
@@ -2603,7 +2578,7 @@ void PlayMatches(void)
 
                         risultato = PlayMatch(a, b);
 
-                        mp[k * 4 + 3].Testo = strdup(ElaboraRisultato(a, b, risultato));
+                        mp[k * 4 + 3].Text = strdup(ElaboraRisultato(a, b, risultato));
 
                         k++;
                     }
@@ -2641,14 +2616,14 @@ void PlayMatches(void)
 
                     mb[0].ID = MENU_WORLD_CUP_END;
 
-                    mp[5 * 4 + 3].Testo = mp[4 + 3].Testo;
-                    mp[2 * 4 + 3].Testo = mp[3].Testo;
-                    mp[3].Testo = mp[4 + 3].Testo = NULL;
+                    mp[5 * 4 + 3].Text = mp[4 + 3].Text;
+                    mp[2 * 4 + 3].Text = mp[3].Text;
+                    mp[3].Text = mp[4 + 3].Text = NULL;
 
                     for (i = 0; i < 4; i++)
                     {
-                        wcfp[i].Testo = teamlist[teamarray[i]].name;
-                        wcfp[i].Colore = colore_team[controllo[teamarray[i]] + 1];
+                        wcfp[i].Text = teamlist[teamarray[i]].name;
+                        wcfp[i].Color = colore_team[controllo[teamarray[i]] + 1];
                         wcfp[i].Highlight = highlight_team[controllo[teamarray[i]] + 1];
                     }
 
@@ -2669,18 +2644,18 @@ void FreeHighSelection(void)
     register int i;
 
     for (i = 0; i < 64; i++)
-        if (hl[i].Testo)
-            free(hl[i].Testo);
+        if (hl[i].Text)
+            free(hl[i].Text);
 }
 
 BOOL HighSelection(WORD button)
 {
-    struct Bottone *b;
+    struct Button *b;
 
     if (button < 0)
         return TRUE;
 
-    b = &actual_menu->Bottone[button];
+    b = &actual_menu->Button[button];
 
     if (button == 64)
     {
@@ -2691,11 +2666,11 @@ BOOL HighSelection(WORD button)
     {
         char buffer[1024];
 
-        snprintf(buffer, 1024, "%sreplay.%s", TEMP_DIR, b->Testo);
+        snprintf(buffer, 1024, "%sreplay.%s", TEMP_DIR, b->Text);
 
         if (!savehigh)
         {
-            D(bug("Load %s...\n", b->Testo));
+            D(bug("Load %s...\n", b->Text));
 
             LoadHigh(buffer);
         }
@@ -2753,7 +2728,7 @@ void SetHighSelection(void)
     D(bug("Scan dir %s...\n", TEMP_DIR));
 
     for (i = 0; i < 64; i++)
-        hl[i].Testo = NULL;
+        hl[i].Text = NULL;
 
     if ((lock = opendir(TEMP_DIR)))
     {
@@ -2780,24 +2755,24 @@ void SetHighSelection(void)
     for (i = 0; i < n; i++)
     {
         hl[i + start * TS_COLONNE].ID = i;
-        hl[i + start * TS_COLONNE].Testo = highs[i];
+        hl[i + start * TS_COLONNE].Text = highs[i];
     }
 }
 
 void UpdateJoyCfg(int joy)
 {
-    extern struct Bottone joycfg_bottoni[];
+    extern struct Button joycfg_bottoni[];
     int i;
 
     for (i = 0; i < 7; i++)
     {
-        joycfg_bottoni[i * 2 + 1].Testo = buttons[joycfg_buttons[joy][i]];
+        joycfg_bottoni[i * 2 + 1].Text = buttons[joycfg_buttons[joy][i]];
     }
 }
 
 void UpdateKeyCfg(void)
 {
-    extern struct Bottone keycfg_bottoni[];
+    extern struct Button keycfg_bottoni[];
     int i;
 
     for (i = 0; i < 20; i++)
@@ -2812,17 +2787,17 @@ void UpdateKeyCfg(void)
             j++;
         }
         keys_names[i][j] = 0;
-        keycfg_bottoni[i * 2 + 1].Testo = keys_names[i];
+        keycfg_bottoni[i * 2 + 1].Text = keys_names[i];
     }
 
     /* If we have selected a six keys BLUE control */
     if (control[0] == CTRL_KEY_1)
         for (i = 16; i < 20; i++)
-            keycfg_bottoni[i * 2 + 1].Testo = NULL;
+            keycfg_bottoni[i * 2 + 1].Text = NULL;
 
     /* If we have selected a six keys RED control */
     if (control[1] == CTRL_KEY_1)
         for (i = 6; i < 10; i++)
-            keycfg_bottoni[i * 2 + 1].Testo = NULL;
+            keycfg_bottoni[i * 2 + 1].Text = NULL;
 }
 

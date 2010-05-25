@@ -1,31 +1,31 @@
-#define NULL 0L
+#include <stddef.h>
+
 #include "lists.h"
 
 void MyNewList(struct MyList *l)
 {
-    l->lh_TailPred=(struct MyNode *)l;
-    l->lh_Head=(struct MyNode *)&l->lh_Tail;
-    l->lh_Tail=NULL;
-
+    l->pTailPred = (struct MyNode *)l;
+    l->pHead = (struct MyNode *)&l->pTail;
+    l->pTail = NULL;
 }
 
-void MyAddTail(struct MyList *l,struct MyNode *n)
+void MyAddTail(struct MyList *l, struct MyNode *n)
 {
-    n->ln_Pred=l->lh_TailPred;
-    n->ln_Succ=l->lh_TailPred->ln_Succ;
-    n->ln_Succ->ln_Pred=n->ln_Pred->ln_Succ=n;
+    n->pPrev = l->pTailPred;
+    n->pNext = l->pTailPred->pNext;
+    n->pNext->pPrev = n->pPrev->pNext = n;
 }
-
 
 void MyRemove(struct MyNode *n)
 {
-    n->ln_Succ->ln_Pred=n->ln_Pred;
-    n->ln_Pred->ln_Succ=n->ln_Succ;
+    n->pNext->pPrev = n->pPrev;
+    n->pPrev->pNext = n->pNext;
 }
 
-void MyAddHead(struct MyList *l,struct MyNode *n)
+void MyAddHead(struct MyList *l, struct MyNode *n)
 {
-    n->ln_Succ=l->lh_Head;
-    n->ln_Pred=l->lh_Head->ln_Pred;
-    n->ln_Pred->ln_Succ=n->ln_Succ->ln_Pred=n;
+    n->pNext = l->pHead;
+    n->pPrev = l->pHead->pPrev;
+    n->pPrev->pNext = n->pNext->pPrev = n;
 }
+

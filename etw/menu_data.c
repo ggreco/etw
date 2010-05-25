@@ -30,7 +30,7 @@ char *menu_soundname[]=
  * VERY simpler way to add voices to any menu!
  */
 
-struct Bottone main_bottoni[]=
+struct Button main_bottoni[]=
 {
     {27,76,150,91,4,7,9,msg_85}, // Main menu
     {27,111,150,126,MENU_PREFS,3,0,msg_86},
@@ -41,7 +41,7 @@ struct Bottone main_bottoni[]=
     {70,224,250,236,ID_QUIT_GAME,14,13,msg_91},
 };
 
-struct Bottone prefs_bottoni[]=
+struct Button prefs_bottoni[]=
 {
     {20,67,150,80,MENU_GAME_PREFS,3,0,msg_92},  // Preferences
     {20,93,150,106,MENU_VIDEO_PREFS,0,13,msg_93},
@@ -51,7 +51,7 @@ struct Bottone prefs_bottoni[]=
     {72,229,246,241,-1,9,11,msg_96},
 };
 
-struct Bottone high_bottoni[]=
+struct Button high_bottoni[]=
 {
     {20,67,150,80,MENU_HIGH_SELECTION,11,12,msg_97},  // Highlights
     {20,93,150,106,MENU_HIGH_SELECTION,11,12,msg_98},
@@ -59,7 +59,7 @@ struct Bottone high_bottoni[]=
     {72,210,246,222,0,14,13,msg_95},
 };
 
-struct Bottone teams_bottoni[]=
+struct Button teams_bottoni[]=
 {
     {20,67,150,80,-1,6,8,msg_100},  // Teams
     {20,93,150,106,-1,6,8,msg_99},
@@ -69,7 +69,7 @@ struct Bottone teams_bottoni[]=
     {72,229,246,241,-1,9,11,msg_96},
 };
 
-struct Bottone start_bottoni[]=
+struct Button start_bottoni[]=
 {
     {20,57,150,70,MENU_ARCADE,7,9,msg_102},  // Game Start
     {20,83,150,96,MENU_SIMULATION,7,9,msg_103},
@@ -79,7 +79,7 @@ struct Bottone start_bottoni[]=
     {72,210,246,222,MENU_MAIN_MENU,14,13,msg_95},
 };
 
-struct Bottone arcade_bottoni[]=
+struct Button arcade_bottoni[]=
 {
     {20,67,150,80,MENU_SELECTION_TYPE,7,9,msg_106},  // Arcade
     {20,93,150,106,MENU_SELECTION_TYPE,7,9,msg_107},
@@ -87,7 +87,7 @@ struct Bottone arcade_bottoni[]=
     {72,210,246,222,4,14,13,msg_108},
 };
 
-struct Bottone sim_bottoni[]=
+struct Button sim_bottoni[]=
 {
     {20,47,150,60,0,7,9,NULL},  // Simulation
     {20,73,150,86,MENU_TEAM_SELECTION,7,9,msg_109},
@@ -98,7 +98,7 @@ struct Bottone sim_bottoni[]=
     {72,210,246,222,4,14,13,msg_108},
 };
 
-struct Bottone career_bottoni[]=
+struct Button career_bottoni[]=
 {
     {20,67,150,80,MENU_TEAM_SELECTION,7,9,msg_112},  // Career
     {20,93,150,106,MENU_TEAM_SELECTION,7,9,msg_113},
@@ -108,7 +108,7 @@ struct Bottone career_bottoni[]=
     {72,210,246,222,4,14,13,msg_108},
 };
 
-struct Bottone train_bottoni[]=
+struct Button train_bottoni[]=
 {
     {20,67,150,80,MENU_TEAM_SELECTION,7,9,msg_115},  // Training
     {20,93,150,106,MENU_TEAM_SELECTION,7,9,msg_116},
@@ -116,14 +116,14 @@ struct Bottone train_bottoni[]=
     {72,210,246,222,4,14,13,msg_108},
 };
 
-struct Bottone score_bottoni[]=
+struct Button score_bottoni[]=
 {
     {20,67,150,80,MENU_VIEW_SCORES,8,15,msg_97},  // Scores
     {20,93,150,106,-1,8,15,msg_118},
     {72,210,246,222,MENU_MAIN_MENU,14,13,msg_95},
 };
 
-struct Bottone gprefs_bottoni[]=
+struct Button gprefs_bottoni[]=
 {
     {10,64,100,71,-1,0,3,msg_119},{101,64,184,71,-1,3,0,NULL},
     {10,75,100,82,-1,0,3,msg_120},{101,75,184,82,-1,3,0,NULL},
@@ -141,7 +141,7 @@ struct Bottone gprefs_bottoni[]=
     {72,220,246,232,MENU_PREFS,14,13,msg_108},
 };
 
-struct Bottone sprefs_bottoni[]=
+struct Button sprefs_bottoni[]=
 {
     {10,75,100,82,-1,0,3,"POWERPC"},{101,75,184,82,-1,3,0,NULL},
     {10,86,100,93,-1,0,3,"CHUNKY"},{101,86,184,93,-1,3,0,NULL},
@@ -153,7 +153,7 @@ struct Bottone sprefs_bottoni[]=
     {72,220,246,232,MENU_PREFS,14,13,msg_108},
 };
 
-struct Bottone vprefs_bottoni[]=
+struct Button vprefs_bottoni[]=
 {
     {10,64,100,71,-1,0,3,msg_130},{101,64,184,71,-1,3,0,NULL},
     {10,75,100,82,-1,0,3,msg_131},{101,75,184,82,-1,3,0,NULL},
@@ -172,7 +172,7 @@ struct Bottone vprefs_bottoni[]=
     {72,220,246,232,MENU_PREFS,14,13,msg_108},
 };
 
-struct Bottone aprefs_bottoni[]=
+struct Button aprefs_bottoni[]=
 {
     {10,64,100,71,-1,0,3,msg_94},{101,64,184,71,-1,3,0,NULL},
     {10,75,100,82,-1,0,3,msg_136},{101,75,184,82,-1,3,0,NULL},
@@ -181,21 +181,21 @@ struct Bottone aprefs_bottoni[]=
     {72,210,246,222,MENU_PREFS,14,13,msg_108}
 };
 
-struct Bottone seltype_bottoni[]=
+struct Button seltype_bottoni[]=
 {
     {20,67,150,80,MENU_ARCADE_SELECTION,7,9,msg_139},  // Selection Type
     {20,93,150,106,MENU_TEAM_SELECTION,7,9,msg_140},
     {72,210,246,222,MENU_ARCADE,14,13,msg_108},
 };
 
-struct Bottone scorelist_bottoni[]=
+struct Button scorelist_bottoni[]=
 {
     {60,229,259,241,MENU_SCORES,7,9,msg_0}, // Score list
 };
 
 
 
-struct Bottone teamselection[]=
+struct Button teamselection[]=
 {
     {5,31,79,38    ,-1,14,13,NULL},{83,31,157,38    ,-17,14,13,NULL},{161,31,235,38    ,-33,14,13,NULL},{239,31,313,38,-49,14,13,NULL},
     {5,42,79,49    ,-2,14,13,NULL},{83,42,157,49    ,-18,14,13,NULL},{161,42,235,49    ,-34,14,13,NULL},{239,42,313,49,-50,14,13,NULL},
@@ -242,7 +242,7 @@ char numero[17][3]={
 #if 0
 
 
-struct Bottone teamsettings[]=
+struct Button teamsettings[]=
 {
     {14,31,22,38,-1,8,6,numero[0]},{24,31,136,38,-1,8,6,NULL},     
     {14,42,22,49,-1,8,6,numero[1]},{24,42,136,49,-1,8,6,NULL},       
@@ -271,7 +271,7 @@ struct Bottone teamsettings[]=
     {165,239,309,251,-1,7,9,msg_101}
 };
 
-struct Bottone pannelli[]=
+struct Button pannelli[]=
 {
     {4,31,12,38,-1,8,6,NULL},    {138,31,150,38,-1,14,13,msg_141},{152,31,192,38,-1,14,13,NULL}, 
     {4,42,12,49,-1,8,6,NULL},   {138,42,150,49,-1,14,13,NULL},{152,42,192,49,-1,14,13,NULL},
@@ -294,7 +294,7 @@ struct Bottone pannelli[]=
 
 #else
 
-struct Bottone pannelli[]=
+struct Button pannelli[]=
 {
     {4,31,12,38,-1,8,6,NULL},    {138,31,146,38,-1,14,13,msg_141},{148,31,192,38,-1,14,13,NULL}, 
     {4,42,12,49,-1,8,6,NULL},   {138,42,146,49,-1,14,13,NULL},{148,42,192,49,-1,14,13,NULL},
@@ -315,7 +315,7 @@ struct Bottone pannelli[]=
     {4,218,12,225,-1,14,13,NULL},{138,218,146,225,-1,14,13,NULL},{148,218,192,225,-1,14,13,NULL},
 };
 
-struct Bottone teamsettings[]=
+struct Button teamsettings[]=
 {
     {14,31,22,38,-1,8,6,numero[0]},{24,31,136,38,-1,8,6,NULL},     
     {14,42,22,49,-1,8,6,numero[1]},{24,42,136,49,-1,8,6,NULL},       
@@ -354,7 +354,7 @@ struct Bottone teamsettings[]=
  * The old ones I've replaced creates an overlap between the header and the other
  * rows.
  */
-struct Bottone wcp[]=
+struct Button wcp[]=
 {
 // A
     {5,32,95,39,-1,8,6,NULL},{97,32,109,39,-1,8,6,NULL},{111,32,123,39,-1,8,6,NULL},{125,32,137,39,-1,8,6,NULL},{139,32,151,39,-1,8,6,NULL},
@@ -409,14 +409,14 @@ struct Bottone wcp[]=
     {165,158,255,165,-1,14,13,msg_153},{257,158,269,165,-1,14,13,msg_143},{271,158,283,165,-1,14,13,msg_144},{285,158,297,165,-1,14,13,msg_145},{299,158,311,165,-1,14,13,msg_146},
 };
 
-struct Bottone wcb[]=
+struct Button wcb[]=
 {
     {10,229,106,241,MENU_MATCHES,7,9,msg_0},
     {111,229,207,241,-1,14,13,msg_98},
     {212,229,309,241,MENU_SIMULATION,11,12,msg_6},
 };
 
-struct Bottone mb[]=
+struct Button mb[]=
 {
     {10,229,106,241,MENU_MATCHES,7,9,msg_0},
     {111,229,207,241,-1,14,13,msg_98},
@@ -424,7 +424,7 @@ struct Bottone mb[]=
 };
 
 
-struct Bottone lb[]=
+struct Button lb[]=
 {
     {10,229,106,241,MENU_MATCHES,7,9,msg_0},
     {111,229,207,241,-1,14,13,msg_98},
@@ -432,7 +432,7 @@ struct Bottone lb[]=
 };
 
 /*
-struct Bottone cb[]=
+struct Button cb[]=
 {
     {10,229,106,241,MENU_MATCHES,7,9,"CONTINUE"},
     {111,229,207,241,-1,14,13,"SAVE"},
@@ -444,7 +444,7 @@ struct Bottone cb[]=
  * since the things are inverted, at the moment we hold first red and
  * then the blue.
  */
-struct Bottone keycfg_bottoni[]=
+struct Button keycfg_bottoni[]=
 {
     /* "RED" keyboard configuration */
     {10,24,80,31,-1,7,9,"MOVE UP"},{81,24,154,31,-1,9,11,NULL},
@@ -480,7 +480,7 @@ struct Bottone keycfg_bottoni[]=
     {72,229,246,241,MENU_SYSTEM_PREFS,14,13,msg_108},
 };
 
-struct Bottone joycfg_bottoni[]=
+struct Button joycfg_bottoni[]=
 {
     {10,64,100,71,-1,0,3,"SHOT"},{101,64,184,71,-1,3,0,NULL},
     {10,75,100,82,-1,0,3,"SHORT PASS"},{101,75,184,82,-1,3,0,NULL},
@@ -496,7 +496,7 @@ struct Bottone joycfg_bottoni[]=
     {90,229,230,241,MENU_SYSTEM_PREFS,11,12,msg_6},
 };
 
-struct Bottone league[]=
+struct Button league[]=
 {
     {25,24,147,31,-1,14,13,msg_154},{149,24,168,31,-1,14,13,msg_155},{170,24,189,31,-1,14,13,msg_156},{191,24,210,31,-1,14,13,msg_157},{212,24,231,31,-1,14,13,msg_158},{233,24,252,31,-1,14,13,msg_159},{254,24,273,31,-1,14,13,msg_145},{275,24,293,31,-1,14,13,msg_146},
     {25,33,147,40,-1,14,13,NULL},{149,33,168,40,-1,14,13,NULL},{170,33,189,40,-1,14,13,NULL},{191,33,210,40,-1,14,13,NULL},{212,33,231,40,-1,14,13,NULL},{233,33,252,40,-1,14,13,NULL},{254,33,273,40,-1,14,13,NULL},{275,33,293,40,-1,14,13,NULL},
@@ -521,7 +521,7 @@ struct Bottone league[]=
     {25,204,147,211,-1,14,13,NULL},{149,204,168,211,-1,14,13,NULL},{170,204,189,211,-1,14,13,NULL},{191,204,210,211,-1,14,13,NULL},{212,204,231,211,-1,14,13,NULL},{233,204,252,211,-1,14,13,NULL},{254,204,273,211,-1,14,13,NULL},{275,204,293,211,-1,14,13,NULL},
 };
 
-struct Bottone mp[]=
+struct Button mp[]=
 {
     {30,24,138,31,-1,13,1,NULL},{140,24,148,31,-1,13,1,NULL},{150,24,258,31,-1,13,1,NULL},{260,24,299,31,-1,13,1,NULL},
     {30,33,138,40,-1,13,1,NULL},{140,33,148,40,-1,13,1,NULL},{150,33,258,40,-1,13,1,NULL},{260,33,299,40,-1,13,1,NULL},
@@ -543,54 +543,54 @@ struct Bottone mp[]=
 
 // WARNING: They are octal numbers!
 
-struct Bottone asb[]=
+struct Button asb[]=
 {
-    {16,20,85,89,0,COLORE_UNSELECTED,9,"\20\0"/*-*/},{88,20,157,89,1,COLORE_UNSELECTED,9,"\20\1"/*-*/},{160,20,229,89,2,COLORE_UNSELECTED,9,"\20\2"/*-*/},{232,20,301,89,3,COLORE_UNSELECTED,9,"\20\3"/*-*/},
-    {16,92,85,161,4,COLORE_UNSELECTED,9,"\20\4"/*-*/},{232,92,301,161,7,COLORE_UNSELECTED,9,"\20\7"/*-*/},
-    {16,164,85,233,5,COLORE_UNSELECTED,9,"\20\5"/*-*/},{88,164,157,233,8,COLORE_UNSELECTED,9,"\20\10"/*-*/},{160,164,229,233,9,COLORE_UNSELECTED,9,"\20\11"/*-*/},{232,164,301,233,6,COLORE_UNSELECTED,9,"\20\6"/*-*/},
+    {16,20,85,89,0,COLOR_UNSELECTED,9,"\20\0"/*-*/},{88,20,157,89,1,COLOR_UNSELECTED,9,"\20\1"/*-*/},{160,20,229,89,2,COLOR_UNSELECTED,9,"\20\2"/*-*/},{232,20,301,89,3,COLOR_UNSELECTED,9,"\20\3"/*-*/},
+    {16,92,85,161,4,COLOR_UNSELECTED,9,"\20\4"/*-*/},{232,92,301,161,7,COLOR_UNSELECTED,9,"\20\7"/*-*/},
+    {16,164,85,233,5,COLOR_UNSELECTED,9,"\20\5"/*-*/},{88,164,157,233,8,COLOR_UNSELECTED,9,"\20\10"/*-*/},{160,164,229,233,9,COLOR_UNSELECTED,9,"\20\11"/*-*/},{232,164,301,233,6,COLOR_UNSELECTED,9,"\20\6"/*-*/},
     {10,238,106,250,-1,7,9,NULL},
     {111,238,207,250,-1,14,13,msg_6},
     {212,238,309,250,-1,11,12,NULL},
 };
 
-struct Bottone cp[]=
+struct Button cp[]=
 {
-    {52,40,121,109,0,COLORE_UNSELECTED,9,"\20a"/*-*/},
-    {198,40,267,109,0,COLORE_UNSELECTED,9,"\20b"/*-*/},
+    {52,40,121,109,0,COLOR_UNSELECTED,9,"\20a"/*-*/},
+    {198,40,267,109,0,COLOR_UNSELECTED,9,"\20b"/*-*/},
     {32,121,141,140,-1,0,0,NULL},{178,121,287,140,-1,0,0,NULL},
     {77,151,96,170,-1,0,0,NULL},{223,151,242,170,-1,0,0,NULL},
     {100,190,219,209,-1,0,0,NULL}, // For the game over
 };
 
-struct Bottone cb[]=
+struct Button cb[]=
 {
     {20,229,154,241,MENU_CHALLENGE,7,9,msg_0},
     {165,229,299,241,MENU_ARCADE,11,12,msg_6},
 };
 
 
-struct Bottone mr[]=
+struct Button mr[]=
 {
 /* I leave them here for eventual flags...
 
-    {52,40,121,109,0,COLORE_UNSELECTED,9,"\20a"},
-    {198,40,267,109,0,COLORE_UNSELECTED,9,"\20b"},
+    {52,40,121,109,0,COLOR_UNSELECTED,9,"\20a"},
+    {198,40,267,109,0,COLOR_UNSELECTED,9,"\20b"},
 */
     {32,51,141,70,-1,0,0,NULL},{178,51,287,70,-1,0,0,NULL},
     {77,91,96,110,-1,0,0,NULL},{223,91,242,110,-1,0,0,NULL},
 };
 
-struct Bottone mrb[]=
+struct Button mrb[]=
 {
     {60,229,259,241,MENU_SIMULATION,7,9,msg_0},
 };
 
-struct Bottone wcfb[]=
+struct Button wcfb[]=
 {
     {60,229,259,241,MENU_SIMULATION,7,9,msg_0},
 };
 
-struct Bottone scores[]=
+struct Button scores[]=
 {
     {32,57,237,76,-1,8,15,NULL},{240,57,288,76,-1,8,15,NULL},
     {32,57,237,76,-1,8,15,NULL},{240,57,288,76,-1,8,15,NULL},
@@ -614,7 +614,7 @@ struct Bottone scores[]=
     {32,57,237,76,-1,8,15,NULL},{240,57,288,76,-1,8,15,NULL},
 };
 
-struct Bottone wcfp[]=
+struct Button wcfp[]=
 {
 // The first four teams...
     {120,57,230,76,-1,0,0,NULL},
@@ -628,7 +628,7 @@ struct Bottone wcfp[]=
     {60,160,180,175,-1,P_GIALLO,P_BIANCO,msg_163},
 };
 
-struct Bottone hl[]=
+struct Button hl[]=
 {
     {5,31,79,38    ,-1,14,13,NULL},{83,31,157,38    ,-17,14,13,NULL},{161,31,235,38    ,-33,14,13,NULL},{239,31,313,38,-49,14,13,NULL},
     {5,42,79,49    ,-2,14,13,NULL},{83,42,157,49    ,-18,14,13,NULL},{161,42,235,49    ,-34,14,13,NULL},{239,42,313,49,-50,14,13,NULL},
