@@ -112,7 +112,7 @@ GAME
 SYSTEM
 ------
 
-1) Remember to use -fwritable-strings option. 
+1) -fwritable-strings is no longer required. (FIXED)
 
 2) If on Windows a team is loaded with the requester, the path of the program
    is losed. (FIXED)

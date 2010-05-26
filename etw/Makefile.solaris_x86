@@ -1,6 +1,6 @@
 CC = gcc
 DEBUG = 
-CFLAGS = -Wall -Wno-char-subscripts -O2 `sdl-config --cflags;gtk-config --cflags` -fwritable-strings -Iinclude
+CFLAGS = -Wall -Wno-char-subscripts -O2 `sdl-config --cflags;gtk-config --cflags` -Iinclude
 # -Wall -g
 LFLAGS = `sdl-config --libs;gtk-config --libs`
 DEFINES = -DSOLARIS_X86 -DCD_VERSION
