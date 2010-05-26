@@ -1,7 +1,9 @@
 CC = gcc
 
 CFLAGS = -Wall -g -fsigned-char -Iinclude \
-  `pkg-config --cflags sdl` `pkg-config --cflags gtk+-2.0`
+    -Wpointer-arith -Wcast-align -Wcast-qual -Wstrict-prototypes -Wshadow \
+    -Waggregate-return -Wmissing-prototypes -Wnested-externs -Wsign-compare \
+    `pkg-config --cflags sdl` `pkg-config --cflags gtk+-2.0`
 
 LDFLAGS = `pkg-config --libs sdl` `pkg-config --libs gtk+-2.0`
 DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H
