@@ -552,11 +552,11 @@ void LoadReplay(UBYTE Set)
         if (a) {
             STRPTR c;
             uint32_t d = (ULONG)p->team[i]->tactic, e;
-// first fix the pointers then the reference INSIDE them!
+            // first fix the pointers then the reference INSIDE them!
             p->team[i]->keepers.anim = a[i * SQ_PTR];
             p->team[i]->Marker = a[i * SQ_PTR + 12];
 
-            p->team[i]->keepers.anim->node.mpNext = 
+            p->team[i]->keepers.anim->node.mpNext =
                 p->team[i]->keepers.anim->node.mpPrev = NULL;
 
             p->team[i]->keepers.team  = p->team[i];
@@ -564,9 +564,8 @@ void LoadReplay(UBYTE Set)
             p->team[i]->keepers.surname  = a[i * SQ_PTR + 35];
 
             p->team[i]->tactic = a[i * SQ_PTR + 11];
-            p->team[i]->Marker->node.mpNext = 
+            p->team[i]->Marker->node.mpNext =
                 p->team[i]->Marker->node.mpPrev = NULL;
-
 
             p->team[i]->NomeAttivo = a[i * SQ_PTR + 13];
 
