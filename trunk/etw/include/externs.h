@@ -148,7 +148,7 @@ extern void UpdateBallSpeed(void);
 extern void UpdateShotHeight(void);
 extern UBYTE FindDirection256(WORD, WORD, WORD ,WORD );
 extern BOOL AllowRotation(player_t *,WORD);
-extern void RimuoviComandoSquadra(char , BYTE );
+extern void RimuoviComandoSquadra(uint8_t, int8_t);
 extern void EseguiDopoComando(player_t *);
 extern void SetComando(player_t *, BYTE, BYTE, BYTE);
 extern BOOL InArea(BYTE, WORD, WORD);

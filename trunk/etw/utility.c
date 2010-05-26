@@ -879,21 +879,20 @@ void CheckActive(void)
         else
             g2=FindNearest(s,G2P_X(pl->world_x),G2P_Y(pl->world_y));
 
-
-        if(g2!=g&&g2!=NULL)
-            ChangeControlled(s,g2->GNum);
+        if(g2 != g && g2 != NULL)
+            ChangeControlled(s, g2->GNum);
     }
 }
 
-void RimuoviComandoSquadra(char sq, BYTE cmd)
+void RimuoviComandoSquadra(uint8_t sq, int8_t cmd)
 {
-    register team_t *s=p->team[sq];
-    register int i;
+    team_t *s = p->team[sq];
+    int i;
 
-    for(i=0;i<10;i++)
+    for(i = 0; i < 10; i++)
     {
-        if(s->players[i].Comando==cmd)
-            s->players[i].Comando=NESSUN_COMANDO;
+        if(s->players[i].Comando == cmd)
+            s->players[i].Comando = NESSUN_COMANDO;
     }
 }
 

@@ -465,8 +465,8 @@ void DisplayText(struct Button *b, int xs, int ys, char *text, int len,
     case 11:
     case 12:
         while (*text < 13) {
-            BltAnimObj(symbols, main_bitmap, *text, xs, ys, bitmap_width);
-            xs += symbols->Widths[*text];
+            BltAnimObj(symbols, main_bitmap, (uint8_t)*text, xs, ys, bitmap_width);
+            xs += symbols->Widths[(uint8_t)*text];
             text++;
         }
         break;
@@ -476,16 +476,16 @@ void DisplayText(struct Button *b, int xs, int ys, char *text, int len,
     case 13:
     case 14:
     case 15:
-        BltAnimObj(symbols, main_bitmap, *text, xs, ys, bitmap_width);
+        BltAnimObj(symbols, main_bitmap, (uint8_t)*text, xs, ys, bitmap_width);
         break;
     case 16:
         text++;
 
-        if (*text < ARCADE_TEAMS) {
+        if ((uint8_t)*text < ARCADE_TEAMS) {
             struct MyScaleArgs scale;
             gfx_t *o;
 
-            if (!(o = arcade_gfx[*text]))
+            if (!(o = arcade_gfx[(uint8_t)*text]))
                 break;
 
             scale.SrcX = scale.SrcY = 0;

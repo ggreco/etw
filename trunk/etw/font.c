@@ -86,8 +86,7 @@ void FreeFonts(void)
 
 void PrintSmall(uint8_t *dest, char *text, char len)
 {
-    register char i;
-    register int x = 0;
+    int i, x = 0;
 
     for (i = 0; i < len; i++) {
         if (text[i] >= 'A' && text[i] <= 'Z') {
@@ -103,8 +102,7 @@ void PrintSmall(uint8_t *dest, char *text, char len)
 
 void PrintVerySmall(uint8_t *dest, char *text, char len, int width)
 {
-    register char i;
-    register int x = 0;
+    int i, x = 0;
 
     for (i = 0; i < len; i++) {
         if (text[i] >= 'A' && text[i] <= 'Z') {

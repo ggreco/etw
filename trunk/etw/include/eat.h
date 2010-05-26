@@ -85,7 +85,7 @@ struct linesman
     BOOL OnScreen;
     WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
     char otype;  // Tipo di oggetto, fin qui ci devo arrivare!
-    char dir;   // Direzione di movimento
+    uint8_t dir;   // Direzione di movimento
     char ActualSpeed; // Velocita' del tipo
     char FrameLen; // Quando e' 0 posso cambiare frame
     WORD Tick, Argomento;
@@ -93,7 +93,7 @@ struct linesman
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
     uint8_t NameLen; // Lunghezza in chars del cognome (per text)
-    char Comando;  // Se ci sono falli o simili...
+    int8_t Comando;  // Se ci sono falli o simili...
 };
 
 struct ball
