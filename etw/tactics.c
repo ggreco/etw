@@ -1,4 +1,5 @@
 #include "eat.h"
+#include "files.h"
 
 tactic_t *LoadTactic(char *name)
 {
@@ -19,10 +20,10 @@ tactic_t *LoadTactic(char *name)
         return NULL;
     }
 
-    fread(&t->NameLen, sizeof(char), 1, fh);
-    
+    t->NameLen = fread_u8(fh);
+
     if(!(t->Name=malloc(t->NameLen+1)))
-    {    
+    {
         free(t);
         fclose(fh);
         return NULL;
@@ -36,14 +37,13 @@ tactic_t *LoadTactic(char *name)
         for(j=0;j<PLAYERS;j++)
             for(k=0;k<(SECTORS+SPECIALS);k++)
             {
-                fread(&t->Position[i][j][k].x,sizeof(uint16_t),1,fh);
-                fread(&t->Position[i][j][k].y,sizeof(uint16_t),1,fh);
-                SWAP16(t->Position[i][j][k].x);
-                SWAP16(t->Position[i][j][k].y);
+                t->Position[i][j][k].x = fread_u16(fh);
+                t->Position[i][j][k].y = fread_u16(fh);
 
-                t->Position[i][j][k].x=(t->Position[i][j][k].x>>5)*31+280;
-                t->Position[i][j][k].y=(t->Position[i][j][k].y>>2)*3-96;
-                t->Position[i][j][k].sector=t->Position[i][j][k].x/2560 + (t->Position[i][j][k].y/1450 << 2);
+                t->Position[i][j][k].x = (t->Position[i][j][k].x>>5)*31+280;
+                t->Position[i][j][k].y= ( t->Position[i][j][k].y>>2)*3-96;
+                t->Position[i][j][k].sector = t->Position[i][j][k].x/2560
+                                         + (t->Position[i][j][k].y/1450 << 2);
             }
 
     fclose(fh);

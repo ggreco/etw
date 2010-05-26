@@ -3,6 +3,7 @@
 #include "mytypes.h"
 #include "menu.h"
 #include "tactics.h"
+#include "files.h"
 
 UBYTE colore_team[3]={P_GRIGIO0, P_ROSSO0, P_BLU2};
 UBYTE highlight_team[3]={P_BIANCO, P_ROSSO1, P_BLU1}, totale_giornate;
@@ -209,10 +210,8 @@ BOOL LoadMenuTactic(char *name, tactic_t *t)
         for(j=0; j<PLAYERS; j++)
             for(k=0; k<(SECTORS+SPECIALS); k++)
             {
-                fread(&t->Position[i][j][k].x, 1, sizeof(uint16_t), fh);
-                fread(&t->Position[i][j][k].y, 1, sizeof(uint16_t), fh);
-                SWAP16(t->Position[i][j][k].x);
-                SWAP16(t->Position[i][j][k].y);
+                t->Position[i][j][k].x = fread_u16(fh);
+                t->Position[i][j][k].y = fread_u16(fh);
             }
 
     fclose(fh);
