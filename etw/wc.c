@@ -135,7 +135,7 @@ void OrderGroup(int n)
     }
 }
 
-void GroupsUpdate()
+void GroupsUpdate(void)
 {
     int i,j,k;
 

@@ -12,8 +12,8 @@
 
 #define CheckTrain(x) if(training){ int i; for(i=0;i<10;i++) if(!p->team[1]->players[i].Special){ D(bug("Err%ld: G%ld!\n",x,i)); break;} }
 
-#define G2P_X(x) ((x)-48)
-#define G2P_Y(x) ((x)-80)
+#define G2P_X(x) ((x) - 48)
+#define G2P_Y(x) ((x) - 80)
 
 // Era 100
 
@@ -23,9 +23,9 @@
 #define BestRotation(x,y) (CambioDirezione[(x)][(y)]>0)
 
 #ifdef DEMOVERSION
-    #define Progress() os_delay(4)
+#   define Progress() os_delay(4)
 #else
-void Progress();
+void Progress(void);
 #endif
 
 // Macro sperimentale, vediamo se va bene :)

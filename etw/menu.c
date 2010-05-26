@@ -265,7 +265,7 @@ BOOL DoWarning(int a)
 
 WORD *menubase = NULL;
 
-void StoreButtonList()
+void StoreButtonList(void)
 {
     register int i, j, k;
 
@@ -311,7 +311,7 @@ void StoreButtonList()
 }
 
 
-void UpdateButtonList()
+void UpdateButtonList(void)
 {
     register int i, j, k;
 

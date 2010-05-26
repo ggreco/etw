@@ -1401,7 +1401,7 @@ void ColpoDiTesta(player_t *g)
     {
         WORD olddir=g->dir,temp;
 // passaggio
-        TogliPalla()
+        TogliPalla();
         DaiPalla(g);
 
         Passaggio(g);

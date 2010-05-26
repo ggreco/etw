@@ -1258,7 +1258,7 @@ void HandleReferee(void)
 
 #define FRAMES_ARBITRO 11
 
-void HandleGuardalinee()
+void HandleGuardalinee(void)
 {
     register int i;
 
