@@ -24,7 +24,7 @@ struct tactic
 {
     char *Name;
     struct pos Position[2][PLAYERS][SECTORS+SPECIALS];
-    char NameLen;
+    uint8_t NameLen;
 };
 
 typedef struct tactic tactic_t;

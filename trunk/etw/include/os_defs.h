@@ -52,12 +52,9 @@ extern char *RESULT_FILE;
 #   define SMALLGAME_FONT  NEWGFX_DIR "smallgame.font"
 #endif
 
-#define SWAP16(x) (x=SDL_SwapBE16(x))
-#define SWAP32(x) (x=SDL_SwapBE32(x))
-
 #ifdef WIN
 #   if !defined( __GNUC__)
-#       pragma warning( disable : 4761)  
+#       pragma warning( disable : 4761)
 #   endif
 //#   define USE_LOGFILE
 

@@ -3,6 +3,7 @@
 #include "os_defs.h"
 #include "mydebug.h"
 #include "myiff.h"
+#include "files.h"
 
 /* Basic functions */
 
@@ -21,18 +22,17 @@ struct IFFHandle *AllocIFF(void)
 
 long OpenIFF(struct IFFHandle * iff, long rwMode)
 {
-    if (iff->iff_Stream && rwMode == IFFF_READ) {
+    if (iff->iff_Stream && rwMode == IFFF_READ)
+    {
         uint32_t temp;
 
         fseek(iff->iff_Stream, 0, SEEK_SET);
+        temp = fread_u32(iff->iff_Stream);
 
-        fread(&temp, sizeof(uint32_t), 1, iff->iff_Stream);
-        SWAP32(temp);
-
-        if (temp == ID_FORM) {
+        if (temp == ID_FORM)
+        {
             fseek(iff->iff_Stream, 4, SEEK_CUR);
-            fread(&temp, sizeof(uint32_t), 1, iff->iff_Stream);
-            SWAP32(temp);
+            temp = fread_u32(iff->iff_Stream);
             iff->Current.cn_Type = temp;
             return 0L;
         } else
@@ -53,17 +53,18 @@ long ParseIFF(struct IFFHandle * iff, long control)
         return 1L;
     }
 
-    for (;;) {
-        if (fread(&temp, sizeof(uint32_t), 1, iff->iff_Stream) != 1)
+    for (;;)
+    {
+        temp = fread_u32(iff->iff_Stream);
+        if (feof(iff->iff_Stream) || ferror(iff->iff_Stream))
             return 1L;
 
-        SWAP32(temp);
-
-        for (i = 0; i < iff->iff_Stops; i++) {
-            if (temp == iff->stops[i * 2 + 1]) {
+        for (i = 0; i < iff->iff_Stops; i++)
+        {
+            if (temp == iff->stops[i * 2 + 1])
+            {
                 iff->Current.cn_ID = temp;
-                fread(&temp, sizeof(uint32_t), 1, iff->iff_Stream);
-                SWAP32(temp);
+                temp = fread_u32(iff->iff_Stream);
                 iff->Current.cn_Size = temp;
                 return 0L;
             }

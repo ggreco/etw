@@ -1,6 +1,7 @@
 #include "eat.h"
 #include "preinclude.h"
 #include "commento.h"
+#include "files.h"
 
 #define NON_DECISA -1
 
@@ -283,8 +284,7 @@ void init_speaker(void)
         use_speaker=FALSE;
     }
 
-    fread(&NumeroCommenti,sizeof(uint32_t),1,f);
-    SWAP32(NumeroCommenti);
+    NumeroCommenti = fread_u32(f);
 
     D(bug("Alloco indice per %d frasi.\n", NumeroCommenti));
 
@@ -301,9 +301,9 @@ void init_speaker(void)
         return;
     }
 
-// Faccio solo un'allocazione, per semplicita'.
-
-    if(!(Lengths=malloc(NumeroCommenti*sizeof(uint32_t)*2))) {
+    // Allocate only one chunk, for simplicity
+    if(!(Lengths = malloc(NumeroCommenti * sizeof(uint32_t) * 2)))
+    {
         fclose(f);
         if(!audio2fast)
             fclose(commento);
@@ -314,17 +314,14 @@ void init_speaker(void)
         return;
     }
 
+    for(i = 0; i < NumeroCommenti; i++)
+        Lengths[i] = fread_u32(f);
 
-    Offsets=&Lengths[NumeroCommenti];
-
-    fread(Lengths,sizeof(uint32_t),NumeroCommenti,f);
-    fread(Offsets,sizeof(uint32_t),NumeroCommenti,f);
-
-    for(i=0; i<NumeroCommenti; i++) {
-        SWAP32(Lengths[i]);
-        SWAP32(Offsets[i]);
+    Offsets = &Lengths[NumeroCommenti];
+    for(i = 0; i < NumeroCommenti; i++)
+        Offsets[i] = fread_u32(f);
+//    for(i=0; i<NumeroCommenti; i++)
 //        D(bug("Commento %d: L:%ld O:%ld\n", i, Lengths[i], Offsets[i]));
-    }
 
     fclose(f);
 }
@@ -334,7 +331,6 @@ void free_speaker(void)
    if(Lengths)
        free(Lengths);
 
-   
    if(!audio2fast && commento)
        fclose(commento);
 

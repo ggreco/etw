@@ -1,4 +1,5 @@
 #include "eat.h"
+#include "files.h"
 
 /* General purpose graphics engine.
  * Contains function to load and manage static and moving objects.
@@ -331,7 +332,6 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
     gfx_t *obj;
     FILE *fh;
     int i;
-    uint16_t temp;
     uint8_t *planes[8];
     BOOL ok = TRUE;
 
@@ -352,15 +352,9 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
                 return NULL;
             }
 
-            fread(&temp, sizeof(uint16_t), 1, fh);
-            SWAP16(temp);
-            obj->width = temp;
-            fread(&temp, sizeof(uint16_t), 1, fh);
-            SWAP16(temp);
-            obj->height = temp;
-            fread(&temp, sizeof(uint16_t), 1, fh);
-            SWAP16(temp);
-            obj->realdepth = temp;
+            obj->width = fread_u16(fh);
+            obj->height = fread_u16(fh);
+            obj->realdepth = fread_u16(fh);
 
             if (use_remapping && !pens) {
                 if ((obj->Palette = malloc((1 << obj->realdepth) * 3))) {
@@ -513,21 +507,17 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
     if(fo)
         fwrite("GOBC", 4, 1, fo);
 
-    fread(&obj->nframes, sizeof(uint16_t), 1, fh);
-    fread(&obj->max_width, sizeof(uint16_t), 1, fh);
-    fread(&obj->max_height, sizeof(uint16_t), 1, fh);
-    fread(&obj->real_depth, sizeof(uint16_t), 1, fh);
+    obj->nframes = fread_u16(fh);
+    obj->max_width = fread_u16(fh);
+    obj->max_height = fread_u16(fh);
+    obj->real_depth = fread_u16(fh);
     if (fo)
     {
-        fwrite(&obj->nframes, sizeof(uint16_t), 1, fo);
-        fwrite(&obj->max_width, sizeof(uint16_t), 1, fo);
-        fwrite(&obj->max_height, sizeof(uint16_t), 1, fo);
-        fwrite(&obj->real_depth, sizeof(uint16_t), 1, fo);
+        fwrite_u16(obj->nframes, fo);
+        fwrite_u16(obj->max_width, fo);
+        fwrite_u16(obj->max_height, fo);
+        fwrite_u16(obj->real_depth, fo);
     }
-    SWAP16(obj->nframes);
-    SWAP16(obj->max_width);
-    SWAP16(obj->max_height);
-    SWAP16(obj->real_depth);
 
     obj->bg = NULL;
 
@@ -611,12 +601,14 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
         obj->pens = pens;
     }
 
-    if ((obj->Frames = calloc(obj->nframes, sizeof(APTR)))) {
-        if ((obj->Widths = malloc(obj->nframes * sizeof(int)))) {
+    if ((obj->Frames = calloc(obj->nframes, sizeof(APTR))))
+    {
+        if ((obj->Widths = malloc(obj->nframes * sizeof(int))))
+        {
             if ((obj->Heights =
-                malloc(obj->nframes * sizeof(int)))) {
+                malloc(obj->nframes * sizeof(int))))
+            {
                 BOOL ok = TRUE;
-                unsigned short tempw;
 
                 D(bug
                   ("Loading frames (%ld), mh: %ld mw: %ld rd: %ld\n",
@@ -624,17 +616,13 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
                    obj->max_height, obj->real_depth));
 
                 for (i = 0; i < obj->nframes; i++) {
-                    fread(&tempw, sizeof(int16_t), 1, fh);
+                    obj->Widths[i] = fread_u16(fo);
                     if (fo)
-                        fwrite(&tempw, sizeof(int16_t), 1, fo);
-                    SWAP16(tempw);
-                    obj->Widths[i] = tempw;
+                        fwrite_u16(obj->Widths[i], fo);
 
-                    fread(&tempw, sizeof(int16_t), 1, fh);
+                    obj->Heights[i] = fread_u16(fo);
                     if (fo)
-                        fwrite(&tempw, sizeof(int16_t), 1, fo);
-                    SWAP16(tempw);
-                    obj->Heights[i] = tempw;
+                        fwrite_u16(obj->Heights[i], fo);
 
                     if (convert) {
 //                        D(bug("Conversion to mchunky of %s/%d...", name, i));
@@ -904,9 +892,7 @@ BOOL LoadIFFPalette(char *filename)
                     fread(buffer, 4, 1, fh);
 
                     if (!strncmp(buffer, "CMAP" /*-*/ , 4)) {
-                        fread(&cmap_len, sizeof(uint32_t), 1, fh);
-                        SWAP32(cmap_len);
-                        cmap_len /= 3;
+                        cmap_len = fread_u32(fh) / 3;
 
                         if (cmap_len > colors) {
                             D(bug
@@ -918,12 +904,8 @@ BOOL LoadIFFPalette(char *filename)
                         D(bug
                           ("Loading %ld colors from %s...\n", c, filename));
 
-                        for (j = 0; j < c * 3; j++) {
-                            unsigned char cc;
-
-                            fread(&cc, sizeof(char), 1, fh);
-                            palette[j + 1] = (uint32_t)cc << 24;
-                        }
+                        for (j = 0; j < c * 3; j++)
+                            palette[j + 1] = (uint32_t)fread_u8(fh) << 24;
 
                         palette[0] = (uint32_t)c << 16;
                         palette[c * 3 + 1] = 0;
@@ -1040,7 +1022,7 @@ int RemapIFFPalette(char *filename, int32_t *Pens)
 {
     FILE *fh;
     char buffer[8];
-    unsigned char r, g, b;
+    uint8_t r, g, b;
     uint32_t cmap_len = 0;
 
     if ((fh = fopen(filename, "rb"))) {
@@ -1062,20 +1044,18 @@ int RemapIFFPalette(char *filename, int32_t *Pens)
                     fread(buffer, 4, 1, fh);
 
                     if (!strncmp(buffer, "CMAP" /*-*/ , 4)) {
-                        fread(&cmap_len, sizeof(uint32_t), 1, fh);
-                        SWAP32(cmap_len);
-
-                        cmap_len /= 3;
+                        cmap_len = fread_u32(fh) / 3;
 
                         if (cmap_len > colors) {
                             D(bug
                               ("Attenzione l'immagine ha piu' colori dello schermo!\n"));
                         }
 
-                        for (j = 0; j < cmap_len; j++) {
-                            fread(&r, 1, sizeof(char), fh);
-                            fread(&g, 1, sizeof(char), fh);
-                            fread(&b, 1, sizeof(char), fh);
+                        for (j = 0; j < cmap_len; j++)
+                        {
+                            r = fread_u8(fh);
+                            g = fread_u8(fh);
+                            b = fread_u8(fh);
 
                             Pens[j] = obtain_pen(r, g, b);
                         }
@@ -1110,23 +1090,15 @@ void LoadGfxObjPalette(char *name)
     uint16_t temp, depth;
 
     if ((fh = fopen(name, "rb"))) {
-        fread(&i, sizeof(uint32_t), 1, fh);
-        fread(&temp, sizeof(uint16_t), 1, fh);
-        fread(&temp, sizeof(uint16_t), 1, fh);
-        fread(&temp, sizeof(uint16_t), 1, fh);    // Questa e' realdepth
-        SWAP16(temp);
+        fread_u32(fh); /* ignored */
+        fread_u16(fh); /* ignored */
+        fread_u16(fh); /* ignored */
 
-        depth = min(screen_depth, temp);
-
-        depth = (1 << depth);
+        temp = fread_u16(fh); /* real depth */
+        depth = 1 << min(screen_depth, temp);
 
         for (i = 0; i < depth * 3; i++)
-        {
-            unsigned char c;
-
-            fread(&c, sizeof(char), 1, fh);
-            palette[i + 1] = (uint32_t)c << 24;
-        }
+            palette[i + 1] = (uint32_t)fread_u8(fh) << 24;
 
         palette[0] = (uint32_t)depth << 16;
         palette[depth * 3 + 1] = 0;

@@ -4,7 +4,11 @@
 #include <windows.h>
 #endif
 
-struct __LString {
+#include "eat.h"
+#include "files.h"
+
+struct __LString
+{
    struct __LString *Next;
    int CatalogID;
    char Str[1];
@@ -589,24 +593,19 @@ void * OpenCatalog(char *catalog)
                 goto fallback;
             }
 
-
-            fread(&clen, 4, 1, f);
-            SWAP32(clen);
+            clen = fread_u32(f);
 
             cat->offsetfirst=ftell(f);
 
             D(bug("Catalog length: %ld bytes\n",clen));
 
-            while(clen>offset&&!feof(f)) {
-                fread(&id, 4, 1, f);
-                SWAP32(id);
+            while (clen > offset && !feof(f))
+            {
+                id = fread_u32(f);
+                slen = fread_u32(f);
 
-                fread(&slen, 4, 1, f);
-                SWAP32(slen);
+                offset += 8;
 
-                offset+=8;
-
-                
                 AddCtgString(cat,id,offset,slen);
 
                 fseek(f,slen,SEEK_CUR);
