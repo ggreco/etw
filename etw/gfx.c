@@ -616,11 +616,11 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
                    obj->max_height, obj->real_depth));
 
                 for (i = 0; i < obj->nframes; i++) {
-                    obj->Widths[i] = fread_u16(fo);
+                    obj->Widths[i] = fread_u16(fh);
                     if (fo)
                         fwrite_u16(obj->Widths[i], fo);
 
-                    obj->Heights[i] = fread_u16(fo);
+                    obj->Heights[i] = fread_u16(fh);
                     if (fo)
                         fwrite_u16(obj->Heights[i], fo);
 
