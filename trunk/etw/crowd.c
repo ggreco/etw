@@ -22,14 +22,14 @@ static char *CrowdName(int i)
     return corobuffer;
 }
 
-static char *RandomCrowdName()
+static char *RandomCrowdName(void)
 {
     return CrowdName(MyRangeRand(NUMERO_CORI) + 1);
 }
 
 static BOOL played = FALSE;
 
-void free_crowd()
+void free_crowd(void)
 {
     if (use_crowd && audio2fast) {
         int i;
@@ -43,7 +43,7 @@ void free_crowd()
 }
 
 // preload crowd samples, may help on slower machines.
-BOOL crowd2memory()
+BOOL crowd2memory(void)
 {
     int i;
     BOOL ok = TRUE;
