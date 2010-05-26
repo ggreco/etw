@@ -16,7 +16,7 @@ DEBUGCFLAGS=-O2
 INSTALL=install
 CC = gcc
 DEBUG = 
-CFLAGS = $(UIFLAGS) -Wno-char-subscripts -O2 -fwritable-strings -Iinclude
+CFLAGS = $(UIFLAGS) -Wno-char-subscripts -O2 -Iinclude
 # -Wall -g
 LFLAGS = $(UILIBS)
 DEFINES = -DMACOSX -DCD_VERSION

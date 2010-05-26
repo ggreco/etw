@@ -2,7 +2,7 @@ CROSSDIR = /mingw
 CC = $(CROSSDIR)/bin/gcc
 DEBUG = 
 CFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL \
-         -O2 -fwritable-strings -Wall -fsigned-char -Wno-char-subscripts
+         -O2 -Wall -fsigned-char -Wno-char-subscripts
 LFLAGS = -lmingw32 -lSDLmain -lSDL -mwindows -lwsock32 -lcomdlg32 
 DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER
 
