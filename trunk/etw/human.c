@@ -2,7 +2,11 @@
 
 int8_t need_release[MAX_PLAYERS]={1,1};
 
-// Il primo deve esserci, il secondo no!
+
+static void DoLongPass(player_t *g, uint32_t joystate);
+static void DoCross(player_t *g);
+static void DoShot(player_t *g, uint32_t joystate);
+static void HumanShot(player_t *g, uint32_t joystate);
 
 void DoLongPass(player_t *g, uint32_t joystate)
 {

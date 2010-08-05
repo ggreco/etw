@@ -186,8 +186,6 @@ void ChangeImmagine(player_t *g, anim_t *o)
     f = g->anim->current_frame;
     b = g->anim->bottom;
 
-    // Devo usare forbid/permit per evitare rendering indesiderati!
-
     if(g->anim->Flags & AOBJ_CLONED)
     {
         D(bug("Changing skin colors, simple case!\n"));
@@ -233,16 +231,16 @@ void ChangeImmagine(player_t *g, anim_t *o)
         }
         else
         {
-            // G e' l'unico nero (o bianco), quindi lo rimuovo!
-            int snum = g->SNum;
+            // G is the only black guy (or white), so I will remove it!
+            int n = g->SNum;
 
             D(bug("Changing skin colors, trick case B!\n"));
 
             if(teams_swapped)
-                snum ^= 1;
+                n ^= 1;
 
             FreeAnimObj(g->anim);
-            has_black[snum] = FALSE;
+            has_black[n] = FALSE;
 
             g->anim = CloneAnimObj(o);
         }
@@ -429,16 +427,16 @@ void MakeName(player_t *g, struct player_disk *gd)
 void ChangePlayer(struct player_disk *src, player_t *dest)
 {
 // Devo curarmi del cambio di colore della pelle...
-    int snum = dest->SNum;
+    int n = dest->SNum;
 
     if(teams_swapped)
-        snum ^= 1;
+        n ^= 1;
 
-    if(has_black[snum])
+    if(has_black[n])
     {
         if (IsBlack(dest) && !IsBlack(src))
         {
-// E' entrato un giocatore bianco al posto di un nero...
+// A black player is in pitch instead of a white one...
             team_t *s = dest->team;
             int i;
 
@@ -509,18 +507,16 @@ void ScanTactics(void)
     D(bug("%ld available tactics.\n", NumeroTattiche));
 }
 
-BOOL InizializzaOggetti(game_t *p)
+BOOL InizializzaOggetti(game_t *unused)
 {
     int i;
     object_t *o;
     BOOL ok = TRUE;
 
-// Inizializzo il portiere di destra...
-
     switch(current_field)
     {
         case 5:
-            // La lasciamo cosi'. Originariamente la rallentavo...
+            // no changes on tackles, originally they where slowed
             break;
         case 6:
         case 7:
@@ -557,7 +553,7 @@ BOOL InizializzaOggetti(game_t *p)
         }
     }
 
-// Inizializzo i bonus arcade...
+// Initializing arcade bonuses...
 
     if (arcade)
     {
@@ -576,7 +572,7 @@ BOOL InizializzaOggetti(game_t *p)
 
                 if (!(o->anim = CloneAnimObj(p->team[0]->Marker)))
                 {
-                    D(bug("Non c'e' piu' memoria per gli animobj!\n"));
+                    D(bug("Not enough memory for arcade animobj!\n"));
                     ok = FALSE;
                     break;
                 }
@@ -588,7 +584,7 @@ BOOL InizializzaOggetti(game_t *p)
         }
     }
 
-    // Carico le porte
+    // Loading goals
     for(i = 0; i < 4; i++)
     {
         if ((o = malloc(sizeof(object_t))))
@@ -606,7 +602,7 @@ BOOL InizializzaOggetti(game_t *p)
                 {
                     if(!(o->anim = CloneAnimObj(ports)))
                     {
-                        D(bug("Non c'e' piu' memoria per gli animobj!\n"));
+                        D(bug("Not enough memory for goals animobj!\n"));
                         ok = FALSE;
                         break;
                     }

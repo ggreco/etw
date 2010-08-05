@@ -1,7 +1,6 @@
 #include "etw_locale.h"
 #include "menu.h"
 #include <ctype.h>
-
 #include "highdirent.h"
 
 #include "SDL.h"
@@ -389,6 +388,8 @@ char *field_types[] =
     NULL,
 };
 
+void SetCurrentResolution(void);
+
 void SetCurrentResolution(void)
 {
     if (WINDOW_WIDTH <= 360)
@@ -443,6 +444,10 @@ char *time_options[] =
     "45"/*-*/,
     NULL,
 };
+
+static void RandomDraw(int);
+static void NewTurn(void);
+static BOOL CanContinue(void);
 
 // Teams shuffle!
 
@@ -2687,7 +2692,6 @@ BOOL HighSelection(WORD button)
 
                 if (FileRequest(&freq))
                 {
-                    char buffer[130];
                     char *a;
 
                     fseek(fh, 0, SEEK_END);
