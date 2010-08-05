@@ -1,5 +1,10 @@
+#ifndef ETW_EXTERNS_H
+#define ETW_EXTERNS_H
+
 // this is a fix for OSX
 #define MoveTo MyMoveTo
+
+#define GA_SIZE 48
 
 extern struct player_disk Riserve[2][12];
 extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,team_b,TotaleRiserve[2],NumeroTattiche;
@@ -285,3 +290,4 @@ void StartSpoken(void);
 void WaitOrKey(int);
 #endif
 
+#endif

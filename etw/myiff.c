@@ -61,7 +61,7 @@ long ParseIFF(struct IFFHandle * iff, long control)
 
         for (i = 0; i < iff->iff_Stops; i++)
         {
-            if (temp == iff->stops[i * 2 + 1])
+            if (temp == (uint32_t)iff->stops[i * 2 + 1])
             {
                 iff->Current.cn_ID = temp;
                 temp = fread_u32(iff->iff_Stream);

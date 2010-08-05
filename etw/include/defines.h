@@ -1,3 +1,6 @@
+#ifndef ETW_DEFINES_H
+#define ETW_DEFINES_H
+
 #define AVAILABLE_CHANNELS 8
 #define AUDIO_CROWD AVAILABLE_CHANNELS
 #define AUDIO_SPEAK AVAILABLE_CHANNELS+1
@@ -325,6 +328,6 @@
 #define FINAL_HEIGHT    173
 
 
-// Goal array size, numero massimo di marcature memorizzate
+// Goal array size, maximum number of goals you can score in a game.
 
-#define GA_SIZE    48
+#endif
