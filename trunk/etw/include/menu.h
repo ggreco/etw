@@ -19,7 +19,7 @@
 #include "sound.h"
 
 #include "freq.h"
-#include "squadre.h"
+#include "teamsetup.h"
 #include "mymacros.h"
 #include "network.h"
 

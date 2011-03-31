@@ -1,14 +1,14 @@
 OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
-	anim.o crowd.o intro.o os_control.o squadre.o \
-	arbitro.o data.o league.o os_init.o	tables.o \
-	arcade.o dati_vel.o lists.o os_video.o tactics.o \
-	chunkyblitting.o display.o loops.o palla.o teams.o \
-	commento.o etw.o main.o portiere.o freq.o \
+	anim.o crowd.o intro.o os_control.o teamsetup.o \
+	refree.o data.o league.o os_init.o	tables.o \
+	arcade.o speed_data.o lists.o os_video.o tactics.o \
+	chunkyblitting.o display.o loops.o ball.o teams.o \
+	commento.o etw.o main.o goalkeeper.o freq.o \
 	computer.o etw_locale.o	menu.o radar.o utility.o \
-	config.o font.o menu_config.o replay.o velocita_g.o \
+	config.o font.o menu_config.o replay.o speed_tables.o \
 	connection.o generic_video.o menu_data.o sound.o wc.o \
 	control.o gfx.o menu_font.o special.o network.o \
-	highsocket.o 
+	highsocket.o
     
 EXE = etw
 

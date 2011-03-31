@@ -2,7 +2,7 @@
 #define ETW_NETWORK_H
 
 #include "mytypes.h"
-#include "squadre.h"
+#include "teamsetup.h"
 
 #define SERVER_HEADER "EtW1"
 #define SERVER_HDR {'E','t','W','1'}

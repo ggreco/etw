@@ -11,11 +11,6 @@ extern int Colors;
 extern BOOL use_width,use_height,wb_game,use_direct;
 BOOL triple_buffering=FALSE,wpa8=FALSE,overscan=0;
 
-BOOL os_create_dbuffer(void)
-{
-    return FALSE;
-}
-
 #ifndef IPHONE
 SDL_Color SDL_palette[256];
 #else
@@ -147,20 +142,6 @@ void close_graphics(void)
 
     FreeGraphics();
     D(bug("Fine FreeGraphics()!\n"));
-
-    if(public_screen&&Colors>0)
-    {
-        int i;
-
-        D(bug("Libero i colori!\n"));
-
-        for(i=0;i<Colors;i++)
-            release_pen(Pens[i]);
-    }
-    else if(!screen_opened)
-    {
-        FreeIFFPalette();
-    }
 }
 
 BOOL window_open(void)
@@ -197,31 +178,14 @@ void os_set_color(int color,int r ,int g, int b)
 //    D(bug("Eseguita setcolor(%ld, r%ld,g%ld,b%ld)\n",color,r,g,b));
 }
 
-long obtain_pen(char r, char b, char g)
-{
-    static int mypen=0;
-
-    return mypen++;
-}
-
-void release_pen(long p)
-{
-}
-
-void lock_pen(int p)
-{
-}
-
 void OpenTheScreen(void)
 {
 #ifndef WINCE
     if(wb_game) {
         screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_RESIZABLE);   
 
-        use_remapping=FALSE;
         force_single=TRUE;
         double_buffering=FALSE;
-        public_screen=FALSE;
         // metto due false qui x evitare problemi
     }
     else {
@@ -240,7 +204,7 @@ void OpenTheScreen(void)
     }
 
     if(screen) {
-        screen_depth=8;
+        screen_depth = 8;
 
         if(!wb_game)
             SDL_ShowCursor(0);
@@ -252,7 +216,6 @@ void OpenTheScreen(void)
 #else
     screen_depth = 8;
     force_single = TRUE; double_buffering = FALSE; wb_game = FALSE;
-    public_screen = FALSE; use_remapping = FALSE;
     scaling = FALSE;
     screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_FULLSCREEN);
 #endif
@@ -353,16 +316,9 @@ void ScreenSwap(void)
 #endif
         os_unlock_bitmap();
 
-        if(double_buffering)
-            SDL_Flip(screen);
-        else
-            SDL_UpdateRect(screen,0,0,0,0);
+        // sdl_flip fall back in SDL_UpdateRect if we are single buffer
+        SDL_Flip(screen);
     }
-}
-
-
-void os_free_dbuffer(void)
-{
 }
 
 int os_videook(int x, int y)

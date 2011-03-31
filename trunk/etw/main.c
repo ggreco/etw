@@ -434,8 +434,6 @@ BOOL LoadStuff(void)
 
     os_init_timer();
 
-    use_remapping = FALSE;
-
 #ifdef USE_TRIPLE
     triple_buffering = TRUE;
 #endif
@@ -782,9 +780,6 @@ BOOL LoadStuff(void)
             os_delay(6);
             if (triple_buffering)
                 ScreenSwap();
-
-            if (!screen_opened)
-                FreeIFFPalette();
 
             if (!(LoadIFFPalette(palette))) {
 

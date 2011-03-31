@@ -245,9 +245,6 @@ void HandleArcade(void);
 // Da os_video.c
 
 void AdjustSDLPalette(void);
-long obtain_pen(char,char,char);
-void lock_pen(int);
-void release_pen(long);
 void os_set_color(int,int,int,int);
 void close_graphics(void);
 BOOL window_open(void);
@@ -257,11 +254,9 @@ void os_wait(void);
 int os_wait_end_pause(void);
 int os_get_screen_width(void);
 int os_get_screen_height(void);
-BOOL os_create_dbuffer(void);
 int os_get_inner_width(void);
 int os_get_inner_height(void);
 void os_load_palette(uint32_t *);
-void os_free_dbuffer(void);
 BOOL os_lock_bitmap(void);
 void os_unlock_bitmap(void);
 

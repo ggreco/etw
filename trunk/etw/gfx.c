@@ -14,8 +14,8 @@ int screen_depth;
     come tags della chiamata InitAnimSystem
  */
 
-BOOL double_buffering = FALSE, public_screen = FALSE;
-BOOL use_remapping = TRUE, use_window = FALSE;
+BOOL double_buffering = FALSE;
+BOOL use_window = FALSE;
 BOOL save_back = FALSE, use_scaling = FALSE, use_clipping = FALSE;
 BOOL force_single = FALSE;
 
@@ -31,14 +31,11 @@ BOOL InitAnimSystem(void)
     MyNewList(&DrawList);
     MyNewList(&GfxList);
 
-    if (!public_screen && !use_window) {
+    if (!use_window) {
         if (!ClipX || !ClipY) {
             ClipX = os_get_screen_width();
             ClipY = os_get_screen_height();
         }
-
-        if (!force_single)
-            double_buffering = os_create_dbuffer();
     }
 
     return TRUE;
@@ -356,34 +353,8 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
             obj->height = fread_u16(fh);
             obj->realdepth = fread_u16(fh);
 
-            if (use_remapping && !pens) {
-                if ((obj->Palette = malloc((1 << obj->realdepth) * 3))) {
-                    fread(obj->Palette, sizeof(char) * 3,
-                          (1 << obj->realdepth), fh);
-
-                    if ((obj->pens =
-                        malloc((1 << obj->realdepth) * sizeof(long)))) {
-                        for (i = 0; i < (1 << obj->realdepth); i++) {
-                            obj->pens[i] = obtain_pen(obj->Palette[i * 3],
-                                                      obj->Palette[i * 3 +
-                                                                   1],
-                                                      obj->Palette[i * 3 +
-                                                                   2]);
-                        }
-                    } else {
-                        use_remapping = FALSE;
-                        D(bug
-                          ("Remapping disabled: low memory.\n"));
-                    }
-                } else {
-                    use_remapping = FALSE;
-                    D(bug
-                      ("Remapping disabled: low memoriu.\n"));
-                }
-            } else {
-                obj->pens = pens;
-                fseek(fh, (1 << obj->realdepth) * 3, SEEK_CUR);
-            }
+            obj->pens = NULL;
+            fseek(fh, (1 << obj->realdepth) * 3, SEEK_CUR);
 
             if (dest) {
                 obj->bmap = dest;
@@ -526,79 +497,26 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
         obj->bg = malloc(obj->max_width * obj->max_height);
         if(!obj->bg)
         {
-            D(bug("Non riesco ad allocare il saveback...\n"));
+            D(bug("Unable to allocate object saveback...\n"));
             fclose(fh);
             free(obj);
             return NULL;
         }
     }
 
-// this code is out of date with the current ETW game
-#ifdef undef
-    if (use_scaling)
-    {
-        obj->sb = malloc(obj->max_width * obj->max_height);
-        if(!obj->sb)
-        {
-            if(obj->bg)
-                free(obj->bg);
+    if (!fo)
+        fseek(fh, (1 << obj->real_depth) * 3, SEEK_CUR);
+    else {
+        char *c = malloc((1 << obj->real_depth) * 3);
 
-            D(bug("Non riesco ad allocare lo scale buffer..\n"));
-            fclose(fh);
-            free(obj);
-            return NULL;
-        }
-    }
-#endif
-
-    if (use_remapping && !pens)
-    {
-        if ((obj->Palette = malloc((1 << obj->real_depth) * 3)))
-        {
-            fread(obj->Palette, sizeof(char) * 3,
-                  (1 << obj->real_depth), fh);
+        if (c) {
+            fread(c, sizeof(char) * 3, (1 << obj->real_depth),
+                  fh);
             if (fo)
-                fwrite(obj->Palette, sizeof(char) * 3,
+                fwrite(c, sizeof(char) * 3,
                        (1 << obj->real_depth), fo);
-
-            if ((obj->pens =
-                malloc((1 << obj->real_depth) * sizeof(int32_t)))) {
-                for (i = 0; i < (1 << obj->real_depth); i++) {
-                    obj->pens[i] =
-                        obtain_pen(obj->Palette[i * 3],
-                                   obj->Palette[i * 3 + 1],
-                                   obj->Palette[i * 3 + 2]);
-                }
-            } else {
-                use_remapping = FALSE;
-                D(bug
-                  ("Remapping disabilitato per problemi di memoria.\n"));
-            }
-        } else {
-            use_remapping = FALSE;
-            D(bug
-              ("Remapping disabilitato per problemi di memoria.\n"));
+            free(c);
         }
-    } else {
-        if (!fo)
-            fseek(fh, (1 << obj->real_depth) * 3, SEEK_CUR);
-        else {
-            char *c = malloc((1 << obj->real_depth) * 3);
-
-            if (c) {
-                fread(c, sizeof(char) * 3, (1 << obj->real_depth),
-                      fh);
-                if (fo)
-                    fwrite(c, sizeof(char) * 3,
-                           (1 << obj->real_depth), fo);
-                free(c);
-            }
-        }
-    }
-
-    if (use_remapping && pens) {
-        obj->Flags |= AOBJ_SHAREPENS;
-        obj->pens = pens;
     }
 
     if ((obj->Frames = calloc(obj->nframes, sizeof(APTR))))
@@ -707,14 +625,8 @@ void FreeGfxObj(gfx_t * obj)
     if (obj->Palette) {
         free(obj->Palette);
 
-        if (obj->pens) {
-            int i;
-
-            for (i = 0; i < (1 << obj->realdepth); i++)
-                release_pen(obj->pens[i]);
-
+        if (obj->pens) 
             free(obj->pens);
-        }
     }
     if (obj->bmap)
         free(obj->bmap);
@@ -759,12 +671,8 @@ void FreeAnimObj(anim_t * obj)
 
     }
 
-    if (obj->pens && ((obj->Flags & AOBJ_SHAREPENS) == 0)) {
-        for (i = 0; i < (1 << obj->real_depth); i++)
-            release_pen(obj->pens[i]);
-
+    if (obj->pens && ((obj->Flags & AOBJ_SHAREPENS) == 0)) 
         free(obj->pens);
-    }
 
     if (obj->Frames)
         free(obj->Frames);
@@ -781,12 +689,6 @@ void FreeGraphics(void)
 {
     struct MyNode *n, *next;
 
-
-    if (double_buffering) {
-        D(bug("Freeing double buffering...\n"));
-        os_free_dbuffer();
-    }
-    
     D(bug("Entering loop...\n"));
 
     for (n = GfxList.pHead; n->pNext; n = next) {
@@ -1018,70 +920,6 @@ anim_t *CopyAnimObj(anim_t * obj)
     return NULL;
 }
 
-int RemapIFFPalette(char *filename, int32_t *Pens)
-{
-    FILE *fh;
-    char buffer[8];
-    uint8_t r, g, b;
-    uint32_t cmap_len = 0;
-
-    if ((fh = fopen(filename, "rb"))) {
-        long i, j, colors = 256;
-        long l;
-
-        fseek(fh, 0, SEEK_END);
-        l = ftell(fh);
-        fseek(fh, 0, SEEK_SET);
-
-        fread(buffer, 4, 1, fh);
-
-        if (!strncmp(buffer, "FORM" /*-*/ , 4)) {
-            fseek(fh, 4, SEEK_CUR);
-            fread(buffer, 4, 1, fh);
-
-            if (!strncmp(buffer, "ILBM" /*-*/ , 4)) {
-                for (i = 12; i < l; i += 4) {
-                    fread(buffer, 4, 1, fh);
-
-                    if (!strncmp(buffer, "CMAP" /*-*/ , 4)) {
-                        cmap_len = fread_u32(fh) / 3;
-
-                        if (cmap_len > colors) {
-                            D(bug
-                              ("Attenzione l'immagine ha piu' colori dello schermo!\n"));
-                        }
-
-                        for (j = 0; j < cmap_len; j++)
-                        {
-                            r = fread_u8(fh);
-                            g = fread_u8(fh);
-                            b = fread_u8(fh);
-
-                            Pens[j] = obtain_pen(r, g, b);
-                        }
-
-                        i = (int) l + 1;
-                    }
-                }
-
-                if (i == l) {
-                    D(bug("Non trovo il chunk CMAP\n"));
-                }
-            } else {
-                D(bug("Non e' un file ILBM.\n"));
-            }
-        } else {
-            D(bug("Non e' un file IFF.\n"));
-        }
-        fclose(fh);
-    } else {
-        D(bug("Palette file <%s> not found!\n", filename));
-    }
-
-    return cmap_len;
-}
-
-
 void LoadGfxObjPalette(char *name)
 {
     uint32_t palette[256 * 3 + 2];
@@ -1104,25 +942,10 @@ void LoadGfxObjPalette(char *name)
         palette[depth * 3 + 1] = 0;
         os_load_palette(palette);
 
-        D(bug("Loading %ld colors from gfx_t %s\n", depth, name));
-
-        for (i = 0; i < depth; i++)
-            lock_pen(i);
+        D(bug("Loaded %ld colors from gfx_t %s\n", depth, name));
 
         fclose(fh);
     }
-}
-
-void FreeIFFPalette(void)
-{
-    long depth, i;
-
-    depth = (1 << screen_depth);
-
-    D(bug("Freed %ld colors...\n", depth));
-
-    for(i = 0; i < depth; i++)
-        release_pen(i);
 }
 
 void RemapColor(uint8_t *b, uint8_t old, uint8_t new, int size)

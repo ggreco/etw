@@ -36,16 +36,12 @@ void OpenMenuScreen(void)
 {
     screen=NULL;
 
-    public_screen=FALSE;
-
     if(wb_game)
     {
         screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_RESIZABLE);
 
-        use_remapping=FALSE;
         force_single=TRUE;
         double_buffering=FALSE;
-        public_screen=FALSE;
         // metto due false qui x evitare problemi
     }
     else
@@ -464,18 +460,12 @@ void write_config(char *dest)
             fprintf(f,"killer\n"/*-*/);
 
         if(wb_game)
-            fprintf(f,"workbench\n"/*-*/);
-        else if(display_id)
-            fprintf(f,"displayid=%d\noverscan=%d\n"/*-*/,
-                    display_id, overscan);
-
-        if(!public_screen)
+            fprintf(f,"workbench\nwidth=%d\nheight=%d\n"/*-*/,
+                      WINDOW_WIDTH, WINDOW_HEIGHT);
+        else        
             fprintf(f,"width=%d\nheight=%d\n"/*-*/,
-                    wanted_width, wanted_height);
-        else if(wb_game)
-            fprintf(f,"width=%d\nheight=%d\n"/*-*/,
-                    WINDOW_WIDTH, WINDOW_HEIGHT);
-
+                      wanted_width, wanted_height);
+   
         if(!(detail_level&USA_RADAR))
             fprintf(f,"radar=off\n"/*-*/);
         else

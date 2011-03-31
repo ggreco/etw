@@ -11,6 +11,8 @@ BOOL has_joystick=FALSE;
 extern unsigned long NetJoyPos[];
 
 extern void ResizeWin(SDL_Event *);
+extern SDL_Event lastevent;
+
 
 #ifdef DEMOVERSION
 void WaitOrKey(int secs)
@@ -319,7 +321,6 @@ joy_try_again:
 
 int os_wait_end_pause(void)
 {
-    extern SDL_Event lastevent;
     int ok=FALSE;
     uint8_t key;
 
@@ -367,7 +368,22 @@ void CheckKeys(void)
         case SDL_JOYAXISMOTION:
             D(bug("Joystick event, I shouldn't take them!!!!\n"));
             break;
-
+#ifdef TOUCH_VERSION
+            // ignore them we need multitouch events
+        case SDL_MOUSEMOTION:
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONUP:
+            break;
+        case SDL_FINGERMOTION:
+            D(bug("move:%d %d,%d", e.tfinger.fingerId, e.tfinger.x, e.tfinger.y));
+            break;
+        case SDL_FINGERDOWN:
+            D(bug("down:%d %d,%d", e.tfinger.fingerId, e.tfinger.x, e.tfinger.y));
+            break;
+        case SDL_FINGERUP:
+            D(bug("up:%d %d,%d", e.tfinger.fingerId, e.tfinger.x, e.tfinger.y));
+            break;
+#endif
         case SDL_QUIT:
             SetResult("break");
             final = FALSE;
@@ -703,7 +719,11 @@ uint32_t ReadKeyPort(uint32_t port)
     register uint8_t *keys;
     register int *q;
 
+#ifndef TOUCH_VERSION
     keys=SDL_GetKeyState(NULL);
+#else
+    keys=SDL_GetKeyboardState(NULL);
+#endif
 
     q= (port) ? &query[10] : query;
 
@@ -807,7 +827,5 @@ void SaveKeyDef(int port,char *file)
 
 void os_getevent(void)
 {
-    extern SDL_Event lastevent;
-
     SDL_PollEvent(&lastevent);
 }
