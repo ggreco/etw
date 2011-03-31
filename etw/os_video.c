@@ -16,19 +16,51 @@ BOOL os_create_dbuffer(void)
     return FALSE;
 }
 
+#ifndef IPHONE
 SDL_Color SDL_palette[256];
+#else
+uint16_t SDL_palette[256];
+
+void blitLandscapeScreenRect8bpp(uint16_t *dst, int screenWidth, int screenHeight)
+{
+    uint8_t *src = main_bitmap;
+    int srcmod = 1 - bitmap_height * screenWidth,
+        dstmod = screenHeight + bitmap_height;
+
+	for (int x = bitmap_width; x > 0; x--) {
+		for (int y = bitmap_height; y > 0; y--) {
+			*(dst++) = SDL_palette[*src];
+			src += screenWidth;
+		}
+		dst -= dstmod;
+		src += srcmod;
+	}
+}
+
+#endif
 
 void AdjustSDLPalette(void)
 {
     int i;
 
+#ifndef IPHONE
     for(i=0;i<32;i++) {
         SDL_palette[224+i].r=SDL_palette[i].r*2/3;
         SDL_palette[224+i].g=SDL_palette[i].g*2/3;
         SDL_palette[224+i].b=SDL_palette[i].b*2/3;
     }
     SDL_SetColors(screen,SDL_palette,0,256);
+#else
+    for(i = 0; i < 32; i++) {
+        int r = (SDL_palette[i] >> 11) * 2 / 3,
+            g = ((SDL_palette[i] >> 6) & 0x3f) * 2 / 3,
+            b = (SDL_palette[i] & 0x1f) * 2 / 3;
+
+        SDL_palette[224 + i] = (r << 11) | (g << 5) | b;
+    }
+#endif
 }
+
 
 void ResizeWin(SDL_Event *event)
 {
@@ -151,6 +183,7 @@ BOOL window_open(void)
 
 void os_set_color(int color,int r ,int g, int b)
 {
+#ifndef IPHONE
     SDL_Color c;
     c.b=(unsigned char)b;
     c.g=(unsigned char)g;
@@ -158,6 +191,9 @@ void os_set_color(int color,int r ,int g, int b)
     SDL_palette[color]=c; // copio x il resize dopo!
 
     SDL_SetColors(screen,&c,color,1);
+#else
+    SDL_palette[color] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+#endif
 //    D(bug("Eseguita setcolor(%ld, r%ld,g%ld,b%ld)\n",color,r,g,b));
 }
 
@@ -268,6 +304,7 @@ void os_load_palette(uint32_t *palette)
     if(colornum > 256)
         return;
 
+#ifndef IPHONE    
     for(i = 0; i < colornum; i++)
     {
         SDL_palette[i + first].r = palette[1 + i *3] >> 24;
@@ -276,12 +313,22 @@ void os_load_palette(uint32_t *palette)
     }
 
     SDL_SetColors(screen, &SDL_palette[first], first, colornum);
+#else
+    for(i = 0; i < colornum; i++) {
+        int r = palette[1 + i *3] >> 27,
+            g = palette[1 + i *3 + 1] >> 26,
+            b = palette[1 + i *3 + 2] >> 27;
+
+        SDL_palette[i + first] = (r << 11) | (g << 5) | b;
+    }
+#endif
 }
 
 void ScreenSwap(void)
 {
     if(os_lock_bitmap())
     {
+#ifndef IPHONE
         if(scaling)
         {
             scaling->Dest=screen->pixels;
@@ -301,7 +348,9 @@ void ScreenSwap(void)
                 dest += screen->pitch;
             }
         }
-    
+#else
+        blitLandscapeScreenRect8bpp(screen->pixels, screen->w, screen->h);
+#endif
         os_unlock_bitmap();
 
         if(double_buffering)
