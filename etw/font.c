@@ -162,12 +162,7 @@ void LoadPLogo(char *name)
     memset(main_bitmap, Pens[P_NERO], bitmap_width * bitmap_height);
     ScreenSwap();
 
-    if (!use_remapping) {
-        if (last_obj)
-            FreeIFFPalette(screen);
-
-        LoadGfxObjPalette(name, screen);
-    }
+    LoadGfxObjPalette(name, screen);
 
     LoadLogo(name);
 
@@ -184,10 +179,7 @@ void LoadLogo(char *name)
         last_obj = NULL;
     }
 
-    if (!use_remapping)
-        o = LoadGfxObject(name, Pens, NULL);
-    else
-        o = LoadGfxObject(name, NULL, NULL);
+    o = LoadGfxObject(name, Pens, NULL);
 
     if (o) {
         if (o->width == WINDOW_WIDTH && o->height == WINDOW_HEIGHT) {
@@ -209,10 +201,7 @@ void LoadLogo(char *name)
             bitmapScale(&scale);
             D(bug("After: %ldx%ld\n", scale.DestWidth, scale.DestHeight));
 
-            if (!use_remapping)
-                FreeGfxObj(o);
-            else
-                last_obj = o;
+            FreeGfxObj(o);
         }
     }
 }

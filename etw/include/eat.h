@@ -22,7 +22,7 @@
 #include "chunky.h"
 #include "gfx.h"
 #include "tactics.h"
-#include "squadre.h"
+#include "teamsetup.h"
 #include "sound.h"
 #include "demo.h"
 #include "animation.h"

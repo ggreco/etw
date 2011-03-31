@@ -173,18 +173,6 @@ void FreeMenuStuff(void)
     FreeGraphics();
     D(bug("End: FreeGraphics()!\n"));
 
-    if (public_screen && Colors > 0) {
-//              int i;
-
-        D(bug("Freeing pens!\n"));
-
-/*        for(i=0;i<Colors;i++)
-            os_releasepen(Pens[i]);
-        */
-
-    } else
-        FreeIFFPalette();
-
     if (music) {
         FreeSound(music);
         music = NULL;
@@ -207,8 +195,6 @@ BOOL LoadMenuStuff(void)
 
         wanted_width = bitmap_width = WINDOW_WIDTH;
         wanted_height = bitmap_height = WINDOW_HEIGHT;
-
-        use_remapping = FALSE;
 
         for (i = 0; i < 16; i++)
             Pens[i] = i;
@@ -237,10 +223,7 @@ BOOL LoadMenuStuff(void)
 
     if (firsttime) {
         LoadPLogo("newgfx/hurricane" /*-*/ );
-        os_delay(50);
-
-        if (!public_screen)
-            os_delay(40);
+        os_delay(80);
     }
 
     D(bug("Opening fonts...\n" /*-*/ ));
@@ -302,26 +285,10 @@ BOOL LoadMenuStuff(void)
     if (firsttime) {
         init_joy_config();
 
-#if 0
-        D(bug("Loading logo N.2\n" /*-*/ ));
-
-        if (nointro)
-            rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
-                     WINDOW_HEIGHT - 1, Pens[P_NERO], bitmap_width);
-
-        ScreenSwap();
-
-        LoadMenuLogo("gfx/etwlogo" /*-*/ );
-#endif
         D(bug("Updating scores...\n"));
         LoadScores();
 
-        os_delay(50);
-
-        if (!public_screen)
-            os_delay(50);
-
-//              GriddedWipe(0,NULL);
+        os_delay(80);
 
         rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1,
                  Pens[P_NERO], bitmap_width);
@@ -340,30 +307,25 @@ BOOL LoadMenuStuff(void)
 
     D(bug("Palette reinitialization\n" /*-*/ ));
 
-    if (!public_screen) {
+    if (firsttime) {
         int i;
 
-        if (firsttime) {
-            for (i = 0; i < 16; i++)
-                Pens[i] = i;
+        for (i = 0; i < 16; i++)
+            Pens[i] = i;
 
-            Colors = 0;
-
-            FreeIFFPalette();
-        }
-
-        if (!LoadIFFPalette("gfx/eat16menu.col" /*-*/ )) {
-            D(bug("Unable to load the menu palette!\n" /*-*/ ));
-            free(main_bitmap);
-            free(back);
-            FreeMenuFonts();
-            FreeGraphics();
-            return FALSE;
-        }
-//      LoadGfxObjPalette("menugfx/arcade0.gfx"/*-*/); Prova x quando era buggata l'altra chiamata
-
-        D(bug("Loaded menu palette.\n" /*-*/ ));
+        Colors = 0;
     }
+
+    if (!LoadIFFPalette("gfx/eat16menu.col" /*-*/ )) {
+        D(bug("Unable to load the menu palette!\n" /*-*/ ));
+        free(main_bitmap);
+        free(back);
+        FreeMenuFonts();
+        FreeGraphics();
+        return FALSE;
+    }
+
+    D(bug("Loaded menu palette.\n" /*-*/ ));
 
     if ((logos = LoadAnimObject("menugfx/clips.obj" /*-*/ , Pens))) {
         if (LoadBack()) {

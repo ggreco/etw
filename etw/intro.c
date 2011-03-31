@@ -219,7 +219,6 @@ void Outro(void)
         }
         else
         {
-            FreeIFFPalette(screen);
             scr=screen;
         }
 

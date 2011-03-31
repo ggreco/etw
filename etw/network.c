@@ -17,7 +17,7 @@
 
 #include "highsocket.h"
 #include "mytypes.h"
-#include "squadre.h"
+#include "teamsetup.h"
 #include "network.h"
 #include "mydebug.h"
 #include "os_defs.h"
