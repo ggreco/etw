@@ -16,18 +16,16 @@ SDL_Color SDL_palette[256];
 #else
 uint16_t SDL_palette[256];
 
-void blitLandscapeScreenRect8bpp(uint16_t *dst, int screenWidth, int screenHeight)
+void blitLandscapeScreenRect8bpp(uint16_t *dst)
 {
     uint8_t *src = main_bitmap;
-    int srcmod = 1 - bitmap_height * screenWidth,
-        dstmod = screenHeight + bitmap_height;
+    int srcmod = 1 - bitmap_height * bitmap_width, x, y;
 
-	for (int x = bitmap_width; x > 0; x--) {
-		for (int y = bitmap_height; y > 0; y--) {
+	for (x = bitmap_width; x > 0; x--) {
+		for (y = bitmap_height; y > 0; y--) {
 			*(dst++) = SDL_palette[*src];
-			src += screenWidth;
+			src += bitmap_width;
 		}
-		dst -= dstmod;
 		src += srcmod;
 	}
 }
@@ -312,7 +310,7 @@ void ScreenSwap(void)
             }
         }
 #else
-        blitLandscapeScreenRect8bpp(screen->pixels, screen->w, screen->h);
+        blitLandscapeScreenRect8bpp(screen->pixels);
 #endif
         os_unlock_bitmap();
 
