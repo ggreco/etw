@@ -11,7 +11,7 @@ void RimbalzoCasuale(void)
     UpdateBallSpeed();
 }
 
-__inline void RimbalzoVerticale(void)
+void RimbalzoVerticale(void)
 {
     if(pl->dir!=0)
     {
@@ -21,7 +21,7 @@ __inline void RimbalzoVerticale(void)
     UpdateBallSpeed();
 }
 
-__inline void RimbalzoOrizzontale(void)
+void RimbalzoOrizzontale(void)
 {
     pl->dir-=128;
 
@@ -30,7 +30,7 @@ __inline void RimbalzoOrizzontale(void)
     RimbalzoVerticale();
 }
 
-__inline void SmorzaPalla(void)
+void SmorzaPalla(void)
 {
     if(pl->velocita<16)
         pl->velocita>>=1;

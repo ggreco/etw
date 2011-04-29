@@ -1540,7 +1540,7 @@ void MenuResizing(int w, int h)
     oldheight = WINDOW_HEIGHT;
 
     if ((screen =
-        SDL_SetVideoMode(w, h, 8,
+        SDL_SetVideoMode(w, h, SCREEN_DEPTH, SDL_OPEN_FLAGS |
                          SDL_SWSURFACE | (wb_game ? SDL_RESIZABLE :
                                           SDL_FULLSCREEN)))) {
         LoadIFFPalette("gfx/eat16menu.col" /*-*/ );

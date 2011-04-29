@@ -974,7 +974,7 @@ BOOL KeyCfg(WORD button)
                     if (k >= 0)
                     {
                         int s = 0, i, n_keys = sizeof(query) / sizeof(int);
-                        char *tmp;
+                        const char *tmp;
                         /* Verify if the key selected is already used */
                         while (s < n_keys)
                         {
@@ -2782,7 +2782,7 @@ void UpdateKeyCfg(void)
     for (i = 0; i < 20; i++)
     {
         /* Uppercase conversion for ETW font */
-        char *tmp = SDL_GetKeyName(query[i]);
+        const char *tmp = SDL_GetKeyName(query[i]);
         int j = 0;
         while(*tmp)
         {

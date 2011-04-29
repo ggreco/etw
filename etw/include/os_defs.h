@@ -5,18 +5,30 @@
 #define OS_DEFS_H
 
 #ifndef __AMIGADATE__
+#ifndef __DATE__
 #   define __AMIGADATE__ (3.9.2003)
+#else
+#define __AMIGADATE__ __DATE__
+#endif
 #endif
 
 
 /* set the default arch to Linux */
-#if !defined(WIN) && !defined(LINUX) && !defined(MACOSX) && !defined(AMIGA)
+#if !defined(WIN) && !defined(IPHONE) && !defined(LINUX) && !defined(MACOSX) && !defined(AMIGA)
 #   define LINUX
 #endif
 
-#ifdef LINUX 
+#if defined(LINUX) || defined(IPHONE) 
     extern FILE *os_open(char *, char *);
 #   define fopen os_open
+#endif
+
+#ifdef IPHONE
+#define SCREEN_DEPTH 16
+#define SDL_OPEN_FLAGS (SDL_NOFRAME|SDL_RESIZABLE)
+#else
+#define SCREEN_DEPTH 8
+#define SDL_OPEN_FLAGS 0
 #endif
 
 #if !defined(__SASC)
@@ -58,11 +70,7 @@ extern char *RESULT_FILE;
 #   endif
 //#   define USE_LOGFILE
 
-#elif defined(LINUX)
-#   define stricmp strcasecmp
-#   define strnicmp strncasecmp
-
-#elif defined MACOSX
+#elif defined(LINUX) || defined (MACOSX) || defined(IPHONE)
 #   define stricmp strcasecmp
 #   define strnicmp strncasecmp
 

@@ -58,7 +58,7 @@ extern struct dirent    *readdir_r(DIR *, struct dirent *);
 
 #include <sys/dir.h>
 
-#elif defined(SOLARIS_X86) || defined(WINCE) || defined(CROSSCOMPILER) || defined(AROS)
+#elif defined(IPHONE) || defined(SOLARIS_X86) || defined(WINCE) || defined(CROSSCOMPILER) || defined(AROS)
 #include <sys/types.h>
 #include <dirent.h>
 #else

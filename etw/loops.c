@@ -25,7 +25,7 @@ void (*HandleTeam1) (int);
 void (*HandleRadar) (void);
 gfx_t *background;
 
-__inline void HandleControl(void)
+void HandleControl(void)
 {
     if (!replay_mode) {
         int i, j;

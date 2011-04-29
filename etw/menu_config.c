@@ -24,8 +24,6 @@ BOOL wb_game=FALSE,use_replay=TRUE,allow_replay=TRUE,nocpu=FALSE,arcade=FALSE,su
     menu_music=TRUE;
 #endif
 
-extern int screen_depth;
-
 int8_t situation_result[2]={0,0},strictness=10;
 
 int display_id = 0, wanted_width, wanted_height;
@@ -36,24 +34,25 @@ void OpenMenuScreen(void)
 {
     screen=NULL;
 
+#ifndef IPHONE
     if(wb_game)
     {
-        screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_RESIZABLE);
+#endif
+        screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_OPEN_FLAGS|SDL_SWSURFACE|SDL_RESIZABLE);
 
         force_single=TRUE;
         double_buffering=FALSE;
         // metto due false qui x evitare problemi
+#ifndef IPHONE        
     }
     else
     {
         double_buffering=FALSE;
-        screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_HWSURFACE|SDL_FULLSCREEN); 
+        screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_HWSURFACE|SDL_FULLSCREEN); 
     }
-
+#endif
     SDL_WM_SetCaption("Eat The Whistle " ETW_VERSION,"ETW");
 
-    if(screen)
-        screen_depth=8;
 
     if(os_check_joy(0))
         sprefs_bottoni[menu[MENU_SYSTEM_PREFS].NumeroBottoni-3].Text="JOYSTICK CONFIG";

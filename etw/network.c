@@ -4,9 +4,9 @@
 #include <time.h>
 #include "SDL.h"
 
-#if defined(LINUX) || defined(SOLARIS_X86)
+#if defined(LINUX) || defined(SOLARIS_X86) || defined(__IPHONEOS__)
 #include <unistd.h>
-#if defined(LINUX) && !defined(SOLARIS_X86)
+#if defined(LINUX) && !defined(SOLARIS_X86) || defined(__IPHONEOS__)
 #include <fcntl.h>
 #else
 #include <sys/fcntl.h>
