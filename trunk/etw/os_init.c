@@ -226,7 +226,7 @@ void os_free_timer(void)
 {
 }
 
-#if defined(LINUX) || defined(SOLARIS_X86)
+#if defined(LINUX) || defined(SOLARIS_X86) || defined (IPHONE)
 #if defined(LINUX) && !defined(SOLARIS_X86)
 #   include <sys/dir.h>
 #else

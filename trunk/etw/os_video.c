@@ -6,7 +6,6 @@ uint8_t * bmap = NULL, * original_bm;
 
 SDL_Surface *screen=NULL;
 SDL_Event lastevent;
-extern int screen_depth;
 extern int Colors;
 extern BOOL use_width,use_height,wb_game,use_direct;
 BOOL triple_buffering=FALSE,wpa8=FALSE,overscan=0;
@@ -14,32 +13,19 @@ BOOL triple_buffering=FALSE,wpa8=FALSE,overscan=0;
 SDL_Color SDL_palette[256];
 
 #ifdef IPHONE
-#define SCREEN_DEPTH 24
 
 uint16_t palette16[256];
 
-// no more needed since iphone is able to rotate the display by itself
-#if 0
-void blitLandscapeScreenRect8bpp(uint16_t *dst)
-{
-    uint8_t *src = main_bitmap;
-    int srcmod = 1 - bitmap_height * bitmap_width, x, y;
 
-	for (x = bitmap_width; x > 0; x--) {
-		for (y = bitmap_height; y > 0; y--) {
-			*(dst++) = SDL_palette[*src];
-			src += bitmap_width;
-		}
-		src += srcmod;
-	}
-}
-#endif
 void blitScreen16(uint16_t *dst)
 {
-    int srcmod = bitmap_width;
     uint8_t *src = main_bitmap;    
     int x, y;
-
+#if 0
+    fprintf(stderr, "Blitting to %dx%d (%d pitch) from %dx%d/%d\n",
+                    screen->w, screen->h, screen->pitch,
+                    bitmap_width, bitmap_height, SCREEN_DEPTH);
+#endif
     for (y = bitmap_height; y > 0; y--)
     	for (x = bitmap_width; x > 0; x--)
 			*(dst++) = palette16[*src++];
@@ -47,17 +33,14 @@ void blitScreen16(uint16_t *dst)
 
 void blitScreen32(uint32_t *dst)
 {
-    int srcmod = bitmap_width;
     uint8_t *src = main_bitmap;    
     int x, y;
 
     for (y = bitmap_height; y > 0; y--)
     	for (x = bitmap_width; x > 0; x--)
-			*(dst++) = (uint32_t)(SDL_palette[*src++]);
+			*(dst++) = *((uint32_t*)&(SDL_palette[*src++]));
 }
 
-#else
-#define SCREEN_DEPTH 8
 #endif
 
 void AdjustSDLPalette(void)
@@ -66,9 +49,9 @@ void AdjustSDLPalette(void)
 
     for(i=0;i<32;i++) {
 #ifdef IPHONE
-        int r = (SDL_palette[i] >> 11) * 2 / 3,
-            g = ((SDL_palette[i] >> 6) & 0x3f) * 2 / 3,
-            b = (SDL_palette[i] & 0x1f) * 2 / 3;
+        int r = (palette16[i] >> 11) * 2 / 3,
+            g = ((palette16[i] >> 6) & 0x3f) * 2 / 3,
+            b = (palette16[i] & 0x1f) * 2 / 3;
 
         palette16[224 + i] = (r << 11) | (g << 5) | b;
 #endif
@@ -92,7 +75,7 @@ void ResizeWin(SDL_Event *event)
 
 //    os_resize(event);
 
-    if(!(screen=SDL_SetVideoMode(event->resize.w,event->resize.h, SCREEN_DEPTH, SDL_SWSURFACE|SDL_RESIZABLE)))
+    if(!(screen=SDL_SetVideoMode(event->resize.w,event->resize.h, SCREEN_DEPTH, SDL_OPEN_FLAGS|SDL_SWSURFACE|SDL_RESIZABLE)))
     {
         screen=temp;
         return;
@@ -207,9 +190,8 @@ void os_set_color(int color,int r ,int g, int b)
 
 void OpenTheScreen(void)
 {
-    screen_depth = 8;
 #ifdef IPHONE
-    screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_SWSURFACE|SDL_RESIZABLE);   
+    screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_OPEN_FLAGS|SDL_SWSURFACE);   
     force_single = TRUE;
     double_buffering = FALSE;
     wb_game = FALSE;

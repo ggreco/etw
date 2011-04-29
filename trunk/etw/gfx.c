@@ -8,7 +8,6 @@
 static void AddNode(struct MyList *l, APTR ptr, BYTE type);
 
 int ClipX = 0, ClipY = 0;
-int screen_depth;
 
 /* Switch gestiti dal sistema, in seguito potrebbero essere inseriti
     come tags della chiamata InitAnimSystem
@@ -933,7 +932,7 @@ void LoadGfxObjPalette(char *name)
         fread_u16(fh); /* ignored */
 
         temp = fread_u16(fh); /* real depth */
-        depth = 1 << min(screen_depth, temp);
+        depth = 1 << min(8, temp);
 
         for (i = 0; i < depth * 3; i++)
             palette[i + 1] = (uint32_t)fread_u8(fh) << 24;

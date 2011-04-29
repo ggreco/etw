@@ -5,7 +5,12 @@
 #include "highdirent.h"
 #include "sound.h"
 
-#if defined(LINUX) || defined(SOLARIS_X86)
+#if defined(__IPHONEOS__)
+#include <unistd.h>
+
+#include <sys/stat.h>
+#include <sys/types.h>
+#elif defined(LINUX) || defined(SOLARIS_X86)
 #include <gtk/gtk.h>
 #include <unistd.h>
 
@@ -427,7 +432,12 @@ int main(int argc, char *argv[])
         }
     } 
 
-#if defined(LINUX) || defined(SOLARIS_X86)
+#if defined(__IPHONEOS__)
+    TEMP_DIR = "/tmp/";
+    HIGH_FILE = "/tmp/high";
+    CONFIG_FILE = "/tmp/thismatch";
+    RESULT_FILE = "/tmp/result";    
+#elif defined(LINUX) || defined(SOLARIS_X86)
     /* Find data and temporary directories */
     {
         struct passwd *pwd;

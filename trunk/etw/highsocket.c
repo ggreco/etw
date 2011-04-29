@@ -8,9 +8,9 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(SOLARIS_X86)
+#if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(SOLARIS_X86) || defined(IPHONE)
 #include <unistd.h>
-#if defined(LINUX) || defined(FAKENET) || defined(MACOSX)
+#if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(IPHONE)
 #include <fcntl.h>
 #elif defined(SOLARIS_X86)
 #define FNDELAY O_NDELAY 
