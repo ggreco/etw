@@ -264,7 +264,7 @@ BOOL speaker2memory(void)
 void init_speaker(void)
 {
     FILE *f;
-    int i;
+    size_t i;
     char buffer[120];
 
     strcpy(buffer,spk_basename);

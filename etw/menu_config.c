@@ -32,31 +32,16 @@ char localename[40];
 
 void OpenMenuScreen(void)
 {
-    screen=NULL;
+    screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_OPEN_FLAGS|SDL_SWSURFACE|
+                              (wb_game ? SDL_RESIZABLE : SDL_FULLSCREEN));
 
-#ifndef IPHONE
-    if(wb_game)
-    {
-#endif
-        screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_OPEN_FLAGS|SDL_SWSURFACE|SDL_RESIZABLE);
-
-        force_single=TRUE;
-        double_buffering=FALSE;
-        // metto due false qui x evitare problemi
-#ifndef IPHONE        
-    }
-    else
-    {
-        double_buffering=FALSE;
-        screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_HWSURFACE|SDL_FULLSCREEN); 
-    }
-#endif
+    force_single=TRUE;
+    double_buffering=FALSE;
     SDL_WM_SetCaption("Eat The Whistle " ETW_VERSION,"ETW");
 
 
     if(os_check_joy(0))
         sprefs_bottoni[menu[MENU_SYSTEM_PREFS].NumeroBottoni-3].Text="JOYSTICK CONFIG";
-
 }
 
 BOOL CheckNewPitches(void)

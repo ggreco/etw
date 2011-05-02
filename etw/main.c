@@ -537,7 +537,7 @@ BOOL LoadStuff(void)
 
     if ((background = LoadGfxObject(fieldname, Pens, NULL))) {
         gfx_t *temp;
-        int i, x = 106;
+        int x = 106;
 
         Progress();
 
@@ -609,14 +609,14 @@ BOOL LoadStuff(void)
         Progress();
 
         if (!arcade && !training) {
-            anim_t *p;
+            anim_t *ap;
 
-            if ( (p = LoadAnimObject("gfx/people.obj", Pens))) {
+            if ( (ap = LoadAnimObject("gfx/people.obj", Pens))) {
                 for (i = 0; i < NUMERO_OGGETTI; i++) {
                     x = MyRangeRand(peoples[i].Range);
 
                     if (peoples[i].Frame[x] >= 0) {
-                        BltAnimObj(p, background->bmap,
+                        BltAnimObj(ap, background->bmap,
                                 peoples[i].Frame[x], peoples[i].X,
                                 peoples[i].Y, background->width);
                     } else
@@ -641,7 +641,7 @@ BOOL LoadStuff(void)
                     }
                 }
 
-                FreeAnimObj(p);
+                FreeAnimObj(ap);
             }
         }
 

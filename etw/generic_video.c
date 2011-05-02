@@ -71,7 +71,7 @@ void write_char(uint8_t * bm, char c, uint8_t color)
     }
 }
 
-int drawtext(char *buffer, int length, int x, int y, int color)
+int drawtext(const char *buffer, int length, int x, int y, int color)
 {
     uint8_t * dest;
     int t=0;
@@ -231,7 +231,7 @@ void bitmapScale(struct MyScaleArgs *s)
 {
     uint8_t xref[800], yref[600], *src, *dest;
 
-    if(s->SrcWidth>sizeof(xref) || s->SrcHeight>sizeof(yref)) {
+    if((size_t)s->SrcWidth>sizeof(xref) || (size_t)s->SrcHeight>sizeof(yref)) {
         D(bug("Error, src of bitmapScale too big!\n"));
         return;
     }
@@ -462,28 +462,28 @@ void freedraw(long pen, int x1, int y1, int x2, int y2)
     }
 }
 
-void freepolydraw(long pen, int points, int *index)
+void freepolydraw(long pen, int points, int *idx)
 {
     while(points>0)    {
-        if(index[0]==index[2]||index[1]==index[3])
-            draw(pen, index[0], index[1], index[2], index[3]);
+        if(idx[0]==idx[2]||idx[1]==idx[3])
+            draw(pen, idx[0], idx[1], idx[2], idx[3]);
         else        
-            freedraw(pen, index[0], index[1], index[2], index[3]);
+            freedraw(pen, idx[0], idx[1], idx[2], idx[3]);
 
-        index+=2;
+        idx+=2;
         points--;
     }
 }
 
-void polydraw(long pen, int xs, int ys, int points, int *index)
+void polydraw(long pen, int xs, int ys, int points, int *idx)
 {
-    draw(pen, xs, ys, index[0], index[1]);
+    draw(pen, xs, ys, idx[0], idx[1]);
 
     points--;
 
     while(points>0)    {
-        draw(pen, index[0], index[1], index[2], index[3]);
-        index+=2;
+        draw(pen, idx[0], idx[1], idx[2], idx[3]);
+        idx+=2;
         points--;
     }
 }

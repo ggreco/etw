@@ -65,9 +65,23 @@ void AdjustSDLPalette(void)
 }
 
 
+int os_resize_window(int w, int h)
+{
+    SDL_Surface *temp;
+
+    if (!(temp = SDL_SetVideoMode(w, h, SCREEN_DEPTH, SDL_OPEN_FLAGS | SDL_SWSURFACE | 
+                                    (wb_game ? SDL_RESIZABLE : SDL_FULLSCREEN)))) { 
+        D(bug("Unable to resize window to %dx%d\n", w, h));
+        return FALSE;
+    }
+
+    screen = temp;
+
+    return TRUE;
+}
+
 void ResizeWin(SDL_Event *event)
 {
-    SDL_Surface *temp = screen;
     uint8_t *newbm;
     int old_width = WINDOW_WIDTH, old_height = WINDOW_HEIGHT, nw;
 
@@ -75,11 +89,8 @@ void ResizeWin(SDL_Event *event)
 
 //    os_resize(event);
 
-    if(!(screen=SDL_SetVideoMode(event->resize.w,event->resize.h, SCREEN_DEPTH, SDL_OPEN_FLAGS|SDL_SWSURFACE|SDL_RESIZABLE)))
-    {
-        screen=temp;
+    if(!os_resize_window(event->resize.w,event->resize.h))
         return;
-    }
 
     ClipX=WINDOW_WIDTH=event->resize.w;
     ClipY=WINDOW_HEIGHT=event->resize.h;
