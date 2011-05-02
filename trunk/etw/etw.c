@@ -432,11 +432,11 @@ int main(int argc, char *argv[])
         }
     } 
 
-#if defined(__IPHONEOS__)
-    TEMP_DIR = "/tmp/";
-    HIGH_FILE = "/tmp/high";
-    CONFIG_FILE = "/tmp/thismatch";
-    RESULT_FILE = "/tmp/result";    
+#if defined(IPHONE)
+    TEMP_DIR = "../Documents/";
+    HIGH_FILE = "../Documents/high";
+    CONFIG_FILE = "../Documents/thismatch";
+    RESULT_FILE = "../Documents/result";    
 #elif defined(LINUX) || defined(SOLARIS_X86)
     /* Find data and temporary directories */
     {
