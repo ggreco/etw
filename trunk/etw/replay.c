@@ -6,7 +6,7 @@ uint32_t *r_controls[MAX_PLAYERS];
 
 void EndReplay(void);
 
-extern int highsize;
+extern int highlight_size;
 
 int ReplaySet = 0, smallcounter = 0, old_tc;
 int OriginalReplaySet, SetLimit, StartReplaySet;
@@ -771,7 +771,7 @@ void StartReplay(void)
 
     if(highlight) {
         counter = 0;
-        real_counter = highsize;
+        real_counter = highlight_size;
     }
 }
 
@@ -993,7 +993,7 @@ BOOL AllocReplayBuffers(void)
 
     if(highlight) {
         D(bug("Setting replay buffers...\n"));
-        size = (highsize / 256) + 3; //per sicurezza
+        size = (highlight_size / 256) + 3; //per sicurezza
     }
 
     CounterLimit = (UWORD)(size * 256 - 1);
@@ -1050,7 +1050,7 @@ void FreeReplayBuffers(void)
 void LoadHighlight(void)
 {
     FILE *fh;
-    WORD swaps;
+    WORD lswaps;
     int i, j;
 
     fh = fopen(HIGH_FILE,"rb");
@@ -1060,24 +1060,24 @@ void LoadHighlight(void)
         return;
     }
 
-    swaps = fread_u16(fh);
+    lswaps = fread_u16(fh);
 
-    D(bug("Loading an highlight...(%d frames, %d swaps)\n", highsize, swaps));
+    D(bug("Loading an highlight...(%d frames, %d swaps)\n", highlight_size, lswaps));
 
     ReadMatch(fh, &match[0]);
 
     for(i = 0; i < MAX_PLAYERS; i++) 
-        for (j = 0; j < highsize; j++) 
+        for (j = 0; j < highlight_size; j++) 
             r_controls[i][j] = fread_u32(fh);
 
     fclose(fh);
 
-    j = swaps; // swapteams() change the swaps value!
+    j = lswaps; // swapteams() change the swaps value!
 
     for(i = 0; i < j; i++)
         SwapTeams();
 
-    swaps = j;
+    lswaps = j;
 
     start_replay = TRUE;
 }

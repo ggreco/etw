@@ -38,7 +38,7 @@ struct MyFastScaleArgs
 
 // Da generic_video.c
 
-int drawtext(char *, int, int, int, int);
+int drawtext(const char *, int, int, int, int);
 void setfont(struct myfont *);
 struct myfont *openfont(char *);
 void closefont(struct myfont *);

@@ -61,8 +61,8 @@ void bltanimobjscale(struct scaleAnimObjArgs *args)
     uint8_t x_ref[800], y_ref[600]; // XXX this is a limit to the animobj size!
     dest += (args->yd*args->destmod);
   
-    if (args->ws > sizeof(x_ref) ||
-        args->hs > sizeof(y_ref) ) {
+    if ((size_t)args->ws > sizeof(x_ref) ||
+        (size_t)args->hs > sizeof(y_ref) ) {
         D(bug("Unable to scale such a big animobj!\n"));
         return;
     }
@@ -139,10 +139,11 @@ void bltbitmap_x(uint8_t * src, int xs, int ys, uint8_t * dest, int xd, int yd,
     }
 }
 
-void do_p2c(unsigned char **p, uint8_t * b, int width, int height, int depth,
+void do_p2c(unsigned char **plane, uint8_t * b, int width, int height, int depth,
             int32_t *pens)
 {
-    register int k, i, source_color, current_bit;
+    register int i, source_color, current_bit;
+    size_t k;
 
     if(pens)
     {
@@ -154,7 +155,7 @@ void do_p2c(unsigned char **p, uint8_t * b, int width, int height, int depth,
 
                 for(i = 0; i < depth; i++)
                 {
-                    if(p[i][k] & current_bit)
+                    if(plane[i][k] & current_bit)
                         source_color |= (1 << i); 
                 }
 
@@ -172,7 +173,7 @@ void do_p2c(unsigned char **p, uint8_t * b, int width, int height, int depth,
 
                 for(i = 0; i < depth; i++)
                 {
-                    if(p[i][k] & current_bit)
+                    if(plane[i][k] & current_bit)
                         source_color |= (1 << i); 
                 }
 
@@ -291,7 +292,7 @@ BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
                     uint8_t *t_data, int32_t *pens)
 {
     uint8_t *c;
-    int i;
+    size_t i;
 
     if(pens)
         for(i = 0; i < m->buffers; i++)
@@ -305,20 +306,20 @@ BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
 
     if ((c = calloc(sizeof(struct ABlock) * m->blocks + sizeof(struct ALine) * m->lines + m->buffers + 4, 1))) {
         int k = 0;
-        struct ALine *pl = NULL, *l;
+        struct ALine *prl = NULL, *l;
         struct ABlock *pb, *b;
 
         for(i = 0; i < m->lines; i++) {
             l = (struct ALine *)c;
             c += sizeof(struct ALine);
 
-            if(!pl) {
+            if(!prl) {
                 m->FirstLine = l;
-                pl = l;
+                prl = l;
             }
             else {
-                pl->Next = l;
-                pl = l;
+                prl->Next = l;
+                prl = l;
             }
 
             pb = NULL;
@@ -368,7 +369,7 @@ BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
                     uint8_t *t_data, int32_t *pens)
 {
     int i, k = 0;
-    struct ALine *pl = NULL, *l;
+    struct ALine *prl = NULL, *l;
     struct ABlock *pb, *b;
 
     if(pens)
@@ -381,15 +382,15 @@ BOOL create_mchunky(struct MChunky *m, uint16_t *blks, int16_t *bufs,
         l->Next = NULL;
         l->FirstBlock = NULL;
 
-        if(!pl)
+        if(!prl)
         {
             m->FirstLine = l;
-            pl = l;
+            prl = l;
         }
         else
         {
-            pl->Next = l;
-            pl = l;
+            prl->Next = l;
+            prl = l;
         }
 
         pb = NULL;
@@ -651,7 +652,7 @@ struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
                                 m->blocks++;
                                 blks[m->lines]++;
 
-                                if(m->buffers >= (start_datas - k - 1)) {
+                                if(m->buffers >= (uint32_t)(start_datas - k - 1)) {
                                     start_datas <<= 1;
                                     t_data=realloc(t_data, start_datas);
                                 }

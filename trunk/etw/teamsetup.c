@@ -853,7 +853,7 @@ team_t *CreateTeam(int num)
 #if 0
     FILE *fh;
 #endif
-    int i;
+    size_t i;
 
     if(!(s = calloc(1, sizeof(team_t))))
         return NULL;
@@ -1383,7 +1383,7 @@ game_t *SetupSquadre(void)
     return p;
 }
 
-void LiberaPartita(game_t *p)
+void LiberaPartita(game_t *game)
 {
     int i;
 
@@ -1442,15 +1442,15 @@ void LiberaPartita(game_t *p)
     DestroyTeam(p->team[0]);
 
     if(detail_level & USA_ARBITRO)
-        FreeAnimObj(p->referee.anim);
+        FreeAnimObj(game->referee.anim);
 
-    FreeAnimObj(p->ball.anim);
+    FreeAnimObj(game->ball.anim);
 
     // Questo controllo prima mancava!!!!
-    if(detail_level & USA_RISULTATO && p->result)
-        free(p->result);
+    if(detail_level & USA_RISULTATO && game->result)
+        free(game->result);
 
-    free(p);
+    free(game);
 
     // these should be reinint on game quit!
     has_black[0] = has_black[1] = FALSE;

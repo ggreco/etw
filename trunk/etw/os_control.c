@@ -650,7 +650,7 @@ void CheckKeys(void)
                 if( (e.key.keysym.sym>=SDLK_a && e.key.keysym.sym<=SDLK_z) ||
                     (e.key.keysym.sym>=SDLK_0 && e.key.keysym.sym<=SDLK_9) ||
                      e.key.keysym.sym==SDLK_SPACE ) {
-                    int l=strlen(outgoing_chat);
+                    size_t l=strlen(outgoing_chat);
 
                     if(l<(sizeof(outgoing_chat)-1)) {
                         outgoing_chat[l]=toupper(e.key.keysym.sym);

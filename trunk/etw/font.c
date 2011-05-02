@@ -303,15 +303,15 @@ void ShowPanel(void)
 
     if (p->show_panel & PANEL_OFFSIDE) {
         int x, y, l;
-        char *p = "O F F S I D E";
+        const char *sp = "O F F S I D E";
 
-        l = strlen(p);
+        l = strlen(sp);
 
         x = WINDOW_WIDTH - l * font_width;
         x >>= 1;
         y = (WINDOW_HEIGHT >> 1) - font_height;
 
-        TextShadow(x, y, p, l);
+        TextShadow(x, y, sp, l);
     }
 
     if (p->show_panel & PANEL_TIME) {

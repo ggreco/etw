@@ -13,7 +13,7 @@ extern char shirt[2][24], palette[24], fieldname[24];
 extern long int time_length;
 extern BOOL use_offside, highlight;
 int8_t field;
-extern int highsize, matchstatus_size;
+extern int highlight_size, matchstatus_size;
 
 char *palettes[]= 
 {
@@ -714,7 +714,7 @@ void LoadHigh(char *file)
         ReadTeam(f, &leftteam_dk);
         ReadTeam(f, &rightteam_dk);
 
-        highsize = fread_u16(f);
+        highlight_size = fread_u16(f);
         
 // Here we handle the REAL highlight...
 

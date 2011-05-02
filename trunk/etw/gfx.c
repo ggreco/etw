@@ -769,7 +769,7 @@ void AddNode(struct MyList *l, APTR ptr, BYTE type)
 BOOL LoadIFFPalette(char *filename)
 {
     FILE *fh;
-    uint32_t palette[256 * 3 + 2];
+    uint32_t pal[256 * 3 + 2];
     char buffer[8];
     BOOL rc = FALSE;
 
@@ -806,11 +806,11 @@ BOOL LoadIFFPalette(char *filename)
                           ("Loading %ld colors from %s...\n", c, filename));
 
                         for (j = 0; j < c * 3; j++)
-                            palette[j + 1] = (uint32_t)fread_u8(fh) << 24;
+                            pal[j + 1] = (uint32_t)fread_u8(fh) << 24;
 
-                        palette[0] = (uint32_t)c << 16;
-                        palette[c * 3 + 1] = 0;
-                        os_load_palette(palette);
+                        pal[0] = (uint32_t)c << 16;
+                        pal[c * 3 + 1] = 0;
+                        os_load_palette(pal);
 
                         rc = TRUE;
                         i = (int) l + 1;

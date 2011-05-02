@@ -1531,18 +1531,13 @@ BOOL HandleJoy(uint32_t joystatus)
 
 void MenuResizing(int w, int h)
 {
+    extern int os_resize_window(int, int);
 //      gfx_t o;
 //      unsigned char *back2;
-
-    extern SDL_Surface *screen;
-
     oldwidth = WINDOW_WIDTH;
     oldheight = WINDOW_HEIGHT;
 
-    if ((screen =
-        SDL_SetVideoMode(w, h, SCREEN_DEPTH, SDL_OPEN_FLAGS |
-                         SDL_SWSURFACE | (wb_game ? SDL_RESIZABLE :
-                                          SDL_FULLSCREEN)))) {
+    if (os_resize_window(w, h)) {
         LoadIFFPalette("gfx/eat16menu.col" /*-*/ );
 
         free(main_bitmap);
@@ -1567,8 +1562,7 @@ void MenuResizing(int w, int h)
         UpdateButtonList();
         ChangeMenu(current_menu);
     } else {
-        D(bug("Error reopening screen"));
-//              request("Not enough memory.");
+        D(bug("Error resizing screen"));
         FreeMenuStuff();
         exit(0);
     }

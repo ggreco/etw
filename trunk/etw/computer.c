@@ -28,7 +28,7 @@ void CheckCheat(UBYTE c )
         {
             cheat_counter++;
 
-            if(cheat_counter==strlen(cheats[current_cheat]))
+            if(cheat_counter==(int)strlen(cheats[current_cheat]))
             {
                 if(!menusound[0])
                     menusound[0]=LoadSound(menu_soundname[0]);

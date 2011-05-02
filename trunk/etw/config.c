@@ -4,7 +4,7 @@ extern char team_name[2][16];
 char palette[24]="gfx/eat16.col";
 char fieldname[24]="gfx/pitcha.gfx";
 char shirt[2][24]={"gfx/playera.obj","gfx/playera.obj"};
-int highsize=0;
+int highlight_size=0;
 
 extern BOOL wb_game;
 extern int32_t display_id,overscan;
