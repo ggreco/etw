@@ -247,7 +247,6 @@ void HandleArcade(void);
 void AdjustSDLPalette(void);
 void os_set_color(int,int,int,int);
 void close_graphics(void);
-BOOL window_open(void);
 void os_resize(void);
 void os_set_window_frame(void);
 void os_wait(void);
@@ -257,8 +256,6 @@ int os_get_screen_height(void);
 int os_get_inner_width(void);
 int os_get_inner_height(void);
 void os_load_palette(uint32_t *);
-BOOL os_lock_bitmap(void);
-void os_unlock_bitmap(void);
 
 // Da os_control.c
 

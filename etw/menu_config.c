@@ -30,14 +30,20 @@ int display_id = 0, wanted_width, wanted_height;
 long int situation_time = 0;
 char localename[40];
 
+#ifdef IPHONE
+
+#endif
+
 void OpenMenuScreen(void)
 {
-    screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_OPEN_FLAGS|SDL_SWSURFACE|
-                              (wb_game ? SDL_RESIZABLE : SDL_FULLSCREEN));
+    extern void OpenTheScreen();
+    extern void SetTitle(const char *);
+
+    OpenTheScreen();
 
     force_single=TRUE;
     double_buffering=FALSE;
-    SDL_WM_SetCaption("Eat The Whistle " ETW_VERSION,"ETW");
+    SetTitle("Eat The Whistle " ETW_VERSION);
 
 
     if(os_check_joy(0))
@@ -100,11 +106,7 @@ void load_config(FILE *f)
                     if(value>0)
                         framerate=1000000/value;
             }
-            else if(!strnicmp(buffer,"overscan="/*-*/,9))
-            {
-                if((value=atol(&buffer[9]))>0)
-                    overscan=value;
-            }
+#ifndef IPHONE
             else if(!strnicmp(buffer,"width="/*-*/,6))
             {
                 if((value=atol(&buffer[6]))>0)
@@ -114,7 +116,8 @@ void load_config(FILE *f)
             {
                 if((value=atol(&buffer[7]))>0)
                     WINDOW_HEIGHT=value;
-            }        
+            }
+#endif
             else if(!strnicmp(buffer,"nointro"/*-*/,7) )
             {
                 nointro=TRUE;
@@ -130,10 +133,6 @@ void load_config(FILE *f)
             else if(!strnicmp(buffer,"newpitches"/*-*/,10) )
             {
                 newpitches=TRUE;
-            }
-            else if(!strnicmp(buffer,"chunky"/*-*/,6) )
-            {
-                chunky_version=TRUE;
             }
             else if(!strnicmp(buffer,"sound=off"/*-*/,9) )
             {
@@ -188,10 +187,6 @@ void load_config(FILE *f)
             else if(!strnicmp(buffer,"scaling"/*-*/,7) )
             {
                 use_gfx_scaling=TRUE;
-            }
-            else if(!strnicmp(buffer,"wpa8"/*-*/,4) )
-            {
-                wpa8=TRUE;
             }
             else if(!strnicmp(buffer,"workbench"/*-*/,9) )
             {
@@ -406,17 +401,9 @@ void write_config(char *dest)
         if(newpitches)
             fprintf(f,"newpitches\n"/*-*/);
 
-        if(chunky_version)
-            fprintf(f,"chunky\n"/*-*/);
-
         if(nointro)
             fprintf(f,"nointro\n"/*-*/);
 
-        if(wpa8)
-            fprintf(f,"wpa8\n"/*-*/);
-
-        if(triple)
-            fprintf(f,"triple\n"/*-*/);
 
         if(use_gfx_scaling)
         {

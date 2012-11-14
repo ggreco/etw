@@ -34,8 +34,6 @@ void init_system(void)
 {
     SetResult("error");
 
-    OpenTheScreen();
-
     if (!screen)
         return;
 

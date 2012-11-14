@@ -1529,43 +1529,39 @@ BOOL HandleJoy(uint32_t joystatus)
     return TRUE;
 }
 
-void MenuResizing(int w, int h)
+void MenuResizing()
 {
-    extern int os_resize_window(int, int);
+    extern SDL_Window *screen;
 //      gfx_t o;
 //      unsigned char *back2;
     oldwidth = WINDOW_WIDTH;
     oldheight = WINDOW_HEIGHT;
-
-    if (os_resize_window(w, h)) {
-        LoadIFFPalette("gfx/eat16menu.col" /*-*/ );
-
-        free(main_bitmap);
-        free(back);
-        bitmap_width = WINDOW_WIDTH = w;
-        bitmap_height = WINDOW_HEIGHT = h;
-
-        main_bitmap = malloc(WINDOW_WIDTH * WINDOW_HEIGHT);
-        back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT);
-
-        if (!main_bitmap || !back) {
-            request("Not enough memory.\n");
-            FreeMenuStuff();
-            exit(0);
-        }
-
-        if (arcade_back)
-            LoadArcadeBack();
-        else
-            LoadBack();
-
-        UpdateButtonList();
-        ChangeMenu(current_menu);
-    } else {
-        D(bug("Error resizing screen"));
+    int w, h;
+    SDL_GetWindowSize(screen, &w, &h);
+    
+    LoadIFFPalette("gfx/eat16menu.col" /*-*/ );
+    
+    free(main_bitmap);
+    free(back);
+    bitmap_width = WINDOW_WIDTH = w;
+    bitmap_height = WINDOW_HEIGHT = h;
+    
+    main_bitmap = malloc(WINDOW_WIDTH * WINDOW_HEIGHT);
+    back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT);
+    
+    if (!main_bitmap || !back) {
+        request("Not enough memory.\n");
         FreeMenuStuff();
         exit(0);
     }
+    
+    if (arcade_back)
+        LoadArcadeBack();
+    else
+        LoadBack();
+    
+    UpdateButtonList();
+    ChangeMenu(current_menu);
 }
 
 BOOL HandleMenuIDCMP(void)
@@ -1576,9 +1572,9 @@ BOOL HandleMenuIDCMP(void)
     if (SDL_WaitEvent(&e)) {
 
         switch (e.type) {
-        case SDL_VIDEORESIZE:
+        case SDL_WINDOWEVENT_RESIZED:
             if (!reqqing)
-                MenuResizing(e.resize.w, e.resize.h);
+                MenuResizing();
             break;
 /*
             case IDCMP_INTUITICKS:
@@ -1586,6 +1582,10 @@ BOOL HandleMenuIDCMP(void)
 //                returncode&=HandleJoy(ReadJoyPort(0));
                 break;
 */
+        case SDL_WINDOWEVENT_EXPOSED:
+            ScreenSwap();
+            break;
+        case SDL_WINDOWEVENT_CLOSE:
         case SDL_QUIT:
             D(bug("SDL quit received!\n"));
             if (!reqqing)

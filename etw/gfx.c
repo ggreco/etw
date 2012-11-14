@@ -448,7 +448,7 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
             if ((fh = fopen(name, "rb"))) {
                 convert = TRUE;
 
-#ifndef WINCE
+#if !defined(WINCE) && !defined(IPHONE)
                 if (!(fo = fopen(bb, "wb")))
                     D(bug("*** Unable to write to %s\n", bb));
 #endif

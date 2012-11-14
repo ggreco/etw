@@ -7,7 +7,7 @@ char shirt[2][24]={"gfx/playera.obj","gfx/playera.obj"};
 int highlight_size=0;
 
 extern BOOL wb_game;
-extern int32_t display_id,overscan;
+extern int32_t display_id;
 
 BOOL audio2fast=FALSE,joyonly=FALSE,
     arcade_teams=FALSE,first_half=TRUE,extratime=FALSE,
@@ -30,12 +30,10 @@ int8_t role[4], current_field=0, arcade_team[2], starting_team;
 
 /*
 extern int32_t display_id = 0, situation_time = 0;
-extern int32_t overscan;
 extern uint32_t ahimode = 0;
 */
 
 extern void *screen;
-extern BOOL wpa8;
 
 void read_config(void)
 {

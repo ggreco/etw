@@ -154,7 +154,7 @@ void bltanimobj(struct MChunky *, uint8_t *, int, int, int);
 void rectfill_pattern(uint8_t * b, int x1, int y1, int x2, int y2, unsigned char color, int width);
 void rectfill(uint8_t * b, int x1, int y1, int x2, int y2, unsigned char color, int width);
 void bitmapScale(struct MyScaleArgs *);
-int drawtext(char *, int, int, int, int);
+//int drawtext(char *, int, int, int, int);
 void setfont(struct myfont *);
 struct myfont *openfont(char *);
 void closefont(struct myfont *);

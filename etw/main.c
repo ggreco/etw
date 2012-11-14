@@ -373,9 +373,6 @@ void Loading(void)
 
     ScreenSwap();
 
-    if (triple_buffering)
-        ScreenSwap();
-
     Progress();
 }
 
@@ -434,28 +431,16 @@ BOOL LoadStuff(void)
 
     os_init_timer();
 
-#ifdef USE_TRIPLE
-    triple_buffering = TRUE;
-#endif
     D(bug("Loading menu palette...\n"));
 
-#ifndef DEMOVERSION
     if (!LoadIFFPalette("gfx/eat16menu.col"))
         return FALSE;
-#endif
 
     for (i = 0; i < 32; i++)
         Pens[i] = i;
 
-    os_set_window_frame();
-
     if (!InitAnimSystem())
         return FALSE;
-
-    if (!window_open()) {
-        close_graphics();
-        return FALSE;
-    }
 
     if (scaling) {
         D(bug("Initializing scaling...\n"));
@@ -506,12 +491,8 @@ BOOL LoadStuff(void)
         close_graphics();
         return FALSE;
     }
-#ifdef DEMOVERSION
-    LoadPLogo("gfx/epic");
-    os_delay(75);
-#else
+
     Loading();
-#endif
 
     if (!no_sound) {
         if (training) {
@@ -778,8 +759,6 @@ BOOL LoadStuff(void)
 
             /* AC: Just a very little delay, showing the final loading */
             os_delay(6);
-            if (triple_buffering)
-                ScreenSwap();
 
             if (!(LoadIFFPalette(palette))) {
 

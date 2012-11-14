@@ -164,10 +164,7 @@ void FreeMenuStuff(void)
         back = NULL;
     }
 
-    D(bug("Freeing main bitmap...\n"));
-
-    free(main_bitmap);
-
+    
     D(bug("Freeing fonts...\n"));
     FreeMenuFonts();
 
@@ -221,11 +218,6 @@ BOOL LoadMenuStuff(void)
         return FALSE;
     }
 
-    if (!(main_bitmap = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
-        FreeGraphics();
-    } else
-        bitmap_width = WINDOW_WIDTH;
-
     if (firsttime) {
         LoadPLogo("newgfx/hurricane" /*-*/ );
         os_delay(80);
@@ -234,7 +226,6 @@ BOOL LoadMenuStuff(void)
     D(bug("Opening fonts...\n" /*-*/ ));
 
     if (!InitMenuFonts()) {
-        free(main_bitmap);
         FreeGraphics();
         return FALSE;
     }
@@ -251,7 +242,6 @@ BOOL LoadMenuStuff(void)
                 fclose(fh);
 
             if(!InitSoundSystem()) {
-                free(main_bitmap);
                 FreeMenuFonts();
                 FreeGraphics();
                 return FALSE;
@@ -260,7 +250,6 @@ BOOL LoadMenuStuff(void)
 
         if (!CaricaSuoniMenu()) {
             FreeSoundSystem();
-            free(main_bitmap);
             FreeMenuFonts();
             FreeGraphics();
             return FALSE;
@@ -305,7 +294,6 @@ BOOL LoadMenuStuff(void)
     }
 
     if (!(back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
-        free(main_bitmap);
         FreeMenuFonts();
         FreeGraphics();
     }
@@ -323,7 +311,6 @@ BOOL LoadMenuStuff(void)
 
     if (!LoadIFFPalette("gfx/eat16menu.col" /*-*/ )) {
         D(bug("Unable to load the menu palette!\n" /*-*/ ));
-        free(main_bitmap);
         free(back);
         FreeMenuFonts();
         FreeGraphics();
