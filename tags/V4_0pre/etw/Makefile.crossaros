@@ -1,0 +1,43 @@
+# Makefile to build AROS ETW from a linux host
+
+OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
+	anim.o crowd.o intro.o os_control.o squadre.o \
+	arbitro.o data.o league.o os_init.o	tables.o \
+	arcade.o dati_vel.o lists.o os_video.o tactics.o \
+	chunkyblitting.o display.o loops.o palla.o teams.o \
+	commento.o etw.o main.o portiere.o freq.o \
+	computer.o etw_locale.o	menu.o radar.o utility.o \
+	config.o font.o menu_config.o replay.o velocita_g.o \
+	connection.o generic_video.o menu_data.o sound.o wc.o \
+	control.o gfx.o menu_font.o special.o network.o \
+	highsocket.o 
+    
+EXE = etw
+
+# cannot use original path because it recurses...
+PATH=$(CROSSDIR)/bin:/usr/local/bin:/usr/bin:/bin
+export PATH
+
+CROSSDIR = /usr/local/amiga/
+CXX = $(CROSSDIR)/bin/i686-aros-g++
+CC = $(CROSSDIR)/bin/i686-aros-gcc
+LFLAGS = -lSDL
+CFLAGS = -Wall -Wno-char-subscripts -g \
+	     -fsigned-char -Iinclude \
+         -I$(CROSSDIR)/i686-aros/sys-include/SDL 
+
+DEFINES = -DAMIGA -DCD_VERSION -DHAVE_STDINT_H -DAROS -DFAKENET
+
+.cpp.o:
+	$(CXX) $(CFLAGS) $(DEFINES) -o $@ -c $<
+
+.c.o:
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ -c $<
+
+all: $(EXE) 
+    
+$(EXE): $(OBJECTS)
+	$(CC) -o $@ $(OBJECTS) $(LFLAGS)
+
+clean:
+	/bin/rm -f *.o $(EXE)
