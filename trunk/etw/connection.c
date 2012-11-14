@@ -124,7 +124,6 @@ void ReadGameConfig(FILE *f)
 BOOL StartGame(void)
 {
     char buf[1024];
-    extern void *screen;
     int i;
 
     StopMenuMusic();
@@ -164,11 +163,9 @@ BOOL StartGame(void)
     WINDOW_WIDTH=wanted_width;
     WINDOW_HEIGHT=wanted_height;
 
-    OpenMenuScreen();
-
     SDL_ShowCursor(1);
 
-    if(!screen || !(LoadMenuStuff())) {
+    if(!(LoadMenuStuff())) {
         request("Unable to load the menu datas!");
         return FALSE;
     }

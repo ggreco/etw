@@ -4,34 +4,42 @@
 void * handle = NULL;
 uint8_t * bmap = NULL, * original_bm;
 
-SDL_Surface *screen=NULL;
+SDL_Window *screen=NULL;
 SDL_Event lastevent;
 extern int Colors;
 extern BOOL use_width,use_height,wb_game,use_direct;
-BOOL triple_buffering=FALSE,wpa8=FALSE,overscan=0;
+static SDL_Texture *screen_texture = NULL;
+static SDL_Renderer *renderer = NULL;
 
 SDL_Color SDL_palette[256];
 
 #ifdef IPHONE
 
-uint16_t palette16[256];
+static uint16_t palette16[256];
+
+typedef struct ResInfo {
+    int w, h;
+} ResInfo;
+
+static ResInfo ressize[3] = {
+    {480, 320},
+    {568, 320},
+    {1024,768}
+};
 
 
-void blitScreen16(uint16_t *dst)
+
+static void blitScreen16(uint16_t *dst)
 {
     uint8_t *src = main_bitmap;    
     int x, y;
-#if 0
-    fprintf(stderr, "Blitting to %dx%d (%d pitch) from %dx%d/%d\n",
-                    screen->w, screen->h, screen->pitch,
-                    bitmap_width, bitmap_height, SCREEN_DEPTH);
-#endif
+
     for (y = bitmap_height; y > 0; y--)
     	for (x = bitmap_width; x > 0; x--)
 			*(dst++) = palette16[*src++];
 }
 
-void blitScreen32(uint32_t *dst)
+static void blitScreen32(uint32_t *dst)
 {
     uint8_t *src = main_bitmap;    
     int x, y;
@@ -41,6 +49,43 @@ void blitScreen32(uint32_t *dst)
 			*(dst++) = *((uint32_t*)&(SDL_palette[*src++]));
 }
 
+static void blitScreen32x2(uint32_t *dst)
+{
+    uint8_t *src = main_bitmap;
+    uint32_t *dst2 = dst + bitmap_width * 2;
+    int x, y;
+    
+    for (y = bitmap_height; y > 0; y--) {
+    	for (x = bitmap_width; x > 0; x--) {
+            uint32_t *col = (uint32_t *)&(SDL_palette[*src++]);
+			*(dst++) = *col;
+            *(dst++) = *col;
+			*(dst2++) = *col;
+            *(dst2++) = *col;
+        }
+        dst += bitmap_width * 2;
+        dst2 += bitmap_width * 2;
+    }
+}
+
+void set_resolution()
+{
+    int i, j, n = SDL_GetNumDisplayModes(0);
+    
+    for (i = 0; i < n; ++i) {
+        SDL_DisplayMode mode;
+        SDL_GetDisplayMode(0, i, &mode);
+        for (j = 0; j < 3; ++j) {
+            if (mode.w == ressize[j].w &&
+                mode.h == ressize[j].h) {
+                WINDOW_WIDTH = mode.w;
+                WINDOW_HEIGHT = mode.h;
+                return;
+            }
+        }
+    }
+    D(bug("Unable to find a valid iOS resolution!"));
+}
 #endif
 
 void AdjustSDLPalette(void)
@@ -59,45 +104,25 @@ void AdjustSDLPalette(void)
         SDL_palette[224+i].g=SDL_palette[i].g*2/3;
         SDL_palette[224+i].b=SDL_palette[i].b*2/3;
     }
-#ifndef IPHONE
-    SDL_SetColors(screen,SDL_palette,0,256);
-#endif
-}
-
-
-int os_resize_window(int w, int h)
-{
-    SDL_Surface *temp;
-
-    if (!(temp = SDL_SetVideoMode(w, h, SCREEN_DEPTH, SDL_OPEN_FLAGS | SDL_SWSURFACE | 
-                                    (wb_game ? SDL_RESIZABLE : SDL_FULLSCREEN)))) { 
-        D(bug("Unable to resize window to %dx%d\n", w, h));
-        return FALSE;
-    }
-
-    screen = temp;
-
-    return TRUE;
 }
 
 void ResizeWin(SDL_Event *event)
 {
     uint8_t *newbm;
-    int old_width = WINDOW_WIDTH, old_height = WINDOW_HEIGHT, nw;
-
+    int old_width = WINDOW_WIDTH, old_height = WINDOW_HEIGHT;
+    int w, h;
+    
+    SDL_GetWindowSize(screen, &w, &h);
+        
 // WINDOW_WIDTH e WINDOW_HEIGHT sono copiati qui;
 
 //    os_resize(event);
 
-    if(!os_resize_window(event->resize.w,event->resize.h))
-        return;
 
-    ClipX=WINDOW_WIDTH=event->resize.w;
-    ClipY=WINDOW_HEIGHT=event->resize.h;
+    ClipX=WINDOW_WIDTH=w;
+    ClipY=WINDOW_HEIGHT=h;
 
-    nw=screen->pitch;
-
-    if(!(newbm=malloc(nw*WINDOW_HEIGHT)))
+    if(!(newbm=malloc(WINDOW_WIDTH*WINDOW_HEIGHT)))
     {
 // Da aggiungere il  controresize della finestra
         D(bug("Fallita la malloc!\n"));
@@ -106,16 +131,12 @@ void ResizeWin(SDL_Event *event)
         return;
     }
 
-#ifndef IPHONE
-    SDL_SetColors(screen,SDL_palette,0,256);
-#endif
-
     if(!scaling)
     {
-        bltchunkybitmap(main_bitmap,0,0,newbm,0,0,min(WINDOW_WIDTH,old_width),min(WINDOW_HEIGHT,old_height),bitmap_width,nw);
+        bltchunkybitmap(main_bitmap,0,0,newbm,0,0,min(WINDOW_WIDTH,old_width),min(WINDOW_HEIGHT,old_height),bitmap_width,WINDOW_WIDTH);
         free(main_bitmap);
         main_bitmap=newbm;
-        bitmap_width=nw;
+        bitmap_width=WINDOW_WIDTH;
         bitmap_height=WINDOW_HEIGHT;
     }
     else
@@ -126,7 +147,7 @@ void ResizeWin(SDL_Event *event)
 
 //        scaling->Dest=new;
         scaling->DestWidth=WINDOW_WIDTH;
-        scaling->DestSpan=nw;
+        scaling->DestSpan=WINDOW_WIDTH;
         scaling->DestHeight=WINDOW_HEIGHT;
         MakeRef(scaling->XRef,FIXED_SCALING_WIDTH,WINDOW_WIDTH);
         MakeRef(scaling->YRef,FIXED_SCALING_HEIGHT,WINDOW_HEIGHT);
@@ -154,7 +175,7 @@ void ResizeWin(SDL_Event *event)
 
     ResizeRadar();
 
-    D(bug("Resize %ld %ld!\n",WINDOW_WIDTH,WINDOW_HEIGHT));
+    D(bug("*** Resize %dx%d!\n",WINDOW_WIDTH,WINDOW_HEIGHT));
 }
 
 void close_graphics(void)
@@ -165,8 +186,11 @@ void close_graphics(void)
     D(bug("Fine FreeGraphics()!\n"));
 }
 
-BOOL window_open(void)
+BOOL alloc_bitmap(void)
 {
+    if (main_bitmap)
+        free(main_bitmap);
+    
     bitmap_width=WINDOW_WIDTH;
     bitmap_height=WINDOW_HEIGHT;
 
@@ -199,56 +223,53 @@ void os_set_color(int color,int r ,int g, int b)
 //    D(bug("Eseguita setcolor(%ld, r%ld,g%ld,b%ld)\n",color,r,g,b));
 }
 
+void SetTitle(const char *title)
+{
+    SDL_SetWindowTitle(screen, title);
+}
+
 void OpenTheScreen(void)
 {
 #ifdef IPHONE
-    screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_OPEN_FLAGS|SDL_SWSURFACE);   
+    set_resolution();
+    
+    screen = SDL_CreateWindow("ETW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
+    
     force_single = TRUE;
     double_buffering = FALSE;
     wb_game = FALSE;
     scaling = FALSE;
-#elif !defined(WINCE)
+#else
     if(wb_game) {
-        screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_SWSURFACE|SDL_RESIZABLE);   
+        screen =SDL_CreateWindow("ETW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
+
 
         force_single=TRUE;
         double_buffering=FALSE;
         // metto due false qui x evitare problemi
     }
     else {
-        // osx fullscreen is already double buffered by default
-#ifndef __APPLE__
-        if(!force_single)
-            double_buffering=TRUE;
-        else
-#endif
-            double_buffering=FALSE;
+        double_buffering=FALSE;
 
-        if(double_buffering)
-            screen =SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_HWSURFACE|SDL_FULLSCREEN|SDL_DOUBLEBUF);
-        else
-            screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_DEPTH, SDL_HWSURFACE|SDL_FULLSCREEN); 
+        screen = SDL_CreateWindow("ETW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
     }
+#endif
 
     if(screen) {
+        renderer = SDL_CreateRenderer(screen, -1, 0);
+        
         if(!wb_game)
             SDL_ShowCursor(0);
-
-        SDL_WM_SetCaption("Eat The Whistle " ETW_VERSION,"ETW");
+        else
+            SetTitle("Eat The Whistle " ETW_VERSION);
 
         D(bug("Fine InitAnimSystem!\n"));
+        SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+        screen_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
+//        SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_BLEND);
+        alloc_bitmap();
     }
-#else
-    force_single = TRUE; double_buffering = FALSE; wb_game = FALSE;
-    scaling = FALSE;
-    screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 8, SDL_SWSURFACE|SDL_FULLSCREEN);
-#endif
-}
-
-void os_set_window_frame(void)
-{
-    WINDOW_WIDTH=min(screen->w,FIELD_WIDTH);
-    WINDOW_HEIGHT=min(screen->h,FIELD_HEIGHT);
+    D(bug("Opened window size %dx%d\n", WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 
 void os_wait(void)
@@ -258,22 +279,26 @@ void os_wait(void)
 
 int os_get_screen_width(void)
 {
-    return screen->w;
+    int w;
+    SDL_GetWindowSize(screen, &w, NULL);
+    return w;
 }
 
 int os_get_screen_height(void)
 {
-    return screen->h;
+    int h;
+    SDL_GetWindowSize(screen, NULL, &h);
+    return h;
 }
 
 int os_get_innerwidth(void)
 {
-    return screen->w;
+    return os_get_screen_width();
 }
 
 int os_get_innerheight(void)
 {
-    return screen->h;
+    return os_get_screen_height();
 }
 
 void os_load_palette(uint32_t *pal)
@@ -293,10 +318,15 @@ void os_load_palette(uint32_t *pal)
             b = pal[1 + i *3 + 2] >> 27;
 
         palette16[i + first] = (r << 11) | (g << 5) | b;
-#endif
+        SDL_palette[i + first].b = pal[1 + i *3] >> 24;
+        SDL_palette[i + first].g = pal[1 + i *3 + 1] >> 24;
+        SDL_palette[i + first].r = pal[1 + i *3 + 2] >> 24;
+#else
         SDL_palette[i + first].r = pal[1 + i *3] >> 24;
         SDL_palette[i + first].g = pal[1 + i *3 + 1] >> 24;
         SDL_palette[i + first].b = pal[1 + i *3 + 2] >> 24;
+#endif
+        SDL_palette[i + first].unused = SDL_ALPHA_OPAQUE;
     }
 
 #ifndef IPHONE    
@@ -306,55 +336,50 @@ void os_load_palette(uint32_t *pal)
 
 void ScreenSwap(void)
 {
-    if(os_lock_bitmap())
-    {
+    void *pixels;
+    int pitch;
+    
+    if(!SDL_LockTexture(screen_texture, NULL, &pixels, &pitch)) {
 #ifndef IPHONE
         if(scaling)
         {
-            scaling->Dest=screen->pixels;
+            scaling->Dest=pixels;
             bitmapFastScale(scaling);
         }
-        else if(screen->pitch==bitmap_width)
-            memcpy(screen->pixels,main_bitmap,bitmap_width*bitmap_height);
+        else if(pitch==bitmap_width)
+            memcpy(pixels,main_bitmap,bitmap_width*bitmap_height);
         else
         {
-            uint8_t *src = main_bitmap, *dest = screen->pixels;
+            uint8_t *src = main_bitmap, *dest = pixels;
             int i;
 
             for(i=bitmap_height;i;--i)
             {
                 memcpy(dest,src,bitmap_width);
                 src += bitmap_width;
-                dest += screen->pitch;
+                dest += pitch;
             }
         }
-#elif SCREEN_DEPTH == 16
-        blitScreen16(screen->pixels);
-#else 
-        blitScreen32(screen->pixels);
+#else
+        if (pitch == bitmap_width * 2)
+            blitScreen16(pixels);
+        else if (pitch == bitmap_width * 4)
+            blitScreen32(pixels);
+        else {
+            D(bug("Unsupported pitch: %d (width %d)\n", pitch, bitmap_width));
+        }
 #endif
-        os_unlock_bitmap();
 
+        SDL_UnlockTexture(screen_texture);
         // sdl_flip fall back in SDL_UpdateRect if we are single buffer
-        SDL_Flip(screen);
+        SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
     }
 }
 
 int os_videook(int x, int y)
 {
-    return SDL_VideoModeOK(x,y,8,SDL_SWSURFACE | (wb_game ? SDL_RESIZABLE : SDL_FULLSCREEN) );
+    return 1;
+    /* TODO SDL_VideoModeOK(x,y,8,SDL_SWSURFACE | (wb_game ? SDL_RESIZABLE : SDL_FULLSCREEN) ); */
 }
 
-BOOL os_lock_bitmap(void)
-{    
-    if ( SDL_MUSTLOCK(screen) )
-          if(SDL_LockSurface(screen)<0)
-              return FALSE;
-    return TRUE;
-}
-
-void os_unlock_bitmap(void)
-{
-    if (SDL_MUSTLOCK(screen))
-        SDL_UnlockSurface(screen);
-}

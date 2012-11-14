@@ -54,17 +54,7 @@ void HandleScrolling(void)
 
 
     if (key_tick > 16) {
-#ifdef OLDAMIGA
-        if (!double_buffering && !triple_buffering)
-            os_lock_bitmap();
-#endif
-
         CheckKeys();
-#ifdef OLDAMIGA
-        if (!double_buffering && !triple_buffering)
-            os_unlock_bitmap();
-#endif
-
         key_tick = 0;
     }
 

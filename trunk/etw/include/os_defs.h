@@ -23,14 +23,6 @@
 #   define fopen os_open
 #endif
 
-#ifdef IPHONE
-#define SCREEN_DEPTH 16
-#define SDL_OPEN_FLAGS (SDL_NOFRAME|SDL_RESIZABLE)
-#else
-#define SCREEN_DEPTH 8
-#define SDL_OPEN_FLAGS 0
-#endif
-
 #if !defined(__SASC)
 #   undef __saveds
 #   define __saveds

@@ -178,9 +178,6 @@ void DoPause(void)
     DrawPause();
     ScreenSwap();
 
-    if(triple_buffering)
-        ScreenSwap();
-
     while(!ok)
     {
         if(control[0]!=CTRL_JOYPAD && control[1]!=CTRL_JOYPAD)

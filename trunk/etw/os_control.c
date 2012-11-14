@@ -59,7 +59,7 @@ uint32_t MyReadJoyPort(uint32_t l)
     int xc,yc;
     uint32_t mask=0;
 
-    if(l<0 || !joy[l])
+    if(l > 1 || !joy[l])
         return 0L;
 
     if(SDL_JoystickGetButton(joy[l],joycfg_buttons[l][0]))
@@ -337,13 +337,10 @@ int os_wait_end_pause(void)
             if(key==SDLK_p)
                 ok=TRUE;
             break;
-        case SDL_VIDEORESIZE:
+        case SDL_WINDOWEVENT_RESIZED:
             ResizeWin(&lastevent);
             DrawPause();
             ScreenSwap();
-
-            if(triple_buffering)
-                ScreenSwap();
 
             break;
         default:
@@ -390,7 +387,7 @@ void CheckKeys(void)
             quit_game=TRUE;
             break;
 
-        case SDL_VIDEORESIZE:
+        case SDL_WINDOWEVENT_RESIZED:
             ResizeWin(&e);
             break;
         case SDL_KEYDOWN:
@@ -690,19 +687,19 @@ void CheckKeys(void)
 
 int query[]=
 {
-    /* Rosso */
-    SDLK_UP,SDLK_RIGHT,SDLK_DOWN,SDLK_LEFT,
-    SDLK_BACKSPACE,SDLK_RETURN,
-    SDLK_PAGEUP,SDLK_PAGEDOWN,
-    SDLK_RSHIFT,SDLK_END,
-    /* Blu */
+    /* Red player */
+    SDL_SCANCODE_UP,SDL_SCANCODE_RIGHT,SDL_SCANCODE_DOWN,SDL_SCANCODE_LEFT,
+    SDL_SCANCODE_BACKSPACE,SDL_SCANCODE_RETURN,
+    SDL_SCANCODE_PAGEUP,SDL_SCANCODE_PAGEDOWN,
+    SDL_SCANCODE_RSHIFT,SDL_SCANCODE_END,
+    /* Blue player */
 // Query1
     /* AC: There was an overlap with the keys used by the game.
      * At the moment the new definitions have been chosen "randomly"
      */
-    SDLK_s,SDLK_c,SDLK_x,SDLK_z, // dir: up->clockwise (s->c->x->z)
-    SDLK_v,SDLK_b,
-    SDLK_j,SDLK_m,SDLK_LSHIFT,SDLK_TAB
+    SDL_SCANCODE_S,SDL_SCANCODE_C,SDL_SCANCODE_X,SDL_SCANCODE_Z, // dir: up->clockwise (s->c->x->z)
+    SDL_SCANCODE_V,SDL_SCANCODE_B,
+    SDL_SCANCODE_J,SDL_SCANCODE_M,SDL_SCANCODE_LSHIFT,SDL_SCANCODE_TAB
 };
 
 void UpdatePortStatus(void)

@@ -35,7 +35,7 @@ char keys_names[20][20];
 
 /* AC: Here it's possible to decide which keys to exclude from those possible
  * ones */
-SDLKey keys[] =
+SDL_Keycode keys[] =
 {
     /* The keyboard syms have been cleverly chosen to map to ASCII */
 
@@ -227,16 +227,16 @@ SDLKey keys[] =
 #endif
 
     /* Numeric keypad */
-    SDLK_KP0,
-    SDLK_KP1,
-    SDLK_KP2,
-    SDLK_KP3,
-    SDLK_KP4,
-    SDLK_KP5,
-    SDLK_KP6,
-    SDLK_KP7,
-    SDLK_KP8,
-    SDLK_KP9,
+    SDLK_KP_0,
+    SDLK_KP_1,
+    SDLK_KP_2,
+    SDLK_KP_3,
+    SDLK_KP_4,
+    SDLK_KP_5,
+    SDLK_KP_6,
+    SDLK_KP_7,
+    SDLK_KP_8,
+    SDLK_KP_9,
     SDLK_KP_PERIOD,
     SDLK_KP_DIVIDE,
     SDLK_KP_MULTIPLY,
@@ -286,8 +286,8 @@ SDLKey keys[] =
     SDLK_LCTRL,
     SDLK_RALT,
     SDLK_LALT,
-    SDLK_RMETA,
-    SDLK_LMETA,
+    SDLK_RGUI,
+    SDLK_LGUI,
 
     /* AC: I think isn't a good idea allowing the use of this keys */
 #if 0
@@ -959,7 +959,7 @@ BOOL KeyCfg(WORD button)
                     }
                     else
                     {
-                        int i, n_keys = sizeof(keys) / sizeof(SDLKey) ;
+                        int i, n_keys = sizeof(keys) / sizeof(SDL_Keycode) ;
 
                         /* Search the key selected in the valid keys table */
                         k = -2;
@@ -1004,7 +1004,7 @@ BOOL KeyCfg(WORD button)
                             i++;
                         }
                         keys_names[button][i] = 0;
-                        query[button] = keys[k];
+                        query[button] = SDL_GetScancodeFromKey(keys[k]);
                         actual_menu->Button[button * 2 + 1].Text = keys_names[button];
                         RedrawButton(&actual_menu->Button[button * 2 + 1],
                                      actual_menu->Button[button * 2 + 1].Color);
@@ -1905,66 +1905,6 @@ BOOL VideoPrefs(WORD button)
                                  actual_menu->Button[1].Color);
                 }
             }
-#if 0
-            {
-                struct ScreenModeRequester *Req;
-
-                if (Req = AllocFileRequest(ASL_ScreenModeRequest, NULL))
-                {
-                if (!FileRequestTags(Req, ASLSM_InitialDisplayWidth, WINDOW_WIDTH,
-                    ASLSM_InitialDisplayHeight, WINDOW_HEIGHT,
-                    ASLSM_InitialDisplayDepth, 4,
-                    ASLSM_InitialOverscanType, OSCAN_TEXT,
-                    ASLSM_MinWidth, 300,
-                    ASLSM_MinHeight, 180,
-                    ASLSM_MaxWidth, 1280,
-                    ASLSM_MaxHeight, 1024,
-                    ASLSM_InitialDisplayID, LORES_KEY,
-                    ASLSM_Screen, screen,
-                    ASLSM_DoHeight, TRUE,
-                    ASLSM_DoWidth, TRUE,
-                    ASLSM_DoOverscanType, TRUE,
-                    TAG_DONE))
-                {
-                    if (wb_game)
-                    {
-                        actual_menu->Button[button].Text = msg_40;
-                        wb_game = FALSE;
-                        display_id = INVALID_ID;
-                    }
-                    else
-                    {
-                        actual_menu->Button[button].Text = "WORKBENCH"/*-*/;
-                        wb_game = TRUE;
-                    }
-                }
-                else
-                {
-                    char *c;
-
-                    display_id = Req->sm_DisplayID;
-                    wb_game = FALSE;
-                    overscan = Req->sm_OverscanType;
-                    wanted_width = Req->sm_DisplayWidth;
-                    wanted_height = Req->sm_DisplayHeight;
-
-                    GetDisplayInfoData(FindDisplayInfo(display_id), (UBYTE *)&ni, sizeof(struct NameInfo), DTAG_NAME, NULL);
-
-                    c = ni.Name;
-
-                    while(*c)
-                    {
-                        *c = toupper(*c);
-                        c++;
-                    }
-
-                    actual_menu->Button[button].Text = ni.Name;
-                }
-
-                FreeFileRequest(Req);
-                }
-            }
-#endif
         break;
         case 3:
             if (detail_level & USA_RADAR)
