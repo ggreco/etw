@@ -1,0 +1,36 @@
+CC = gcc
+
+CFLAGS = -Wall -g -fsigned-char -Iinclude \
+    -Wpointer-arith -Wcast-align -Wcast-qual  -Wno-char-subscripts  -Wshadow \
+    -Waggregate-return  -Wsign-compare \
+    `pkg-config --cflags sdl` `pkg-config --cflags gtk+-2.0`
+
+LDFLAGS = `pkg-config --libs sdl` `pkg-config --libs gtk+-2.0`
+DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H
+
+OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
+	anim.o crowd.o intro.o os_control.o teamsetup.o \
+	refree.o data.o league.o os_init.o	tables.o \
+	arcade.o speed_data.o lists.o os_video.o tactics.o \
+	chunkyblitting.o display.o loops.o ball.o teams.o \
+	commento.o etw.o main.o goalkeeper.o freq.o \
+	computer.o etw_locale.o	menu.o radar.o utility.o \
+	config.o font.o menu_config.o replay.o speed_tables.o \
+	connection.o generic_video.o menu_data.o sound.o wc.o \
+	control.o gfx.o menu_font.o special.o network.o \
+	highsocket.o prefix.o
+
+.c.o: etw.h menu.h
+	$(CC) $(CFLAGS) $(DEFINES) -c $<
+
+all: CHECKTOOLS etw
+
+etw: $(OBJECTS)
+	$(CC) -o etw $(OBJECTS) $(LDFLAGS)
+
+clean:
+	rm -rf etw *.o
+
+CHECKTOOLS:
+	@pkg-config --cflags sdl >/dev/null 2>&1 || (echo "Error: you need SDL"; exit 1)
+	@pkg-config --cflags gtk+-2.0 >/dev/null 2>&1 || (echo "Error: you need GTK+2.0"; exit 1)
