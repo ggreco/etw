@@ -32,6 +32,7 @@ char *menu_soundname[]=
 
 struct Button main_bottoni[]=
 {
+#ifndef IPHONE
     {27,76,150,91,4,7,9,msg_85}, // Main menu
     {27,111,150,126,MENU_PREFS,3,0,msg_86},
     {27,148,150,163,3,6,8,msg_87},
@@ -39,6 +40,14 @@ struct Button main_bottoni[]=
     {172,111,295,126,10,8,15,msg_89},
     {172,148,295,163,-1,9,11,msg_90},
     {70,224,250,236,ID_QUIT_GAME,14,13,msg_91},
+#else
+    {27,66,150,91,4,7,9,msg_85}, // Main menu
+    {27,121,150,146,MENU_PREFS,3,0,msg_86},
+    {1,1,1,1,3,6,8,NULL}, // hidden on iOS
+    {172,66,295,91,2,11,12,msg_88},
+    {172,121,295,146,10,8,15,msg_89},
+    {27 + 67,178,150 + 67,203,-1,9,11,msg_90}, // +67 to put it in the middle
+#endif
 };
 
 struct Button prefs_bottoni[]=
@@ -53,10 +62,18 @@ struct Button prefs_bottoni[]=
 
 struct Button high_bottoni[]=
 {
+#ifndef IPHONE
     {20,67,150,80,MENU_HIGH_SELECTION,11,12,msg_97},  // Highlights
     {20,93,150,106,MENU_HIGH_SELECTION,11,12,msg_98},
     {20,119,150,132,-1,11,12,msg_99},
     {72,210,246,222,0,14,13,msg_95},
+#else
+    {20,57,150,80,MENU_HIGH_SELECTION,11,12,msg_97},  // Highlights
+    {20,103,150,126,MENU_HIGH_SELECTION,11,12,msg_98},
+    {20,149,150,172,-1,11,12,msg_99},
+    {72,205,246,232,0,14,13,msg_95},
+    
+#endif
 };
 
 struct Button teams_bottoni[]=
@@ -66,25 +83,40 @@ struct Button teams_bottoni[]=
     {20,119,150,132,-1,6,8,msg_98},
     {20,145,150,158,-1,8,15,msg_101},
     {72,210,246,222,0,14,13,msg_95},
-    {72,229,246,241,-1,9,11,msg_96},
 };
 
 struct Button start_bottoni[]=
 {
+#ifndef IPHONE
     {20,57,150,70,MENU_ARCADE,7,9,msg_102},  // Game Start
     {20,83,150,96,MENU_SIMULATION,7,9,msg_103},
     {20,109,150,122,-1,7,9,msg_104},
     {20,135,150,148,MENU_TEAM_SELECTION,9,11,"NETWORK PLAY"},
     {20,161,150,175,MENU_TRAINING,9,11,msg_105},
     {72,210,246,222,MENU_MAIN_MENU,14,13,msg_95},
+#else
+    {20,57,150,80,MENU_ARCADE,7,9,msg_102},  // Game Start
+    {20,103,150,126,MENU_SIMULATION,7,9,msg_103},
+    {20,109,150,122,-1,7,9,NULL},
+    {20,135,150,148,MENU_TEAM_SELECTION,9,11,NULL},
+    {20,149,150,172,MENU_TRAINING,9,11,msg_105},
+    {72,205,246,232,MENU_MAIN_MENU,14,13,msg_95},
+#endif
 };
 
 struct Button arcade_bottoni[]=
 {
+#ifndef IPHONE
     {20,67,150,80,MENU_SELECTION_TYPE,7,9,msg_106},  // Arcade
     {20,93,150,106,MENU_SELECTION_TYPE,7,9,msg_107},
     {20,119,150,132,MENU_ARCADE_SELECTION,7,9,msg_1},
     {72,210,246,222,4,14,13,msg_108},
+#else
+    {20,57,150,80,MENU_SELECTION_TYPE,7,9,msg_106},  // Arcade
+    {20,103,150,126,MENU_SELECTION_TYPE,7,9,msg_107},
+    {20,149,150,172,MENU_ARCADE_SELECTION,7,9,msg_1},
+    {72,205,246,232,4,14,13,msg_108},
+#endif
 };
 
 struct Button sim_bottoni[]=
@@ -110,17 +142,30 @@ struct Button career_bottoni[]=
 
 struct Button train_bottoni[]=
 {
+#ifndef IPHONE
     {20,67,150,80,MENU_TEAM_SELECTION,7,9,msg_115},  // Training
     {20,93,150,106,MENU_TEAM_SELECTION,7,9,msg_116},
     {20,119,150,132,MENU_TEAM_SELECTION,7,9,msg_117},
     {72,210,246,222,4,14,13,msg_108},
+#else
+    {20,57,150,80,MENU_TEAM_SELECTION,7,9,msg_115},  // Training
+    {20,103,150,126,MENU_TEAM_SELECTION,7,9,msg_116},
+    {20,149,150,172,MENU_TEAM_SELECTION,7,9,msg_117},
+    {72,205,246,232,4,14,13,msg_108},
+#endif
 };
 
 struct Button score_bottoni[]=
 {
+#ifndef IPHONE
     {20,67,150,80,MENU_VIEW_SCORES,8,15,msg_97},  // Scores
     {20,93,150,106,-1,8,15,msg_118},
     {72,210,246,222,MENU_MAIN_MENU,14,13,msg_95},
+#else
+    {20,57,150,80,MENU_VIEW_SCORES,8,15,msg_97},  // Scores
+    {20,103,150,126,-1,8,15,msg_118},
+    {72,205,246,232,MENU_MAIN_MENU,14,13,msg_95},
+#endif
 };
 
 struct Button gprefs_bottoni[]=
@@ -180,9 +225,15 @@ struct Button aprefs_bottoni[]=
 
 struct Button seltype_bottoni[]=
 {
+#ifndef IPHONE
     {20,67,150,80,MENU_ARCADE_SELECTION,7,9,msg_139},  // Selection Type
     {20,93,150,106,MENU_TEAM_SELECTION,7,9,msg_140},
     {72,210,246,222,MENU_ARCADE,14,13,msg_108},
+#else
+    {20,57,150,80,MENU_ARCADE_SELECTION,7,9,msg_139},  // Selection Type
+    {20,103,150,126,MENU_TEAM_SELECTION,7,9,msg_140},
+    {72,205,246,232,MENU_ARCADE,14,13,msg_108},
+#endif
 };
 
 struct Button scorelist_bottoni[]=
@@ -647,19 +698,21 @@ struct Button hl[]=
 
 };
 
+#define SZ(x) sizeof(x)/sizeof(x[0])
+
 struct GfxMenu menu[]=
 {
-    {msg_164,main_bottoni,NULL,7,0,-1,0,0,-1,14,13,NULL},
-    {msg_86,prefs_bottoni,NULL,6,0,-1,160,38,0,3,0,NULL},
-    {msg_88,high_bottoni,NULL,4,0,-1,187,54,1,11,12,NULL},
-    {msg_87,teams_bottoni,NULL,5,0,-1,181,56,2,6,8,NULL},
-    {msg_165,start_bottoni,NULL,6,0,-1,187,57,3,7,9,NULL},
-    {msg_102,arcade_bottoni,NULL,4,0,-1,187,57,3,7,9,NULL},
-    {msg_103,sim_bottoni,NULL,7,0,-1,187,57,3,7,9,NULL},
-    {msg_104,career_bottoni,NULL,6,0,-1,187,57,3,7,9,NULL},
-    {msg_166,train_bottoni,NULL,4,0,-1,187,57,3,7,9,NULL},
-    {msg_167,teamselection,NULL,67,0,-1,0,0,-1,7,9,(void *)TeamSelection},
-    {msg_89,score_bottoni,NULL,3,0,-1,187,57,4,8,15,NULL},
+    {msg_164,main_bottoni,NULL,SZ(main_bottoni),0,-1,0,0,-1,14,13,NULL},
+    {msg_86,prefs_bottoni,NULL,SZ(prefs_bottoni),0,-1,160,38,0,3,0,NULL},
+    {msg_88,high_bottoni,NULL,SZ(high_bottoni),0,-1,187,54,1,11,12,NULL},
+    {msg_87,teams_bottoni,NULL,SZ(teams_bottoni),0,-1,181,56,2,6,8,NULL},
+    {msg_165,start_bottoni,NULL,SZ(start_bottoni),0,-1,187,57,3,7,9,NULL},
+    {msg_102,arcade_bottoni,NULL,SZ(arcade_bottoni),0,-1,187,57,3,7,9,NULL},
+    {msg_103,sim_bottoni,NULL,SZ(sim_bottoni),0,-1,187,57,3,7,9,NULL},
+    {msg_104,career_bottoni,NULL,SZ(career_bottoni),0,-1,187,57,3,7,9,NULL},
+    {msg_166,train_bottoni,NULL,SZ(train_bottoni),0,-1,187,57,3,7,9,NULL},
+    {msg_167,teamselection,NULL,SZ(teamselection),0,-1,0,0,-1,7,9,(void *)TeamSelection},
+    {msg_89,score_bottoni,NULL,SZ(score_bottoni),0,-1,187,57,4,8,15,NULL},
     {msg_154,teamsettings,pannelli,43 /* Era 44 */,51,-1,202,31,5,6,8,(void *)TeamSettings},
     {msg_168,gprefs_bottoni,NULL,27,0,-1,190,38,0,3,0,(void *)GamePrefs},
     {msg_169,vprefs_bottoni,NULL,27,0,-1,190,38,0,3,0,(void *)VideoPrefs},
@@ -667,12 +720,12 @@ struct GfxMenu menu[]=
     {msg_171,wcb,wcp,3,5*40,-1,0,0,-1,7,9,NULL},
     {NULL,mb,mp,3,16*4,-1,0,0,-1,7,9,NULL},
     {msg_172,lb,league,3,8*21,-1,0,0,-1,7,9,NULL},
-    {msg_173,seltype_bottoni,NULL,3,0,-1,187,57,3,7,9,NULL},
+    {msg_173,seltype_bottoni,NULL,SZ(seltype_bottoni),0,-1,187,57,3,7,9,NULL},
     {msg_174,asb,NULL,ARCADE_TEAMS+3,0,-1,0,0,-1,7,9,(void *)ArcadeTeamSelection},
     {msg_41,cb,cp,2,7,-1,0,0,-1,7,9,NULL},
     {msg_175,wcfb,wcfp,1,8,-1,0,0,-1,7,9,NULL},
     {msg_176,mrb,mr,1,4,-1,0,0,-1,7,9,(void *)ReturnFalse},
-    {msg_177,scorelist_bottoni,scores,1,40,-1,0,0,-1,8,15,NULL},
+    {msg_177,scorelist_bottoni,scores,SZ(scorelist_bottoni),40,-1,0,0,-1,8,15,NULL},
     {NULL,hl,NULL,64+1,0,-1,0,0,-1,11,12,(void *)HighSelection},
     {"SYSTEM",sprefs_bottoni,NULL,13,0,-1,190,38,0,3,0,(void *)SystemPrefs},
     {"KEYBOARD CONFIGURATION",keycfg_bottoni,NULL,43,0,-1,200 /*190*/,77 /*38*/,0,3,0,(void *)KeyCfg},
