@@ -72,11 +72,9 @@ void CheckCheat(UBYTE c )
                     case 6:
                         warp=TRUE;
                         break;
-#ifdef CD_VERSION
                     case 7:
                         Outro();
                         break;
-#endif
                 }
             }
 

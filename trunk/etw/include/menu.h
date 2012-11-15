@@ -1,7 +1,6 @@
 /* Li gestisco tramite makefile!
  *
  * #define DEBUG_DISABLED
- * #define CD_VERSION
  */
 #ifndef ETW_MENU_H
 #define ETW_MENU_H
@@ -35,13 +34,8 @@
 #define NUMERO_LOOPS 15
 #define ARCADE_TEAMS 10
 
-#ifndef CD_VERSION
-    #define NUMERO_INTRO 4
-    #define NUMERO_SUONI_MENU ARCADE_TEAMS+1+FIRST_ARCADE
-#else
-    #define NUMERO_SUONI_MENU ARCADE_TEAMS+5+FIRST_ARCADE
-    #define NUMERO_INTRO 6
-#endif
+#define NUMERO_SUONI_MENU ARCADE_TEAMS+5+FIRST_ARCADE
+#define NUMERO_INTRO 6
 
 
 #define FAKE_TEAM 127

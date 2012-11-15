@@ -36,7 +36,7 @@ struct SoundInfo
     ULONG    Rate, Length, Volume,    Flags;
     // ULONG Loops; ???
 
-    long    Offset;
+    ULONG    Offset;
     void    *SoundData;
 
     void    *LeftData, *RightData;

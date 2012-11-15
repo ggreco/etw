@@ -12,22 +12,7 @@ static SDL_Texture *screen_texture = NULL;
 static SDL_Renderer *renderer = NULL;
 
 SDL_Color SDL_palette[256];
-
-#ifdef IPHONE
-
 static uint16_t palette16[256];
-
-typedef struct ResInfo {
-    int w, h;
-} ResInfo;
-
-static ResInfo ressize[3] = {
-    {480, 320},
-    {568, 320},
-    {1024,768}
-};
-
-
 
 static void blitScreen16(uint16_t *dst)
 {
@@ -48,6 +33,19 @@ static void blitScreen32(uint32_t *dst)
     	for (x = bitmap_width; x > 0; x--)
 			*(dst++) = *((uint32_t*)&(SDL_palette[*src++]));
 }
+
+#ifdef IPHONE
+
+
+typedef struct ResInfo {
+    int w, h;
+} ResInfo;
+
+static ResInfo ressize[3] = {
+    {480, 320},
+    {568, 320},
+    {1024,768}
+};
 
 static void blitScreen32x2(uint32_t *dst)
 {
@@ -93,17 +91,20 @@ void AdjustSDLPalette(void)
     int i;
 
     for(i=0;i<32;i++) {
-#ifdef IPHONE
         int r = (palette16[i] >> 11) * 2 / 3,
             g = ((palette16[i] >> 6) & 0x3f) * 2 / 3,
             b = (palette16[i] & 0x1f) * 2 / 3;
 
         palette16[224 + i] = (r << 11) | (g << 5) | b;
-#endif
         SDL_palette[224+i].r=SDL_palette[i].r*2/3;
         SDL_palette[224+i].g=SDL_palette[i].g*2/3;
         SDL_palette[224+i].b=SDL_palette[i].b*2/3;
     }
+}
+
+void ResizeWindow(int w, int h)
+{
+    SDL_SetWindowSize(screen, w, h);
 }
 
 void ResizeWin(SDL_Event *event)
@@ -141,16 +142,9 @@ void ResizeWin(SDL_Event *event)
     }
     else
     {
-        extern void MakeRef(uint8_t *, int, int);
-
-//        free(scaling->Dest);
-
-//        scaling->Dest=new;
         scaling->DestWidth=WINDOW_WIDTH;
         scaling->DestSpan=WINDOW_WIDTH;
         scaling->DestHeight=WINDOW_HEIGHT;
-        MakeRef(scaling->XRef,FIXED_SCALING_WIDTH,WINDOW_WIDTH);
-        MakeRef(scaling->YRef,FIXED_SCALING_HEIGHT,WINDOW_HEIGHT);
 
         ClipX=WINDOW_WIDTH=old_width;
         ClipY=WINDOW_HEIGHT=old_height;
@@ -215,11 +209,7 @@ void os_set_color(int color,int r ,int g, int b)
     c.r=(unsigned char)r;
     SDL_palette[color]=c; // copio x il resize dopo!
 
-#ifndef IPHONE
-    SDL_SetColors(screen,&c,color,1);
-#else
     palette16[color] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
-#endif
 //    D(bug("Eseguita setcolor(%ld, r%ld,g%ld,b%ld)\n",color,r,g,b));
 }
 
@@ -230,29 +220,20 @@ void SetTitle(const char *title)
 
 void OpenTheScreen(void)
 {
+    force_single = TRUE;
+    double_buffering = FALSE;
 #ifdef IPHONE
     set_resolution();
     
     screen = SDL_CreateWindow("ETW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
     
-    force_single = TRUE;
-    double_buffering = FALSE;
     wb_game = FALSE;
-    scaling = FALSE;
+    scaling = NULL;
 #else
-    if(wb_game) {
+    if(wb_game) 
         screen =SDL_CreateWindow("ETW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
-
-
-        force_single=TRUE;
-        double_buffering=FALSE;
-        // metto due false qui x evitare problemi
-    }
-    else {
-        double_buffering=FALSE;
-
+    else
         screen = SDL_CreateWindow("ETW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
-    }
 #endif
 
     if(screen) {
@@ -312,7 +293,7 @@ void os_load_palette(uint32_t *pal)
 
     for(i = 0; i < colornum; i++)
     {
-#ifdef IPHONE    
+#if 1 
         int r = pal[1 + i *3] >> 27,
             g = pal[1 + i *3 + 1] >> 26,
             b = pal[1 + i *3 + 2] >> 27;
@@ -328,10 +309,6 @@ void os_load_palette(uint32_t *pal)
 #endif
         SDL_palette[i + first].unused = SDL_ALPHA_OPAQUE;
     }
-
-#ifndef IPHONE    
-    SDL_SetColors(screen, &SDL_palette[first], first, colornum);
-#endif
 }
 
 void ScreenSwap(void)
@@ -340,27 +317,6 @@ void ScreenSwap(void)
     int pitch;
     
     if(!SDL_LockTexture(screen_texture, NULL, &pixels, &pitch)) {
-#ifndef IPHONE
-        if(scaling)
-        {
-            scaling->Dest=pixels;
-            bitmapFastScale(scaling);
-        }
-        else if(pitch==bitmap_width)
-            memcpy(pixels,main_bitmap,bitmap_width*bitmap_height);
-        else
-        {
-            uint8_t *src = main_bitmap, *dest = pixels;
-            int i;
-
-            for(i=bitmap_height;i;--i)
-            {
-                memcpy(dest,src,bitmap_width);
-                src += bitmap_width;
-                dest += pitch;
-            }
-        }
-#else
         if (pitch == bitmap_width * 2)
             blitScreen16(pixels);
         else if (pitch == bitmap_width * 4)
@@ -368,7 +324,6 @@ void ScreenSwap(void)
         else {
             D(bug("Unsupported pitch: %d (width %d)\n", pitch, bitmap_width));
         }
-#endif
 
         SDL_UnlockTexture(screen_texture);
         // sdl_flip fall back in SDL_UpdateRect if we are single buffer

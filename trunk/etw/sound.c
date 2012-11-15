@@ -11,13 +11,10 @@ struct BufferInfo *BufferInfo;
 
 struct SoundInfo *busy[AVAILABLE_CHANNELS + 2] = { 0 };
 
-static int samplerate = 22050;
+static ULONG samplerate = 22050;
 
 static int sound_started = 0;
 static int sound_loaded = FALSE;
-
-/* AC: I need it for sound conversion. */
-static SDL_AudioSpec obt;
 
 /*
  * Questa e' la callback di SDL per il play del suono, busy[i] e' il
@@ -31,12 +28,14 @@ void handle_sound(void *unused, Uint8 * stream, int len)
 {
     int i, amount;
 
+   // SDL2 requires an initial memset
+    memset(stream, len, 0);
+
     if (!sound_loaded)
         return;
 
 //  +2 is because one channel is reserved for speaker comment and another
 //  one for chorus.
-   
     for (i = 0; i < (AVAILABLE_CHANNELS + 2); i++) {
         amount = 0;
 
@@ -48,7 +47,8 @@ void handle_sound(void *unused, Uint8 * stream, int len)
                 amount = len;
 
             if (amount > 0) {
-//              D(bug("Mixxo canale %ld, %ld bytes (st: %lx)\n",i,amount,stream));
+//                D(bug("Mixxo canale %ld, %ld bytes (st: %lx, disk:%d offset:%d/%d)\n",
+//                      i, amount,stream, busy[i]->Flags & SOUND_DISK, busy[i]->Offset, busy[i]->Length));
 
 				if (busy[i]->Flags & SOUND_DISK) {
 					Uint8 buffer[BUFFER_SIZE];
@@ -57,10 +57,11 @@ void handle_sound(void *unused, Uint8 * stream, int len)
 					SDL_MixAudio(stream, buffer, amount,
 								 SDL_MIX_MAXVOLUME);
 				} else
-					SDL_MixAudio(stream,
+                    SDL_memcpy(stream, ((Uint8 *) busy[i]->SoundData) + busy[i]->Offset, amount);
+					/*SDL_MixAudio(stream,
 								 ((Uint8 *) busy[i]->SoundData) +
 								 busy[i]->Offset, amount,
-								 SDL_MIX_MAXVOLUME);
+								 SDL_MIX_MAXVOLUME);*/
 
                 busy[i]->Offset += amount;
             }
@@ -190,7 +191,6 @@ void PlayIfNotPlaying(int s)
     PlayBackSound(si);
 }
 
-#ifndef MACOSX
 static void convert_sound(struct SoundInfo *s)
 {
     uint8_t *buffer, *destsnd;
@@ -211,8 +211,9 @@ static void convert_sound(struct SoundInfo *s)
     length = (long)((((double)samplerate) / ((double)s->Rate)) * ((double)s->Length));
 
     if ((destsnd = malloc(length + 2048))) { // be sure about possible overflows
-        register int l = s->Length, k = 0, t;
-        register uint8_t *src = s->SoundData, *dst = destsnd;
+        int l = s->Length, t;
+        ULONG k = 0;
+        uint8_t *src = s->SoundData, *dst = destsnd;
 
         while (l--) {
             t = buffer[k++];
@@ -245,7 +246,6 @@ static void convert_sound(struct SoundInfo *s)
     s->SoundData = s->LeftData = destsnd;
 
 }
-#endif
 
 BOOL InitSoundSystem(void)
 {
@@ -255,25 +255,14 @@ BOOL InitSoundSystem(void)
 
     fmt.freq = samplerate;
 
-/* AC: I don't know under other system (I think that it is a currently bug of the SDL version)
- * but under X, when using 8bit format, the audio is distorced.
- * --> Now, I'm using this value that works perfectly. <--
- */
-// for linux the correct value is U8
-// for OSX it seems S8
-// for win32? (test)
-//#ifdef MACOSX
-#if 0
-    fmt.format = AUDIO_U16;
-#else
+
     fmt.format = AUDIO_U8; // signed o unsigned?!?!?
-#endif
     fmt.samples = BUFFER_SIZE;
     fmt.callback = handle_sound;
     fmt.channels = 1;
     fmt.userdata = NULL;
 
-    if (SDL_OpenAudio(&fmt, &obt) < 0) {
+    if (SDL_OpenAudio(&fmt, NULL) < 0) {
         D(bug("Unable to open audio: %s\n", SDL_GetError()));
         return FALSE;
     }
@@ -285,21 +274,8 @@ BOOL InitSoundSystem(void)
  * la scelta e' tra cercare il bug in macos o passare tutti i campioni
  * in altri formati (ad esempio wav).
  */
-    D(bug("AUDIO: Asking for %d/%d/%d/%d, obtained %d/%d/%d/%d\n",
-                fmt.freq, fmt.format, fmt.samples, fmt.channels,
-                obt.freq, obt.format, obt.samples, obt.channels));
-
-#ifndef MACOSX
-    if(obt.format & 0x10) {
-        D(bug("*** TARGET needs 16bit audio, UNSUPPORTED, exiting ***"));
-        return FALSE;
-    }
-#endif
-
-    if(obt.freq != samplerate) {
-        D(bug("*** Forcing frequency %d\n", obt.freq));
-        samplerate = obt.freq;
-    }
+    D(bug("AUDIO: Asking for %d/%d/%d/%d device:%s\n",  
+                fmt.freq, fmt.format, fmt.samples, fmt.channels, SDL_GetCurrentAudioDriver()));
     
     sound_started = 1;
     return TRUE;
@@ -359,47 +335,11 @@ struct SoundInfo *LoadSound(char const *Name)
             s->Length = len;
             s->SoundData = s->LeftData = buffer;
 
-            D(bug(" length: %d rate: %d\n", len, spec.freq));
+            D(bug(" length: %d rate: %d format:%d\n", len, spec.freq, spec.format));
 
-            /* AC: I don't know if this conversion is needed for the other system, but is strongly
-             * necessary under OS X. ^_^
-             */
-#ifdef MACOSX
-            /* 12/07/04 - If sound isn't started, obt is an invalid structure! */
-            if(sound_started && (spec.format != obt.format || spec.freq != obt.freq))
-            {
-                SDL_AudioCVT  wav_cvt;
-                
-                D(bug("Convert sound: original format %x, needed format %x\n",
-                    spec.format,obt.format));
-
-                /* Build AudioCVT */
-                if(SDL_BuildAudioCVT(&wav_cvt,
-                        spec.format,spec.channels,spec.freq,
-                        obt.format, obt.channels,obt.freq) != -1) 
-                {
-                    /* Setup for conversion */
-                    if((wav_cvt.buf = malloc(len * wav_cvt.len_mult)) != NULL)
-                    {
-                        wav_cvt.len = len;
-                        memcpy(wav_cvt.buf,buffer,len);
-
-                        /* We can delete the original WAV data now */
-                        SDL_FreeWAV(buffer);
-
-                        /* And now we're ready to convert */
-                        SDL_ConvertAudio(&wav_cvt);
-                        s->Flags |= SOUND_CONVERTED;
-                        s->Length = wav_cvt.len*wav_cvt.len_ratio;
-                        s->SoundData = s->LeftData = wav_cvt.buf;
-                    }            
-                }
-            }    
-            /* The default is returning the unconverted sound? */
-#else
             if (s->Rate < (samplerate-1000) || s->Rate > (samplerate+1000))
                 convert_sound(s); // convert sample if needed
-#endif            
+
             return s;
         }
         SDL_FreeWAV(buffer);

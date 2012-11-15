@@ -9,7 +9,7 @@ int highlight_size=0;
 extern BOOL wb_game;
 extern int32_t display_id;
 
-BOOL audio2fast=FALSE,joyonly=FALSE,
+BOOL joyonly=FALSE,
     arcade_teams=FALSE,first_half=TRUE,extratime=FALSE,
     final=FALSE,use_width=FALSE,use_height=FALSE,first_kickoff=TRUE,
     friendly=FALSE,use_direct=FALSE,use_offside=TRUE; // Da mettere false di default
@@ -37,23 +37,16 @@ extern void *screen;
 
 void read_config(void)
 {
-    extern BOOL audio_to_fast;
-
     first_half=TRUE;
     extratime=FALSE;
     first_kickoff=TRUE;
-
-    if(audio_to_fast)
-        audio2fast=TRUE;
-    else
-        audio2fast=FALSE;
 
     //players=2;
 
     if(use_scaling&&!scaling)
         scaling=malloc(sizeof(struct MyFastScaleArgs));
 
-    if(audio2fast&&!no_sound)
+    if(!no_sound)
         os_audio2fast();
 
     if(training)

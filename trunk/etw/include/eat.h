@@ -7,7 +7,6 @@
 // Questo simbolo disabilita le info di debug...
 
 /*  #define DEBUG_DISABLED
- *  #define CD_VERSION
  *  #define DEMOVERSION
  *
  *  Li gestisco in modo piu' pulito tramite makefile!

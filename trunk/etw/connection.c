@@ -71,7 +71,6 @@ void WriteGameConfig(FILE *f)
     fwrite_u8(bookings, f);
     fwrite_u8(substitutions, f);
     fwrite_u8(newchange, f);
-    fwrite_u8(newpitches, f);
 
     fwrite_u32(detail_level, f);
 
@@ -102,7 +101,6 @@ void ReadGameConfig(FILE *f)
     bookings = fread_u8(f);
     substitutions = fread_u8(f);
     newchange = fread_u8(f);
-    newpitches = fread_u8(f);
 
     detail_level = fread_u32(f);
     
@@ -155,9 +153,6 @@ BOOL StartGame(void)
     game_start = FALSE;
 
     snprintf(buf, 1024, "%sthismatch", TEMP_DIR);
-#ifdef __CODEGUARD__
-    if(access(buf,0) != -1)
-#endif
     remove(buf/*-*/);
 
     WINDOW_WIDTH=wanted_width;
@@ -322,29 +317,13 @@ WORD StartMatch(BYTE team1,BYTE team2)
     {
         if(field==7)
         {
-            if(newpitches)
-            {
-                sprintf(fieldname,"newgfx/pitchwet+.gfx"/*-*/);
-                sprintf(palette,"newgfx/eat32wet.col"/*-*/);
-            }
-            else
-            {
-                sprintf(fieldname,"gfx/pitchwet.gfx"/*-*/);
-                sprintf(palette,"gfx/eat16wet.col"/*-*/);
-            }
+            sprintf(fieldname,"newgfx/pitchwet+.gfx"/*-*/);
+            sprintf(palette,"newgfx/eat32wet.col"/*-*/);
         }
         else
         {
-            if(newpitches)
-            {
-                sprintf(fieldname,"newgfx/pitchsnow+.gfx"/*-*/);
-                sprintf(palette,"newgfx/eat32snow.col"/*-*/);
-            }
-            else
-            {
-                sprintf(fieldname,"gfx/pitchsnow.gfx"/*-*/);
-                sprintf(palette,"gfx/eat16snow.col"/*-*/);
-            }
+            sprintf(fieldname,"newgfx/pitchsnow+.gfx"/*-*/);
+            sprintf(palette,"newgfx/eat32snow.col"/*-*/);
         }
     }
     else {
@@ -353,14 +332,8 @@ WORD StartMatch(BYTE team1,BYTE team2)
         if(!field_type)
             c=RangeRand(NUMERO_CAMPI);
 
-        if(newpitches)    {
-            sprintf(fieldname,"newgfx/pitch%lc+.gfx"/*-*/,c+'a');
-            sprintf(palette,"newgfx/eat32%s.col"/*-*/,palettes[t]);
-        }
-        else {
-            sprintf(fieldname,"gfx/pitch%lc.gfx"/*-*/,c+'a');
-            sprintf(palette,"gfx/eat16%s.col"/*-*/,palettes[t]);
-        }
+        sprintf(fieldname,"newgfx/pitch%lc+.gfx"/*-*/,c+'a');
+        sprintf(palette,"newgfx/eat32%s.col"/*-*/,palettes[t]);
     }
 
     if(!network_game) {

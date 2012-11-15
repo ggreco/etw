@@ -31,7 +31,7 @@ static BOOL played = FALSE;
 
 void free_crowd(void)
 {
-    if (use_crowd && audio2fast) {
+    if (use_crowd) {
         int i;
 
         for (i = 0; i < (NUMERO_CORI - 1); i++) {
@@ -74,22 +74,13 @@ void init_crowd(void)
     last_looped = FONDO;
     wanted_sound = FONDO;
 
-    if (audio2fast) {
-        D(bug("A2F: init crowd...\n"));
-        FreeSound(sound[FONDO]);
-        sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
-        numero_loops = 128 / (sound[FONDO]->Length / 3600);
-        D(bug
-          ("CT: Using audio2fast L: %ld B: %lx NL: %ld...\n",
-           sound[FONDO]->Length, sound[FONDO]->SoundData, numero_loops));
-    } else {
-        numero_loops = -1;
-
-        if(sound[FONDO])
-            FreeSound(sound[FONDO]);
-        
-        sound[FONDO] = LoadSound(RandomCrowdName());
-    }
+    D(bug("A2F: init crowd...\n"));
+    FreeSound(sound[FONDO]);
+    sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
+    numero_loops = 128 / (sound[FONDO]->Length / 3600);
+    D(bug
+      ("CT: Using audio2fast L: %ld B: %lx NL: %ld...\n",
+       sound[FONDO]->Length, sound[FONDO]->SoundData, numero_loops));
 
     busy[AUDIO_CROWD] = sound[FONDO];
 
@@ -122,21 +113,8 @@ struct SoundInfo *handle_crowd(void)
             numero_loops--;
 
         if (numero_loops < 0) {
-            if (audio2fast) {
-                sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
-                numero_loops = 128 / (sound[FONDO]->Length / 3600);
-            } else {
-                FreeSound(sound[FONDO]);
-
-                sound[FONDO] = LoadSound(RandomCrowdName());
-                
-                if (sound[FONDO]) {
-                    numero_loops = 128 / (sound[FONDO]->Length / 3600);
-                } else {
-                    playing = -1;
-                    return FALSE;
-                }
-            }
+            sound[FONDO] = Cori[MyRangeRand(NUMERO_CORI)];
+            numero_loops = 128 / (sound[FONDO]->Length / 3600);
         }
 
         if (!(sound[playing]->Flags & SOUND_LOOP) && !newloop) {

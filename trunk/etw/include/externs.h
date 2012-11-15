@@ -18,8 +18,8 @@ extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,k
     arcade,situation,training,use_crowd,slow_motion,use_speaker,replay_looped,highlight,
     substitutions,bookings,injuries,window_opened,screen_opened,nopari,free_longpass,
     no_record,penalties,free_kicks,arcade_teams,first_half,extratime,left_sel,right_sel,
-    friendly,golden_gol,use_key0,use_key1,joyonly,audio2fast,use_offside,
-    newpitches,network_game, game_start;
+    friendly,golden_gol,use_key0,use_key1,joyonly,use_offside,
+    network_game, game_start;
 extern uint8_t control[4], tipo_porta;
 extern char *controls[CONTROLS], spk_basename[64];
 extern int32_t Pens[256];
@@ -271,12 +271,10 @@ int os_avail_mem(void);
 void SetCrowd(int);
 void os_init_timer(void);
 void os_free_timer(void);
-void os_audio2fast(void);
+BOOL os_audio2fast(void);
 
-#ifdef CD_VERSION
 void UrgentSpeaker(int);
 void StartSpoken(void);
-#endif
 
 #ifdef DEMOVERSION
 void WaitOrKey(int);

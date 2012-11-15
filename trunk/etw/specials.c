@@ -317,8 +317,7 @@ extern struct GfxMenu *actual_menu;
 extern int FIXED_SCALING_WIDTH, FIXED_SCALING_HEIGHT;
 
 BOOL make_setup = FALSE, game_start = FALSE, can_modify = TRUE,
-     savehigh = FALSE, triple = FALSE, chunky_version = FALSE,
-     use_gfx_scaling = FALSE;
+     savehigh = FALSE, use_gfx_scaling = FALSE;
 int8_t selected_number = 0, wanted_number = 0, duration = 1,
        field_type = 0, daytime = 0;
 char *enabled = msg_7, *disabled = msg_8;
@@ -1720,12 +1719,9 @@ BOOL AudioPrefs(WORD button)
                 use_speaker = FALSE;
                 use_crowd = TRUE;
             }
-#ifdef CD_VERSION
             DeleteAudio2Fast();
-#endif
             break;
         case 5:
-#ifdef CD_VERSION
             if (use_speaker)
                 use_speaker = FALSE;
             else
@@ -1734,31 +1730,14 @@ BOOL AudioPrefs(WORD button)
                 use_crowd = FALSE;
             }
             DeleteAudio2Fast();
-#else
-            request(msg_38);
-#endif
-
             break;
         case 7:
-#ifdef CD_VERSION
             menu_music = menu_music ? FALSE : TRUE;
 
             if (menu_music == FALSE)
                 StopMenuMusic();
             else
                 PlayMenuMusic();
-#else
-            request(msg_39);
-#endif
-            break;
-        case 9:
-#ifdef CD_VERSION
-
-            audio_to_fast = audio_to_fast ? FALSE : TRUE;
-
-#else
-            request(msg_39);
-#endif
             break;
     }
 
@@ -1810,10 +1789,10 @@ BOOL SystemPrefs(WORD button)
 
     switch(button)
     {
+        // disabled 1, 3, 9
         case 1:
             break;
         case 3:
-            chunky_version = chunky_version ? FALSE : TRUE;
             break;
         case 5:
         case 7:
@@ -1866,9 +1845,9 @@ BOOL VideoPrefs(WORD button)
                 /* AC: if we are on screen, disable the scaling */
                 use_gfx_scaling = FALSE;
 
-                MenuResizing(atol(resolutions[current_resolution]),
+                ResizeWindow(atol(resolutions[current_resolution]),
                              atol(resolutions[current_resolution] + 4));
-
+                
                 /* AC: Since these buttons are restored later on, I think
                  * that we don't have to eliminate them. They are Scaling
                  * and Buffering. */
@@ -1885,7 +1864,7 @@ BOOL VideoPrefs(WORD button)
             {
                 wb_game = TRUE;
 
-                MenuResizing(atol(resolutions[current_resolution]),
+                ResizeWindow(atol(resolutions[current_resolution]),
                              atol(resolutions[current_resolution] + 4));
 
                 RedrawButton(&actual_menu->Button[16],
@@ -1992,42 +1971,6 @@ BOOL VideoPrefs(WORD button)
             }
             break;
         case 21:
-            if (force_single)
-            {
-                // Using DBuffering
-                force_single = FALSE;
-                triple = FALSE;
-            }
-            else if (triple)
-            {
-                // Using Single buffering
-                triple = FALSE;
-                force_single = TRUE;
-            }
-            else
-            {
-                // Using triple buffering
-                force_single = FALSE;
-                triple = TRUE;
-            }
-            break;
-        case 23:
-            if (newpitches)
-            {
-                newpitches = FALSE;
-
-                if (!wb_game)
-                    id_change = TRUE;
-            }
-            else if (CheckNewPitches())
-            {
-                if (!wb_game)
-                    id_change = TRUE;
-
-                newpitches = TRUE;
-            }
-            break;
-        case 25:
             do
             {
                 current_resolution++;
@@ -2046,8 +1989,12 @@ BOOL VideoPrefs(WORD button)
             }
             while (!os_videook(wanted_width, wanted_height));
 
-            MenuResizing(wanted_width, wanted_height);
+            ResizeWindow(wanted_width, wanted_height);
 
+            break;
+
+       default:
+            D(bug("Unknown menu button clicked: %d\n", button));
             break;
     }
 
@@ -2107,15 +2054,10 @@ void UpdatePrefs(BYTE set)
         m->Button[18].Text = use_gfx_scaling ? "SCALING RES" : NULL;
         m->Button[19].Text = use_gfx_scaling
                            ? scaling_resolutions[current_scaling] : NULL;
-        m->Button[21].Text = triple ? "TRIPLE"
-                           : force_single ? "SINGLE"
-                           : "DOUBLE";
-        m->Button[23].Text = newpitches ? enabled : disabled;
-        m->Button[25].Text = resolutions[current_resolution];
+        m->Button[21].Text = resolutions[current_resolution];
         break;
 
     case MENU_SYSTEM_PREFS:
-        m->Button[3].Text = chunky_version ? enabled : disabled;
         m->Button[5].Text = controls[control[0]];
         m->Button[7].Text = controls[control[1]];
         break;
@@ -2175,11 +2117,7 @@ void SetupMatches(void)
             else
             {
                 // Add here the final visualization one of the arcade.
-#ifdef CD_VERSION
                 Outro();
-#else
-                ShowCredits();
-#endif
                 arcade_score += 500; // Final bonus
 
                 AddScore(*teamarray);

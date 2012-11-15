@@ -133,10 +133,8 @@ void HandleGol(void)
             else
                 pl->world_x=((12141+(pl->world_y>>3))/5)<<2;
                 
-#ifdef CD_VERSION
             if(!replay_mode&&urgent_status!=S_TRAVERSA_COLPITA)
                 UrgentSpeaker(S_TRAVERSA_COLPITA);
-#endif
         }
         else
         {

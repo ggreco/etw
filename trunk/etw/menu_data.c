@@ -5,24 +5,24 @@ struct SoundInfo *menusound[NUMERO_SUONI_MENU+1];
 
 char *menu_soundname[]=
 {
-    "+intro/bombdrop.wav"/*-*/,
+    "intro/bombdrop.wav"/*-*/,
     "intro/engine.wav"/*-*/,
-    "+intro/brake.wav"/*-*/,
-    "-.arcadesnd/t0.wav"/*-*/,
-    "-.arcadesnd/t1.wav"/*-*/,
-    "-.arcadesnd/t2.wav"/*-*/,
-    "-.arcadesnd/t3.wav"/*-*/,
-    "-.arcadesnd/t4.wav"/*-*/,
-    "-.arcadesnd/t5.wav"/*-*/,
-    "-.arcadesnd/t6.wav"/*-*/,
-    "-.arcadesnd/t7.wav"/*-*/,
-    "-.arcadesnd/t8.wav"/*-*/,
-    "-.arcadesnd/t9.wav"/*-*/,
-    "-.arcadesnd/t10.wav"/*-*/,
-    "+intro/buuan.wav"/*-*/,
-    "+intro/swam.wav"/*-*/,
-    "+intro/swam2.wav"/*-*/,
-    "+intro/ground.wav"/*-*/,
+    "intro/brake.wav"/*-*/,
+    "arcadesnd/t0.wav"/*-*/,
+    ".arcadesnd/t1.wav"/*-*/,
+    ".arcadesnd/t2.wav"/*-*/,
+    ".arcadesnd/t3.wav"/*-*/,
+    ".arcadesnd/t4.wav"/*-*/,
+    ".arcadesnd/t5.wav"/*-*/,
+    ".arcadesnd/t6.wav"/*-*/,
+    ".arcadesnd/t7.wav"/*-*/,
+    ".arcadesnd/t8.wav"/*-*/,
+    ".arcadesnd/t9.wav"/*-*/,
+    ".arcadesnd/t10.wav"/*-*/,
+    "intro/buuan.wav"/*-*/,
+    "intro/swam.wav"/*-*/,
+    "intro/swam2.wav"/*-*/,
+    "intro/ground.wav"/*-*/,
     NULL,
 };
 
@@ -143,14 +143,14 @@ struct Button gprefs_bottoni[]=
 
 struct Button sprefs_bottoni[]=
 {
-    {10,75,100,82,-1,0,3,"POWERPC"},{101,75,184,82,-1,3,0,NULL},
-    {10,86,100,93,-1,0,3,"CHUNKY"},{101,86,184,93,-1,3,0,NULL},
-    {10,97,100,104,-1,0,3,msg_127},{101,97,184,104,-1,3,0,NULL},
-    {10,108,100,115,-1,0,3,msg_128},{101,108,184,115,-1,3,0,NULL},
-    {10,119,100,126,-1,0,3,msg_186},{101,119,184,126,-1,3,0,NULL},
-    {72,180,246,192,MENU_JOYCFG,7,9,NULL},
-    {72,195,246,207,MENU_KEYCFG,7,9,"KEYBOARD CONFIG"},
-    {72,220,246,232,MENU_PREFS,14,13,msg_108},
+    {10,75,100,82,-1,0,3,NULL},{101,75,184,82,-1,3,0,NULL}, // UNUSED
+    {10,86,100,93,-1,0,3,NULL},{101,86,184,93,-1,3,0,NULL}, // UNUSED
+    {10,86,98,102,-1,0,3,msg_127},{102,86,184,102,-1,3,0,NULL}, 
+    {10,112,98,128,-1,0,3,msg_128},{102,112,184,128,-1,3,0,NULL},
+    {10,119,100,126,-1,0,3,NULL},{101,119,184,126,-1,3,0,NULL}, // UNUSED
+    {72,160,246,178,MENU_JOYCFG,7,9,NULL},
+    {72,188,246,206,MENU_KEYCFG,7,9,"KEYBOARD CONFIG"},
+    {62,220,256,240,MENU_PREFS,14,13,msg_108},
 };
 
 struct Button vprefs_bottoni[]=
@@ -165,10 +165,7 @@ struct Button vprefs_bottoni[]=
     {10,141,100,148,-1,0,3,msg_184},{101,141,184,148,-1,3,0,NULL},
     {10,152,100,159,-1,0,3,"SCALING"},{101,152,184,159,-1,3,0,NULL},
     {10,163,100,170,-1,0,3,NULL},{101,163,184,170,-1,3,0,NULL},
-    {10,174,100,181,-1,0,3,"BUFFERING"},{101,174,184,181,-1,3,0,NULL},
-    {10,185,100,192,-1,0,3,"NEW PITCHES"},{101,185,184,192,-1,3,0,NULL},
     {10,196,100,203,-1,0,3,"RESOLUTION"},{101,196,184,203,-1,3,0,NULL},
-//    {10,207,100,214,-1,0,3,NULL},{101,207,184,214,-1,3,0,NULL},
     {72,220,246,232,MENU_PREFS,14,13,msg_108},
 };
 

@@ -117,7 +117,6 @@ void Intro(void)
                                 fn->fn_Volume=sound[0]->Volume;
                             }
                             break;
-#ifdef CD_VERSION
                         case 4:
                             if(fn=GetFrameNode(a,423))
                             {
@@ -150,7 +149,6 @@ void Intro(void)
                                 fn->fn_Volume=sound[14]->Volume;
                             }                            
                             break;
-#endif
                     }
 
                     if(scr!=OldScr)

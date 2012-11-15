@@ -106,21 +106,16 @@ void init_system(void)
     D(bug("End: FreeStuff()...\n"));
 }
 
-void os_audio2fast(void)
+BOOL os_audio2fast(void)
 {
-    audio2fast = FALSE;
-    
-    D(bug("Handling audio2fast!\n"));
-
     if (use_speaker && !speaker2memory())
-        return;
+        return FALSE;
 
     if (use_crowd && !crowd2memory()) {
         free_speaker();
-        return;
+        return FALSE;
     }
-        
-    audio2fast = TRUE;
+    return TRUE;        
 }
 
 // Ritarda di s 50esimi di secondo

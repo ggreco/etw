@@ -16,23 +16,14 @@ BOOL wb_game=FALSE,use_replay=TRUE,allow_replay=TRUE,nocpu=FALSE,arcade=FALSE,su
     situation=FALSE,use_crowd=TRUE,use_speaker=FALSE,free_longpass=FALSE,injuries=TRUE,    
     bookings=TRUE,nopari=FALSE,id_change=FALSE,window_opened=FALSE,newchange=FALSE,
     penalties=FALSE,free_kicks=FALSE,cgxmode=FALSE,nointro=FALSE,killer=FALSE,warp=FALSE,
-    music_playing=FALSE,golden_gol=FALSE,audio_to_fast=FALSE,
-    newpitches=FALSE,offside=FALSE,screen_opened=TRUE,network_game=FALSE,
-#ifndef CD_VERSION
-    menu_music=FALSE;
-#else
-    menu_music=TRUE;
-#endif
+    music_playing=FALSE,golden_gol=FALSE,
+    offside=FALSE,screen_opened=TRUE,network_game=FALSE, menu_music=TRUE;
 
 int8_t situation_result[2]={0,0},strictness=10;
 
 int display_id = 0, wanted_width, wanted_height;
 long int situation_time = 0;
 char localename[40];
-
-#ifdef IPHONE
-
-#endif
 
 void OpenMenuScreen(void)
 {
@@ -50,29 +41,9 @@ void OpenMenuScreen(void)
         sprefs_bottoni[menu[MENU_SYSTEM_PREFS].NumeroBottoni-3].Text="JOYSTICK CONFIG";
 }
 
-BOOL CheckNewPitches(void)
-{
-    FILE *f;
-    int i;
-    char buffer[100];
-
-    for(i=0;i<6;i++)
-    {
-        sprintf(buffer,"newgfx/pitch%c+.gfx",'a'+i);
-
-        if(!(f=fopen(buffer,"r")))
-            return FALSE;
-
-        fclose(f);
-    }
-
-    return TRUE;
-}
-
 void load_config(FILE *f)
 {
     char buffer[120];
-    BOOL deny_audio_to_fast=FALSE;
     int value;
 
     if(f)
@@ -130,10 +101,6 @@ void load_config(FILE *f)
             {
                 offside=FALSE;
             }
-            else if(!strnicmp(buffer,"newpitches"/*-*/,10) )
-            {
-                newpitches=TRUE;
-            }
             else if(!strnicmp(buffer,"sound=off"/*-*/,9) )
             {
                 no_sound=TRUE;
@@ -150,14 +117,6 @@ void load_config(FILE *f)
             else if(!strnicmp(buffer,"newchange"/*-*/,9))
             {
                 newchange=TRUE;
-            }
-            else if(!strnicmp(buffer,"forcesingle"/*-*/,11))
-            {
-                force_single=TRUE;
-            }
-            else if(!strnicmp(buffer,"triple"/*-*/,6 ))
-            {
-                triple=TRUE;
             }
             else if(!strnicmp(buffer,"scaling_y"/*-*/,9))
             {
@@ -191,14 +150,6 @@ void load_config(FILE *f)
             else if(!strnicmp(buffer,"workbench"/*-*/,9) )
             {
                 wb_game=TRUE;
-            }
-            else if(!strnicmp(buffer,"audio2fast=on"/*-*/,13) )
-            {
-                audio_to_fast=TRUE;
-            }
-            else if(!strnicmp(buffer,"audio2fast=off"/*-*/,14) )
-            {
-                deny_audio_to_fast=TRUE;
             }
             else if(!strnicmp(buffer,"displayid="/*-*/,10) )
             {
@@ -371,8 +322,6 @@ void read_menu_config(void)
 
     f=fopen("etw.cfg"/*-*/,"r");
 
-    newpitches=CheckNewPitches();
-
     load_config(f);
 
     SetCurrentResolution();
@@ -388,8 +337,6 @@ void write_config(char *dest)
 // Obsoleto        fprintf(f,"players=%ld\n"/*-*/,players);
 // "frames=%ld",1000000/framerate  (sempre a 25)
         BFP(f,"sound=%s\n"/*-*/,!no_sound);
-        BFP(f,"audio2fast=%s\n"/*-*/,audio_to_fast);
-
 // Mi serve ancora per il debug...
 
         if(network_server[0])
@@ -397,9 +344,6 @@ void write_config(char *dest)
 
         if(nosync)
             fprintf(f,"nosync=on\n"/*-*/);
-
-        if(newpitches)
-            fprintf(f,"newpitches\n"/*-*/);
 
         if(nointro)
             fprintf(f,"nointro\n"/*-*/);

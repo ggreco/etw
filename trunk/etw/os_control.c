@@ -716,11 +716,7 @@ uint32_t ReadKeyPort(uint32_t port)
     register uint8_t *keys;
     register int *q;
 
-#ifndef IPHONE
-    keys=SDL_GetKeyState(NULL);
-#else
     keys=SDL_GetKeyboardState(NULL);
-#endif
 
     q= (port) ? &query[10] : query;
 
