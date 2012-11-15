@@ -1075,9 +1075,7 @@ void ChangeMenu(WORD m)
 {
     extern WORD restore_w, restore_h;
 
-#ifdef CD_VERSION
     static int menu_changes = 0;
-#endif
     int i;
 
     restore_w = restore_h = 0;
@@ -1085,7 +1083,6 @@ void ChangeMenu(WORD m)
     bltchunkybitmap(back, 0, 0, main_bitmap, 0, 0, WINDOW_WIDTH,
                     WINDOW_HEIGHT, bitmap_width, bitmap_width);
 
-#ifdef CD_VERSION
     menu_changes++;
 
     if (menu_changes > 12) {
@@ -1097,7 +1094,6 @@ void ChangeMenu(WORD m)
 
         PlayMenuMusic();
     }
-#endif
     actual_menu = &menu[m];
 
 // Questo mi permette di tornare al menu' giusto dalla teamselection;
@@ -1529,41 +1525,6 @@ BOOL HandleJoy(uint32_t joystatus)
     return TRUE;
 }
 
-void MenuResizing()
-{
-    extern SDL_Window *screen;
-//      gfx_t o;
-//      unsigned char *back2;
-    oldwidth = WINDOW_WIDTH;
-    oldheight = WINDOW_HEIGHT;
-    int w, h;
-    SDL_GetWindowSize(screen, &w, &h);
-    
-    LoadIFFPalette("gfx/eat16menu.col" /*-*/ );
-    
-    free(main_bitmap);
-    free(back);
-    bitmap_width = WINDOW_WIDTH = w;
-    bitmap_height = WINDOW_HEIGHT = h;
-    
-    main_bitmap = malloc(WINDOW_WIDTH * WINDOW_HEIGHT);
-    back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT);
-    
-    if (!main_bitmap || !back) {
-        request("Not enough memory.\n");
-        FreeMenuStuff();
-        exit(0);
-    }
-    
-    if (arcade_back)
-        LoadArcadeBack();
-    else
-        LoadBack();
-    
-    UpdateButtonList();
-    ChangeMenu(current_menu);
-}
-
 BOOL HandleMenuIDCMP(void)
 {
     SDL_Event e;
@@ -1572,20 +1533,27 @@ BOOL HandleMenuIDCMP(void)
     if (SDL_WaitEvent(&e)) {
 
         switch (e.type) {
-        case SDL_WINDOWEVENT_RESIZED:
-            if (!reqqing)
-                MenuResizing();
-            break;
-/*
-            case IDCMP_INTUITICKS:
-                returncode=HandleJoy(ReadJoyPort(1));
-//                returncode&=HandleJoy(ReadJoyPort(0));
+            case SDL_WINDOWEVENT:
+                switch (e.window.event) {
+                    case SDL_WINDOWEVENT_RESIZED:
+                        if (!reqqing)
+                            ScreenSwap();
+                        break;
+                        /*
+                           case IDCMP_INTUITICKS:
+                           returncode=HandleJoy(ReadJoyPort(1));
+                        //                returncode&=HandleJoy(ReadJoyPort(0));
+                        break;
+                         */
+                    case SDL_WINDOWEVENT_EXPOSED:
+                        ScreenSwap();
+                        break;
+                    case SDL_WINDOWEVENT_CLOSE:
+                        if (!reqqing)
+                            returncode = FALSE;
+                        break;
+                }
                 break;
-*/
-        case SDL_WINDOWEVENT_EXPOSED:
-            ScreenSwap();
-            break;
-        case SDL_WINDOWEVENT_CLOSE:
         case SDL_QUIT:
             D(bug("SDL quit received!\n"));
             if (!reqqing)
@@ -1603,7 +1571,6 @@ BOOL HandleMenuIDCMP(void)
             break;
         case SDL_KEYUP:
             switch (e.key.keysym.sym) {
-#ifndef WINCE
             case SDLK_UP:
                 returncode = HandleJoy(JPF_JOY_UP);
                 break;
@@ -1616,24 +1583,10 @@ BOOL HandleMenuIDCMP(void)
             case SDLK_RIGHT:
                 returncode = HandleJoy(JPF_JOY_RIGHT);
                 break;
-#else
-            case SDLK_UP:
-                returncode = HandleJoy(JPF_JOY_RIGHT);
+            case SDLK_SPACE:
+            case SDLK_RETURN:
+                returncode = HandleJoy(0L);
                 break;
-            case SDLK_DOWN:
-                returncode = HandleJoy(JPF_JOY_LEFT);
-                break;
-            case SDLK_LEFT:
-                returncode = HandleJoy(JPF_JOY_UP);
-                break;
-            case SDLK_RIGHT:
-                returncode = HandleJoy(JPF_JOY_DOWN);
-                break;
-#endif
-              case SDLK_SPACE:
-               case SDLK_RETURN:
-                    returncode = HandleJoy(0L);
-                    break;
             case SDLK_ESCAPE:
                 if (!reqqing)
                     returncode = FALSE;

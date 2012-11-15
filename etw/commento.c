@@ -270,17 +270,11 @@ void init_speaker(void)
     strcpy(buffer,spk_basename);
     strcat(buffer,".spk");
 
-    if(!audio2fast)
-        if(!(commento=fopen(buffer,"rb")))
-            use_speaker=FALSE;
-
     strcpy(buffer,spk_basename);
     strcat(buffer,".sdf");
 
     if(!(f=fopen(buffer,"rb")))
     {
-        if(!audio2fast)
-            fclose(commento);
         use_speaker=FALSE;
     }
 
@@ -294,8 +288,6 @@ void init_speaker(void)
         use_speaker=FALSE;
 
         fclose(f);
-        if(!audio2fast)
-            fclose(commento);
 
         commento = NULL;
         return;
@@ -305,9 +297,6 @@ void init_speaker(void)
     if(!(Lengths = malloc(NumeroCommenti * sizeof(uint32_t) * 2)))
     {
         fclose(f);
-        if(!audio2fast)
-            fclose(commento);
-
         use_speaker=FALSE;
         commento = NULL;
 
@@ -331,17 +320,13 @@ void free_speaker(void)
    if(Lengths)
        free(Lengths);
 
-   if(!audio2fast && commento)
-       fclose(commento);
-
-
    frase = NON_DECISA;
    game_status = S_NON_INIZIATO;
 
    fondolen = sound[FONDO]->Length;
    fondobase = sound[FONDO]->SoundData;
 
-   if (audio2fast && comment_file) 
+   if (comment_file) 
        free(comment_file);
    
    Lengths = NULL;
@@ -409,21 +394,13 @@ struct SoundInfo *handle_speaker(void)
 
         game_status=S_RESET;
 
-        if(!audio2fast)
-            fseek(commento,Offsets[frase],SEEK_SET);
-
         // Qui la frase...
 
         sound[COMMENTO]->Length = Lengths[frase];
 
-        if(audio2fast) {
-            sound[COMMENTO]->SoundData = comment_file + Offsets[frase];
-            sound[COMMENTO]->Flags = SOUND_DISK;
-        }
-        else {
-            sound[COMMENTO]->SoundData = commento;
-            sound[COMMENTO]->Flags = 0L;                        
-        }
+        sound[COMMENTO]->SoundData = comment_file + Offsets[frase];
+        sound[COMMENTO]->Flags = SOUND_DISK;
+
         if(special_status != S_NOMESQUADRA)
             frase=NON_DECISA;
         else
@@ -437,8 +414,6 @@ struct SoundInfo *handle_speaker(void)
     return NULL;
 }
 
-#ifdef CD_VERSION
-
 void UrgentSpeaker(int x)
 {
     if(use_speaker&&!no_sound&&urgent_status!=(x)) 
@@ -450,4 +425,3 @@ void UrgentSpeaker(int x)
         CheckStatus();
     }
 }
-#endif

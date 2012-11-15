@@ -66,13 +66,6 @@ void Progress(void);
 
 // Era 100
 
-
-#ifndef CD_VERSION
-
-#define UrgentSpeaker(x)
-
-#endif
-
 #define PrintResult() bltchunkybitmap(p->result,0,0,main_bitmap,0,4,p->result_len*VS_CHAR_X,VS_CHAR_Y+1,result_width,bitmap_width)
 
 

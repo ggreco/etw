@@ -516,10 +516,7 @@ int main(int argc, char *argv[])
             D(bug("Entering main loop...\n"));
             while (HandleMenuIDCMP());
 
-            if (audio_to_fast) {
-                D(bug("Delete Audio2Fast...\n" /*-*/ ));
-                DeleteAudio2Fast();
-            }
+            DeleteAudio2Fast();
 
             D(bug("Start: FreeMenuStuff...\n" /*-*/ ));
             FreeMenuStuff();
