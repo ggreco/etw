@@ -50,16 +50,22 @@ struct Button main_bottoni[]=
 #endif
 };
 
+// mobile version does not need a "save settings", saving is done anyway, neither the system panel
 struct Button prefs_bottoni[]=
 {
+#ifndef IPHONE
     {20,67,150,80,MENU_GAME_PREFS,3,0,msg_92},  // Preferences
     {20,93,150,106,MENU_VIDEO_PREFS,0,13,msg_93},
     {20,119,150,132,MENU_AUDIO_PREFS,0,13,msg_94},
-#ifndef IPHONE
     {20,145,150,158,MENU_SYSTEM_PREFS,0,13,"SYSTEM"},
-#endif
     {72,210,246,222,0,14,13,msg_95},
     {72,229,246,241,-1,9,11,msg_96},
+#else
+    {20,57,150,80,MENU_GAME_PREFS,3,0,msg_92},  // Preferences
+    {20,103,150,126,MENU_VIDEO_PREFS,0,13,msg_93},
+    {20,149,150,172,MENU_AUDIO_PREFS,0,13,msg_94},
+    {72,205,246,241,-1,9,11,msg_95},
+#endif
 };
 
 struct Button high_bottoni[]=
@@ -73,11 +79,11 @@ struct Button high_bottoni[]=
     {20,57,150,80,MENU_HIGH_SELECTION,11,12,msg_97},  // Highlights
     {20,103,150,126,MENU_HIGH_SELECTION,11,12,msg_98},
     {20,149,150,172,-1,11,12,msg_99},
-    {72,205,246,232,0,14,13,msg_95},
-    
+    {72,205,246,232,0,14,13,msg_95},  
 #endif
 };
 
+// not available in mobile
 struct Button teams_bottoni[]=
 {
     {20,67,150,80,-1,6,8,msg_100},  // Teams
@@ -249,14 +255,14 @@ struct Button scorelist_bottoni[]=
 struct Button teamselection[]=
 {
 #ifdef IPHONE
-    {5,31,79,48    ,-1,14,13,NULL},{83,31,157,38    ,-17,14,13,NULL},{161,31,235,38    ,-33,14,13,NULL},{239,31,313,38,-49,14,13,NULL},
-    {5,53,79,69    ,-2,14,13,NULL},{83,42,157,49    ,-18,14,13,NULL},{161,42,235,49    ,-34,14,13,NULL},{239,42,313,49,-50,14,13,NULL},
-    {5,74,79,90    ,-3,14,13,NULL},{83,53,157,60    ,-19,14,13,NULL},{161,53,235,60    ,-35,14,13,NULL},{239,53,313,60,-51,14,13,NULL},
-    {5,95,79,111    ,-4,14,13,NULL},{83,64,157,71    ,-20,14,13,NULL},{161,64,235,71    ,-36,14,13,NULL},{239,64,313,71,-52,14,13,NULL},
-    {5,116,79,142    ,-5,14,13,NULL},{83,75,157,82    ,-21,14,13,NULL},{161,75,235,82    ,-37,14,13,NULL},{239,75,313,82,-53,14,13,NULL},
-    {5,147,79,163    ,-6,14,13,NULL},{83,86,157,93    ,-22,14,13,NULL},{161,86,235,93    ,-38,14,13,NULL},{239,86,313,93,-54,14,13,NULL},
-    {5,168,79,184    ,-7,14,13,NULL},{83,97,157,104    ,-23,14,13,NULL},{161,97,235,104,-39,14,13,NULL},{239,97,313,104,-55,14,13,NULL},
-    {5,189,79,205,-8,14,13,NULL},{83,108,157,115,-24,14,13,NULL},{161,108,235,115,-40,14,13,NULL},{239,108,313,115,-56,14,13,NULL},
+    {5,32,79,48    ,-1,14,13,NULL},{83,32,157,48    ,-17,14,13,NULL},{161,32,235,48    ,-33,14,13,NULL},{239,32,313,48,-49,14,13,NULL},
+    {5,53,79,69    ,-2,14,13,NULL},{83,53,157,69    ,-18,14,13,NULL},{161,53,235,69    ,-34,14,13,NULL},{239,53,313,69,-50,14,13,NULL},
+    {5,74,79,90    ,-3,14,13,NULL},{83,74,157,90    ,-19,14,13,NULL},{161,74,235,90    ,-35,14,13,NULL},{239,74,313,90,-51,14,13,NULL},
+    {5,95,79,111    ,-4,14,13,NULL},{83,95,157,111    ,-20,14,13,NULL},{161,95,235,111    ,-36,14,13,NULL},{239,95,313,111,-52,14,13,NULL},
+    {5,116,79,132    ,-5,14,13,NULL},{83,116,157,132    ,-21,14,13,NULL},{161,116,235,132    ,-37,14,13,NULL},{239,116,313,132,-53,14,13,NULL},
+    {5,137,79,153    ,-6,14,13,NULL},{83,137,157,153    ,-22,14,13,NULL},{161,137,235,153    ,-38,14,13,NULL},{239,137,313,153,-54,14,13,NULL},
+    {5,158,79,174    ,-7,14,13,NULL},{83,158,157,174    ,-23,14,13,NULL},{161,158,235,174,-39,14,13,NULL},{239,158,313,174,-55,14,13,NULL},
+    {5,179,79,195,-8,14,13,NULL},{83,179,157,195,-24,14,13,NULL},{161,179,235,195,-40,14,13,NULL},{239,179,313,195,-56,14,13,NULL},
     {10,219,106,245,-1,7,9,NULL},
     {111,219,207,245,-1,14,13,msg_6},
     {212,219,309,245,-1,11,12,NULL},
@@ -507,7 +513,7 @@ struct Button cb[]=
 
 /* In reality control 0 would be the BLUE keyboard, but for praticity
  * since the things are inverted, at the moment we hold first red and
- * then the blue.
+ * then the blue, this mask is not available in mobile version.
  */
 struct Button keycfg_bottoni[]=
 {
@@ -545,6 +551,8 @@ struct Button keycfg_bottoni[]=
     {72,229,246,241,MENU_SYSTEM_PREFS,14,13,msg_108},
 };
 
+
+// not available in mobile
 struct Button joycfg_bottoni[]=
 {
     {10,64,100,71,-1,0,3,"SHOT"},{101,64,184,71,-1,3,0,NULL},
