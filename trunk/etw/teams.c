@@ -115,8 +115,8 @@ void SetupSpecialEvent(struct Button *b)
             competition=MENU_MATCHES;
             b->ID=MENU_TEAM_SELECTION;
             wanted_number=campionato.nteams;
-            menu[MENU_TEAM_SELECTION].Button[64].Text=msg_0;
-            menu[MENU_TEAM_SELECTION].Button[66].Text=NULL;
+            menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE].Text=msg_0;
+            menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE + 2].Text=NULL;
             i_scontri=scontri=1; // campionato.Scontri; Non ancora supportato
             break;
         case CAMP_LEAGUE:
@@ -143,12 +143,12 @@ void SetupSpecialEvent(struct Button *b)
             pps=campionato.loss;
 
             i_scontri=scontri=campionato.Scontri;
-            menu[MENU_TEAM_SELECTION].Button[64].Text=msg_0;
-            menu[MENU_TEAM_SELECTION].Button[66].Text=NULL;
+            menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE].Text=msg_0;
+            menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE + 2].Text=NULL;
             break;
         case CAMP_WORLDCUP:
-            menu[MENU_TEAM_SELECTION].Button[64].Text=msg_1;
-            menu[MENU_TEAM_SELECTION].Button[66].Text=msg_2;
+            menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE].Text=msg_1;
+            menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE + 2].Text=msg_2;
 
             competition=MENU_WORLD_CUP;
             b->ID=MENU_TEAM_SELECTION;
@@ -173,7 +173,7 @@ void SetupSpecialEvent(struct Button *b)
 
     while(selected_number<wanted_number&&i<64)
     {
-        while(!teamselection[i].Text&&i<64)
+        while(!teamselection[i].Text&&i< (TS_RIGHE *TS_COLONNE))
             i++;
 
         if(competition==MENU_LEAGUE&&division)
@@ -191,7 +191,7 @@ void SetupSpecialEvent(struct Button *b)
 
     if(selected_number<wanted_number)
     {
-        D(bug("Errore nelle squadre, non posso selezionarne %ld!\n"/*-*/, wanted_number));
+        D(bug("Error in teams, I cannot select %ld of them!\n"/*-*/, wanted_number));
     }
 }
 
@@ -221,7 +221,7 @@ BOOL LoadMenuTactic(char *name, tactic_t *t)
 
 void DisplayTactic(int xs, int ys)
 {
-// Il campo e'    108*156, le tattiche 10240, 4352
+// Pitch is 108*156, tactics 10240, 4352
 
     char buffer[120];
     tactic_t t;
