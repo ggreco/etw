@@ -16,11 +16,13 @@ void init_touch(SDL_Window *win)
 
     SDL_GetWindowSize(win, &w, &h);
 
-    touch = new TouchControl(win, "mobile/knob.bmp", "mobile/joystick-base.bmp");
+    D(bug("Starting touch interface for window size %dx%d\n", w, h));
+    
+    touch = new TouchControl(win, "mobile/knob.bmp", "mobile/joystick-base.bmp", WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    touch->add_button("mobile/red-normal.bmp", "mobile/red-pressed.bmp", w - 140, h - 80);
-    touch->add_button("mobile/blue-normal.bmp", "mobile/blue-pressed.bmp", w - 70, h - 100);
-    touch->add_button("mobile/pause-normal.bmp", "mobile/pause-pressed.bmp", w - 66, 2);
+    touch->add_button("mobile/red-normal.bmp", "mobile/red-pressed.bmp", WINDOW_WIDTH - 140, WINDOW_HEIGHT - 80);
+    touch->add_button("mobile/blue-normal.bmp", "mobile/blue-pressed.bmp", WINDOW_WIDTH - 70, WINDOW_HEIGHT - 100);
+    touch->add_button("mobile/pause-normal.bmp", "mobile/pause-pressed.bmp", WINDOW_WIDTH - 66, 2);
 
     D(bug("Touch interface initialized\n"));
 }
