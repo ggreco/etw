@@ -77,9 +77,14 @@
 
 #define NUMERO_SFONDI 12
 
-// Defines per teamselection
+// Defines per teamselection, the mobile version support max 32 teams for set
 
+#ifdef IPHONE
+#define TS_RIGHE   8
+#else
 #define TS_RIGHE   16
+#endif
+
 #define TS_COLONNE 4
 
 

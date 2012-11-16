@@ -1096,14 +1096,14 @@ void ChangeMenu(WORD m)
     }
     actual_menu = &menu[m];
 
-// Questo mi permette di tornare al menu' giusto dalla teamselection;
+// This code let me go back to the right menu when using teamselection;
 
     if (m != current_menu) {
         if (m != MENU_TEAM_SELECTION
             || (current_menu != MENU_TEAM_SETTINGS
                 && current_menu != MENU_MATCH_RESULT)) {
             if (actual_menu->Button == teamselection) {
-                teamselection[65].ID = current_menu;
+                teamselection[TS_RIGHE * TS_COLONNE + 1].ID = current_menu;
             } else if (actual_menu->Button == teamsettings) {
                 teamsettings[42].ID = current_menu;
             }

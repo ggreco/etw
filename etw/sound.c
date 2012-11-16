@@ -29,7 +29,7 @@ void handle_sound(void *unused, Uint8 * stream, int len)
     int i, amount;
 
    // SDL2 requires an initial memset
-    memset(stream, len, 0);
+    memset(stream, 0, len);
 
     if (!sound_loaded)
         return;
@@ -57,11 +57,10 @@ void handle_sound(void *unused, Uint8 * stream, int len)
 					SDL_MixAudio(stream, buffer, amount,
 								 SDL_MIX_MAXVOLUME);
 				} else
-                    SDL_memcpy(stream, ((Uint8 *) busy[i]->SoundData) + busy[i]->Offset, amount);
-					/*SDL_MixAudio(stream,
+					SDL_MixAudio(stream,
 								 ((Uint8 *) busy[i]->SoundData) +
 								 busy[i]->Offset, amount,
-								 SDL_MIX_MAXVOLUME);*/
+								 SDL_MIX_MAXVOLUME);
 
                 busy[i]->Offset += amount;
             }
