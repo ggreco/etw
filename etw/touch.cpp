@@ -41,13 +41,17 @@ add_button(const char *normal, const char *pressed, int x, int y)
 
         
 TouchControl::
-TouchControl(SDL_Window *screen, const char *knob, const char *base) :
+TouchControl(SDL_Window *screen, const char *knob, const char *base, int w, int h) :
     screen_(screen), visible_(false), fading_(0), 
-    distance_(0.0), delta_x_(0.0), delta_y_(0.0)
+    distance_(0.0), delta_x_(0.0), delta_y_(0.0),
+    screen_w_(w), screen_h_(h)
 {
     knob_ = load_bmp(knob, knob_w_, knob_h_);
     joybase_ = load_bmp(base, joyrect_.w, joyrect_.h);
-    SDL_GetWindowSize(screen, &screen_w_, &screen_h_);
+    
+    if (screen_w_ < 0 || screen_h_ < 0)
+        SDL_GetWindowSize(screen, &screen_w_, &screen_h_);
+
     activation_.x = 0;
     activation_.y = screen_h_ / 2;
     activation_.w = screen_w_ / 3;
