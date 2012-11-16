@@ -511,7 +511,7 @@ void ClearSelection(void)
 
     if (!arcade_teams)
     {
-        for (i = 0; i < 64; i++)
+        for (i = 0; i < (TS_RIGHE * TS_COLONNE); i++)
             teamselection[i].Color = COLOR_UNSELECTED;
     }
     else
@@ -575,10 +575,10 @@ BOOL TeamSelection(WORD button)
 
     b = &actual_menu->Button[button];
 
-    if (button < 64)
+    if (button < ((TS_RIGHE * TS_COLONNE) ))
     {
-        struct Button *b2 = &actual_menu->Button[64];
-        struct Button *b3 = &actual_menu->Button[66];
+        struct Button *b2 = &actual_menu->Button[TS_RIGHE * TS_COLONNE];
+        struct Button *b3 = &actual_menu->Button[(TS_RIGHE * TS_COLONNE) + 2];
 
         if (selected >= 0)
             MyRestoreBack();
@@ -679,7 +679,7 @@ BOOL TeamSelection(WORD button)
             }
         }
     }
-    else if (button == 66
+    else if (button == ((TS_RIGHE * TS_COLONNE) + 2)
               && (competition != MENU_WORLD_CUP || wanted_number != 32))
     {
         if (selected > -1)
@@ -691,14 +691,15 @@ BOOL TeamSelection(WORD button)
             ChangeMenu(MENU_TEAM_SETTINGS);
         }
     }
-    else if (button == 64 || (button == 66 && competition == MENU_WORLD_CUP))
+    else if (button == (TS_RIGHE * TS_COLONNE) || 
+            (button == ((TS_RIGHE * TS_COLONNE) + 2) && competition == MENU_WORLD_CUP))
     {
         int i, j;
 
         team1_selected = FALSE;
         team2_selected = FALSE;
 
-        for (i = 0, j = 0; i < 64; i++)
+        for (i = 0, j = 0; i < (TS_RIGHE * TS_COLONNE); i++)
             if (actual_menu->Button[i].Color != COLOR_UNSELECTED)
             {
 /*
@@ -719,7 +720,7 @@ BOOL TeamSelection(WORD button)
         if (j != selected_number)
             D(bug("Warning, wrong number of teams selected! (%ld instead of %ld)\n", j, selected_number));
 
-        actual_menu->Button[64].Text = actual_menu->Button[66].Text = NULL;
+        actual_menu->Button[TS_RIGHE * TS_COLONNE].Text = actual_menu->Button[(TS_RIGHE * TS_COLONNE) + 2].Text = NULL;
 
         if (friendly || training)
         {
@@ -727,7 +728,7 @@ BOOL TeamSelection(WORD button)
         }
         else if (competition == MENU_WORLD_CUP && wanted_number == 32)
         {
-            if (button == 64)
+            if (button == (TS_RIGHE * TS_COLONNE))
                 random_draw = FALSE;
             else
                 random_draw = TRUE;
@@ -798,13 +799,13 @@ singlematch:
 
         // To finish!
     }
-    else if (button == 65 && b->ID >= 0)
+    else if (button == ((TS_RIGHE * TS_COLONNE) +1) && b->ID >= 0)
     {
         team1_selected = team2_selected = FALSE;
 
         selected = -1;
 
-        actual_menu->Button[66].Text = actual_menu->Button[64].Text = NULL;
+        actual_menu->Button[(TS_RIGHE * TS_COLONNE) + 2].Text = actual_menu->Button[TS_RIGHE * TS_COLONNE].Text = NULL;
 
         special = FALSE;
         competition = MENU_TEAMS;

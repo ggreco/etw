@@ -1325,12 +1325,6 @@ BOOL HandleJoy(uint32_t joystatus)
     static BOOL clicked = FALSE;
     WORD old_button = actual_button;
 
-#if 0
-    if ((joystatus & JP_TYPE_MASK) == JP_TYPE_MOUSE) {
-        return TRUE;
-    }
-#endif
-
     if (joystatus & JPF_BUTTON_RED) {
         SelectButton(actual_button);
         ScreenSwap();
@@ -1447,10 +1441,10 @@ BOOL HandleJoy(uint32_t joystatus)
             if (joystatus & JPF_JOY_UP) {
                 MoveMark(-4);
             } else if (joystatus & JPF_JOY_DOWN) {
-                if (actual_button < 60)
+                if (actual_button < (TS_RIGHE * TS_COLONNE) - 4)
                     MoveMark(4);
                 else
-                    MoveMark(64 - actual_button);
+                    MoveMark((TS_RIGHE * TS_COLONNE) - actual_button);
             }
 
             if (joystatus & JPF_JOY_LEFT) {
