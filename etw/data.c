@@ -405,6 +405,7 @@ char *controls[CONTROLS]=
     "2B JOYSTICK",
     "KEYBOARD 1",
     "KEYBOARD 2",
+    "MOUSE",
     NULL,
 /*    "JOY+KEY",
     "KEYBOARD",
