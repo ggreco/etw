@@ -91,14 +91,15 @@ void AdjustSDLPalette(void)
     int i;
 
     for(i=0;i<32;i++) {
-        int r = (palette16[i] >> 11) * 2 / 3,
-            g = ((palette16[i] >> 6) & 0x3f) * 2 / 3,
-            b = (palette16[i] & 0x1f) * 2 / 3;
+        int r = SDL_palette[i].r * 2 / 3,
+            g = SDL_palette[i].g * 2 / 3,
+            b = SDL_palette[i].b * 2 / 3;
 
-        palette16[224 + i] = (r << 11) | (g << 5) | b;
-        SDL_palette[224+i].r=SDL_palette[i].r*2/3;
-        SDL_palette[224+i].g=SDL_palette[i].g*2/3;
-        SDL_palette[224+i].b=SDL_palette[i].b*2/3;
+        SDL_palette[224+i].r= r;
+        SDL_palette[224+i].g= g;
+        SDL_palette[224+i].b= b;
+        r >>= 3; g >>= 2; b >>= 3;
+        palette16[224 + i] = (r << 11) | (g  << 5) | b;
     }
 }
 
@@ -223,6 +224,10 @@ void OpenTheScreen(void)
     force_single = TRUE;
     double_buffering = FALSE;
 #ifdef IPHONE
+    // ios devices only permit touch controls
+    control[0] = CTRL_TOUCH; 
+    control[1] = CTRL_TOUCH; 
+
     set_resolution();
     
     screen = SDL_CreateWindow("ETW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
@@ -246,7 +251,13 @@ void OpenTheScreen(void)
 
         D(bug("Fine InitAnimSystem!\n"));
         SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
-        screen_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
+        screen_texture = SDL_CreateTexture(renderer, 
+#ifndef IPHONE
+                SDL_PIXELFORMAT_ARGB8888, 
+#else
+                SDL_PIXELFORMAT_RGB565, 
+#endif
+                SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
 //        SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_BLEND);
         alloc_bitmap();
     }
@@ -293,7 +304,6 @@ void os_load_palette(uint32_t *pal)
 
     for(i = 0; i < colornum; i++)
     {
-#if 1 
         int r = pal[1 + i *3] >> 27,
             g = pal[1 + i *3 + 1] >> 26,
             b = pal[1 + i *3 + 2] >> 27;
@@ -302,11 +312,7 @@ void os_load_palette(uint32_t *pal)
         SDL_palette[i + first].b = pal[1 + i *3] >> 24;
         SDL_palette[i + first].g = pal[1 + i *3 + 1] >> 24;
         SDL_palette[i + first].r = pal[1 + i *3 + 2] >> 24;
-#else
-        SDL_palette[i + first].r = pal[1 + i *3] >> 24;
-        SDL_palette[i + first].g = pal[1 + i *3 + 1] >> 24;
-        SDL_palette[i + first].b = pal[1 + i *3 + 2] >> 24;
-#endif
+
         SDL_palette[i + first].unused = SDL_ALPHA_OPAQUE;
     }
 }
@@ -328,6 +334,9 @@ void ScreenSwap(void)
         SDL_UnlockTexture(screen_texture);
         // sdl_flip fall back in SDL_UpdateRect if we are single buffer
         SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
+        if (use_touch)
+            draw_touch();
+
         SDL_RenderPresent(renderer);
     }
 }

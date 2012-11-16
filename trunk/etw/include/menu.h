@@ -151,13 +151,7 @@ struct GfxMenu
 
 // Tipi di controlli
 
-#define CTRL_JOY    0
-#define CTRL_JOYPAD    1
-#define CTRL_JOY2B    2
-#define CTRL_KEY_1    3
-#define CTRL_KEY_2    4
-
-#define CONTROLS    (CTRL_KEY_2+2)
+#include "control_types.h"
 
 // Per detail_level (bits)
 

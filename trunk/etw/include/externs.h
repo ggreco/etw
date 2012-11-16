@@ -18,7 +18,7 @@ extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,k
     arcade,situation,training,use_crowd,slow_motion,use_speaker,replay_looped,highlight,
     substitutions,bookings,injuries,window_opened,screen_opened,nopari,free_longpass,
     no_record,penalties,free_kicks,arcade_teams,first_half,extratime,left_sel,right_sel,
-    friendly,golden_gol,use_key0,use_key1,joyonly,use_offside,
+    friendly,golden_gol,use_key0,use_key1,joyonly,use_offside, use_touch,
     network_game, game_start;
 extern uint8_t control[4], tipo_porta;
 extern char *controls[CONTROLS], spk_basename[64];
@@ -82,7 +82,7 @@ extern void CheckActive(void);
 
 // main
 
-extern void SetResult(char *, ...);
+extern void SetResult(const char *, ...);
 
 // squadre
 
@@ -256,6 +256,10 @@ int os_get_screen_height(void);
 int os_get_inner_width(void);
 int os_get_inner_height(void);
 void os_load_palette(uint32_t *);
+
+
+// from vjoy.cpp
+void draw_touch();
 
 // Da os_control.c
 

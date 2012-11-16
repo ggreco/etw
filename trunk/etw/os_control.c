@@ -183,9 +183,14 @@ int os_get_joy_button(int i)
 
 void set_controls(void)
 {
+    use_touch = use_key0 = use_key1 = FALSE;
+
     p->team[0]->Joystick=player_type[0];
 
-    if(control[0]>=CTRL_KEY_1)
+    if (control[0] == CTRL_TOUCH) {
+        use_touch = TRUE;
+    }
+    else if(control[0]>=CTRL_KEY_1)
     {
         use_key0=TRUE;
         /* AC: Or the configuration is saved in automatic, or here it is
@@ -194,7 +199,10 @@ void set_controls(void)
         LoadKeyDef(0,KEY_RED_FILE);*/
     }
 
-    if(control[1]>=CTRL_KEY_1)
+    if (control[1] == CTRL_TOUCH) {
+        use_touch = TRUE;
+    }
+    else if(control[1]>=CTRL_KEY_1)
     {
         use_key1=TRUE;
         /* Idem like above
@@ -246,10 +254,11 @@ joy_try_again:
             D(bug("Joypad/key2 for team 0\n"));
         }
         else {
-            if(control[p->team[0]->Joystick]==CTRL_JOY2B || 
-                control[p->team[0]->Joystick]==CTRL_KEY_1) {
-                HandleTeam0=HandleControlledJ2B;
-                   D(bug("Joy2b/key1 for team 0\n"));
+            if(control[p->team[0]->Joystick]==CTRL_TOUCH ||
+               control[p->team[0]->Joystick]==CTRL_JOY2B || 
+               control[p->team[0]->Joystick]==CTRL_KEY_1) {
+                HandleTeam0 = HandleControlledJ2B;
+                D(bug("Joy2b/key1/Touch for team 0\n"));
             }
             else {
                 HandleTeam0=HandleControlled;
@@ -305,12 +314,13 @@ joy_try_again:
             control[p->team[1]->Joystick]==CTRL_KEY_2) {
             HandleTeam1=HandleControlledJoyPad;
             D(bug("Joypad/key2 for team 1\n"));
-        }
+        }       
         else {
             if(control[p->team[1]->Joystick]==CTRL_JOY2B ||
-                control[p->team[1]->Joystick]==CTRL_KEY_1) {
+                control[p->team[1]->Joystick]==CTRL_KEY_1 ||
+                control[p->team[1]->Joystick]==CTRL_TOUCH ) {
                 HandleTeam1=HandleControlledJ2B;
-                   D(bug("Joy2b/key1 for team 0\n"));
+                   D(bug("Joy2b/key1/Touch for team 0\n"));
             }
             else {
                 HandleTeam1=HandleControlled;
@@ -337,10 +347,12 @@ int os_wait_end_pause(void)
             if(key==SDLK_p)
                 ok=TRUE;
             break;
-        case SDL_WINDOWEVENT_RESIZED:
-            ResizeWin(&lastevent);
-            DrawPause();
-            ScreenSwap();
+        case SDL_WINDOWEVENT:
+            if (lastevent.window.event ==  SDL_WINDOWEVENT_RESIZED) {
+                ResizeWin(&lastevent);
+                DrawPause();
+                ScreenSwap();
+            }
 
             break;
         default:
@@ -365,30 +377,15 @@ void CheckKeys(void)
         case SDL_JOYAXISMOTION:
             D(bug("Joystick event, I shouldn't take them!!!!\n"));
             break;
-#ifdef TOUCH_VERSION
-            // ignore them we need multitouch events
-        case SDL_MOUSEMOTION:
-        case SDL_MOUSEBUTTONDOWN:
-        case SDL_MOUSEBUTTONUP:
-            break;
-        case SDL_FINGERMOTION:
-            D(bug("move:%d %d,%d", e.tfinger.fingerId, e.tfinger.x, e.tfinger.y));
-            break;
-        case SDL_FINGERDOWN:
-            D(bug("down:%d %d,%d", e.tfinger.fingerId, e.tfinger.x, e.tfinger.y));
-            break;
-        case SDL_FINGERUP:
-            D(bug("up:%d %d,%d", e.tfinger.fingerId, e.tfinger.x, e.tfinger.y));
-            break;
-#endif
         case SDL_QUIT:
             SetResult("break");
             final = FALSE;
             quit_game=TRUE;
             break;
 
-        case SDL_WINDOWEVENT_RESIZED:
-            ResizeWin(&e);
+        case SDL_WINDOWEVENT:
+            if (e.window.event ==  SDL_WINDOWEVENT_RESIZED) 
+                ResizeWin(&e);
             break;
         case SDL_KEYDOWN:
             if(!(p->show_panel&PANEL_CHAT)) {
@@ -704,10 +701,12 @@ int query[]=
 
 void UpdatePortStatus(void)
 {
-    if(has_joystick)
-        SDL_JoystickUpdate();
+    if (!use_touch) {
+        if(has_joystick)
+            SDL_JoystickUpdate();
     
-    SDL_PumpEvents();
+        SDL_PumpEvents();
+    }
 }
 
 uint32_t ReadKeyPort(uint32_t port)

@@ -19,6 +19,7 @@ uint32_t(*MyReadPort0) (uint32_t);
 uint32_t(*MyReadPort1) (uint32_t);
 
 uint32_t MyReadJoyPort(uint32_t);
+uint32_t MyReadTouchPort(uint32_t);
 
 #ifdef DEBUG_DISABLED
 #   ifdef USE_LOGFILE
@@ -67,6 +68,10 @@ void init_system(void)
         MyReadPort0 = ReadNetworkPort;
         D(bug("Assign MyReadPort0: NET\n"));
     }
+    else if (use_touch) {
+        MyReadPort0 = MyReadTouchPort;
+        D(bug("Assign MyReadPort0: TOUCH INTERFACE\n"));
+    }
     else if (use_key0) {
         MyReadPort0 = ReadKeyPort;
         D(bug("Assign MyReadPort0: KEYBOARD\n"));
@@ -79,6 +84,10 @@ void init_system(void)
     if (network_game && player_type[network_player->num] == 0) {
         MyReadPort1 = ReadNetworkPort;
         D(bug("Assign MyReadPort1: NET\n"));
+    }
+    else if (use_touch) {
+        MyReadPort1 = MyReadTouchPort;
+        D(bug("Assign MyReadPort1: TOUCH INTERFACE\n"));
     }
     else if (use_key1) {
         MyReadPort1 = ReadKeyPort;
@@ -137,7 +146,7 @@ int os_avail_mem(void)
 
 #include <stdarg.h>
 
-void kprintf(char *fmt, ...)
+void kprintf(const char *fmt, ...)
 {
     va_list ap;
 

@@ -53,9 +53,11 @@ void HandleScrolling(void)
     key_tick++;
 
 
-    if (key_tick > 16) {
-        CheckKeys();
-        key_tick = 0;
+    if (!use_touch) {
+        if (key_tick > 16) {
+            CheckKeys();
+            key_tick = 0;
+        }
     }
 
     if (scroll_tick > 50) {

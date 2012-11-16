@@ -11,24 +11,16 @@
 
 #define MYBUTTONMASK       (JPF_BUTTON_BLUE|JPF_BUTTON_RED|JPF_BUTTON_YELLOW|JPF_BUTTON_GREEN)
 
-// Tipi di controlli
+#include "control_types.h"
 
-#define CTRL_JOY    0
-#define CTRL_JOYPAD    1
-#define CTRL_JOY2B    2
-#define CTRL_KEY_1    3
-#define CTRL_KEY_2    4
-
-#define CONTROLS    (CTRL_KEY_2+2)
-
-// Stili di gioco
+// game styles
 
 #define SFONDAMENTO_CENTRALE    0
 #define FASCE_LATERALE_N    1
 #define FASCE_LATERALE_S    2
 #define PALLA_LUNGA        3
 
-// Comandi arcade
+// arcade commands
 
 #define ARCADE_SPEED    1
 #define ARCADE_GLUE    2
@@ -38,7 +30,7 @@
 #define MAX_ARCADE_ON_FIELD 4 // Massimo numero di bonus sul campo contemporaneamente
 #define ARCADE_REPOP_TIME 500 // Ripoppa un simbolo ogni 10 secondi;
 
-// Comandi per i giocatori
+// player commands
 
 #define NESSUN_COMANDO    0
 #define STAI_BARRIERA    1
@@ -74,7 +66,7 @@
 #define FISCHIA_PRIMO_TEMPO 16
 #define FISCHIA_OFFSIDE 17
 
-// Pallone
+// Ball
 
 #define TIRO_RASOTERRA    0
 #define TIRO_ALTO    1
