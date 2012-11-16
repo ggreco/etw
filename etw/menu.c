@@ -1443,7 +1443,7 @@ BOOL HandleJoy(uint32_t joystatus)
     break;
 #endif
     case MENU_TEAM_SELECTION:
-        if (actual_button < 64) {
+        if (actual_button < (TS_RIGHE * TS_COLONNE)) {
             if (joystatus & JPF_JOY_UP) {
                 MoveMark(-4);
             } else if (joystatus & JPF_JOY_DOWN) {
