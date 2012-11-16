@@ -64,7 +64,7 @@ struct Button prefs_bottoni[]=
     {20,57,150,80,MENU_GAME_PREFS,3,0,msg_92},  // Preferences
     {20,103,150,126,MENU_VIDEO_PREFS,0,13,msg_93},
     {20,149,150,172,MENU_AUDIO_PREFS,0,13,msg_94},
-    {72,205,246,241,-1,9,11,msg_95},
+    {72,205,246,241,0,14,13,msg_95},
 #endif
 };
 
@@ -138,6 +138,7 @@ struct Button sim_bottoni[]=
     {72,210,246,222,4,14,13,msg_108},
 };
 
+// not available in mobile
 struct Button career_bottoni[]=
 {
     {20,67,150,80,MENU_TEAM_SELECTION,7,9,msg_112},  // Career
