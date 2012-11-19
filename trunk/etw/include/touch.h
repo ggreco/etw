@@ -10,6 +10,7 @@ class TouchControl
             int x, y, w, h, id;
             SDL_Texture *img, *pressed;
             bool is_pressed;
+            int finger;
         };
 
         typedef std::vector<button> BtVec;
@@ -20,6 +21,7 @@ class TouchControl
         SDL_Texture *knob_, *joybase_;
         int knob_w_, knob_h_;
         bool visible_;
+        int joyfinger_;
         int fading_;
         int center_y_, center_x_, screen_w_, screen_h_;
         int reference_y_, reference_x_;
