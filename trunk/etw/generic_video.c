@@ -172,37 +172,6 @@ void rectfill(uint8_t * b, int x1, int y1, int x2, int y2, uint8_t color, int wi
     }
 }
 
-#if 0
-
-void rectfill_pattern(uint8_t * b, int x1, int y1, int x2, int y2, uint8_t color, int width)
-{
-    register int i, k=1;
-
-    b+=x1+y1*width;
-
-    x2-=x1;
-    y2-=y1;
-
-    while(y2>=0)
-    {
-        i=x2;
-
-        i-=k;
-
-        while(i>0)
-        {
-            b[i]=color;
-            i-=2;
-        }
-
-        k^=1;
-
-        b+=width;
-        y2--;
-    }
-}
-#else
-
 void rectfill_pattern(uint8_t * b, int x1, int y1, int x2, int y2, uint8_t color, int width)
 {
     register int i; // , k=1; not used
@@ -216,7 +185,8 @@ void rectfill_pattern(uint8_t * b, int x1, int y1, int x2, int y2, uint8_t color
         i=x2;
 
         while(i>0) {
-            b[i]+=224;  // 224 is the base for half shaded colors
+            if (b[i] < 32)
+                b[i]+=224;  // 224 is the base for half shaded colors
             i--;
         }
 
@@ -224,8 +194,6 @@ void rectfill_pattern(uint8_t * b, int x1, int y1, int x2, int y2, uint8_t color
         y2--;
     }
 }
-
-#endif
 
 void bitmapScale(struct MyScaleArgs *s)
 {

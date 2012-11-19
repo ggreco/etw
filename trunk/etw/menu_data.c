@@ -129,6 +129,7 @@ struct Button arcade_bottoni[]=
 
 struct Button sim_bottoni[]=
 {
+#ifndef IPHONE
     {20,47,150,60,0,7,9,NULL},  // Simulation
     {20,73,150,86,MENU_TEAM_SELECTION,7,9,msg_109},
     {20,99,150,112,MENU_TEAM_SELECTION,7,9,msg_110},
@@ -136,6 +137,13 @@ struct Button sim_bottoni[]=
     {20,151,150,164,-1,9,11,msg_99},
     {20,177,150,190,-1,9,11,msg_180},
     {72,210,246,222,4,14,13,msg_108},
+#else
+    {20,50,150,73,MENU_TEAM_SELECTION,7,9,msg_109},
+    {20,90,150,113,MENU_TEAM_SELECTION,7,9,msg_110},
+    {20,130,150,153,MENU_TEAM_SELECTION,7,9,msg_111},
+    {20,170,150,193,-1,9,11,msg_99},
+    {72,210,246,237,4,14,13,msg_108},
+#endif
 };
 
 // not available in mobile

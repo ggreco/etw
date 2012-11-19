@@ -95,11 +95,6 @@ void AdjustSDLPalette(void)
             g = SDL_palette[i].g * 2 / 3,
             b = SDL_palette[i].b * 2 / 3;
 
-        SDL_palette[224+i].r= r;
-        SDL_palette[224+i].g= g;
-        SDL_palette[224+i].b= b;
-        r >>= 3; g >>= 2; b >>= 3;
-        palette16[224 + i] = (r << 11) | (g  << 5) | b;
     }
 }
 
@@ -201,19 +196,6 @@ BOOL alloc_bitmap(void)
     return TRUE;
 }
 
-
-void os_set_color(int color,int r ,int g, int b)
-{
-    SDL_Color c;
-    c.b=(unsigned char)b;
-    c.g=(unsigned char)g;
-    c.r=(unsigned char)r;
-    SDL_palette[color]=c; // copio x il resize dopo!
-
-    palette16[color] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
-//    D(bug("Eseguita setcolor(%ld, r%ld,g%ld,b%ld)\n",color,r,g,b));
-}
-
 void SetTitle(const char *title)
 {
     SDL_SetWindowTitle(screen, title);
@@ -252,11 +234,7 @@ void OpenTheScreen(void)
         D(bug("Fine InitAnimSystem!\n"));
         SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
         screen_texture = SDL_CreateTexture(renderer, 
-#ifndef IPHONE
-                SDL_PIXELFORMAT_ARGB8888, 
-#else
                 SDL_PIXELFORMAT_RGB565, 
-#endif
                 SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
 //        SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_BLEND);
         alloc_bitmap();
@@ -302,6 +280,9 @@ void os_load_palette(uint32_t *pal)
     if(colornum > 256)
         return;
 
+
+    D(bug("Loading %d colors from %d...\n", colornum, first));
+
     for(i = 0; i < colornum; i++)
     {
         int r = pal[1 + i *3] >> 27,
@@ -314,6 +295,15 @@ void os_load_palette(uint32_t *pal)
         SDL_palette[i + first].r = pal[1 + i *3 + 2] >> 24;
 
         SDL_palette[i + first].unused = SDL_ALPHA_OPAQUE;
+
+        // doing half-colors:
+        if (!first) {
+            r = (r*2/3);  g = (g*2/3);  b = (b*2/3);
+            SDL_palette[224 + i].r =  (pal[1 + i *3] >> 24) * 2 / 3;
+            SDL_palette[224 + i].g =  (pal[1 + i *3 + 1] >> 24) * 2 / 3;
+            SDL_palette[224 + i].b = (pal[1 + i *3 + 2] >> 24) * 2 / 3;
+            palette16[224 + i] = (r << 11) | (g  << 5) | b;        
+        }
     }
 }
 

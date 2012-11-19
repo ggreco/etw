@@ -353,7 +353,8 @@ int os_wait_end_pause(void)
                 DrawPause();
                 ScreenSwap();
             }
-
+            else if (lastevent.window.event ==  SDL_WINDOWEVENT_CLOSE)
+                ok = 2;
             break;
         default:
           // not handled keys...

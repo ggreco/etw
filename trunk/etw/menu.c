@@ -973,7 +973,7 @@ void PrintButtonType(struct Button *b, WORD bl, WORD bt,
     char *c;
 
     if ((current_menu != MENU_TEAM_SELECTION
-         || b > &actual_menu->Button[63])
+         || b > &actual_menu->Button[TS_RIGHE * TS_COLONNE -1])
         && (current_menu != MENU_ARCADE_SELECTION
             || b > &actual_menu->Button[ARCADE_TEAMS - 1]))
         return;
@@ -1533,12 +1533,6 @@ BOOL HandleMenuIDCMP(void)
                         if (!reqqing)
                             ScreenSwap();
                         break;
-                        /*
-                           case IDCMP_INTUITICKS:
-                           returncode=HandleJoy(ReadJoyPort(1));
-                        //                returncode&=HandleJoy(ReadJoyPort(0));
-                        break;
-                         */
                     case SDL_WINDOWEVENT_EXPOSED:
                         ScreenSwap();
                         break;

@@ -244,8 +244,6 @@ void HandleArcade(void);
 
 // Da os_video.c
 
-void AdjustSDLPalette(void);
-void os_set_color(int,int,int,int);
 void close_graphics(void);
 void os_resize(void);
 void os_set_window_frame(void);
