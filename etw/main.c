@@ -810,7 +810,7 @@ int game_main(void)
 
 
     LiberaListe();
-    
+    use_touch = FALSE;
     quit_game = FALSE;
 
     snprintf(buf, 1024, "%slock", TEMP_DIR);

@@ -89,16 +89,20 @@ draw()
                 r.x += -dest.x;
                 r.w += dest.x;
                 dest.x = 0;
+                dest.w = r.w;
             }
             if (dest.y < 0) {
                 r.y += -dest.y;
                 r.h += dest.y;
                 dest.y = 0;
+                dest.h = r.h;
             }
             if (dest.y < screen_h_) {
-                if (dest.y + knob_h_ > screen_h_)
+                if (dest.y + knob_h_ > screen_h_) {
                     r.h -= (dest.y + knob_h_ - screen_h_);
-
+                    dest.h = r.h;
+                }
+                
                 SDL_RenderCopy(rend, knob_, &r, &dest);
             }
         }
@@ -122,43 +126,39 @@ iteration()
             case SDL_QUIT:
                 return QUIT;
 
-            case SDL_MOUSEBUTTONUP:
-                if (visible_) {
+            case SDL_FINGERUP:
+                if (visible_ && e.tfinger.fingerId == joyfinger_) {
                     delta_x_ = delta_y_ = distance_ = 0.0;
                     fading_ = 20;
                     visible_ = false;
+                    joyfinger_ = -1;
                 }
                 for (BtIt it = buttons_.begin(); it != buttons_.end(); ++it) {
-                    if (it->is_pressed) {
+                    if (it->is_pressed && e.tfinger.fingerId == it->finger) {
                         it->is_pressed = false;
+                        it->finger = -1;
                         result |= it->id;
                         result |= BUTTONUP;
                     }
                 }
 
                 break;
-            case SDL_MOUSEBUTTONDOWN:
+            case SDL_FINGERDOWN:
                 {
-                    int x, y;
+                    SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
+                    int x = e.tfinger.x * screen_w_ / t->xres,
+                        y = e.tfinger.y * screen_h_ / t->yres;
 
-                    x = e.button.x;
-                    y = e.button.y;
-
-#if 0
-                    // landscape?
-                    else {
-                        x = e.button.y;
-                        y = 320 - e.button.x;
-                    }
-#endif
                     if (button *b = in_button(x, y)) {
                         result |= b->id;
                         result |= BUTTONDOWN;
                         b->is_pressed = true;
+                        b->finger = e.tfinger.fingerId;
                     }
-                    if (!visible_)
+                    else if (!visible_)
                         if (in_activation_area(x, y)) {
-                            visible_ = 1;
+                            visible_ = true;
+                            joyfinger_ = e.tfinger.fingerId;
                             center_x_ = x;
                             center_y_ = y;
                             joyrect_.x = center_x_ - joyrect_.w / 2;
@@ -175,17 +175,15 @@ iteration()
                         }                    
                 }
                 break;
-            case SDL_MOUSEMOTION:
-                if (visible_) {
-                        center_x_ = e.motion.x;
-                        center_y_ = e.motion.y;
-#if 0
-                    if (!landscape_) 
-                    else {
-                        center_x_ = e.motion.y;
-                        center_y_ = 320 - e.motion.x;
-                    }
-#endif
+            case SDL_FINGERMOTION:
+                if (visible_ && e.tfinger.fingerId == joyfinger_) {
+                    SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
+                    int x = e.tfinger.x * screen_w_ / t->xres,
+                        y = e.tfinger.y * screen_h_ / t->yres;
+                    center_x_ = x;
+                    center_y_ = y;
+
+                    
                     float radius = knob_w_;
                     delta_x_ = center_x_ - reference_x_;
                     delta_y_ = center_y_ - reference_y_;
