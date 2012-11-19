@@ -112,6 +112,20 @@ struct Button start_bottoni[]=
 #endif
 };
 
+struct Button pause_buttons[] = 
+{
+    {82,47,236,70,MENU_ARCADE,9,11,"CONTINUE"},  // Game Start
+    {82,100,236,123,MENU_ARCADE,7,9,"SUBSTITUTIONS"},  // Game Start
+    {82,187,142,197,-100,14,13,"4-4-2"/*-*/},{162,187,222,197,-101,14,13,"4-3-3"/*-*/},{262,187,302,197,-102,14,13,"3-4-3"/*-*/},
+    {82,207,142,217,-103,14,13,"5-3-2"/*-*/},{162,207,222,217,-104,14,13,"5-4-1"/*-*/},{262,207,302,217,-105,14,13,"3-5-2"/*-*/},
+    {72,205,246,232,MENU_MAIN_MENU,14,13,"ABANDON MATCH"},
+};
+
+struct Button pause_panels[] = 
+{
+    {82, 143, 236, 166, -1, 7, 9, "TACTICS"},
+};
+
 struct Button arcade_bottoni[]=
 {
 #ifndef IPHONE
@@ -138,6 +152,7 @@ struct Button sim_bottoni[]=
     {20,177,150,190,-1,9,11,msg_180},
     {72,210,246,222,4,14,13,msg_108},
 #else
+    {20,47,150,47,0,7,9,NULL},  // Simulation
     {20,50,150,73,MENU_TEAM_SELECTION,7,9,msg_109},
     {20,90,150,113,MENU_TEAM_SELECTION,7,9,msg_110},
     {20,130,150,153,MENU_TEAM_SELECTION,7,9,msg_111},
@@ -764,5 +779,6 @@ struct GfxMenu menu[]=
     {"SYSTEM",sprefs_bottoni,NULL,SZ(sprefs_bottoni),0,-1,190,38,0,3,0,(void *)SystemPrefs},
     {"KEYBOARD CONFIGURATION",keycfg_bottoni,NULL,43,0,-1,200 /*190*/,77 /*38*/,0,3,0,(void *)KeyCfg},
     {"JOYSTICK CONFIGURATION",joycfg_bottoni,NULL,15,0,-1,190,38,0,3,0,(void *)JoyCfg},
+    {NULL, pause_buttons, pause_panels, SZ(pause_buttons), SZ(pause_panels), -1,0,0,-1,3,0, (void*)handle_pause}
 };
 

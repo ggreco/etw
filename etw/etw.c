@@ -164,10 +164,6 @@ void FreeMenuStuff(void)
         back = NULL;
     }
 
-    
-    D(bug("Freeing fonts...\n"));
-    FreeMenuFonts();
-
     D(bug("Freeing sounds...\n"));
     LiberaSuoniMenu();
 
@@ -221,13 +217,6 @@ BOOL LoadMenuStuff(void)
     if (firsttime) {
         LoadPLogo("newgfx/hurricane" /*-*/ );
         os_delay(80);
-    }
-
-    D(bug("Opening fonts...\n" /*-*/ ));
-
-    if (!InitMenuFonts()) {
-        FreeGraphics();
-        return FALSE;
     }
 
     D(bug("Sound system initialization...\n" /*-*/ ));
@@ -502,6 +491,9 @@ int main(int argc, char *argv[])
 
     atexit(SDL_Quit);
 
+    if (!InitMenuFonts()) 
+        return FALSE;
+
     OpenMenuScreen();
 
     if (screen) {
@@ -526,6 +518,9 @@ int main(int argc, char *argv[])
         if(SoundStarted())
             FreeSoundSystem();
     }
+    D(bug("Freeing fonts...\n"));
+    FreeMenuFonts();
+
 
     D(bug("Program exited cleanly!\n"));
 

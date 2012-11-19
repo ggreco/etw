@@ -56,16 +56,9 @@ extern struct FrameNode *GetFrameNode(struct AnimInstData *, int );
 */
 extern void CheckCheat(UBYTE);
 
-// Gestione AHI
-
-void CloseAHI(void);
-BOOL OpenAHI(void);
-BOOL GetAHIMode(void);
-
 // Procedure speciali dei menu...
 
-extern struct Task *SoundTask[4];
-
+extern BOOL handle_pause(WORD);
 extern BOOL TeamSelection(WORD);
 extern BOOL ArcadeTeamSelection(WORD);
 extern BOOL TeamSettings(WORD);

@@ -1054,6 +1054,13 @@ BOOL KeyCfg(WORD button)
     return TRUE;
 }
 
+
+BOOL handle_pause(WORD button)
+{
+    D(bug("Clicked button %d in handle_pause\n", button));
+    return TRUE;
+}
+
 BOOL ArcadeTeamSelection(WORD button)
 {
     static BYTE selected = -1;

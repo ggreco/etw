@@ -806,8 +806,10 @@ void LoadTeams(char *name)
 
             campionato.nteams++;
 
+            // on iOS we don't have the special event, at the moment
+#ifndef IPHONE
             menu[MENU_SIMULATION].Button[0].Text=(*campionato.name!=0) ? campionato.name : NULL;
-
+#endif
             {
                 int i=0;
 
