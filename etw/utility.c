@@ -171,8 +171,6 @@ void DoPause(void)
 
     pause_mode=TRUE;
 
-//    SetCrowd(-1);
-
     os_stop_audio();
 
     DrawPause();
@@ -180,7 +178,8 @@ void DoPause(void)
 
     while(!ok)
     {
-        if(control[0]!=CTRL_JOYPAD && control[1]!=CTRL_JOYPAD)
+        if(control[0]!=CTRL_JOYPAD && control[1]!=CTRL_JOYPAD &&
+           control[0]!=CTRL_TOUCH && control[1]!=CTRL_TOUCH)
         {
             os_wait();
         }
@@ -222,8 +221,6 @@ void DoPause(void)
     }
 
     os_start_audio();
-
-//    SetCrowd(FONDO);
 
     pause_mode=FALSE;
 

@@ -765,7 +765,6 @@ BOOL LoadStuff(void)
                 FreeStuff();
                 return FALSE;
             }
-            AdjustSDLPalette();
 
             return TRUE;
         }
