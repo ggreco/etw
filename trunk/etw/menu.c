@@ -1250,6 +1250,16 @@ void ChangeMenu(WORD m)
     ScreenSwap();
 }
 
+void draw_pause_menu()
+{
+    int i;
+
+    for (i = 0; i < menu[MENU_PAUSE].NumeroBottoni; ++i)
+        CreateButton(&menu[MENU_PAUSE].Button[i]);    
+    for (i = 0; i < menu[MENU_PAUSE].NumeroPannelli; ++i)
+        CreateButton(&menu[MENU_PAUSE].Pannello[i]);    
+}
+
 void SelectButton(WORD button)
 {
     if (button != NO_BUTTON) {

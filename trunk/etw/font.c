@@ -760,18 +760,22 @@ void ShowPanel(void)
 
 void DrawPause(void)
 {
+    extern void draw_pause_menu();
+
     rectfill_pattern(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
                      WINDOW_HEIGHT - 1, 0, bitmap_width);
 
     if (pause_gfx) {
         BltGfxObj(pause_gfx, 0, 0, main_bitmap,
                   WINDOW_WIDTH / 2 - pause_gfx->width / 2,
-                  WINDOW_HEIGHT / 2 - pause_gfx->height / 2,
+                  pause_gfx->height,
                   pause_gfx->width, pause_gfx->height, bitmap_width);
     } else {
         drawtext("PAUSED", 6, (WINDOW_WIDTH - 6 * font_width) / 2,
-                 WINDOW_HEIGHT / 2, Pens[P_BIANCO]);
+                 10, Pens[P_BIANCO]);
     }
+
+    draw_pause_menu();
 }
 
 void DrawR(void)

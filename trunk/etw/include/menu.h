@@ -73,7 +73,8 @@
 #define MENU_SYSTEM_PREFS 25
 #define MENU_KEYCFG 26
 #define MENU_JOYCFG 27
-#define MENUS MENU_JOYCFG+1
+#define MENU_PAUSE 28
+#define MENUS MENU_PAUSE+1
 
 #define NUMERO_SFONDI 12
 
