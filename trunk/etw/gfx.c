@@ -13,10 +13,8 @@ int ClipX = 0, ClipY = 0;
     come tags della chiamata InitAnimSystem
  */
 
-BOOL double_buffering = FALSE;
 BOOL use_window = FALSE;
 BOOL save_back = FALSE, use_scaling = FALSE, use_clipping = FALSE;
-BOOL force_single = FALSE;
 
 struct MyList GfxList, DrawList, TempList;
 
@@ -310,14 +308,6 @@ void ClearAnimObj(void)
             bltchunkybitmap(obj->bg, 0, 0, main_bitmap, obj->x_back,
                             obj->y_back, obj->max_width, obj->max_height,
                             obj->max_width, bitmap_width);
-
-/*
-            if(double_buffering)
-            {
-                obj->x_back=obj->x_pos;
-                obj->y_back=obj->y_pos;
-            }
-*/
         }
     }
 }
