@@ -62,8 +62,7 @@ struct Button prefs_bottoni[]=
     {72,229,246,241,-1,9,11,msg_96},
 #else
     {20,57,150,80,MENU_GAME_PREFS,3,0,msg_92},  // Preferences
-    {20,103,150,126,MENU_VIDEO_PREFS,0,13,msg_93},
-    {20,149,150,172,MENU_AUDIO_PREFS,0,13,msg_94},
+    {20,103,150,126,MENU_MOBILE_PREFS,0,13,"AUDIO VIDEO"},
     {72,205,246,232,0,14,13,msg_95},
 #endif
 };
@@ -232,19 +231,31 @@ struct Button sprefs_bottoni[]=
     {72,220,246,232,MENU_PREFS,14,13,msg_108},
 };
 
+
+// only for the mobile version
+struct Button mprefs_buttons[] =
+{
+    {10,57,100,80,-1,0,3,msg_131},{101,75,184,82,-1,3,0,NULL},
+    {10,93,100,106,-1,0,3,msg_182},{101,86,184,93,-1,3,0,NULL},
+    {10,119,100,132,-1,0,3,msg_94},{101,64,184,71,-1,3,0,NULL},
+    {10,145,100,168,-1,0,3,msg_138},{101,97,184,104,-1,3,0,NULL},
+    {72,205,246,232,MENU_PREFS,14,13,msg_108},
+};
+
+// this menu is not present in the mobile version
 struct Button vprefs_bottoni[]=
 {
     {10,64,100,71,-1,0,3,msg_130},{101,64,184,71,-1,3,0,NULL},
     {10,75,100,82,-1,0,3,msg_131},{101,75,184,82,-1,3,0,NULL},
-    {10,86,100,93,-1,0,3,msg_132},{101,86,184,93,-1,3,0,NULL},
-    {10,97,100,104,-1,0,3,msg_133},{101,97,184,104,-1,3,0,NULL},
-    {10,108,100,115,-1,0,3,msg_134},{101,108,184,115,-1,3,0,NULL},
-    {10,119,100,126,-1,0,3,msg_135},{101,119,184,126,-1,3,0,NULL},
-    {10,130,100,137,-1,0,3,msg_182},{101,130,184,137,-1,3,0,NULL},
-    {10,141,100,148,-1,0,3,msg_184},{101,141,184,148,-1,3,0,NULL},
-    {10,152,100,159,-1,0,3,"SCALING"},{101,152,184,159,-1,3,0,NULL},
-    {10,163,100,170,-1,0,3,NULL},{101,163,184,170,-1,3,0,NULL},
-    {10,196,100,203,-1,0,3,"RESOLUTION"},{101,196,184,203,-1,3,0,NULL},
+    {10,86,100,93,-1,0,3,NULL},{101,86,184,93,-1,3,0,NULL}, // result always visible
+    {10,97,100,104,-1,0,3,NULL},{101,97,184,104,-1,3,0,NULL}, // refree always visible
+    {10,108,100,115,-1,0,3,NULL},{101,108,184,115,-1,3,0,NULL}, // player names always visible
+    {10,119,100,126,-1,0,3,NULL},{101,119,184,126,-1,3,0,NULL}, // policemen and photographers always visible
+    {10,86,100,93,-1,0,3,msg_182},{101,86,184,93,-1,3,0,NULL},
+    {10,141,100,148,-1,0,3,NULL},{101,141,184,148,-1,3,0,NULL}, // lineskeeper always visible
+    {10,97,100,104,-1,0,3,"SCALING"},{101,97,184,104,-1,3,0,NULL},
+    {10,108,100,115,-1,0,3,NULL},{101,108,184,115,-1,3,0,NULL},
+    {10,119,100,126,-1,0,3,"RESOLUTION"},{101,119,184,126,-1,3,0,NULL},
     {72,220,246,232,MENU_PREFS,14,13,msg_108},
 };
 
@@ -780,6 +791,7 @@ struct GfxMenu menu[]=
     {"SYSTEM",sprefs_bottoni,NULL,SZ(sprefs_bottoni),0,-1,190,38,0,3,0,(void *)SystemPrefs},
     {"KEYBOARD CONFIGURATION",keycfg_bottoni,NULL,43,0,-1,200 /*190*/,77 /*38*/,0,3,0,(void *)KeyCfg},
     {"JOYSTICK CONFIGURATION",joycfg_bottoni,NULL,15,0,-1,190,38,0,3,0,(void *)JoyCfg},
-    {NULL, pause_buttons, pause_panels, SZ(pause_buttons), SZ(pause_panels), -1,0,0,-1,3,0, (void*)handle_pause}
+    {NULL, pause_buttons, pause_panels, SZ(pause_buttons), SZ(pause_panels), -1,0,0,-1,3,0, (void*)handle_pause},
+    {"AUDIO VIDEO", mprefs_buttons, NULL, SZ(mprefs_buttons), 0, -1,190,38,0,3,0, (void*)MobilePrefs}
 };
 

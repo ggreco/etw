@@ -247,8 +247,6 @@ void HandleArcade(void);
 void close_graphics(void);
 void os_resize(void);
 void os_set_window_frame(void);
-void os_wait(void);
-int os_wait_end_pause(void);
 int os_get_screen_width(void);
 int os_get_screen_height(void);
 int os_get_inner_width(void);

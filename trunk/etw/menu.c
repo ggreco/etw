@@ -1654,9 +1654,8 @@ BOOL HandleMenuIDCMP(void)
 
                 temp = GetButton(e.button.x, e.button.y);
 
-                if (current_button == temp) {
+                if (current_button == temp) 
                     returncode = DoAction(current_button);
-                }
             }
             break;
         }

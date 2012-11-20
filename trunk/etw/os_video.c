@@ -5,7 +5,6 @@ void * handle = NULL;
 uint8_t * bmap = NULL, * original_bm;
 
 SDL_Window *screen=NULL;
-SDL_Event lastevent;
 extern int Colors;
 extern BOOL use_width,use_height,wb_game,use_direct;
 static SDL_Texture *screen_texture = NULL;
@@ -229,11 +228,6 @@ void OpenTheScreen(void)
         alloc_bitmap();
     }
     D(bug("Opened window size %dx%d\n", WINDOW_WIDTH, WINDOW_HEIGHT));
-}
-
-void os_wait(void)
-{
-    SDL_WaitEvent(&lastevent);
 }
 
 int os_get_screen_width(void)

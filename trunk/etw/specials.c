@@ -1824,6 +1824,76 @@ BOOL SystemPrefs(WORD button)
     return TRUE;
 }
 
+
+BOOL MobilePrefs(WORD button)
+{
+    if (button == (actual_menu->NumeroBottoni - 1)
+         && actual_menu->Button[button].ID >= 0)
+    {
+        ChangeMenu(actual_menu->Button[button].ID);
+        return TRUE;
+    }
+    button |= 1;
+    switch(button)
+    {
+        case 1:
+            if (detail_level & USA_RADAR) {
+                radar_position++;
+
+                if (radar_position >= 12) {
+                    detail_level &= ~USA_RADAR;
+                    radar_position = -1;
+                    actual_menu->Button[button].Text = disabled;
+                }
+                else
+                    actual_menu->Button[button].Text
+                        = radar_options[radar_position];
+            }
+            else {
+                radar_position = 0;
+                detail_level |= USA_RADAR;
+
+                actual_menu->Button[button].Text
+                    = radar_options[radar_position];
+            }            
+            break;
+        case 3:
+            nointro = (nointro) ? FALSE : TRUE;            
+            break;
+        case 5:   
+            no_sound = no_sound ? FALSE : TRUE;
+
+            /* If the sound is off, unload the sounds, else load them */
+            if (no_sound) {
+                LiberaSuoniMenu();
+                FreeSoundSystem();
+            } else {
+                /* AC: Surely some controls are needed */
+                InitSoundSystem();
+                CaricaSuoniMenu();
+            }
+
+            /* AC: I think this func is needed. */
+            os_start_audio();            
+            break;
+        case 7:
+            menu_music = menu_music ? FALSE : TRUE;
+
+            if (menu_music == FALSE)
+                StopMenuMusic();
+            else
+                PlayMenuMusic();            
+            break;
+    }
+
+    UpdatePrefs(MENU_MOBILE_PREFS);
+
+    RedrawButton(&actual_menu->Button[button],
+                 actual_menu->Button[1].Color);
+
+    return TRUE;   
+}       
+
 BOOL VideoPrefs(WORD button)
 {
     if (button == (actual_menu->NumeroBottoni - 1)
@@ -1911,22 +1981,14 @@ BOOL VideoPrefs(WORD button)
             }
             break;
         case 7:
-            detail_level ^= USA_ARBITRO;
-            break;
         case 5:
-            detail_level ^= USA_RISULTATO;
-            break;
         case 9:
-            detail_level ^= USA_POLIZIOTTI | USA_FOTOGRAFI;
-            break;
         case 11:
-            detail_level ^= USA_NOMI;
+        case 15:
+            // disabled, always on!
             break;
         case 13:
             nointro = (nointro) ? FALSE : TRUE;
-            break;
-        case 15:
-            detail_level ^= USA_GUARDALINEE;
             break;
         case 17:
             if (!use_gfx_scaling)
@@ -2029,7 +2091,13 @@ void UpdatePrefs(BYTE set)
         m->Button[23].Text = newchange ? "ETW" : "CLASSIC";
         m->Button[25].Text = offside ? enabled : disabled;
         break;
-
+    case MENU_MOBILE_PREFS:
+        m->Button[1].Text = (detail_level & USA_RADAR)
+                          ? radar_options[radar_position] : disabled;
+        m->Button[3].Text = nointro ? enabled : disabled;
+        m->Button[5].Text = no_sound ? disabled : enabled;
+        m->Button[7].Text = menu_music ? enabled : disabled;
+        break;
     case MENU_AUDIO_PREFS:
         m->Button[1].Text = no_sound ? disabled : enabled;
         m->Button[3].Text = use_crowd ? enabled : disabled;
@@ -2041,16 +2109,8 @@ void UpdatePrefs(BYTE set)
         m->Button[1].Text = wb_game ? "WINDOW"/*-*/ : "FULLSCREEN"/*-*/;
         m->Button[3].Text = (detail_level & USA_RADAR)
                           ? radar_options[radar_position] : disabled;
-        m->Button[5].Text = (detail_level & USA_RISULTATO)
-                          ? enabled : disabled;
-        m->Button[7].Text = (detail_level & USA_ARBITRO)
-                          ? enabled : disabled;
-        m->Button[9].Text = (detail_level & USA_POLIZIOTTI)
-                          ? enabled : disabled;
-        m->Button[11].Text = (detail_level & USA_NOMI) ? enabled : disabled;
         m->Button[13].Text = nointro ? enabled : disabled;
-        m->Button[15].Text = (detail_level & USA_GUARDALINEE)
-                           ? enabled : disabled;
+
         m->Button[17].Text = use_gfx_scaling ? enabled : disabled;
         m->Button[18].Text = use_gfx_scaling ? "SCALING RES" : NULL;
         m->Button[19].Text = use_gfx_scaling

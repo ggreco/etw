@@ -11,8 +11,6 @@ BOOL has_joystick=FALSE;
 extern unsigned long NetJoyPos[];
 
 extern void ResizeWin(SDL_Event *);
-extern SDL_Event lastevent;
-
 
 #ifdef DEMOVERSION
 void WaitOrKey(int secs)
@@ -798,7 +796,3 @@ void SaveKeyDef(int port,char *file)
     }
 }
 
-void os_getevent(void)
-{
-    SDL_PollEvent(&lastevent);
-}
