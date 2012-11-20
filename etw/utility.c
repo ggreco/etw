@@ -182,8 +182,8 @@ BOOL handle_pause(WORD button)
 void DoPause(void)
 {
     extern BOOL HandleMenuIDCMP();
-    BOOL was_stopped=TRUE;
     extern BOOL time_stopped;
+    BOOL was_stopped=TRUE;
 
     if(!time_stopped) {
         StopTime();

@@ -64,6 +64,7 @@ extern BOOL ArcadeTeamSelection(WORD);
 extern BOOL TeamSettings(WORD);
 extern BOOL VideoPrefs(WORD);
 extern BOOL SystemPrefs(WORD);
+extern BOOL MobilePrefs(WORD);
 extern BOOL GamePrefs(WORD);
 extern BOOL ReturnFalse(WORD);
 extern BOOL AudioPrefs(WORD);
