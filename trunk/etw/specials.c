@@ -527,10 +527,8 @@ void NewTurn(void)
 
     turno++;
 
-    for (i = 0; i < campionato.nteams; i++)
-    {
-        for (j = 0; j < teamlist[i].nplayers; j++)
-        {
+    for (i = 0; i < campionato.nteams; i++) {
+        for (j = 0; j < teamlist[i].nplayers; j++) {
             if (teamlist[i].players[j].injury > 0)
                 teamlist[i].players[j].injury--;
 
@@ -605,8 +603,7 @@ BOOL TeamSelection(WORD button)
             }
         }
 
-        if (b->Color == COLOR_UNSELECTED)
-        {
+        if (b->Color == COLOR_UNSELECTED) {
             selected_number++;
 
             controllo[-b->ID - 1] = 0;
@@ -625,11 +622,11 @@ BOOL TeamSelection(WORD button)
                 controllo[-b->ID - 1] = 0;
             }
         }
-        else if (b->Color == COLOR_COMPUTER)
-        {
+        else if (b->Color == COLOR_COMPUTER) {
             b->Color = COLOR_UNSELECTED;
             selected_number--;
-        }
+        } // on mobile devices we can have only a single player
+#ifndef IPHONE        
         else if (b->Color == COLOR_TEAM_A
                  && (!team2_selected || wanted_number > 2
                       || wanted_number <= 0 || selected_number > 2))
@@ -638,6 +635,7 @@ BOOL TeamSelection(WORD button)
             controllo[-b->ID - 1] = 0;
             b->Color = COLOR_TEAM_B;
         }
+#endif
         else
         {
             if (b->Color == COLOR_TEAM_A)
