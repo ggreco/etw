@@ -796,11 +796,23 @@ int game_main(void)
         use_crowd = TRUE;
     }
 
+
+    // injuries, bookings and substitutions are NOT available in arcade mode
+    // but are always enabled otherwise
     if (arcade) {
         injuries = FALSE;
         bookings = FALSE;
         substitutions = FALSE;
     }
+    else {
+        injuries = TRUE;
+        bookings = TRUE;
+        substitutions = TRUE;
+    }
+
+    // offside and golden goal are always disabled
+    use_offside = FALSE;
+    golden_gol = FALSE;
 
     init_system();
 

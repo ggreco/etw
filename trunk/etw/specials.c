@@ -123,109 +123,6 @@ SDL_Keycode keys[] =
     SDLK_z,
     //SDLK_DELETE,            // Centers the visuale on the ball
 
-    /* AC: What about this keys? */
-#if 0
-    /* End of ASCII mapped keysyms */
-
-    /* International keyboard syms */
-    SDLK_WORLD_0        /* 0xA0 */
-    SDLK_WORLD_1,
-    SDLK_WORLD_2,
-    SDLK_WORLD_3,
-    SDLK_WORLD_4,
-    SDLK_WORLD_5,
-    SDLK_WORLD_6,
-    SDLK_WORLD_7,
-    SDLK_WORLD_8,
-    SDLK_WORLD_9,
-    SDLK_WORLD_10,
-    SDLK_WORLD_11,
-    SDLK_WORLD_12,
-    SDLK_WORLD_13,
-    SDLK_WORLD_14,
-    SDLK_WORLD_15,
-    SDLK_WORLD_16,
-    SDLK_WORLD_17,
-    SDLK_WORLD_18,
-    SDLK_WORLD_19,
-    SDLK_WORLD_20,
-    SDLK_WORLD_21,
-    SDLK_WORLD_22,
-    SDLK_WORLD_23,
-    SDLK_WORLD_24,
-    SDLK_WORLD_25,
-    SDLK_WORLD_26,
-    SDLK_WORLD_27,
-    SDLK_WORLD_28,
-    SDLK_WORLD_29,
-    SDLK_WORLD_30,
-    SDLK_WORLD_31,
-    SDLK_WORLD_32,
-    SDLK_WORLD_33,
-    SDLK_WORLD_34,
-    SDLK_WORLD_35,
-    SDLK_WORLD_36,
-    SDLK_WORLD_37,
-    SDLK_WORLD_38,
-    SDLK_WORLD_39,
-    SDLK_WORLD_40,
-    SDLK_WORLD_41,
-    SDLK_WORLD_42,
-    SDLK_WORLD_43,
-    SDLK_WORLD_44,
-    SDLK_WORLD_45,
-    SDLK_WORLD_46,
-    SDLK_WORLD_47,
-    SDLK_WORLD_48,
-    SDLK_WORLD_49,
-    SDLK_WORLD_50,
-    SDLK_WORLD_51,
-    SDLK_WORLD_52,
-    SDLK_WORLD_53,
-    SDLK_WORLD_54,
-    SDLK_WORLD_55,
-    SDLK_WORLD_56,
-    SDLK_WORLD_57,
-    SDLK_WORLD_58,
-    SDLK_WORLD_59,
-    SDLK_WORLD_60,
-    SDLK_WORLD_61,
-    SDLK_WORLD_62,
-    SDLK_WORLD_63,
-    SDLK_WORLD_64,
-    SDLK_WORLD_65,
-    SDLK_WORLD_66,
-    SDLK_WORLD_67,
-    SDLK_WORLD_68,
-    SDLK_WORLD_69,
-    SDLK_WORLD_70,
-    SDLK_WORLD_71,
-    SDLK_WORLD_72,
-    SDLK_WORLD_73,
-    SDLK_WORLD_74,
-    SDLK_WORLD_75,
-    SDLK_WORLD_76,
-    SDLK_WORLD_77,
-    SDLK_WORLD_78,
-    SDLK_WORLD_79,
-    SDLK_WORLD_80,
-    SDLK_WORLD_81,
-    SDLK_WORLD_82,
-    SDLK_WORLD_83,
-    SDLK_WORLD_84,
-    SDLK_WORLD_85,
-    SDLK_WORLD_86,
-    SDLK_WORLD_87,
-    SDLK_WORLD_88,
-    SDLK_WORLD_89,
-    SDLK_WORLD_90,
-    SDLK_WORLD_91,
-    SDLK_WORLD_92,
-    SDLK_WORLD_93,
-    SDLK_WORLD_94,
-    SDLK_WORLD_95,        /* 0xFF */
-#endif
-
     /* Numeric keypad */
     SDLK_KP_0,
     SDLK_KP_1,
@@ -1575,19 +1472,19 @@ BOOL GamePrefs(WORD button)
 
             if (field >= 7)
             {
-                actual_menu->Button[20].Text = actual_menu->Button[21].Text = NULL;
-                CancelButton(&actual_menu->Button[21]);
-                CancelButton(&actual_menu->Button[20]);
+                actual_menu->Button[12].Text = actual_menu->Button[13].Text = NULL;
+                CancelButton(&actual_menu->Button[12]);
+                CancelButton(&actual_menu->Button[13]);
             }
             else if (!actual_menu->Button[20].Text)
             {
                 field_type = 0;
-                actual_menu->Button[20].Text = msg_35;
-                actual_menu->Button[21].Text = field_types[0];
-                RedrawButton(&actual_menu->Button[20],
-                             actual_menu->Button[20].Color);
-                RedrawButton(&actual_menu->Button[21],
-                             actual_menu->Button[21].Color);
+                actual_menu->Button[12].Text = msg_35;
+                actual_menu->Button[13].Text = field_types[0];
+                RedrawButton(&actual_menu->Button[12],
+                              actual_menu->Button[12].Color);
+                RedrawButton(&actual_menu->Button[13],
+                              actual_menu->Button[13].Color);
             }
             break;
         case 5:
@@ -1603,48 +1500,18 @@ BOOL GamePrefs(WORD button)
 
             break;
         case 7:
-        case 9:
-        case 11:
-        case 13:
-        case 25:
             if (actual_menu->Button[button].Text == enabled)
                 actual_menu->Button[button].Text = disabled;
             else
                 actual_menu->Button[button].Text = enabled;
 
-            switch(button)
-            {
-                case 7:
-                    injuries = !injuries;
-                    break;
-                case 9:
-                    substitutions = !substitutions;
-                    break;
-                case 11:
-                    bookings = !bookings;
-                    break;
-                case 13:
-                    use_replay = !use_replay;
-                    break;
-                case 25:
-                    offside = !offside;
-                    break;
-            }
-
+            use_replay = !use_replay;
             break;
-        case 15:
+        case 9:
             free_longpass = !free_longpass;
             actual_menu->Button[button].Text = free_longpass ? msg_37 : msg_36;
             break;
-        case 21:
-            field_type++;
-
-            if (!field_types[field_type])
-                field_type = 0;
-
-            actual_menu->Button[button].Text = field_types[field_type];
-            break;
-        case 17:
+        case 11:
             daytime++;
 
             if (!daytimes[daytime])
@@ -1652,11 +1519,15 @@ BOOL GamePrefs(WORD button)
 
             actual_menu->Button[button].Text = daytimes[daytime];
             break;
-        case 19:
-            golden_gol = !golden_gol;
-            actual_menu->Button[button].Text = golden_gol ? enabled : disabled;
+        case 13:
+            field_type++;
+
+            if (!field_types[field_type])
+                field_type = 0;
+
+            actual_menu->Button[button].Text = field_types[field_type];
             break;
-        case 23:
+        case 15:
             newchange = !newchange;
             actual_menu->Button[button].Text = newchange ? "ETW" : "CLASSIC";
             break;
@@ -2075,17 +1946,12 @@ void UpdatePrefs(BYTE set)
         m->Button[1].Text = time_options[duration];
         m->Button[3].Text = field_options[field];
         m->Button[5].Text = (strictness == 10) ? msg_2 : numero[strictness];
-        m->Button[7].Text = injuries ? enabled : disabled;
-        m->Button[9].Text = substitutions ? enabled : disabled;
-        m->Button[11].Text = bookings ? enabled : disabled;
-        m->Button[13].Text = use_replay ? enabled : disabled;
-        m->Button[15].Text = free_longpass ? msg_37 : msg_36;
-        m->Button[17].Text = daytimes[daytime];
-        m->Button[19].Text = golden_gol ? enabled : disabled;
-        m->Button[20].Text = (field < 7) ? msg_36 : NULL;
-        m->Button[21].Text = (field < 7) ? field_types[field_type] : NULL;
-        m->Button[23].Text = newchange ? "ETW" : "CLASSIC";
-        m->Button[25].Text = offside ? enabled : disabled;
+        m->Button[7].Text = use_replay ? enabled : disabled;
+        m->Button[9].Text = free_longpass ? msg_37 : msg_36;
+        m->Button[11].Text = daytimes[daytime];
+        m->Button[12].Text = (field < 7) ? msg_35 : NULL;
+        m->Button[13].Text = (field < 7) ? field_types[field_type] : NULL;
+        m->Button[15].Text = newchange ? "ETW" : "CLASSIC";
         break;
     case MENU_MOBILE_PREFS:
         m->Button[1].Text = (detail_level & USA_RADAR)
