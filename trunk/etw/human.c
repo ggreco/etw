@@ -84,16 +84,9 @@ void HandleControlled(int squadra)
     //      g->WaitForControl++;
 
     if(g->Special || g->Comando)
-    {
-        if(!pl->InGioco)
-            CheckChange(g);
-
         return;
-    }
 
-    if(!pl->InGioco)
-    {
-        CheckChange(g);
+    if(!pl->InGioco) {
         NoPlayerControl(g);
         return;
     }
@@ -355,15 +348,9 @@ void HandleControlledJ2B(int squadra)
     //      g->WaitForControl++;
 
     if(g->Special || g->Comando)
-    {
-        if(!pl->InGioco)
-            CheckChange(g);
         return;
-    }
 
-    if(!pl->InGioco)
-    {
-        CheckChange(g);
+    if(!pl->InGioco) {
         NoPlayerControl(g);
         return;
     }
@@ -625,15 +612,9 @@ void HandleControlledJoyPad(int squadra)
     register player_t *g = p->team[squadra]->attivo;
 
     if(g->Special || g->Comando)
-    {
-        if(!pl->InGioco)
-            CheckChange(g);
         return;
-    }
 
-    if(!pl->InGioco)
-    {
-        CheckChange(g);
+    if(!pl->InGioco) {
         NoPlayerControl(g);
         return;
     }

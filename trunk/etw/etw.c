@@ -157,13 +157,6 @@ void FreeMenuStuff(void)
         symbols = NULL;
     }
 
-    D(bug("Freeing background picture...\n"));
-
-    if (back) {
-        free(back);
-        back = NULL;
-    }
-
     D(bug("Freeing sounds...\n"));
     LiberaSuoniMenu();
 
@@ -282,11 +275,6 @@ BOOL LoadMenuStuff(void)
             FreeGfxObj(last_obj);
     }
 
-    if (!(back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
-        FreeMenuFonts();
-        FreeGraphics();
-    }
-
     D(bug("Palette reinitialization\n" /*-*/ ));
 
     if (firsttime) {
@@ -300,7 +288,6 @@ BOOL LoadMenuStuff(void)
 
     if (!LoadIFFPalette("gfx/eat16menu.col" /*-*/ )) {
         D(bug("Unable to load the menu palette!\n" /*-*/ ));
-        free(back);
         FreeMenuFonts();
         FreeGraphics();
         return FALSE;
@@ -494,6 +481,11 @@ int main(int argc, char *argv[])
     if (!InitMenuFonts()) 
         return FALSE;
 
+    if (!(back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT)))  {
+        FreeMenuFonts(); 
+        return FALSE;
+    }
+
     OpenMenuScreen();
 
     if (screen) {
@@ -517,6 +509,12 @@ int main(int argc, char *argv[])
 
         if(SoundStarted())
             FreeSoundSystem();
+    }
+
+    D(bug("Freeing background picture...\n"));
+    if (back) {
+        free(back);
+        back = NULL;
     }
     D(bug("Freeing fonts...\n"));
     FreeMenuFonts();
