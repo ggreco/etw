@@ -181,6 +181,7 @@ BOOL handle_pause(WORD button)
 
 void DoPause(void)
 {
+    extern uint8_t *back;
     extern BOOL HandleMenuIDCMP();
     extern BOOL time_stopped;
     BOOL was_stopped=TRUE;
@@ -195,6 +196,12 @@ void DoPause(void)
     os_stop_audio();
 
     DrawPause();
+
+    if (back)
+        free(back);
+    if ((back = malloc(bitmap_height * bitmap_width)))
+        memcpy(back, main_bitmap, bitmap_width * bitmap_height);
+
     ScreenSwap();
 
     while(pause_mode)  {
@@ -214,7 +221,13 @@ void DoPause(void)
                     p->team[1]->Reti=0;
                 }
             }
+            break;
         }
+    }
+
+    if (back) { 
+        free(back);
+        back = NULL;
     }
 
     os_start_audio();

@@ -1696,13 +1696,11 @@ BOOL AudioPrefs(WORD button)
             no_sound = no_sound ? FALSE : TRUE;
 
             /* If the sound is off, unload the sounds, else load them */
-            if (no_sound)
-            {
+            if (no_sound) {
                 LiberaSuoniMenu();
                 FreeSoundSystem();
             }
-            else
-            {
+            else {
                 /* AC: Surely some controls are needed */
                 InitSoundSystem();
                 CaricaSuoniMenu();
