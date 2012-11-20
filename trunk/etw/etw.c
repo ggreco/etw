@@ -214,10 +214,8 @@ BOOL LoadMenuStuff(void)
         return FALSE;
     }
 
-    if (firsttime) {
-        LoadPLogo("newgfx/hurricane" /*-*/ );
-        os_delay(80);
-    }
+    if (firsttime)        
+        LoadPLogo("gfx/etwlogo" /*-*/ );
 
     D(bug("Sound system initialization...\n" /*-*/ ));
 
@@ -253,12 +251,8 @@ BOOL LoadMenuStuff(void)
     if (firsttime) {
         D(bug("Loading logo...\n" /*-*/ ));
 
-        LoadPLogo("gfx/etwlogo" /*-*/ );
-
         if (!nointro)
             Intro();
-        else
-            os_delay(50);
 
         StoreButtonList();
     }
@@ -271,7 +265,7 @@ BOOL LoadMenuStuff(void)
         D(bug("Updating scores...\n"));
         LoadScores();
 
-        os_delay(80);
+        os_delay(50);
 
         rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1,
                  Pens[P_NERO], bitmap_width);
