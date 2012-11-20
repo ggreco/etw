@@ -1254,10 +1254,20 @@ void draw_pause_menu()
 {
     int i;
 
-    for (i = 0; i < menu[MENU_PAUSE].NumeroBottoni; ++i)
-        CreateButton(&menu[MENU_PAUSE].Button[i]);    
-    for (i = 0; i < menu[MENU_PAUSE].NumeroPannelli; ++i)
-        CreateButton(&menu[MENU_PAUSE].Pannello[i]);    
+    actual_menu = &menu[MENU_PAUSE];
+
+    for (i = 0; i < actual_menu->NumeroBottoni; ++i)
+        CreateButton(&actual_menu->Button[i]);    
+    for (i = 0; i < actual_menu->NumeroPannelli; ++i)
+        CreateButton(&actual_menu->Pannello[i]);    
+
+    current_menu = MENU_PAUSE;
+    actual_button = 0;
+
+    while (!actual_menu->Button[actual_button].Text)
+        actual_button++;
+
+    DrawBox(actual_button);
 }
 
 void SelectButton(WORD button)
@@ -1652,7 +1662,8 @@ BOOL HandleMenuIDCMP(void)
         }
     }
 
-    if (!returncode && !reqqing)
+    // no popup request in pause menu
+    if (!returncode && !reqqing && current_menu != MENU_PAUSE)
         if (!CheckQuit())
             return TRUE;
 

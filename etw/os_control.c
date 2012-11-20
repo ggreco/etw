@@ -329,42 +329,6 @@ joy_try_again:
     }
 }
 
-int os_wait_end_pause(void)
-{
-    int ok=FALSE;
-    uint8_t key;
-
-    switch(lastevent.type)
-    {
-        case SDL_QUIT:
-            ok=2;
-            break;
-        case SDL_KEYDOWN:
-            key=lastevent.key.keysym.sym;
-
-            if(key==SDLK_ESCAPE)
-                ok=2;
-            if(key==SDLK_p)
-                ok=TRUE;
-            break;
-        case SDL_WINDOWEVENT:
-            if (lastevent.window.event ==  SDL_WINDOWEVENT_RESIZED) {
-                ResizeWin(&lastevent);
-                DrawPause();
-                ScreenSwap();
-            }
-            else if (lastevent.window.event ==  SDL_WINDOWEVENT_CLOSE)
-                ok = 2;
-            break;
-        default:
-          // not handled keys...
-            break;
-    }
-
-    return ok;
-}
-
-
 void CheckKeys(void)
 {
     SDL_Event e;
@@ -510,17 +474,33 @@ void CheckKeys(void)
                             }
                         }
                         break;
+                    case SDLK_t:
+                        {
+                            player_t *g = p->team[0]->attivo;
+                            StopTime();
+                            p->player_injuried=g;
+                            p->RiservaAttuale=0;
+                            p->show_panel=PANEL_CHANGE_TACTIC;
+                        }
+                        break;
+                    case SDLK_y:
+                        {
+                            player_t *g = p->team[0]->attivo;
+
+                            if(g->team->NumeroRiserve>0&&g->team->Sostituzioni<3) {
+                                StopTime();
+                                p->player_injuried=g;
+                                p->RiservaAttuale=-1;
+                                p->show_panel=PANEL_SUBSTITUTION;
+                            }
+                        }
+                        break;
                         // S - enables/disables the radar
                     case SDLK_s:
-                        /* With the new default keyboard configuration, this control
-                         * isn't needed anymore
-                        if(!use_key1)
-                        {*/
-                            if(detail_level&USA_RADAR)
-                                detail_level&=(~USA_RADAR);
-                            else
-                                detail_level|=USA_RADAR;
-                        //}
+                        if(detail_level&USA_RADAR)
+                            detail_level&=(~USA_RADAR);
+                        else
+                            detail_level|=USA_RADAR;
                         break;
                         // L - shows stats
                         /* There was an overlap with SDLK_RETURN, used in the keyboard RED definition.

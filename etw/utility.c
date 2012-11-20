@@ -158,6 +158,27 @@ Si tira anche girati di schiena!
     return CS_NO;
 }
 
+
+BOOL handle_pause(WORD button)
+{
+    D(bug("Clicked button %d in handle_pause\n", button));
+
+    switch(button) {
+        case 0:
+            pause_mode = FALSE;
+            break;
+        case 1:
+            if (!replay_mode) 
+                start_replay = TRUE;
+            pause_mode = FALSE;
+            break;
+        case 9:
+            return FALSE;
+    }
+    return TRUE;
+}
+
+
 void DoPause(void)
 {
     BOOL ok=FALSE,was_stopped=TRUE;
@@ -176,43 +197,19 @@ void DoPause(void)
     DrawPause();
     ScreenSwap();
 
-    while(!ok)
-    {
-        if(control[0]!=CTRL_JOYPAD && control[1]!=CTRL_JOYPAD &&
-           control[0]!=CTRL_TOUCH && control[1]!=CTRL_TOUCH)
-        {
-            os_wait();
-        }
-        else
-        {
-            os_delay(10);
-            UpdatePortStatus();
-
-            if( (MyReadPort0(0)&MYBUTTONMASK) ||
-                (MyReadPort1(1)&MYBUTTONMASK) )
-                ok=TRUE;
-            else
-                os_getevent();
-        }
-
-        ok=os_wait_end_pause()|ok;
-
-/* Quit forzato */
-        if(ok==2)
-        {
+    while(pause_mode)  {
+/* Forced quit if HandleMenuIDCM returns false */
+        if(!HandleMenuIDCMP()) {
             quit_game=TRUE;
             SetResult("break");
 
-            if(p->team[0]->Joystick<0 ||
-                p->team[1]->Joystick<0)
-            {
-                if(p->team[0]->Joystick>=0)
-                {
+            // in one player games you loose 5-0 if u leave
+            if(p->team[0]->Joystick<0 || p->team[1]->Joystick<0) {
+                if(p->team[0]->Joystick>=0) {
                     p->team[0]->Reti=0;
                     p->team[1]->Reti=5;
                 }
-                else
-                {
+                else {
                     p->team[0]->Reti=5;
                     p->team[1]->Reti=0;
                 }
@@ -221,8 +218,6 @@ void DoPause(void)
     }
 
     os_start_audio();
-
-    pause_mode=FALSE;
 
     if(!was_stopped)
         RestartTime();
