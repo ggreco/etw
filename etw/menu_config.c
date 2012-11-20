@@ -32,8 +32,6 @@ void OpenMenuScreen(void)
 
     OpenTheScreen();
 
-    force_single=TRUE;
-    double_buffering=FALSE;
     SetTitle("Eat The Whistle " ETW_VERSION);
 
 
@@ -110,10 +108,6 @@ void load_config(FILE *f)
                 D(bug("Setto nosync!\n"/*-*/));
                 nosync=TRUE;
             }
-            else if(!strnicmp(buffer,"golden"/*-*/,6))
-            {
-                golden_gol=TRUE;
-            }
             else if(!strnicmp(buffer,"newchange"/*-*/,9))
             {
                 newchange=TRUE;
@@ -173,14 +167,6 @@ void load_config(FILE *f)
                 {
                     detail_level&=~USA_RADAR;
                 }
-            }
-            else if(!strnicmp(buffer,"people=off"/*-*/,10) )
-            {
-                detail_level&=~(USA_POLIZIOTTI|USA_FOTOGRAFI);
-            }
-            else if(!strnicmp(buffer,"names=off"/*-*/,9))
-            {
-                detail_level&=~USA_NOMI;
             }
             else if(!strnicmp(buffer,"control"/*-*/,7))
             {
@@ -265,26 +251,6 @@ void load_config(FILE *f)
             {
                 free_longpass=TRUE;
             }
-            else if(!strnicmp(buffer,"refree=off"/*-*/,10))
-            {
-                detail_level&=~USA_ARBITRO;                
-            }
-            else if(!strnicmp(buffer,"linesmen=off"/*-*/,12))
-            {
-                detail_level&=~USA_GUARDALINEE;                
-            }
-            else if(!strnicmp(buffer,"injuries=off"/*-*/,12))
-            {
-                injuries=FALSE;
-            }
-            else if(!strnicmp(buffer,"substitutions=off"/*-*/,17))
-            {
-                substitutions=FALSE;
-            }
-            else if(!strnicmp(buffer,"bookings=off"/*-*/,12))
-            {
-                bookings=FALSE;
-            }
             else if(!strnicmp(buffer,"menumusic=on"/*-*/,12))
             {
                 menu_music=TRUE;
@@ -368,9 +334,6 @@ void write_config(char *dest)
         if(newchange)
             fprintf(f,"newchange\n"/*-*/);
 
-        if(force_single)
-            fprintf(f,"forcesingle\n"/*-*/);
-
         if(killer) // Ogni fallo causa un infortunio!
             fprintf(f,"killer\n"/*-*/);
 
@@ -431,15 +394,8 @@ void write_config(char *dest)
         BFP(f,"crowd=%s\n"/*-*/,use_crowd);
         BFP(f,"speaker=%s\n"/*-*/,use_speaker);
         BFP(f,"autoreplay=%s\n"/*-*/,use_replay);
-        BFP(f,"bookings=%s\n"/*-*/,bookings);
-        BFP(f,"injuries=%s\n"/*-*/,injuries);
-        BFP(f,"substitutions=%s\n"/*-*/,substitutions);
         BFP(f,"menumusic=%s\n"/*-*/,menu_music);
         BFP(f,"result=%s\n"/*-*/,(detail_level&USA_RISULTATO));
-        BFP(f,"refree=%s\n"/*-*/,(detail_level&USA_ARBITRO));
-        BFP(f,"linesmen=%s\n"/*-*/,(detail_level&USA_GUARDALINEE));
-        BFP(f,"people=%s\n"/*-*/,(detail_level&USA_POLIZIOTTI));
-        BFP(f,"names=%s\n"/*-*/,(detail_level&USA_NOMI));
         BFP(f,"offside=%s\n"/*-*/,offside);
 
         fclose(f);

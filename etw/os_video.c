@@ -191,8 +191,6 @@ void SetTitle(const char *title)
 
 void OpenTheScreen(void)
 {
-    force_single = TRUE;
-    double_buffering = FALSE;
 #ifdef IPHONE
     // ios devices only permit touch controls
     control[0] = CTRL_TOUCH; 

@@ -111,11 +111,7 @@ extern BOOL use_clipping; /* Abilita il clipping, disabilitato per default */
 
 extern BOOL use_template; /* Usa BltTemplate+ BltBitMap invece di BltMaskBitMapRastPort */
 
-extern BOOL double_buffering,triple_buffering;
-
 extern int ClipX,ClipY;
-
-extern BOOL force_single; /* Forzo il single buffering! */
 
 // extern struct MyList GfxList,DrawList;
 
