@@ -157,6 +157,9 @@ void draw(long, int, int, int, int);
 void polydraw(long, int, int, int, int *);
 void bitmapFastScale(struct MyFastScaleArgs *);
 
+struct team;
+typedef struct team team_t;
+extern team_t *find_controlled_team();
 
 extern BOOL os_check_joy(int);
 extern void init_joy_config(void);

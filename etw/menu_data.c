@@ -114,8 +114,8 @@ struct Button start_bottoni[]=
 struct Button pause_buttons[] = 
 {
     {20,30,140,55, MENU_ARCADE,9,11,"CONTINUE"},  // Continue playing
-    {20,85,140,110,MENU_ARCADE,9,11,"REPLAY"},  // Replay last action
-    {20,140,140,165,MENU_ARCADE,9,11,"SUBSTITUTIONS"},  // Change player
+    {20,85,140,110,MENU_ARCADE,9,11,NULL},  // Replay last action
+    {20,140,140,165,MENU_ARCADE,9,11,NULL},  // Change player
     {160,100,205,115,-100,14,13,"4-4-2"/*-*/},{215,100,260,115,-101,14,13,"4-3-3"/*-*/},{270,100,315,115,-102,14,13,"3-4-3"/*-*/},
     {160,125,205,140,-103,14,13,"5-3-2"/*-*/},{215,125,260,140,-104,14,13,"5-4-1"/*-*/},{270,125,315,140,-105,14,13,"3-5-2"/*-*/},
     {72,205,246,232,MENU_MAIN_MENU,9,11,"ABANDON MATCH"},

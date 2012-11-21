@@ -514,9 +514,14 @@ BOOL TeamSelection(WORD button)
             }
             else
             {
+#ifndef IPHONE                
                 b->Color = COLOR_TEAM_B;
-                team2_selected = TRUE;
                 controllo[-b->ID - 1] = 0;
+#else
+                b->Color = COLOR_COMPUTER;
+                controllo[-b->ID - 1] = -1;
+#endif
+                team2_selected = TRUE;
             }
         }
         else if (b->Color == COLOR_COMPUTER) {

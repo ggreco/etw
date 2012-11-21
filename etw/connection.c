@@ -123,6 +123,10 @@ BOOL StartGame(void)
 {
     char buf[1024];
     int i;
+    extern int actual_button;
+    extern struct GfxMenu *actual_menu;
+    struct GfxMenu *old = actual_menu;
+    int old_button = actual_button, old_menu = current_menu;
 
     StopMenuMusic();
 
@@ -138,6 +142,11 @@ BOOL StartGame(void)
     game_start=TRUE;
 
     game_main();
+
+    // restore previous menu state
+    actual_button = old_button;
+    actual_menu = old;
+    current_menu = old_menu;
 
     if(network_game) {
         network_game=FALSE;

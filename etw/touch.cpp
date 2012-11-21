@@ -133,15 +133,29 @@ iteration()
                     visible_ = false;
                     joyfinger_ = -1;
                 }
-                for (BtIt it = buttons_.begin(); it != buttons_.end(); ++it) {
-                    if (it->is_pressed && e.tfinger.fingerId == it->finger) {
-                        it->is_pressed = false;
-                        it->finger = -1;
-                        result |= it->id;
-                        result |= BUTTONUP;
+                else { 
+                    bool found = false;
+
+                    for (BtIt it = buttons_.begin(); it != buttons_.end(); ++it) {
+                        if (it->is_pressed && e.tfinger.fingerId == it->finger) {
+                            it->is_pressed = false;
+                            it->finger = -1;
+                            result |= it->id;
+                            // I'm not sure it's correct to emit buttonup here, we can have multiple button
+                            // presses/releases in the same event cycle with multitouch
+                            result |= BUTTONUP;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
+                        touch_x_ = e.tfinger.x * screen_w_ / t->xres,
+                        touch_y_ = e.tfinger.y * screen_h_ / t->yres;
+                        result |= FREE_TOUCH;
                     }
                 }
-
                 break;
             case SDL_FINGERDOWN:
                 {

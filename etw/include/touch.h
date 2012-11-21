@@ -25,6 +25,7 @@ class TouchControl
         int fading_;
         int center_y_, center_x_, screen_w_, screen_h_;
         int reference_y_, reference_x_;
+        int touch_x_, touch_y_;
         SDL_Rect joyrect_, activation_;
         float distance_, delta_x_, delta_y_;
         bool landscape_;
@@ -62,6 +63,7 @@ class TouchControl
                      FAST = 0x1000,
                      BUTTONDOWN = 0x2000,
                      BUTTONUP = 0x4000,
+                     FREE_TOUCH = 0x8000,
                      QUIT = 0xff0000};
 
         TouchControl(SDL_Window *screen, const char *knob, const char *base, int w = -1, int h = -1);
@@ -70,6 +72,8 @@ class TouchControl
             activation_.x = x; activation_.y = y;
             activation_.w = w; activation_.h = h;
         }
+        int touch_x() const { return touch_x_; }
+        int touch_y() const { return touch_y_; }
         int add_button(const char *normal, const char *pressed, int x, int y);
         int iteration();
         void draw();

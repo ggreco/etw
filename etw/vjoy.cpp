@@ -33,6 +33,17 @@ void draw_touch()
         touch->draw();
 }
 
+int display_touched()
+{
+    SDL_Event ev;
+    while (SDL_PollEvent(&ev)) {
+        if (ev.type == SDL_FINGERUP ||
+            ev.type == SDL_MOUSEBUTTONUP)
+            return TRUE;
+    }
+    return FALSE;
+}
+
 uint32_t MyReadTouchPort(uint32_t l)
 {
     uint32_t mask = 0;
@@ -44,10 +55,28 @@ uint32_t MyReadTouchPort(uint32_t l)
 
     int res = touch->iteration();
 
-    if (res & TouchControl::BUTTON_1)
-        mask |= JPF_BUTTON_RED;
-    if (res & TouchControl::BUTTON_2)
-        mask |= JPF_BUTTON_BLUE;
+    // if we don't have the ball and we got a touch out of a button
+    if (team_t *s = find_controlled_team()) {
+        if ((pl->gioc_palla && pl->gioc_palla->team != s) ||
+            (!pl->gioc_palla)) {
+            if (res & (TouchControl::FREE_TOUCH|TouchControl::BUTTONUP)) {
+                // we can change the active player to the nearest one...
+                player_t *g2=FindNearest(s, (touch->touch_x() + field_x) << 3 ,
+                                            (touch->touch_y() + field_y) << 3);
+
+                if(g2 != s->attivo && g2 != NULL)
+                    ChangeControlled(s, g2->GNum);
+            }
+        }
+    }
+
+    // at this level we need only the button down event
+    if (res & TouchControl::BUTTONDOWN) {
+        if (res & TouchControl::BUTTON_1)
+            mask |= JPF_BUTTON_RED;
+        if (res & TouchControl::BUTTON_2)
+            mask |= JPF_BUTTON_BLUE;
+    }
 
     // trigger pause on button_3 press
     if (res & TouchControl::BUTTON_3) {

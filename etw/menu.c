@@ -2,7 +2,7 @@
 #include "menu.h"
 #include <SDL.h>
 #include <ctype.h>
-
+#include "tactics.h"
 #include "chunky.h"
 
 int current_menu = 0, current_button = NO_BUTTON, actual_button = 0;
@@ -980,7 +980,11 @@ void PrintButtonType(struct Button *b, WORD bl, WORD bt,
 
     switch (b->Color) {
     case COLOR_TEAM_A:
+#ifndef IPHONE
         c = "_J2" /*-*/ ;
+#else
+        c = "_P" /*-*/;
+#endif
         break;
     case COLOR_TEAM_B:
         c = "_J1" /*-*/ ;
@@ -1250,19 +1254,54 @@ void ChangeMenu(WORD m)
     ScreenSwap();
 }
 
+// TODO: handle 2 players
+
+#include "ball.h"
+
+const char *get_tactic_name(int button)
+{
+    return menu[MENU_PAUSE].Button[button].Text;
+}
+
 void draw_pause_menu()
 {
+    extern ball_t *pl;
+    extern BOOL replay_mode;
+    extern BOOL using_tactic(team_t *, const char *);
     int i;
+    team_t *c = find_controlled_team();
 
     actual_menu = &menu[MENU_PAUSE];
+    if (pl->InGioco || !c)
+        actual_menu->Button[2].Text = NULL;
+    else
+        actual_menu->Button[2].Text = "SUBSTITUTIONS";
 
-    for (i = 0; i < actual_menu->NumeroBottoni; ++i)
-        CreateButton(&actual_menu->Button[i]);    
+    if (replay_mode)
+        actual_menu->Button[1].Text = "SAVE HIGHLIGHT";
+    else
+        actual_menu->Button[1].Text = "REPLAY";
+
+
+    for (i = 0; i < actual_menu->NumeroBottoni; ++i) {
+        struct Button *b = &actual_menu->Button[i];
+        if (i > 2 && i < 9) {
+            if (!c) // do not draw tactic buttons in computer vs computer matches
+                continue;
+
+            if (using_tactic(c, b->Text)) 
+                b->Color = 9;
+            else 
+                b->Color = 14;
+        }
+        CreateButton(b);    
+    }
     for (i = 0; i < actual_menu->NumeroPannelli; ++i)
         CreateButton(&actual_menu->Pannello[i]);    
 
     current_menu = MENU_PAUSE;
     actual_button = 0;
+
 
     while (!actual_menu->Button[actual_button].Text)
         actual_button++;

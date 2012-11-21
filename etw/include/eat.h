@@ -95,22 +95,6 @@ struct linesman
     int8_t Comando;  // Se ci sono falli o simili...
 };
 
-struct ball
-{
-    anim_t *anim;
-    struct player *gioc_palla;
-    struct team *sq_palla;
-    WORD world_x, world_y;
-    WORD delta_x, delta_y;
-    int8_t ToTheTop, ThisQuota, Stage, TipoTiro;
-    int8_t ActualFrame, MaxQuota, SpeedUp, Rimbalzi;
-    int8_t InGioco, Hide;
-    int8_t velocita;
-    uint8_t dir;
-    int8_t quota;
-    int8_t sector;
-};
-
 struct keeper
 {
     anim_t *anim;
@@ -200,6 +184,8 @@ struct Animazione
     WORD *Frame;
 };
 
+#include "ball.h"
+
 struct game
 {
     struct ball ball;
@@ -235,7 +221,6 @@ typedef struct team team_t;
 typedef struct game game_t;
 typedef struct object object_t;
 typedef struct movingobject movingobject_t;
-typedef struct ball ball_t;
 
 #include "externs.h"
 

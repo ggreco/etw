@@ -158,20 +158,70 @@ Si tira anche girati di schiena!
     return CS_NO;
 }
 
+team_t *find_controlled_team()
+{
+    int i;
+    for (i = 0; i < 2; ++i) 
+        if (p->team[i]->Joystick > 0)
+            return p->team[i];
+    return NULL;
+}
+
+
+BOOL using_tactic(team_t *t, const char *tct)
+{
+    return !strcmp(t->tactic->Name, tct);
+}
 
 BOOL handle_pause(WORD button)
 {
     D(bug("Clicked button %d in handle_pause\n", button));
+    team_t *cnt = find_controlled_team();
 
     switch(button) {
+            // continue playing
         case 0:
             pause_mode = FALSE;
             break;
+            // replay
         case 1:
             if (!replay_mode) 
                 start_replay = TRUE;
+            else
+                SaveReplay();
+
             pause_mode = FALSE;
             break;
+            // substitutions
+        case 2:
+            break;
+            // change tactic
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+            if (cnt) {
+                char path[128];
+                tactic_t *oldtct=cnt->tactic;
+                const char *newname = get_tactic_name(button);
+
+                sprintf(path, "tct/%s", newname);
+                if(!(cnt->tactic=LoadTactic(path))) {
+                    D(bug("Unable to find new tactic! (%s)\n",path));
+                    cnt->tactic=oldtct;
+                }
+                else {
+                    D(bug("Changing tactic for %s from %s to %s\n", cnt->name, oldtct->Name, newname));
+
+                    FreeTactic(oldtct);
+                    if (cnt == p->team[0])
+                        InvertTactic(cnt->tactic);
+                }
+            }
+            break;
+            // abandon game
         case 9:
             return FALSE;
     }
