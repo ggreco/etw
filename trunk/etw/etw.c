@@ -214,9 +214,11 @@ BOOL LoadMenuStuff(void)
         return FALSE;
     }
 
-    if (firsttime)        
-        LoadPLogo("gfx/etwlogo" /*-*/ );
-
+#ifndef IPHONE
+    LoadPLogo("gfx/etwlogo" /*-*/ );
+#else
+    LoadPLogo("gfx/etwmobile" /*-*/ );
+#endif
     D(bug("Sound system initialization...\n" /*-*/ ));
 
     if (!no_sound) {
