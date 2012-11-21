@@ -792,8 +792,9 @@ void HandleReplay(void)
             draw_r= ( (draw_r == TRUE) ? FALSE : TRUE );
         }
 
-        if (MyReadPort0(0) & JPF_BUTTON_RED ||
-            MyReadPort1(1) & JPF_BUTTON_RED ) {
+        if ((use_touch & display_touched()) ||
+            MyReadPort0(0) & JPF_BUTTON_RED ||
+            MyReadPort1(1) & JPF_BUTTON_RED) {
             counter = real_counter;
 
             if (!highlight) {
@@ -891,7 +892,8 @@ void EndReplay(void)
 
 void SaveReplay(void)
 {
-    char buffer[16] = "t/replay.001";
+    char buffer[128];
+    int pos = sprintf(buffer, "%sreplay.001", TEMP_DIR);
     extern struct team_disk leftteam_dk, rightteam_dk;
     FILE *f;
     int i, j;
@@ -902,19 +904,23 @@ void SaveReplay(void)
     if(real_counter <= match[StartReplaySet].ReplayCounter)
         return;
 
+    // we need a pointer to the last character of the filename
+    pos--;
+
+    // looking if a replay with this name already exists
     while ((f=fopen(buffer,"r"))) {
         fclose(f);
-        buffer[11]++;
+        buffer[pos]++;
 
-        if(buffer[11] > '9')
+        if(buffer[pos] > '9')
         {
-            buffer[11] = '0';
-            buffer[10]++;
+            buffer[pos] = '0';
+            buffer[pos - 1]++;
 
-            if(buffer[10] > '9')
+            if(buffer[pos - 1] > '9')
             {
-                buffer[10] = '0';
-                buffer[9]++;
+                buffer[pos - 1] = '0';
+                buffer[pos - 2]++;
             }
         }
     }

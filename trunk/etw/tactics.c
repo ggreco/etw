@@ -4,6 +4,7 @@
 tactic_t *LoadTactic(char *name)
 {
     tactic_t *t;
+    char *c;
     int i,j,k;
     FILE *fh;
 
@@ -32,6 +33,12 @@ tactic_t *LoadTactic(char *name)
     fread(t->Name,t->NameLen,1,fh);
 
     t->Name[t->NameLen]=0;
+
+    // note: tactics have WRONG names inside the files, so we change the name to the filename
+    if ((c = strrchr(name, '/'))) {
+        free(t->Name);
+        t->Name = strdup(c + 1);
+    }
 
     for(i=0;i<2;i++)
         for(j=0;j<PLAYERS;j++)

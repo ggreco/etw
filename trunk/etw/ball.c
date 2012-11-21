@@ -909,7 +909,7 @@ void CheckPanels(void)
                     char path[100];
                     tactic_t *oldtct=s->tactic;
 
-                    strcpy(path,"ETW-TCT:");
+                    strcpy(path,"tct/");
                     strcat(path,tactics[p->RiservaAttuale]);
 
                     if(!(s->tactic=LoadTactic(path)))
