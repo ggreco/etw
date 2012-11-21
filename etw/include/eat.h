@@ -32,13 +32,14 @@
 #pragma options align=mac68k
 #endif
 
+// generic object
 struct object
 {
     anim_t *anim;
     WORD world_x, world_y;
     BOOL OnScreen;
-    WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
+    WORD AnimType, AnimFrame; // Animation type and current frame
+    int8_t otype;  // object type, this is used to find what kind of object we are handling
 };
 
 struct movingobject
@@ -53,129 +54,7 @@ struct movingobject
     int8_t FrameLen; // Quando e' 0 posso cambiare frame
 };
 
-struct referee
-{
-    anim_t *anim;
-    WORD world_x, world_y;
-    BOOL OnScreen;
-    WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
-    int8_t dir;   // Direzione di movimento
-    int8_t ActualSpeed; // Velocita' del tipo
-    int8_t FrameLen; // Quando e' 0 posso cambiare frame
-    WORD Tick, Argomento;
-    BOOL Special;
-    char *name;
-    char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    uint8_t NameLen; // Lunghezza in chars del cognome (per text)
-    int8_t Comando;  // Se ci sono falli o simili...
-    int8_t velocita;
-    int8_t abilita;
-    int8_t recupero;
-    int8_t cattiveria;
-};
 
-// Molto simile all'arbitro...
-
-struct linesman
-{
-    anim_t *anim;
-    WORD world_x, world_y;
-    BOOL OnScreen;
-    WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    char otype;  // Tipo di oggetto, fin qui ci devo arrivare!
-    uint8_t dir;   // Direzione di movimento
-    char ActualSpeed; // Velocita' del tipo
-    char FrameLen; // Quando e' 0 posso cambiare frame
-    WORD Tick, Argomento;
-    BOOL Special;
-    char *name;
-    char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    uint8_t NameLen; // Lunghezza in chars del cognome (per text)
-    int8_t Comando;  // Se ci sono falli o simili...
-};
-
-struct keeper
-{
-    anim_t *anim;
-    WORD world_x, world_y;
-    BOOL OnScreen;
-    WORD AnimType, AnimFrame;
-    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
-    int8_t dir;   // Direzione di movimento
-    int8_t ActualSpeed; // Velocita' del tipo
-    int8_t FrameLen; // Quando e' 0 posso cambiare frame
-    WORD Tick;
-    char *name;
-    char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    struct team *team;
-    uint8_t NameLen; // Lunghezza in chars del cognome (per text)
-    int8_t SNum;
-    BOOL Ammonito, Special, FirePressed;
-    WORD SpecialData, TimePress;
-    int8_t number;
-    int8_t velocita;
-    int8_t Parata;
-    int8_t Attenzione;
-};
-
-struct player
-{
-    anim_t *anim;
-    WORD world_x, world_y;
-    BOOL OnScreen;
-    WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
-    int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
-    int8_t dir;   // Direzione di movimento
-    int8_t ActualSpeed; // Velocita' del tipo
-    int8_t FrameLen; // Quando e' 0 posso cambiare frame
-    WORD Tick;
-    char *name;
-    char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
-    struct team *team;
-    uint8_t NameLen; // Lunghezza in chars del cognome (per text)
-    int8_t GNum;
-    BOOL Ammonito, Special, FirePressed;
-    WORD SpecialData, TimePress;
-    int8_t number, speed, tackle, Tiro;
-    int8_t Durata, stamina, quickness, sector;
-    int8_t creativity, technique, Posizioni, SNum;
-    BOOL Controlled, Marker;
-    WORD WaitForControl;
-    int8_t Comando, Argomento, CA[6];  // Relativi ai comandi
-    uint8_t OldStat, ArcadeEffect;
-    WORD ArcadeCounter; // Per la gestione dell'arcade
-};
-
-struct team
-{
-    int8_t TPossesso;
-    int8_t Reti;
-    int8_t Falli;
-    int8_t Ammonizioni;
-    int8_t Espulsioni;
-    int8_t Tiri;
-    int8_t Rigori;
-    int8_t Corner;
-    int8_t Sostituzioni;
-    int8_t Possesso;
-    int8_t Schema;
-    int8_t Joystick;
-    struct keeper keepers;
-    struct player players[10];
-    struct tactic *tactic;
-    ULONG TempoPossesso;
-    struct player *attivo;
-    anim_t *Marker;
-    WORD Marker_X, Marker_Y, MarkerFrame;
-    BOOL MarkerOnScreen;
-    uint8_t *NomeAttivo;
-    int8_t gioco_ruolo;
-    char name[52];
-    BOOL MarkerRed;
-    uint8_t ArcadeEffect, NumeroRiserve;
-    WORD ArcadeCounter;
-};
 
 struct Animazione
 {
@@ -184,6 +63,9 @@ struct Animazione
     WORD *Frame;
 };
 
+
+#include "team.h"
+#include "referee.h"
 #include "ball.h"
 
 struct game
@@ -213,11 +95,6 @@ struct DOggetto
 };
 
 // new defines used for better internationalization...
-typedef struct referee referee_t;
-typedef struct linesman linesman_t;
-typedef struct player player_t;
-typedef struct keeper keeper_t;
-typedef struct team team_t;
 typedef struct game game_t;
 typedef struct object object_t;
 typedef struct movingobject movingobject_t;
