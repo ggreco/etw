@@ -1257,6 +1257,7 @@ void ChangeMenu(WORD m)
 // TODO: handle 2 players
 
 #include "ball.h"
+#include "team.h"
 
 const char *get_tactic_name(int button)
 {
@@ -1265,6 +1266,7 @@ const char *get_tactic_name(int button)
 
 void draw_pause_menu()
 {
+    extern team_t *find_controlled_team();
     extern ball_t *pl;
     extern BOOL replay_mode;
     extern BOOL using_tactic(team_t *, const char *);

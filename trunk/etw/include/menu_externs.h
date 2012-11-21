@@ -41,19 +41,7 @@ extern void LoadScores(void);
 extern void ShowCredits(void);
 extern void AddScore(UBYTE);
 extern BOOL FileRequest(struct MyFileRequest *);
-/*
-extern void FreeFrames(struct AnimInstData *);
-extern struct AnimInstData *LoadFrames( FILE * );
-extern void DisplayAnim(struct AnimInstData *);
-extern void AllocAnimScreenBuffers(void);
-extern void FreeAnimScreenBuffers(void);
-extern struct FrameNode *LoadFrame(struct AnimInstData *, ULONG );
-extern LONG LoadFrameNode(struct AnimInstData *, struct FrameNode *);
-extern void UnloadFrame(struct AnimInstData *, struct FrameNode *);
-extern LONG MergeAnim(struct AnimInstData *, FILE *);
-extern void DisplayFrame(struct FrameNode *);
-extern struct FrameNode *GetFrameNode(struct AnimInstData *, int );
-*/
+
 extern void CheckCheat(UBYTE);
 
 // Procedure speciali dei menu...
@@ -141,7 +129,7 @@ extern struct SoundInfo *menusound[];
 extern struct championship_disk campionato;
 
 // Moduli generici...
-
+void ResizeWindow(int, int);
 void bltchunkybitmap(uint8_t *, int, int, uint8_t *, int, int, int, int, int, int);
 void bltanimobj(struct MChunky *, uint8_t *, int, int, int);
 void rectfill_pattern(uint8_t * b, int x1, int y1, int x2, int y2, unsigned char color, int width);
@@ -156,10 +144,6 @@ void freepolydraw(long, int, int *);
 void draw(long, int, int, int, int);
 void polydraw(long, int, int, int, int *);
 void bitmapFastScale(struct MyFastScaleArgs *);
-
-struct team;
-typedef struct team team_t;
-extern team_t *find_controlled_team();
 
 extern BOOL os_check_joy(int);
 extern void init_joy_config(void);
