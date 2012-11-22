@@ -784,6 +784,8 @@ void HandleReplay(void)
         StartReplay();
     }
     else if (replay_mode) {
+        int quit_replay = 0;
+        
         smallcounter++;
 
         if (smallcounter > 15) {
@@ -792,9 +794,12 @@ void HandleReplay(void)
             draw_r= ( (draw_r == TRUE) ? FALSE : TRUE );
         }
 
-        if ((use_touch && !check_replay_touch()) ||
-            MyReadPort0(0) & JPF_BUTTON_RED ||
-            MyReadPort1(1) & JPF_BUTTON_RED) {
+        if (use_touch)
+            quit_replay = !check_replay_touch();
+        else
+            quit_replay = MyReadPort0(0) & JPF_BUTTON_RED || MyReadPort1(1) & JPF_BUTTON_RED;
+        
+        if (quit_replay) {
             counter = real_counter;
 
             if (!highlight) {
