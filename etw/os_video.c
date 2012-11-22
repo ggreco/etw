@@ -306,7 +306,7 @@ void ScreenSwap(void)
         // sdl_flip fall back in SDL_UpdateRect if we are single buffer
         SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
 
-        if (use_touch && !pause_mode && !replay_mode)
+        if (use_touch && !pause_mode)
             draw_touch();
 
         SDL_RenderPresent(renderer);

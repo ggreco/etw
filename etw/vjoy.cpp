@@ -1,6 +1,6 @@
 #include "touch.h"
 
-static TouchControl *touch = NULL;
+static TouchControl *touch = NULL, *replay_touch = NULL;
 
 extern "C" {
 
@@ -13,26 +13,37 @@ void init_touch(SDL_Window *win)
     int w, h;
     if (touch)
         delete touch;
+    if (replay_touch)
+        delete replay_touch;
 
-    SDL_GetWindowSize(win, &w, &h);
+    SDL_RenderGetLogicalSize(SDL_GetRenderer(win), &w, &h);
 
     D(bug("Starting touch interface for window size %dx%d\n", w, h));
     
-    touch = new TouchControl(win, "mobile/knob.bmp", "mobile/joystick-base.bmp", WINDOW_WIDTH, WINDOW_HEIGHT);
+    touch = new TouchControl(win, "mobile/knob.bmp", "mobile/joystick-base.bmp");
 
     touch->add_button("mobile/red-normal.bmp", "mobile/red-pressed.bmp", WINDOW_WIDTH - 140, WINDOW_HEIGHT - 80);
     touch->add_button("mobile/blue-normal.bmp", "mobile/blue-pressed.bmp", WINDOW_WIDTH - 70, WINDOW_HEIGHT - 100);
     touch->add_button("mobile/pause-normal.bmp", "mobile/pause-pressed.bmp", WINDOW_WIDTH - 66, 2);
 
-    D(bug("Touch interface initialized\n"));
+    replay_touch = new TouchControl(win);
+    touch->add_button("mobile/slow-normal.bmp", "mobile/slow-pressed.bmp", (WINDOW_WIDTH - 52 * 4) / 2, WINDOW_HEIGHT - 52);
+    touch->add_button("mobile/rpause-normal.bmp", "mobile/rpause-pressed.bmp", (WINDOW_WIDTH - 52 * 4) / 2 + 52, WINDOW_HEIGHT - 52);
+    touch->add_button("mobile/record-normal.bmp", "mobile/record-pressed.bmp", (WINDOW_WIDTH - 52 * 4) / 2 + 52 * 2, WINDOW_HEIGHT - 52);
+    touch->add_button("mobile/stop-normal.bmp", "mobile/stop-pressed.bmp", (WINDOW_WIDTH - 52 * 4) / 2 + 52 * 3, WINDOW_HEIGHT - 52);
+
+    D(bug("Touch interfaces initialized\n"));
 }
 
 void draw_touch()
 {
-    if (touch)
+    if (replay_mode && replay_touch)
+        replay_touch->draw();
+    else if (touch)
         touch->draw();
 }
 
+#if 0
 int display_touched()
 {
     SDL_Event ev;
@@ -43,6 +54,38 @@ int display_touched()
     }
     return FALSE;
 }
+#endif
+
+int check_replay_touch()
+{
+    BOOL rc = TRUE;
+
+    if (!replay_touch) {
+        extern SDL_Window *screen;
+        init_touch(screen);
+    }
+
+    int res = replay_touch->iteration();
+
+    if (res  & (TouchControl::BUTTON_1|TouchControl::BUTTONUP)) {
+        if(!slow_motion) {
+            MY_CLOCKS_PER_SEC_50<<=2;
+            slow_motion=TRUE;
+        }
+        else {
+            slow_motion=FALSE;
+            MY_CLOCKS_PER_SEC_50>>=2;
+        }        
+    }
+    if (res & (TouchControl::BUTTON_3|TouchControl::BUTTONUP)) 
+        SaveReplay();
+    
+    if (res & (TouchControl::BUTTON_4|TouchControl::BUTTONUP)) 
+        rc = FALSE;
+   
+    return rc;
+}
+
 
 uint32_t MyReadTouchPort(uint32_t l)
 {
@@ -64,6 +107,10 @@ uint32_t MyReadTouchPort(uint32_t l)
                 player_t *g2=FindNearest(s, (touch->touch_x() + field_x) << 3 ,
                                             (touch->touch_y() + field_y) << 3);
 
+                D(bug("Detected free touch at %d,%d, changing player from %s to %s", 
+                            touch->touch_x(), touch->touch_y(), 
+                            s->attivo ? s->attivo->name : "NONE",
+                            g2 ? g2->name : "NONE"));
                 if(g2 != s->attivo && g2 != NULL)
                     ChangeControlled(s, g2->GNum);
             }

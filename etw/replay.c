@@ -792,7 +792,7 @@ void HandleReplay(void)
             draw_r= ( (draw_r == TRUE) ? FALSE : TRUE );
         }
 
-        if ((use_touch & display_touched()) ||
+        if ((use_touch && !check_replay_touch()) ||
             MyReadPort0(0) & JPF_BUTTON_RED ||
             MyReadPort1(1) & JPF_BUTTON_RED) {
             counter = real_counter;

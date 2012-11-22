@@ -66,7 +66,7 @@ class TouchControl
                      FREE_TOUCH = 0x8000,
                      QUIT = 0xff0000};
 
-        TouchControl(SDL_Window *screen, const char *knob, const char *base, int w = -1, int h = -1);
+        TouchControl(SDL_Window *screen, const char *knob = NULL, const char *base = NULL);
         ~TouchControl();
         void activation(int x, int y, int w, int h) {
             activation_.x = x; activation_.y = y;
