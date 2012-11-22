@@ -2,7 +2,6 @@
 #include "eat.h"
 #include "network.h"
 
-extern struct Window *win;
 SDL_Joystick *joy[2] = {NULL, NULL};
 char joybuttons[2];
 uint8_t joycfg_buttons[2][8];
@@ -325,6 +324,8 @@ joy_try_again:
             }
         }
     }
+    if (use_touch)
+        touch_init();
 }
 
 void CheckKeys(void)

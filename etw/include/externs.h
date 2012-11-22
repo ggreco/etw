@@ -258,6 +258,7 @@ const char *get_tactic_name(int);
 
 // from vjoy.cpp
 void draw_touch();
+void touch_init();
 int display_touched();
 int check_replay_touch();
 
