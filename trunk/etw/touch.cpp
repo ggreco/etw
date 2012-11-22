@@ -41,28 +41,35 @@ add_button(const char *normal, const char *pressed, int x, int y)
 
         
 TouchControl::
-TouchControl(SDL_Window *screen, const char *knob, const char *base, int w, int h) :
-    screen_(screen), visible_(false), fading_(0), 
-    distance_(0.0), delta_x_(0.0), delta_y_(0.0),
-    screen_w_(w), screen_h_(h)
+TouchControl(SDL_Window *screen, const char *knob, const char *base) :
+    screen_(screen), knob_(NULL), joybase_(NULL),
+    visible_(false), fading_(0), 
+    distance_(0.0), delta_x_(0.0), delta_y_(0.0)
 {
-    knob_ = load_bmp(knob, knob_w_, knob_h_);
-    joybase_ = load_bmp(base, joyrect_.w, joyrect_.h);
+    if (knob)
+        knob_ = load_bmp(knob, knob_w_, knob_h_);
+    if (base)
+        joybase_ = load_bmp(base, joyrect_.w, joyrect_.h);
     
-    if (screen_w_ < 0 || screen_h_ < 0)
-        SDL_GetWindowSize(screen, &screen_w_, &screen_h_);
+    SDL_RenderGetLogicalSize(SDL_GetRenderer(screen), &screen_w_, &screen_h_);
 
-    activation_.x = 0;
-    activation_.y = screen_h_ / 2;
-    activation_.w = screen_w_ / 3;
-    activation_.h = screen_h_ / 2;
+    if (knob_ && joybase_) {
+        activation_.x = 0;
+        activation_.y = screen_h_ / 2;
+        activation_.w = screen_w_ / 3;
+        activation_.h = screen_h_ / 2;
+    }
+    else // no joystick in this screen
+        activation_.x = activation_.y = activation_.w = activation_.h = -1;
 }
 
 TouchControl::
 ~TouchControl()
 {
-    SDL_DestroyTexture(knob_);
-    SDL_DestroyTexture(joybase_);
+    if (knob_)
+        SDL_DestroyTexture(knob_);
+    if (joybase_)
+        SDL_DestroyTexture(joybase_);
 
     for (BtIt it = buttons_.begin(); it != buttons_.end(); ++it) {
         SDL_DestroyTexture(it->img);
@@ -74,6 +81,7 @@ void TouchControl::
 draw()
 {
     if (SDL_Renderer *rend = SDL_GetRenderer(screen_)) {
+        // visible and fading will never be not null if we don't have a knob & a joybase
         if (visible_ || fading_ > 0) {
             if (!visible_)
                 fading_--;
@@ -169,7 +177,7 @@ iteration()
                         b->is_pressed = true;
                         b->finger = e.tfinger.fingerId;
                     }
-                    else if (!visible_)
+                    else if (!visible_ && knob_ && joybase_)
                         if (in_activation_area(x, y)) {
                             visible_ = true;
                             joyfinger_ = e.tfinger.fingerId;
@@ -212,17 +220,19 @@ iteration()
         }
     }
 
-    if (distance_ >= (knob_w_ / 2))
-        result |= FAST;
-    if (distance_ > knob_w_ / 4) {
-        if (delta_x_ >= knob_w_ / 5)
-            result |= RIGHT;
-        else if (delta_x_ <= -(knob_w_ / 5))
-            result |= LEFT;
-        if (delta_y_ >= knob_h_ / 5)
-            result |= DOWN;
-        else if (delta_y_ <= -(knob_h_ / 5))
-            result |= UP;
+    if (visible_) {
+        if (distance_ >= (knob_w_ / 2))
+            result |= FAST;
+        if (distance_ > knob_w_ / 4) {
+            if (delta_x_ >= knob_w_ / 5)
+                result |= RIGHT;
+            else if (delta_x_ <= -(knob_w_ / 5))
+                result |= LEFT;
+            if (delta_y_ >= knob_h_ / 5)
+                result |= DOWN;
+            else if (delta_y_ <= -(knob_h_ / 5))
+                result |= UP;
+        }
     }
 
     return result;

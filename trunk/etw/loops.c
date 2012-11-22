@@ -367,7 +367,7 @@ void MainLoop(void)
 
     os_start_audio();
 
-      ideal = start = StartGameTime = Timer();
+    ideal = start = StartGameTime = Timer();
     EndTime = time_length * MY_CLOCKS_PER_SEC + start;
 
 // When we play a "scenario" we set the starting minute
