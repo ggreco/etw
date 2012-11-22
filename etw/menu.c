@@ -1285,7 +1285,6 @@ void draw_pause_menu()
 {
     extern team_t *find_controlled_team();
     extern ball_t *pl;
-    extern BOOL replay_mode;
     extern BOOL using_tactic(team_t *, const char *);
     int i;
     team_t *c = find_controlled_team();
