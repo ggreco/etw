@@ -255,6 +255,7 @@ void os_load_palette(uint32_t *);
 
 // from menu.c
 const char *get_tactic_name(int);
+void set_pause_tactic(int);
 
 // from vjoy.cpp
 void draw_touch();

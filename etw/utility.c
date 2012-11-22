@@ -218,6 +218,10 @@ BOOL handle_pause(WORD button)
                     FreeTactic(oldtct);
                     if (cnt == p->team[0])
                         InvertTactic(cnt->tactic);
+
+                    set_pause_tactic(button);
+
+                    ScreenSwap();
                 }
             }
             break;

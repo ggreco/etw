@@ -1264,6 +1264,23 @@ const char *get_tactic_name(int button)
     return menu[MENU_PAUSE].Button[button].Text;
 }
 
+void set_pause_tactic(int button)
+{
+    int i;
+    // iterate through tactic buttons
+    for (i = 3; i < 9; ++i) {
+        struct Button *b = &(menu[MENU_PAUSE].Button[i]);
+        if (i == button) {
+            b->Color = 9;
+            RedrawButton(b, b->Color);
+        }
+        else if (b->Color != 14) {
+            b->Color = 14;
+            RedrawButton(b, b->Color);
+        }
+    }
+}
+
 void draw_pause_menu()
 {
     extern team_t *find_controlled_team();
@@ -1274,16 +1291,12 @@ void draw_pause_menu()
     team_t *c = find_controlled_team();
 
     actual_menu = &menu[MENU_PAUSE];
+
+    // show substitutions only if we the game is stopped (throw in, kick off...)
     if (pl->InGioco || !c)
         actual_menu->Button[2].Text = NULL;
     else
         actual_menu->Button[2].Text = "SUBSTITUTIONS";
-
-    if (replay_mode)
-        actual_menu->Button[1].Text = "SAVE HIGHLIGHT";
-    else
-        actual_menu->Button[1].Text = "REPLAY";
-
 
     for (i = 0; i < actual_menu->NumeroBottoni; ++i) {
         struct Button *b = &actual_menu->Button[i];
