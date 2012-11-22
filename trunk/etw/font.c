@@ -333,50 +333,10 @@ void ShowPanel(void)
 
             temptime -= StartGameTime;
 
-//                      mins=(secs reali)*45 / 60 / time_len
-
             mins = temptime / t_l;
             mins /= (MY_CLOCKS_PER_SEC / 45);
             secs = mins % 60;
             mins /= 60;
-
-/*
-        Tolgo la gestione dei microsecondi, se il timer sta fermo magari la rimetto
-
-            if(temptime.tv_micro>StartGameTime.tv_micro)
-            {
-                micro=(temptime.tv_micro-StartGameTime.tv_micro)*45/t_l;
-            }
-            else
-            {
-                micro=(StartGameTime.tv_micro-temptime.tv_micro)*45/t_l;
-                micro=-micro;
-            }
-
-            while(micro<0)
-            {
-                micro+=1000000;
-                secs--;
-            }
-
-            while(micro>999999)
-            {
-                micro-=1000000;
-                secs++;
-            }
-
-            while(secs<0)
-            {    
-                mins--;
-                secs+=60;
-            }
-
-            while(secs>59)
-            {
-                secs-=60;
-                mins++;
-            }
-*/
         }
 
 // Gestione del tempo divisa a seconda del periodo
@@ -392,11 +352,8 @@ void ShowPanel(void)
 
         if (!penalties && !free_kicks) {
             sprintf(buffer, "%3ld:%02d", mins + situation_time, (int) secs);
-
-            mins = WINDOW_WIDTH - (font_width * 6) - 2;
-            secs = font_height + 2;
-
-            TextShadow(mins, secs, buffer, 6);
+            // center the timer, it was in the right corner where we have the pause button now            
+            TextShadow((WINDOW_WIDTH - (font_width * 6)) / 2, font_height + 2, buffer, 6);
         }
     }
 
