@@ -8,29 +8,34 @@ extern "C" {
 extern void SendNetwork(unsigned long joypos);
 extern unsigned long NetJoyPos[2];
 
-void init_touch(SDL_Window *win)
+void touch_init()
 {
+    extern struct SDL_Window *screen;
     int w, h;
+    
     if (touch)
         delete touch;
     if (replay_touch)
         delete replay_touch;
 
-    SDL_RenderGetLogicalSize(SDL_GetRenderer(win), &w, &h);
+    SDL_RenderGetLogicalSize(SDL_GetRenderer(screen), &w, &h);
 
     D(bug("Starting touch interface for window size %dx%d\n", w, h));
     
-    touch = new TouchControl(win, "mobile/knob.bmp", "mobile/joystick-base.bmp");
+    touch = new TouchControl(screen, "mobile/knob.bmp", "mobile/joystick-base.bmp");
 
     touch->add_button("mobile/red-normal.bmp", "mobile/red-pressed.bmp", WINDOW_WIDTH - 140, WINDOW_HEIGHT - 80);
     touch->add_button("mobile/blue-normal.bmp", "mobile/blue-pressed.bmp", WINDOW_WIDTH - 70, WINDOW_HEIGHT - 100);
     touch->add_button("mobile/pause-normal.bmp", "mobile/pause-pressed.bmp", WINDOW_WIDTH - 66, 2);
 
-    replay_touch = new TouchControl(win);
+    replay_touch = new TouchControl(screen);
     replay_touch->add_button("mobile/slow-normal.bmp", "mobile/slow-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2, WINDOW_HEIGHT - 52);
     replay_touch->add_button("mobile/rpause-normal.bmp", "mobile/rpause-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2 + 64, WINDOW_HEIGHT - 52);
-    replay_touch->add_button("mobile/record-normal.bmp", "mobile/record-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2 + 64 * 2, WINDOW_HEIGHT - 52);
     replay_touch->add_button("mobile/stop-normal.bmp", "mobile/stop-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2 + 64 * 3, WINDOW_HEIGHT - 52);
+    // show this button only if we are an highlight
+    if (!highlight)
+        replay_touch->add_button("mobile/record-normal.bmp", "mobile/record-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2 + 64 * 2, WINDOW_HEIGHT - 52);
+    
 
     D(bug("Touch interfaces initialized\n"));
 }
@@ -61,8 +66,8 @@ int check_replay_touch()
     BOOL rc = TRUE;
 
     if (!replay_touch) {
-        extern SDL_Window *screen;
-        init_touch(screen);
+        D(bug("check_replay_touch without touch class initialization!"));
+        return FALSE;
     }
 
     int res = replay_touch->iteration();
@@ -85,10 +90,10 @@ int check_replay_touch()
                 return DoPause();
         }
 
-        if (res & TouchControl::BUTTON_3)
+        if (res & TouchControl::BUTTON_4)
             SaveReplay();
         
-        if (res & TouchControl::BUTTON_4)
+        if (res & TouchControl::BUTTON_3)
             rc = FALSE;
     }
     
@@ -99,27 +104,28 @@ int check_replay_touch()
 uint32_t MyReadTouchPort(uint32_t l)
 {
     uint32_t mask = 0;
-
+    
     if (!touch) {
-        extern SDL_Window *screen;
-        init_touch(screen);
+        D(bug("MyReadTouchPort without touch class initialization!"));
+        return 0;
     }
 
     int res = touch->iteration();
 
     // if we don't have the ball and we got a touch out of a button
-    if (team_t *s = find_controlled_team()) {
-        if ((pl->gioc_palla && pl->gioc_palla->team != s) ||
-            (!pl->gioc_palla)) {
-            if ((res & (TouchControl::FREE_TOUCH|TouchControl::BUTTONUP)) == (TouchControl::FREE_TOUCH|TouchControl::BUTTONUP)) {
+    
+    if (res & TouchControl::FREE_TOUCH) {
+        if (team_t *s = find_controlled_team()) {
+            if ((pl->gioc_palla && pl->gioc_palla->team != s) ||
+                (!pl->gioc_palla)) {
                 // we can change the active player to the nearest one...
                 player_t *g2=FindNearest(s, (touch->touch_x() + field_x) << 3 ,
-                                            (touch->touch_y() + field_y) << 3);
-
-                D(bug("Detected free touch at %d,%d, changing player from %s to %s\n", 
-                            touch->touch_x(), touch->touch_y(), 
-                            s->attivo ? s->attivo->name : "NONE",
-                            g2 ? g2->name : "NONE"));
+                                         (touch->touch_y() + field_y) << 3);
+                
+                D(bug("Detected free touch at %d,%d, changing player from %s to %s\n",
+                      touch->touch_x(), touch->touch_y(),
+                      s->attivo ? s->attivo->name : "NONE",
+                      g2 ? g2->name : "NONE"));
                 if(g2 != s->attivo && g2 != NULL)
                     ChangeControlled(s, g2->GNum);
             }
