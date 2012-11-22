@@ -27,10 +27,10 @@ void init_touch(SDL_Window *win)
     touch->add_button("mobile/pause-normal.bmp", "mobile/pause-pressed.bmp", WINDOW_WIDTH - 66, 2);
 
     replay_touch = new TouchControl(win);
-    replay_touch->add_button("mobile/slow-normal.bmp", "mobile/slow-pressed.bmp", (WINDOW_WIDTH - 52 * 4) / 2, WINDOW_HEIGHT - 52);
-    replay_touch->add_button("mobile/rpause-normal.bmp", "mobile/rpause-pressed.bmp", (WINDOW_WIDTH - 52 * 4) / 2 + 52, WINDOW_HEIGHT - 52);
-    replay_touch->add_button("mobile/record-normal.bmp", "mobile/record-pressed.bmp", (WINDOW_WIDTH - 52 * 4) / 2 + 52 * 2, WINDOW_HEIGHT - 52);
-    replay_touch->add_button("mobile/stop-normal.bmp", "mobile/stop-pressed.bmp", (WINDOW_WIDTH - 52 * 4) / 2 + 52 * 3, WINDOW_HEIGHT - 52);
+    replay_touch->add_button("mobile/slow-normal.bmp", "mobile/slow-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2, WINDOW_HEIGHT - 52);
+    replay_touch->add_button("mobile/rpause-normal.bmp", "mobile/rpause-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2 + 64, WINDOW_HEIGHT - 52);
+    replay_touch->add_button("mobile/record-normal.bmp", "mobile/record-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2 + 64 * 2, WINDOW_HEIGHT - 52);
+    replay_touch->add_button("mobile/stop-normal.bmp", "mobile/stop-pressed.bmp", (WINDOW_WIDTH - 64 * 4) / 2 + 64 * 3, WINDOW_HEIGHT - 52);
 
     D(bug("Touch interfaces initialized\n"));
 }
@@ -78,6 +78,13 @@ int check_replay_touch()
                 MY_CLOCKS_PER_SEC_50>>=2;
             }
         }
+        if (res & TouchControl::BUTTON_2) {
+            if (pause_mode)
+                pause_mode = FALSE;
+            else
+                return DoPause();
+        }
+
         if (res & TouchControl::BUTTON_3)
             SaveReplay();
         

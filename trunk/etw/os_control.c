@@ -570,17 +570,12 @@ void CheckKeys(void)
 
                         // P - pause
                     case SDLK_p:
-                        if(!replay_mode)
-                        {
-                            if( (p->show_panel&PANEL_REPLAY) && friendly)
-                            {
-                                RestartGame();
-                            }
-                            else
-                            {
-                                DoPause();
-                            }
-                        }
+                        if(!replay_mode && p->show_panel&PANEL_REPLAY && friendly)
+                           RestartGame();
+                        else if (pause_mode)
+                           pause_mode = FALSE;
+                        else
+                           DoPause();
                         break;
                         // DEL - visual on the ball
                     case SDLK_DELETE:

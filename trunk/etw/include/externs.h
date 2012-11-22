@@ -146,7 +146,7 @@ extern void VuotaCLista(void);
 
 extern void LoadKeyDef(int, char *);
 extern void SaveKeyDef(int, char *);
-extern void DoPause(void);
+extern BOOL DoPause(void);
 // extern char GetTable(void); e' una ,macro ora
 extern void DoFlash(void);
 extern void UpdateBallSpeed(void);

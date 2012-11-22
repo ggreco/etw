@@ -484,17 +484,20 @@ BOOL TeamSelection(WORD button)
         {
             if (b->Color != COLOR_COMPUTER)
             {
-                PrintShadow(FixedScaledX(1), FixedScaledY(210),
-                            b->Text, strlen(b->Text), bigfont);
+                char buffer[128];
+// No more needed, we write the team name in the button                
+//                PrintShadow(FixedScaledX(1), FixedScaledY(210),
+//                        b->Text, strlen(b->Text), bigfont);
 
-                if (!b3->Text)
-                {
-                    b3->Text = msg_31;
-                    RedrawButton(b3, b3->Color);
-                }
+                if (b3->Text)
+                    free(b3->Text);
+
+                sprintf(buffer, "VIEW %s", b->Text);
+                b3->Text = strdup(buffer);
+                RedrawButton(b3, b3->Color);
             }
-            else
-            {
+            else if (b3->Text) {
+                free(b3->Text);
                 b3->Text = NULL;
                 CancelButton(b3);
             }
@@ -560,7 +563,7 @@ BOOL TeamSelection(WORD button)
                 else
                 {
                     b2->Text = msg_1;
-                    b3->Text = msg_2;
+                    b3->Text = strdup(msg_2);
                     RedrawButton(b3, b3->Color);
                 }
 
@@ -574,8 +577,11 @@ BOOL TeamSelection(WORD button)
 
             if (competition == MENU_WORLD_CUP && wanted_number == 32)
             {
-                b3->Text = NULL;
-                CancelButton(b3);
+                if (b3->Text) {
+                    free(b3->Text);
+                    b3->Text = NULL;
+                    CancelButton(b3);
+                }
             }
         }
     }
@@ -997,18 +1003,19 @@ BOOL ArcadeTeamSelection(WORD button)
 
         if (b->Color != COLOR_COMPUTER)
         {
-            int l = strlen(teamlist[b->ID].name);
+// No more needed, we write the team name in the button                
+//            int l = strlen(teamlist[b->ID].name);
+//            PrintShadow((WINDOW_WIDTH - l * bigfont->width) / 2,
+//                        FixedScaledY(120), teamlist[b->ID].name, l, bigfont);
 
-            PrintShadow((WINDOW_WIDTH - l * bigfont->width) / 2,
-                        FixedScaledY(120), teamlist[b->ID].name, l, bigfont);
-
-            if (!b3->Text)
-            {
-                b3->Text = msg_31;
+            if (!b3->Text) {
+                char buffer[128];
+                sprintf(buffer, "VIEW %s", teamlist[b->ID].name);
+                b3->Text = strdup(buffer);
                 RedrawButton(b3, b3->Color);
             }
-            else
-            {
+            else {
+                free(b3->Text);
                 b3->Text = NULL;
                 CancelButton(b3);
             }
@@ -2453,10 +2460,13 @@ void PlayMatches(void)
 void FreeHighSelection(void)
 {
     register int i;
-
-    for (i = 0; i < 64; i++)
-        if (hl[i].Text)
+// highlights and teamselection must have the same number of items
+    for (i = 0; i < TS_RIGHE * TS_COLONNE; i++) {
+        if (hl[i].Text) {
             free(hl[i].Text);
+            hl[i].Text = NULL;
+        }
+    }
 }
 
 BOOL HighSelection(WORD button)
@@ -2468,7 +2478,7 @@ BOOL HighSelection(WORD button)
 
     b = &actual_menu->Button[button];
 
-    if (button == 64)
+    if (button == TS_RIGHE * TS_COLONNE)
     {
         FreeHighSelection();
         ChangeMenu(MENU_HIGHLIGHT);
@@ -2531,14 +2541,14 @@ BOOL HighSelection(WORD button)
 void SetHighSelection(void)
 {
     register int i, n = 0;
-    char *highs[64];
+    char *highs[TS_RIGHE * TS_COLONNE];
     int righe, start;
     DIR *lock;
 
-    D(bug("Scan dir %s...\n", TEMP_DIR));
+    // cleanup previous selection
+    FreeHighSelection();
 
-    for (i = 0; i < 64; i++)
-        hl[i].Text = NULL;
+    D(bug("Scan dir %s...\n", TEMP_DIR));
 
     if ((lock = opendir(TEMP_DIR)))
     {
@@ -2546,10 +2556,12 @@ void SetHighSelection(void)
 
         while( (ent = readdir(lock)) != NULL)
         {
-            if (!strnicmp(ent->d_name, "replay."/*-*/, 7))
-            {
+            if (!strnicmp(ent->d_name, "replay."/*-*/, 7)) {
                 highs[n] = strdup(ent->d_name + 7);
                 n++;
+
+                if (n == TS_RIGHE * TS_COLONNE)
+                    break;
             }
         }
         closedir(lock);
@@ -2562,8 +2574,7 @@ void SetHighSelection(void)
 
     start = TS_RIGHE / 2 - righe / 2;
 
-    for (i = 0; i < n; i++)
-    {
+    for (i = 0; i < n; i++) {
         hl[i + start * TS_COLONNE].ID = i;
         hl[i + start * TS_COLONNE].Text = highs[i];
     }

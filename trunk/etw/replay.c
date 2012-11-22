@@ -13,7 +13,7 @@ int OriginalReplaySet, SetLimit, StartReplaySet;
 BOOL replay_mode = FALSE, start_replay = FALSE, was_using_radar = FALSE;
 BOOL was_using_nosound = FALSE, was_using_result = FALSE, slow_motion = FALSE;
 BOOL mantieni_distanza = FALSE, no_record = FALSE, replay_looped = FALSE;
-BOOL full_replay = FALSE, time_stopped = FALSE;
+BOOL full_replay = FALSE, time_stopped = FALSE, pause_replay = FALSE;
 UWORD real_counter, counter = 0, CounterLimit;
 
 extern BOOL draw_r;
