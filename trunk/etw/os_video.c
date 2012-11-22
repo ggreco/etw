@@ -209,6 +209,13 @@ void OpenTheScreen(void)
         screen = SDL_CreateWindow("ETW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
 #endif
 
+    if (WINDOW_WIDTH > 800 ||
+        WINDOW_HEIGHT > 600) {
+        
+        D(bug("Too high display resolution, going to: %dx%d", WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
+        WINDOW_WIDTH /= 2;
+        WINDOW_HEIGHT /= 2;
+    }
     if(screen) {
         renderer = SDL_CreateRenderer(screen, -1, 0);
         
