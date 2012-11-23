@@ -9,6 +9,7 @@ extern void RemoveReqs(void);
 extern void EnableReqs(void);
 extern void FreeMenuFonts(void);
 /* AC: _WINUSER_ is for Microsoft Visual C++ _WINUSER_H for MinGW */
+extern void blit_scaled_logo();
 #if !defined(_WINUSER_) && !defined(_WINUSER_H)
 extern void ChangeMenu(WORD );
 #endif

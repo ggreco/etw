@@ -236,18 +236,16 @@ void DisplayTactic(int xs, int ys)
 
     setfont(smallfont);
 
-    if(LoadMenuTactic(buffer, &t))
-    {
-        int i, x, y, l;
+    if (LoadMenuTactic(buffer, &t)) {
+         int i, x, y, l;
 
-        for(i=0; i<PLAYERS; i++)
-        {
+        for(i=0; i<PLAYERS; i++) {
             if(i<8)
                 l=1;
             else l=2;
 
-            y=145-t.Position[0][i][GOALKICK].x*156/10240;
-            x=t.Position[0][i][GOALKICK].y*100/4352-18;
+            y=FixedScaledY(110-t.Position[0][i][GOALKICK].x*156/10240);
+            x=FixedScaledX(t.Position[0][i][GOALKICK].y*100/4352-15);
 
             BltAnimObj(symbols, main_bitmap, 17+controllo[actual_team], x+xs, y+ys, bitmap_width);
 
