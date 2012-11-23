@@ -1403,8 +1403,11 @@ changetactic:
 
                 strcpy(teamlist[actual_team].tactics[0], b->Text);
                 bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
-                    actual_menu->X, actual_menu->Y, 108, 156, bitmap_width, bitmap_width);
-                BltAnimObj(logos, main_bitmap, actual_menu->Immagine, actual_menu->X, actual_menu->Y, bitmap_width);
+                    actual_menu->X, actual_menu->Y, 
+                    FixedScaledX(108), FixedScaledY(156), bitmap_width, bitmap_width);
+
+                blit_scaled_logo();
+
                 DisplayTactic(0, 0);
 
                 for (i = 0; i < 9; i++)

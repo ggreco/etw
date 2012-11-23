@@ -8,23 +8,20 @@ tactic_t *LoadTactic(char *name)
     int i,j,k;
     FILE *fh;
 
-    if(!(t=calloc(1,sizeof(tactic_t))))
-    {
-        printf("Non c'e' memoria!\n");
+    if(!(t=calloc(1,sizeof(tactic_t)))) {
+        D(bug("Not enough memory!\n"));
         return NULL;
     }
 
-    if(!(fh=fopen(name,"rb")))
-    {
-        printf("Unable to find wanted tactic...\n");
+    if(!(fh=fopen(name,"rb"))) {
+        D(bug("Unable to find wanted tactic (%s)...\n", name));
         free(t);
         return NULL;
     }
 
     t->NameLen = fread_u8(fh);
 
-    if(!(t->Name=malloc(t->NameLen+1)))
-    {
+    if(!(t->Name=malloc(t->NameLen+1))) {
         free(t);
         fclose(fh);
         return NULL;
@@ -42,8 +39,7 @@ tactic_t *LoadTactic(char *name)
 
     for(i=0;i<2;i++)
         for(j=0;j<PLAYERS;j++)
-            for(k=0;k<(SECTORS+SPECIALS);k++)
-            {
+            for(k=0;k<(SECTORS+SPECIALS);k++) {
                 t->Position[i][j][k].x = fread_u16(fh);
                 t->Position[i][j][k].y = fread_u16(fh);
 

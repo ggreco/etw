@@ -1075,6 +1075,34 @@ void RedrawButton(struct Button *b, UBYTE colore)
     PrintButtonType(b, 0, top, tf);
 }
 
+
+void blit_scaled_logo()
+{
+    struct scaleAnimObjArgs a;
+
+    a.src = logos->Frames[actual_menu->Immagine];
+    a.dest = main_bitmap;
+    a.destmod = bitmap_width;
+    a.xs = 0;
+    a.ys = 0;
+    a.ws = logos->Widths[actual_menu->Immagine];
+    a.hs = logos->Heights[actual_menu->Immagine];
+    a.xd = actual_menu->X;
+    a.yd = actual_menu->Y;
+    a.wd = FixedScaledX(logos->Widths[actual_menu->Immagine]);
+    a.hd = FixedScaledY(logos->Widths[actual_menu->Immagine]);
+    D(bug("bltanimobjscale: (%d,%d %dx%d) to (%d,%d %dx%d)\n", 
+                a.xs, a.ys, a.ws, a.hs, 
+                a.xd, a.yd, a.wd, a.hd));
+
+    bltanimobjscale(&a);
+    // the old code without scaled images
+#if 0
+    BltAnimObj(logos, main_bitmap, actual_menu->Immagine,
+            actual_menu->X, actual_menu->Y, bitmap_width);
+#endif
+}
+
 void ChangeMenu(WORD m)
 {
     extern WORD restore_w, restore_h;
@@ -1128,30 +1156,8 @@ void ChangeMenu(WORD m)
              FixedScaledY(7) - 1, Pens[actual_menu->Highlight],
              bitmap_width);
 
-    if (actual_menu->Immagine >= 0) {
-            struct scaleAnimObjArgs a;
-            
-            a.src = logos->Frames[actual_menu->Immagine];
-            a.dest = main_bitmap;
-            a.destmod = bitmap_width;
-            a.xs = 0;
-            a.ys = 0;
-            a.ws = logos->Widths[actual_menu->Immagine];
-            a.hs = logos->Heights[actual_menu->Immagine];
-            a.xd = actual_menu->X;
-            a.yd = actual_menu->Y;
-            a.wd = FixedScaledX(logos->Widths[actual_menu->Immagine]);
-            a.hd = FixedScaledY(logos->Widths[actual_menu->Immagine]);
-            D(bug("bltanimobjscale: (%d,%d %dx%d) to (%d,%d %dx%d)\n", 
-                        a.xs, a.ys, a.ws, a.hs, 
-                        a.xd, a.yd, a.wd, a.hd));
-
-            bltanimobjscale(&a);
-#if 0
-        BltAnimObj(logos, main_bitmap, actual_menu->Immagine,
-                   actual_menu->X, actual_menu->Y, bitmap_width);
-#endif
-    }
+    if (actual_menu->Immagine >= 0) 
+        blit_scaled_logo();
 
     if (current_menu == MENU_TEAM_SETTINGS) {
         char *c = msg_80;
