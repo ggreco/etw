@@ -1401,6 +1401,7 @@ BOOL TeamSettings(WORD button)
             if (b->Color != COLOR_TATTICA_SELEZIONATA)
 changetactic:
             {
+                extern void DrawBox(WORD);
                 int i;
 
                 strcpy(teamlist[actual_team].tactics[0], b->Text);
@@ -1412,18 +1413,18 @@ changetactic:
 
                 DisplayTactic(0, 0);
 
-                for (i = 0; i < 9; i++)
-                {
-                    if (teamsettings[34 + i].Color == COLOR_TATTICA_SELEZIONATA)
-                    {
-                        teamsettings[34 + i].Color = COLOR_TATTICA_NON_SELEZIONATA;
-                        RedrawButton(&teamsettings[34 + i], COLOR_TATTICA_NON_SELEZIONATA);
-                    }
+                for (i = 0; i < 9; i++) {
+                    struct Button *t = &teamsettings[34 + i];
+                    if (t == b)
+                        continue;
+                    t->Color = COLOR_TATTICA_NON_SELEZIONATA;
+                    RedrawButton(t, COLOR_TATTICA_NON_SELEZIONATA);
                 }
 
                 b->Color = COLOR_TATTICA_SELEZIONATA;
 
                 RedrawButton(b, COLOR_TATTICA_SELEZIONATA);
+                DrawBox(button);
                 ScreenSwap();
             }
         }

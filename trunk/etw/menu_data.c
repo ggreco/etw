@@ -613,11 +613,11 @@ struct Button asb[]=
 
 struct Button cp[]=
 {
-    {52,40,121,109,0,COLOR_UNSELECTED,9,NULL},
-    {198,40,267,109,0,COLOR_UNSELECTED,9,NULL},
-    {32,121,141,140,-1,0,0,NULL},{178,121,287,140,-1,0,0,NULL},
-    {77,151,96,170,-1,0,0,NULL},{223,151,242,170,-1,0,0,NULL},
-    {100,190,219,209,-1,0,0,NULL}, // For the game over
+    {52,35,121,104,0,COLOR_UNSELECTED,9,NULL},
+    {198,35,267,104,0,COLOR_UNSELECTED,9,NULL},
+    {32,116,141,135,-1,0,0,NULL},{178,116,287,135,-1,0,0,NULL},
+    {77,146,96,165,-1,0,0,NULL},{223,146,242,165,-1,0,0,NULL},
+    {100,180,219,205,-1,0,0,NULL}, // For the game over
 };
 
 void initialize_menus()
