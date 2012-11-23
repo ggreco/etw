@@ -1046,6 +1046,7 @@ BOOL ArcadeTeamSelection(WORD button)
             b->Color = COLOR_UNSELECTED;
             selected_number--;
         }
+#ifndef IPHONE
         else if (b->Color == COLOR_TEAM_A
                   && (!team2_selected || wanted_number > 2
                        || wanted_number <= 0 || selected_number > 2))
@@ -1054,6 +1055,7 @@ BOOL ArcadeTeamSelection(WORD button)
             controllo[b->ID] = 0;
             b->Color = COLOR_TEAM_B;
         }
+#endif
         else
         {
             if (b->Color == COLOR_TEAM_A)
@@ -2071,7 +2073,7 @@ void SetupMatches(void)
             cp[4].Highlight = cp[2].Highlight = highlight_team[controllo[*teamarray] + 1];
 
             jingle = PlayBackSound(menusound[FIRST_ARCADE + arcade_sequence[turno]]);
-            D(bug("Playo il suono %ld sul canale %ld...\n", FIRST_ARCADE + arcade_sequence[turno], jingle));
+            D(bug("Playing sound %ld on channel %ld...\n", FIRST_ARCADE + arcade_sequence[turno], jingle));
 
             if (cp[4].Text)
             {

@@ -490,15 +490,6 @@ struct Button lb[]=
     {212,229,309,241,MENU_SIMULATION,11,12,msg_6},
 };
 
-/*
-struct Button cb[]=
-{
-    {10,229,106,241,MENU_MATCHES,7,9,"CONTINUE"},
-    {111,229,207,241,-1,14,13,"SAVE"},
-    {212,229,309,241,MENU_SIMULATION,11,12,"PARENT MENU"},
-};
-*/
-
 /* In reality control 0 would be the BLUE keyboard, but for praticity
  * since the things are inverted, at the moment we hold first red and
  * then the blue, this mask is not available in mobile version.
@@ -622,17 +613,32 @@ struct Button asb[]=
 
 struct Button cp[]=
 {
-    {52,40,121,109,0,COLOR_UNSELECTED,9,"\20a"/*-*/},
-    {198,40,267,109,0,COLOR_UNSELECTED,9,"\20b"/*-*/},
+    {52,40,121,109,0,COLOR_UNSELECTED,9,NULL},
+    {198,40,267,109,0,COLOR_UNSELECTED,9,NULL},
     {32,121,141,140,-1,0,0,NULL},{178,121,287,140,-1,0,0,NULL},
     {77,151,96,170,-1,0,0,NULL},{223,151,242,170,-1,0,0,NULL},
     {100,190,219,209,-1,0,0,NULL}, // For the game over
 };
 
+void initialize_menus()
+{
+    cp[0].Text = strdup("\20a");
+    cp[1].Text = strdup("\20b");
+}
+void free_menus()
+{
+    free(cp[0].Text); 
+    free(cp[1].Text); 
+}
 struct Button cb[]=
 {
+#ifndef IPHONE
     {20,229,154,241,MENU_CHALLENGE,7,9,msg_0},
     {165,229,299,241,MENU_ARCADE,11,12,msg_6},
+#else
+    {20,215,154,245,MENU_CHALLENGE,7,9,msg_0},
+    {165,215,299,245,MENU_ARCADE,11,12,msg_6},
+#endif
 };
 
 
@@ -752,8 +758,8 @@ struct GfxMenu menu[]=
     {NULL,mb,mp,3,16*4,-1,0,0,-1,7,9,NULL},
     {msg_172,lb,league,3,8*21,-1,0,0,-1,7,9,NULL},
     {msg_173,seltype_bottoni,NULL,SZ(seltype_bottoni),0,-1,187,57,3,7,9,NULL},
-    {msg_174,asb,NULL,ARCADE_TEAMS+3,0,-1,0,0,-1,7,9,(void *)ArcadeTeamSelection},
-    {msg_41,cb,cp,2,7,-1,0,0,-1,7,9,NULL},
+    {msg_174,asb,NULL,SZ(asb),0,-1,0,0,-1,7,9,(void *)ArcadeTeamSelection},
+    {msg_41,cb,cp,SZ(cb),SZ(cp),-1,0,0,-1,7,9,NULL},
     {msg_175,wcfb,wcfp,1,8,-1,0,0,-1,7,9,NULL},
     {msg_176,mrb,mr,1,4,-1,0,0,-1,7,9,(void *)ReturnFalse},
     {msg_177,scorelist_bottoni,scores,SZ(scorelist_bottoni),40,-1,0,0,-1,8,15,NULL},

@@ -490,6 +490,10 @@ int main(int argc, char *argv[])
     if (!InitMenuFonts()) 
         return FALSE;
 
+
+    // initalize strings in user changable menus
+    initialize_menus();
+
     OpenMenuScreen();
 
     if (screen) {
@@ -514,6 +518,8 @@ int main(int argc, char *argv[])
         if(SoundStarted())
             FreeSoundSystem();
     }
+
+    free_menus();
     D(bug("Freeing fonts...\n"));
     FreeMenuFonts();
 
