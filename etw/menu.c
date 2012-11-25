@@ -1325,7 +1325,8 @@ void draw_pause_menu()
 
     while (!actual_menu->Button[actual_button].Text)
         actual_button++;
-
+    
+    current_button = actual_button;
     DrawBox(actual_button);
 }
 
