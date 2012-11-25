@@ -290,7 +290,11 @@ struct Button seltype_bottoni[]=
 
 struct Button scorelist_bottoni[]=
 {
+#ifndef IPHONE
     {60,229,259,241,MENU_SCORES,7,9,msg_0}, // Score list
+#else
+    {60,210,259,246,MENU_SCORES,7,9,msg_0}, // Score list
+#endif
 };
 
 
