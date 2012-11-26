@@ -970,34 +970,30 @@ void CancelButton(struct Button *b)
 void PrintButtonType(struct Button *b, WORD bl, WORD bt,
                      struct myfont *tf)
 {
-    char *c;
-
-    if ((current_menu != MENU_TEAM_SELECTION
-         || b > &actual_menu->Button[TS_RIGHE * TS_COLONNE -1])
-        && (current_menu != MENU_ARCADE_SELECTION
-            || b > &actual_menu->Button[ARCADE_TEAMS - 1]))
-        return;
-
-    switch (b->Color) {
-    case COLOR_TEAM_A:
+    if ((current_menu == MENU_TEAM_SELECTION && b->ID < (TS_RIGHE * TS_COLONNE)) ||
+        (current_menu == MENU_ARCADE_SELECTION && b->ID < ARCADE_TEAMS)) {
+        char *c;
+        
+        switch (b->Color) {
+            case COLOR_TEAM_A:
 #ifndef IPHONE
-        c = "_J2" /*-*/ ;
+                c = "_J2" /*-*/ ;
 #else
-        c = "_P" /*-*/;
+                c = "_P" /*-*/;
 #endif
-        break;
-    case COLOR_TEAM_B:
-        c = "_J1" /*-*/ ;
-        break;
-    case COLOR_COMPUTER:
-        c = "_C" /*-*/ ;
-        break;
-    default:
-        c = NULL;
-    }
-
-    if (c) {
-        DisplayText(b, bl + b->X1, bt + b->Y1, c, strlen(c), tf);
+                break;
+            case COLOR_TEAM_B:
+                c = "_J1" /*-*/ ;
+                break;
+            case COLOR_COMPUTER:
+                c = "_C" /*-*/ ;
+                break;
+            default:
+                c = NULL;
+        }
+        
+        if (c)
+            DisplayText(b, bl + b->X1, bt + b->Y1, c, strlen(c), tf);
     }
 }
 
@@ -1295,8 +1291,10 @@ void draw_pause_menu()
     int i;
     team_t *c = find_controlled_team();
 
+    // it's important to set current_menu before CreateButton() since createbutton() uses it!
     actual_menu = &menu[MENU_PAUSE];
-
+    current_menu = MENU_PAUSE;
+    
     // show substitutions only if we the game is stopped (throw in, kick off...)
     if (pl->InGioco || !c)
         actual_menu->Button[2].Text = NULL;
@@ -1319,7 +1317,6 @@ void draw_pause_menu()
     for (i = 0; i < actual_menu->NumeroPannelli; ++i)
         CreateButton(&actual_menu->Pannello[i]);    
 
-    current_menu = MENU_PAUSE;
     actual_button = 0;
 
 

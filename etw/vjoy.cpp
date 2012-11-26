@@ -24,9 +24,9 @@ void touch_init()
     
     touch = new TouchControl(screen, "mobile/knob.bmp", "mobile/joystick-base.bmp");
 
-    // only pause key in CPU vs CPU matches
-    if (p->team[0]->Joystick != -1 ||
-        p->team[1]->Joystick != -1) {
+    // only pause key in CPU vs CPU matches and highlights
+    if ((p->team[0]->Joystick != -1 ||
+         p->team[1]->Joystick != -1) && !highlight) {
         touch->add_button("mobile/red-normal.bmp", "mobile/red-pressed.bmp", WINDOW_WIDTH - 140, WINDOW_HEIGHT - 80, TouchControl::BUTTON_1);
         touch->add_button("mobile/blue-normal.bmp", "mobile/blue-pressed.bmp", WINDOW_WIDTH - 70, WINDOW_HEIGHT - 100, TouchControl::BUTTON_2);
     }
@@ -66,6 +66,28 @@ int display_touched()
 }
 #endif
 
+void check_cpuvscpu_touch()
+{
+    if (!touch) {
+        D(bug("MyReadTouchPort without touch class initialization!"));
+        return;
+    }
+    int res = touch->iteration();
+    
+    // trigger pause on button_3 press
+    if (res & TouchControl::BUTTON_3) {
+        if (!network_game) {
+            DoPause();
+            return;
+        }
+    }
+    if (res & TouchControl::QUIT) {
+        SetResult("break");
+        final = FALSE;
+        quit_game=TRUE;
+    }
+}
+    
 int check_replay_touch()
 {
     BOOL rc = TRUE;
