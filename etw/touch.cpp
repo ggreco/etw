@@ -1,5 +1,8 @@
 #include "touch.h"
 #include <math.h>
+extern "C" {
+#include "eat.h"
+}
 
 SDL_Texture *TouchControl::
 load_bmp(const char *name, int &w, int &h)
@@ -17,26 +20,26 @@ load_bmp(const char *name, int &w, int &h)
     return t;
 }
 
-int TouchControl::
-add_button(const char *normal, const char *pressed, int x, int y)
+void TouchControl::
+add_button(const char *normal, const char *pressed, int x, int y, int id)
 {
-    static int buttons[] = {BUTTON_1, BUTTON_2, BUTTON_3, BUTTON_4, BUTTON_5, BUTTON_6, BUTTON_7, BUTTON_8};
     button b;
-    if (!(b.img = load_bmp(normal, b.w, b.h)))
-        return 0;
-    if (!(b.pressed = load_bmp(pressed, b.w, b.h))) {
+    if (!(b.img = load_bmp(normal, b.w, b.h))) {
+        D(bug("Unable to create button %d, image %s not found\n", id, normal));
+        return;
+    }
+    if (!(b.pressed = load_bmp(pressed, b.w, b.h))) { 
+        D(bug("Unable to create button %d, selected image %s not found\n", id, pressed));
         SDL_DestroyTexture(b.img);
-        return 0;
+        return;
     }
 
-    b.id = buttons[buttons_.size()];
+    b.id = id;
     b.x = x;
     b.y = y;
     b.is_pressed = false;
 
     buttons_.push_back(b);
-
-    return b.id;
 }
 
         

@@ -74,7 +74,7 @@ class TouchControl
         }
         int touch_x() const { return touch_x_; }
         int touch_y() const { return touch_y_; }
-        int add_button(const char *normal, const char *pressed, int x, int y);
+        void add_button(const char *normal, const char *pressed, int x, int y, int id);
         int iteration();
         void draw();
         void landscape(bool flag) { landscape_ = flag; }
