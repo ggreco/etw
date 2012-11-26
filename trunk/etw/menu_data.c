@@ -659,7 +659,11 @@ struct Button mr[]=
 
 struct Button mrb[]=
 {
+#ifndef IPHONE
     {60,229,259,241,MENU_SIMULATION,7,9,msg_0},
+#else
+    {60,205,259,241,MENU_SIMULATION,7,9,msg_0},
+#endif
 };
 
 struct Button wcfb[]=
