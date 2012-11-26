@@ -161,6 +161,7 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
     m->game.ball.dir = fread_u8(f);
     m->game.ball.quota = fread_u8(f);
     m->game.ball.sector = fread_u8(f);
+    m->game.ball.special = fread_u8(f);
 
 // write refree related datas
     m->game.referee.world_x = fread_u16(f);    
@@ -353,6 +354,7 @@ void WriteMatch(FILE *f, struct MatchStatus *m)
     fwrite_u8(m->game.ball.dir, f);
     fwrite_u8(m->game.ball.quota, f);
     fwrite_u8(m->game.ball.sector, f);
+    fwrite_u8(m->game.ball.special, f);
 
 // write refree related datas
     fwrite_u16(m->game.referee.world_x, f);    

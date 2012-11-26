@@ -540,9 +540,9 @@ void HandleKeeper(int num)
                 }
             }
 
-            if(presa)
-            {
-                FermaPalla();
+            if(presa) {
+                D(bug("Initial quota: %d!\n", pl->quota));
+                HaltBallNoQuota(); // placed instead of FermaPalla to avoid the ball to stay on the ground during the animation
                 pl->InGioco=FALSE;
                 pl->sector=GOALKICK;
                 g->team->Possesso=1;
@@ -1084,7 +1084,7 @@ skiptuffo:
                 p->team[g->SNum]->Possesso=1;
                 p->team[g->SNum^1]->Possesso=0;
                 pl->InGioco=FALSE;
-                FermaPalla();
+                HaltBallNoQuota();
                 HideBall();
             }
 

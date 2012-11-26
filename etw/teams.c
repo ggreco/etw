@@ -552,12 +552,9 @@ void SetTeamSettings(WORD team, BOOL starting)
             teamsettings[i*2].Highlight=pannelli[i*3].Highlight=colore_team[controllo[team]+1];
     }
 
-    for(i=0, k=1; i<min(15, teamlist[team].nplayers); i++)
-    {
+    for(i=0, k=1; i<min(15, teamlist[team].nplayers); i++) {
         if(k==11)
-        {
             k++;
-        }
 
         AddPlayer(&teamlist[team].players[i], k);
 

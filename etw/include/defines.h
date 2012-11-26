@@ -261,6 +261,9 @@
 #define PANEL_OFFSIDE (1<<17)
 #define PANEL_CHAT (1<<18)
 #define PANEL_DISPLAYCHAT (1<<19)
+// the following panels are available used only in the mobile version
+#define PANEL_THROW_IN (1<<20)
+#define PANEL_CORNER (1<<21)
 
 // Il numero di frames che dura il pannello del gol!
 

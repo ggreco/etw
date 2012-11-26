@@ -15,6 +15,7 @@ typedef struct ball
     uint8_t dir;
     int8_t quota;
     int8_t sector;
+    int8_t special;
 } ball_t;
 
 #endif

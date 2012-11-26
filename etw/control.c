@@ -81,17 +81,7 @@ void MoveNonControlled(void)
                     yg>ylimit_n &&
                     yg<ylimit_s   )
             {
-                if(!g->OnScreen)
-                {
-
-#if 0
-                    /* this is to debug replay code, cause a segfault */
-                    if(arcade && j==1 && i==4)
-                    {
-                        char *a=NULL;
-                        *a=0;
-                    }
-#endif
+                if(!g->OnScreen) {
                     AddAnimObj(g->anim,xg-field_x,yg-field_y,Animation[g->AnimType].Frame[0]+g->dir);
 
                     g->OnScreen=TRUE;
@@ -493,47 +483,36 @@ skipchange:
                 {
                     WORD yk=(g->world_y>>3)-field_y;
 
-                    if(yk>7)
-                    {
-                        if(s->MarkerOnScreen)
-                        {
-                            s->MarkerFrame++;
-
-                            if(s->MarkerFrame>9)
-                                s->MarkerFrame=0;
-
-
-                            if(g->ArcadeEffect)
-                            {
-                                ChangeAnimObj(s->Marker,arcade_frame_sequence[s->MarkerFrame]+(g->ArcadeEffect-1)*3+20);
-                                MoveAnimObj(s->Marker,(g->world_x>>3)-field_x,yk-10);
-                            }
-                            else
-                            {
-                                if(s->MarkerRed==Pens[RADAR_TEAM_B])
-                                {
-                                    ChangeAnimObj(s->Marker,s->MarkerFrame+MARKER_TEAM_B);
-                                }
-                                else
-                                {
-                                    ChangeAnimObj(s->Marker,s->MarkerFrame);
-                                }
-
-                                MoveAnimObj(s->Marker,(g->world_x>>3)-field_x+3,yk-8);
-                            }
-
-
-                        }
-                        else
-                        {
+                    // show marker only for human players or if computer player has an arcade effect
+                    if(yk>7 && (s->Joystick != -1 || g->ArcadeEffect)) {
+                        if (!s->MarkerOnScreen) {
                             s->MarkerOnScreen=TRUE;
                             s->MarkerFrame=0;
                             AddAnimObj(s->Marker,(g->world_x>>3)-field_x+3,yk-7,s->MarkerRed ? MARKER_TEAM_B : 0);
 
+                        }   
+                        else {
+                            s->MarkerFrame++;
+
+                            if(s->MarkerFrame>9)
+                                s->MarkerFrame=0;
+                        }
+
+                        if(g->ArcadeEffect) {
+                            ChangeAnimObj(s->Marker,arcade_frame_sequence[s->MarkerFrame]+(g->ArcadeEffect-1)*3+20);
+                            MoveAnimObj(s->Marker,(g->world_x>>3)-field_x,yk-10);
+                        }
+                        else
+                        {
+                            if(s->MarkerRed==Pens[RADAR_TEAM_B])
+                                ChangeAnimObj(s->Marker,s->MarkerFrame+MARKER_TEAM_B);
+                            else
+                                ChangeAnimObj(s->Marker,s->MarkerFrame);
+
+                            MoveAnimObj(s->Marker,(g->world_x>>3)-field_x+3,yk-8);
                         }
                     }
-                    else if(s->MarkerOnScreen)
-                    {
+                    else if(s->MarkerOnScreen) {
                         RemAnimObj(s->Marker);
                         s->MarkerOnScreen=FALSE;
                     }
