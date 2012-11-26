@@ -543,6 +543,23 @@ void ShowPanel(void)
         }
     }
 
+    // new panels used only in the mobile version
+    if (p->show_panel & PANEL_THROW_IN) {
+        const char *txt =  "TOUCH A PLAYER TO THROW IN";
+        int l = strlen(txt);
+        int x = (WINDOW_WIDTH - l * font_width) >> 1,
+            y = (WINDOW_HEIGHT - font_height) >> 1;
+        TextShadow(x, y, txt, l);
+    }
+
+    if (p->show_panel & PANEL_CORNER) {
+        const char *txt =  "TOUCH THE PLAYER YOU WANT TO SERVE";
+        int l = strlen(txt);
+        int x = (WINDOW_WIDTH - l * font_width) >> 1,
+            y = (WINDOW_HEIGHT - font_height) >> 1;
+        TextShadow(x, y, txt, l);
+    }
+
     if (p->show_panel & PANEL_STATS) {
         char buffer[20], c;
         register int t, l, x, y, xs;
@@ -698,7 +715,7 @@ void ShowPanel(void)
     }
 
 /*
-// Non e' piu' un pannello
+// it's no more a panel
 
     if(p->show_panel&PANEL_PAUSE)
     {

@@ -18,6 +18,8 @@ set(sources highdirent.c cpu.c human.c myiff.c specials.c
         	control.c gfx.c menu_font.c special.c network.c 
         	highsocket.c prefix.c vjoy.cpp touch.cpp)
 
+# comment this for release mode        
+set(CMAKE_BUILD_TYPE Debug)
 
 link_directories(${SDL2_LIBRARY_DIRS})
 add_executable(etw ${sources})

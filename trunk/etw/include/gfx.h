@@ -83,8 +83,8 @@ typedef struct gfx gfx_t;
 
 /* Funzioni trasformate in macro! */
 
-#define MoveAnimObj(obj, x, y) {obj->x_pos=(x);obj->y_pos=(y);obj->moved=TRUE;}
-#define ChangeAnimObj(obj, f)  {obj->current_frame=(f); obj->bottom=obj->y_pos+obj->Heights[f];}
+#define MoveAnimObj(obj, x, y) do {obj->x_pos=(x);obj->y_pos=(y);obj->moved=TRUE;} while(0)
+#define ChangeAnimObj(obj, f)  do {obj->current_frame=(f); obj->bottom=obj->y_pos+obj->Heights[f];} while(0)
 
 
 extern BOOL use_remapping; /* Questa variabile gestisce il remapping, deve

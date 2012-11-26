@@ -740,8 +740,8 @@ void RimessaLaterale(player_t *g)
     while(p->shotheight[pl->Stage]<4)
         pl->Stage++;
 
-        pl->TipoTiro=TIRO_RIMESSA;
-        g->AnimType=GIOCATORE_DOPORIMESSA;
+    pl->TipoTiro=TIRO_RIMESSA;
+    g->AnimType=GIOCATORE_DOPORIMESSA;
 
     RestartTime();
 
@@ -763,6 +763,11 @@ void HandleRimessa(player_t *g)
     if(g->team->Joystick>=0)
     {
         uint32_t l;
+
+        // we show a panel for mobile use
+        p->show_panel |= PANEL_THROW_IN;
+        if (p->referee.Tick < 5)
+            p->referee.Tick = 5;
 
         g->WaitForControl--;
 

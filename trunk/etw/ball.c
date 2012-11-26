@@ -301,7 +301,7 @@ void HandleBall(void)
             }
             pl->ActualFrame++;
         }
-        else
+        else if (!pl->special)
         {
             pl->Stage=0;
             pl->quota=0;

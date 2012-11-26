@@ -69,39 +69,41 @@ void Progress(void);
 #define PrintResult() bltchunkybitmap(p->result,0,0,main_bitmap,0,4,p->result_len*VS_CHAR_X,VS_CHAR_Y+1,result_width,bitmap_width)
 
 
-#define DoSpecialAnim(g,x) g->AnimType=(x);g->FrameLen=0;g->AnimFrame=-1;g->Special=TRUE
-#define DoAnim(g,x) g->AnimType=x;g->FrameLen=0;g->AnimFrame=-1
+#define DoSpecialAnim(g,x) do { g->AnimType=(x);g->FrameLen=0;g->AnimFrame=-1;g->Special=TRUE; } while(0)
+#define DoAnim(g,x) do {g->AnimType=x;g->FrameLen=0;g->AnimFrame=-1; } while(0)
 
-#define TogliPalla() if(pl->gioc_palla){if(pl->gioc_palla->speed<7) pl->gioc_palla->speed+=3;    \
+#define TogliPalla() do {if(pl->gioc_palla){if(pl->gioc_palla->speed<7) pl->gioc_palla->speed+=3;    \
                     pl->gioc_palla->Comando=NESSUN_COMANDO; p->last_touch=pl->gioc_palla->number+(pl->gioc_palla->SNum<<5); \
                     if(pl->gioc_palla->ArcadeEffect) RemoveArcadeEffect(pl->gioc_palla,pl->gioc_palla->ArcadeEffect); \
-                    pl->gioc_palla=NULL;pl->sq_palla=NULL;  }
+                    pl->gioc_palla=NULL;pl->sq_palla=NULL;  } } while(0)
                     
 
-#define TogliPallaMod() if(pl->gioc_palla){  \
+#define TogliPallaMod() do { if(pl->gioc_palla){  \
                     int i;  p->last_touch=pl->gioc_palla->number+(pl->gioc_palla->SNum<<5); \
                     pl->velocita=(pl->gioc_palla->ActualSpeed<<2);    \
                     pl->dir=(pl->gioc_palla->dir<<5);if(pl->gioc_palla->speed<7) pl->gioc_palla->speed+=3;\
                     if(pl->gioc_palla->ArcadeEffect) RemoveArcadeEffect(pl->gioc_palla,pl->gioc_palla->ArcadeEffect); \
                     pl->gioc_palla->Comando=NESSUN_COMANDO; pl->gioc_palla=NULL;pl->sq_palla=NULL;    \
-                    pl->MaxQuota=0;for(i=1;i<SHOT_LENGTH;i++) p->shotheight[i]=0;UpdateBallSpeed();}
+                    pl->MaxQuota=0;for(i=1;i<SHOT_LENGTH;i++) p->shotheight[i]=0;UpdateBallSpeed();} } while(0)
 
-#define DaiPalla(g) pl->gioc_palla=g;if(g->speed>2)g->speed-=3;pl->sq_palla=g->team; \
-            pl->sq_palla->Possesso=1;p->team[g->SNum^1]->Possesso=0;
+#define DaiPalla(g) do { pl->gioc_palla=g;if(g->speed>2)g->speed-=3;pl->sq_palla=g->team; \
+            pl->sq_palla->Possesso=1;p->team[g->SNum^1]->Possesso=0; } while(0)
 
-#define HideBall()    if(!pl->Hide) \
-            {    \
-                pl->Hide=TRUE;    \
+#define HideBall()    do { if(!pl->Hide) {    \
+                        pl->Hide=TRUE;    \
                         RemAnimObj(pl->anim); \
-            }
+                        pl->special = 0; \
+                        } \
+                      } while(0)
 
-#define ShowBall()      if(pl->Hide) \
-            {    \
-                AddAnimObj(pl->anim,(pl->world_x>>3)-field_x,(pl->world_y>>3)-field_y,pl->ActualFrame);    \
-                pl->Hide=FALSE;    \
-            }
+#define ShowBall() do { if(pl->Hide) { \
+                AddAnimObj(pl->anim,(pl->world_x>>3)-field_x,(pl->world_y>>3)-field_y,pl->ActualFrame); \
+                pl->Hide=FALSE; pl->special = 0; \
+            } } while(0)
 
 #define FindDistance(xs,ys,xd,yd,angle) (xd!=xs&&sin_table[angle]!=0 ? ((WORD)(abs( (abs(xd-xs)<<7)/sin_table[angle]) )) : abs(yd-ys) )
 
-#define FermaPalla() pl->velocita=0;pl->delta_x=0;pl->delta_y=0;pl->quota=0
+#define FermaPalla() do { pl->velocita=0; pl->delta_x=0; pl->delta_y=0; pl->quota=0; } while(0)
+#define HaltBallNoQuota() do { pl->velocita=0; pl->delta_x=0; pl->delta_y=0; pl->special = 1; } while(0)
+
 #endif
