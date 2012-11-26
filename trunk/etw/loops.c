@@ -27,6 +27,8 @@ gfx_t *background;
 
 void HandleControl(void)
 {
+    static int key_tick = 0;
+    
     if (!replay_mode) {
         int i, j;
 
@@ -41,24 +43,29 @@ void HandleControl(void)
         if (i == 1 || j == 1)
             r_controls[1][counter] = MyReadPort1(1);
     }
-}
-
-void HandleScrolling(void)
-{
-    register WORD xs, ys, max_scroll;
-    static WORD scroll_tick = 0, key_tick = 0;
-/* checks on the display scrolling */
-
-    scroll_tick++;
+    
     key_tick++;
-
-
+    
     if (!use_touch) {
+        // we check the keyboard with low frequency to avoid problems with eaten events
         if (key_tick > 16) {
             CheckKeys();
             key_tick = 0;
         }
     }
+    else if (p->team[0]->Joystick == -1 &&
+             p->team[1]->Joystick == -1 &&
+             !replay_mode)
+        check_cpuvscpu_touch();
+}
+
+void HandleScrolling(void)
+{
+    register WORD xs, ys, max_scroll;
+    static WORD scroll_tick = 0;
+/* checks on the display scrolling */
+
+    scroll_tick++;
 
     if (scroll_tick > 50) {
         if (p->team[0]->Possesso) {
