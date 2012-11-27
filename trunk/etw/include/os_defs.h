@@ -94,6 +94,8 @@ extern unsigned long os_get_timer(void);
 #define JPF_BUTTON_REVERSE (1 << JPB_BUTTON_REVERSE)
 #define JPF_BUTTON_PLAY    (1 << JPB_BUTTON_PLAY)
 #define JP_BUTTON_MASK     (JPF_BUTTON_BLUE|JPF_BUTTON_RED|JPF_BUTTON_YELLOW|JPF_BUTTON_GREEN|JPF_BUTTON_FORWARD|JPF_BUTTON_REVERSE|JPF_BUTTON_PLAY)
+// new flag added for touch compatibility
+#define JPF_TOUCH (1 << 31)
 
 /* Direction types, valid for JP_TYPE_GAMECTLR and JP_TYPE_JOYSTK */
 #define JPB_JOY_UP         3
