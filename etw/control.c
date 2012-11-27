@@ -840,7 +840,7 @@ skipchange:
 
                                 if(g->SpecialData>-1&&g->SpecialData<10)
                                 {
-                                    ChangeControlled(s,g->SpecialData);
+                                    ChangeControlled(s, g->SpecialData);
                                     g->SpecialData=-1;
                                     g->WaitForControl=40;
                                     return;
