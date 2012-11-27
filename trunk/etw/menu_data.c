@@ -76,8 +76,8 @@ struct Button high_bottoni[]=
     {72,210,246,222,0,14,13,msg_95},
 #else
     {20,57,150,80,MENU_HIGH_SELECTION,11,12,msg_97},  // Highlights
-    {20,103,150,126,MENU_HIGH_SELECTION,11,12,msg_98},
-    {20,149,150,172,-1,11,12,msg_99},
+    {20,103,150,126,MENU_HIGH_SELECTION,11,12,"DELETE"},
+    {20,149,150,172,-1,11,12,NULL},
     {72,205,246,232,0,14,13,msg_95},  
 #endif
 };

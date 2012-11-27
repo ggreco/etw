@@ -773,7 +773,7 @@ void HandleRimessa(player_t *g)
         if(!g->Controlled)
             ChangeControlled(g->team,g->GNum);
 
-        if (l && JPF_TOUCH) {
+        if (l & JPF_TOUCH) {
             player_t *dst = find_touch_player(g);
 
             if (dst) {                

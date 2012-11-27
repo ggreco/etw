@@ -1001,13 +1001,9 @@ BOOL ArcadeTeamSelection(WORD button)
 
         selected = button;
 
-        if (b->Color != COLOR_COMPUTER)
-        {
-// No more needed, we write the team name in the button                
-//            int l = strlen(teamlist[b->ID].name);
-//            PrintShadow((WINDOW_WIDTH - l * bigfont->width) / 2,
-//                        FixedScaledY(120), teamlist[b->ID].name, l, bigfont);
-
+        // if color is computer this click is gonna unselect the team, so it should
+        // remove the "VIEW TEAM" button
+        if (b->Color != COLOR_COMPUTER) {
             if (!b3->Text) {
                 char buffer[128];
                 sprintf(buffer, "VIEW %s", teamlist[b->ID].name);
@@ -1037,8 +1033,14 @@ BOOL ArcadeTeamSelection(WORD button)
             else
             {
                 team2_selected = TRUE;
+// max one human team in mobile version!
+#ifndef IPHONE
                 controllo[b->ID] = 0;
                 b->Color = COLOR_TEAM_B;
+#else
+                b->Color = COLOR_COMPUTER;
+                controllo[b->ID] = -1;
+#endif
             }
         }
         else if (b->Color == COLOR_COMPUTER)
@@ -2543,6 +2545,7 @@ BOOL HighSelection(WORD button)
             // on mobile we don't load/save highlight, we just remove them
             remove(buffer);
             SetHighSelection();
+            ChangeMenu(MENU_HIGH_SELECTION);
 #endif
         }
     }
