@@ -2503,6 +2503,7 @@ BOOL HighSelection(WORD button)
         }
         else
         {
+#ifndef IPHONE
             FILE *fh;
 
             if ((fh = fopen(buffer, "rb")))
@@ -2538,6 +2539,11 @@ BOOL HighSelection(WORD button)
 
                 fclose(fh);
             }
+#else
+            // on mobile we don't load/save highlight, we just remove them
+            remove(buffer);
+            SetHighSelection();
+#endif
         }
     }
 

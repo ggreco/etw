@@ -545,7 +545,15 @@ void ShowPanel(void)
 
     // new panels used only in the mobile version
     if (p->show_panel & PANEL_THROW_IN) {
-        const char *txt =  "TOUCH A PLAYER TO THROW IN";
+        const char *txt =  "TOUCH A PLAYER TO THROW IN TO HIM";
+        int l = strlen(txt);
+        int x = (WINDOW_WIDTH - l * font_width) >> 1,
+            y = (WINDOW_HEIGHT - font_height) >> 1;
+        TextShadow(x, y, txt, l);
+    }
+
+    if (p->show_panel & PANEL_HIGHSAVE) {
+        const char *txt =  "HIGHLIGHT SAVED";
         int l = strlen(txt);
         int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;

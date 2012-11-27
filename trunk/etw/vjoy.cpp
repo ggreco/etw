@@ -117,9 +117,12 @@ int check_replay_touch()
                 return DoPause();
         }
 
-        if (res & TouchControl::BUTTON_4)
+        if (res & TouchControl::BUTTON_4) {
             SaveReplay();
-        
+            p->show_panel = PANEL_HIGHSAVE;
+            p->show_time = 200;
+        }
+
         if (res & TouchControl::BUTTON_3)
             rc = FALSE;
     }
