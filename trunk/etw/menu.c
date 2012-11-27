@@ -970,8 +970,8 @@ void CancelButton(struct Button *b)
 void PrintButtonType(struct Button *b, WORD bl, WORD bt,
                      struct myfont *tf)
 {
-    if ((current_menu == MENU_TEAM_SELECTION && b->ID < (TS_RIGHE * TS_COLONNE)) ||
-        (current_menu == MENU_ARCADE_SELECTION && b->ID < ARCADE_TEAMS)) {
+    if ((current_menu == MENU_TEAM_SELECTION && b < &actual_menu->Button[TS_RIGHE * TS_COLONNE]) ||
+        (current_menu == MENU_ARCADE_SELECTION && b < &actual_menu->Button[ARCADE_TEAMS]) ) {
         char *c;
         
         switch (b->Color) {
