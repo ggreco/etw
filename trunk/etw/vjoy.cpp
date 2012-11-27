@@ -127,6 +127,12 @@ int check_replay_touch()
     return rc;
 }
 
+static player_t *ftouch_plr = NULL;
+
+player_t *free_touch_player()
+{
+    return ftouch_plr;
+}
 
 uint32_t MyReadTouchPort(uint32_t l)
 {
@@ -143,21 +149,26 @@ uint32_t MyReadTouchPort(uint32_t l)
     
     if (res & TouchControl::FREE_TOUCH) {
         if (team_t *s = find_controlled_team()) {
+            player_t *g2=FindNearest(s, (touch->touch_x() + field_x) << 3 ,
+                    (touch->touch_y() + field_y) << 3);
+
             if ((pl->gioc_palla && pl->gioc_palla->team != s) ||
-                (!pl->gioc_palla)) {
+                    (!pl->gioc_palla)) {
                 // we can change the active player to the nearest one...
-                player_t *g2=FindNearest(s, (touch->touch_x() + field_x) << 3 ,
-                                         (touch->touch_y() + field_y) << 3);
-                
+
                 D(bug("Detected free touch at %d,%d, changing player from %s to %s\n",
-                      touch->touch_x(), touch->touch_y(),
-                      s->attivo ? s->attivo->name : "NONE",
-                      g2 ? g2->name : "NONE"));
+                            touch->touch_x(), touch->touch_y(),
+                            s->attivo ? s->attivo->name : "NONE",
+                            g2 ? g2->name : "NONE"));
                 if(g2 != s->attivo && g2 != NULL)
                     ChangeControlled(s, g2->GNum);
             }
+            else
+                ftouch_plr = g2;
         }
     }
+    else
+        ftouch_plr = NULL;
 
     // at this level we need only the button down event
     if (res & TouchControl::BUTTONDOWN) {

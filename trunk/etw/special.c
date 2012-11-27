@@ -468,7 +468,7 @@ void DoSpecials(player_t *g)
 
 void Tira(player_t *g)
 {
-        pl->Rimbalzi=0;
+     pl->Rimbalzi=0;
 
 // Per rimesse e tiri al volo la palla non parte da quota 0!
 
@@ -476,15 +476,13 @@ void Tira(player_t *g)
         pl->Stage=0;
 
 
-    if(pl->TipoTiro<TIRO_CORNER)
-    {
+    if(pl->TipoTiro<TIRO_CORNER) {
             pl->MaxQuota=(pl->velocita>>2);
         
         if(pl->TipoTiro==TIRO_ALTO)
             pl->MaxQuota+=2+GetTable();
 
-        if(pl->TipoTiro==TIRO_PALLONETTO)
-        {
+        if(pl->TipoTiro==TIRO_PALLONETTO) {
             pl->MaxQuota+=10+GetTable();
 
             if(CanScore(g)==CS_SI)
@@ -497,25 +495,25 @@ void Tira(player_t *g)
     if(pl->MaxQuota>=MAX_QUOTA)
         pl->MaxQuota=MAX_QUOTA-1;
 
-    if(g->ArcadeEffect==ARCADE_CANNON)
-    {
+    if(g->ArcadeEffect==ARCADE_CANNON) {
         pl->velocita+=8;
         pl->MaxQuota=5+GetTable();
 
         PlayBackSound(sound[AS_CANNON]);
     }
-        else PlayBackSound(sound[SHOT]);
+    else 
+        PlayBackSound(sound[SHOT]);
 
     UpdateShotHeight();
     UpdateBallSpeed();
 
-        g->ActualSpeed=0;
+    g->ActualSpeed=0;
 
-// Questi servono solo per i giocatori controllati, ma non fanno male...
-        g->FirePressed=FALSE;
-        g->TimePress=0;
+// Let's reset controlled player shot settings, this doesn't hurt computer controlled player too
+    g->FirePressed=FALSE;
+    g->TimePress=0;
 
-        DoSpecialAnim(g,GIOCATORE_TIRO);
+    DoSpecialAnim(g,GIOCATORE_TIRO);
 
     if(g->ArcadeEffect)    
         RemoveArcadeEffect(g,g->ArcadeEffect);
@@ -687,10 +685,6 @@ void Passaggio2(player_t *g,char Dir)
 
 void RimessaLaterale(player_t *g)
 {
-/* Uso questo invece di pl->InGioco per evitare che la palla
-   esca prima di entrare!
- */
-
 // Serve per evitare che durante la rimessa venga mostrato il pannello
 
     p->team[0]->ArcadeCounter=0;
@@ -778,6 +772,32 @@ void HandleRimessa(player_t *g)
 
         if(!g->Controlled)
             ChangeControlled(g->team,g->GNum);
+
+        if (use_touch) {
+            player_t *dst = free_touch_player();
+
+            if (dst) {                
+                int d=FindDistance(g->world_x, g->world_y, dst->world_x, dst->world_y,pl->dir);
+                pl->dir = FindDirection256(g->world_x, g->world_y, dst->world_x, dst->world_y) / 32;
+                TogliPalla();
+                DaiPalla(g);
+
+                D(bug("Doing touch throw in from %s to %s, distance: %d", g->name, dst->name, d));
+                // don't allow throw in too far or too near
+                if (d > 1500)
+                    d = 1500;
+                else if (d < 300)
+                    d = 300;
+
+                pl->velocita=(d>>7)+1;
+                pl->TipoTiro=TIRO_RIMESSA;
+                g->SpecialData=dst->GNum;
+                dst->SpecialData = -1;
+                g->FirePressed=FALSE;
+                DoSpecialAnim(g,GIOCATORE_RIMESSA);
+                return;
+            }
+        }
 
         if(l&MYBUTTONMASK)
         {
