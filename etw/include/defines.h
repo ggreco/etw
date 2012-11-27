@@ -264,6 +264,7 @@
 // the following panels are available used only in the mobile version
 #define PANEL_THROW_IN (1<<20)
 #define PANEL_CORNER (1<<21)
+#define PANEL_HIGHSAVE (1<<22)
 
 // Il numero di frames che dura il pannello del gol!
 
