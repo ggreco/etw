@@ -541,14 +541,13 @@ void HandleKeeper(int num)
             }
 
             if(presa) {
-                D(bug("Initial quota: %d!\n", pl->quota));
+//                D(bug("Initial quota: %d!\n", pl->quota));
                 HaltBallNoQuota(); // placed instead of FermaPalla to avoid the ball to stay on the ground during the animation
                 pl->InGioco=FALSE;
                 pl->sector=GOALKICK;
                 g->team->Possesso=1;
                 p->team[g->SNum^1]->Possesso=0;
             }
-//        Qui devo mettere il codice che gestisce il passaggio all'indietro...
 
         }
         else if(!pl->gioc_palla && (near_porta || (GetTable()>1&&g->Attenzione>(GetTable())) ) )

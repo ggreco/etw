@@ -42,6 +42,9 @@ void HandleControl(void)
 
         if (i == 1 || j == 1)
             r_controls[1][counter] = MyReadPort1(1);
+
+        if (i == -1 && j == -1 && use_touch && !replay_mode)
+            check_cpuvscpu_touch();
     }
     
     key_tick++;
@@ -53,10 +56,6 @@ void HandleControl(void)
             key_tick = 0;
         }
     }
-    else if (p->team[0]->Joystick == -1 &&
-             p->team[1]->Joystick == -1 &&
-             !replay_mode)
-        check_cpuvscpu_touch();
 }
 
 void HandleScrolling(void)

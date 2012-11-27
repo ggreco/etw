@@ -773,8 +773,8 @@ void HandleRimessa(player_t *g)
         if(!g->Controlled)
             ChangeControlled(g->team,g->GNum);
 
-        if (use_touch) {
-            player_t *dst = free_touch_player();
+        if (l && JPF_TOUCH) {
+            player_t *dst = find_touch_player(g);
 
             if (dst) {                
                 pl->dir = FindDirection256(g->world_x, g->world_y, dst->world_x, dst->world_y);
@@ -801,8 +801,7 @@ void HandleRimessa(player_t *g)
                 return;
             }
         }
-
-        if(l&MYBUTTONMASK)
+        else if(l&MYBUTTONMASK)
         {
             p->team[0]->ArcadeCounter=0;
             p->team[1]->ArcadeCounter=0;

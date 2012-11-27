@@ -258,7 +258,7 @@ const char *get_tactic_name(int);
 void set_pause_tactic(int);
 
 // from vjoy.cpp
-player_t *free_touch_player();
+player_t *find_touch_player(player_t *);
 void draw_touch();
 void touch_init();
 int display_touched();

@@ -340,6 +340,14 @@ void HandleControlled(int squadra)
     }
 }
 
+player_t *find_touch_player(player_t *g)
+{
+    int x = r_controls[g->team->Joystick ^ 1][counter] & 0xffff,
+        y = r_controls[g->team->Joystick ^ 1][counter] >> 16;
+
+    return FindNearest(g->team, (x + field_x) << 3, (y + field_y) << 3);
+}
+
 void HandleControlledJ2B(int squadra)
 {
     register uint32_t joystate;
@@ -350,11 +358,6 @@ void HandleControlledJ2B(int squadra)
     if(g->Special || g->Comando)
         return;
 
-    if(!pl->InGioco) {
-        NoPlayerControl(g);
-        return;
-    }
-
     if (g->team->Joystick < 0) {
         D(bug("HandleControlled with Joystick < 0!\n"));
         return;
@@ -362,7 +365,28 @@ void HandleControlledJ2B(int squadra)
 
     joystate=r_controls[g->team->Joystick][counter];
 
-    // Gestione del fire
+     if(!pl->InGioco) {
+        NoPlayerControl(g);
+        return;
+    }
+
+
+   // handling free touch
+   if (joystate & JPF_TOUCH) {
+        player_t *g2 = find_touch_player(g);
+
+        if ((pl->gioc_palla && pl->gioc_palla->team != g->team) ||
+                (!pl->gioc_palla)) {
+            // we can change the active player to the nearest one...
+
+            D(bug("Detected free touch change player from %s to %s\n", g->name, g2 ? g2->name : "NONE"));
+            if(g2 != g && g2 != NULL)
+                ChangeControlled(g->team, g2->GNum);
+        }
+    }
+
+
+   // handling fire button
 
     if(!need_release[g->team->Joystick])
     {
