@@ -264,6 +264,8 @@ void touch_init();
 int display_touched();
 void check_cpuvscpu_touch();
 int check_replay_touch();
+void show_vjoy();
+void hide_vjoy();
 
 // Da os_control.c
 

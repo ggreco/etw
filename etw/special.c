@@ -759,14 +759,19 @@ void HandleRimessa(player_t *g)
         uint32_t l;
 
         // we show a panel for mobile use
-        p->show_panel |= PANEL_THROW_IN;
-        if (p->referee.Tick < 5)
-            p->referee.Tick = 5;
+        if (use_touch) {
+            hide_vjoy();
+            p->show_panel |= PANEL_THROW_IN;
+            if (p->show_time < 50)
+                p->show_time = 50;
+        }
 
         g->WaitForControl--;
 
-        if(g->WaitForControl<0)
+        if(g->WaitForControl<0) {
+            show_vjoy();
             goto rimessacomputer;
+        }
 
         l=r_controls[g->team->Joystick][counter];
 
@@ -776,7 +781,9 @@ void HandleRimessa(player_t *g)
         if (l & JPF_TOUCH) {
             player_t *dst = find_touch_player(g);
 
-            if (dst) {                
+            if (dst) {            
+                show_vjoy();
+
                 pl->dir = FindDirection256(g->world_x, g->world_y, dst->world_x, dst->world_y);
                 g->dir = pl->dir / 32;
                 int d=FindDistance(g->world_x, g->world_y, dst->world_x, dst->world_y,pl->dir);

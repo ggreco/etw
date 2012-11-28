@@ -66,6 +66,16 @@ int display_touched()
 }
 #endif
 
+
+void hide_vjoy() {
+    if (touch)
+        touch->show_joy(false);
+}
+void show_vjoy() {
+    if (touch)
+        touch->show_joy(true);
+}
+
 void check_cpuvscpu_touch()
 {
     if (!touch) {
