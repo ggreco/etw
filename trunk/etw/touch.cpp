@@ -21,7 +21,7 @@ load_bmp(const char *name, int &w, int &h)
 }
 
 void TouchControl::
-add_button(const char *normal, const char *pressed, int x, int y, int id)
+add_button(const char *normal, const char *pressed, int x, int y, uint32_t id)
 {
     button b;
     if (!(b.img = load_bmp(normal, b.w, b.h))) {
@@ -38,11 +38,12 @@ add_button(const char *normal, const char *pressed, int x, int y, int id)
     b.x = x;
     b.y = y;
     b.is_pressed = false;
+    b.visible = true;
 
     buttons_.push_back(b);
 }
 
-        
+       
 TouchControl::
 TouchControl(SDL_Window *screen, const char *knob, const char *base) :
     screen_(screen), knob_(NULL), joybase_(NULL),
@@ -61,9 +62,12 @@ TouchControl(SDL_Window *screen, const char *knob, const char *base) :
         activation_.y = screen_h_ / 2;
         activation_.w = screen_w_ / 3;
         activation_.h = screen_h_ / 2;
+        show_joy_ = true;
     }
-    else // no joystick in this screen
+    else { // no joystick in this screen
         activation_.x = activation_.y = activation_.w = activation_.h = -1;
+        show_joy_ = false;
+    }
 }
 
 TouchControl::
@@ -119,6 +123,9 @@ draw()
         }
 
         for (BtIt it = buttons_.begin(); it != buttons_.end(); ++it) {
+            if (!it->visible)
+                continue;
+
             SDL_Rect r = {it->x, it->y, it->w, it->h};
 
             SDL_RenderCopy(rend, it->is_pressed ? it->pressed : it->img, NULL, &r);
@@ -162,7 +169,7 @@ iteration()
 
                     if (!found) {
                         SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
-                        touch_x_ = e.tfinger.x * screen_w_ / t->xres,
+                        touch_x_ = e.tfinger.x * screen_w_ / t->xres;
                         touch_y_ = e.tfinger.y * screen_h_ / t->yres;
                         result |= FREE_TOUCH;
                     }
@@ -173,15 +180,17 @@ iteration()
                     SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
                     int x = e.tfinger.x * screen_w_ / t->xres,
                         y = e.tfinger.y * screen_h_ / t->yres;
+                    bool found = false;
 
                     if (button *b = in_button(x, y)) {
                         result |= b->id;
                         result |= BUTTONDOWN;
                         b->is_pressed = true;
                         b->finger = e.tfinger.fingerId;
+                        found = true;
                     }
-                    else if (!visible_ && knob_ && joybase_)
-                        if (in_activation_area(x, y)) {
+                    else if (!visible_ && show_joy_ &&
+                             in_activation_area(x, y)) {
                             visible_ = true;
                             joyfinger_ = e.tfinger.fingerId;
                             center_x_ = x;
@@ -197,7 +206,14 @@ iteration()
 
                             reference_x_ = center_x_;
                             reference_y_ = center_y_;
-                        }                    
+                            found = true;
+                    }      
+
+                    if (!found) {
+                        touch_x_ = x;
+                        touch_y_ = y;
+                        result |= FREE_TOUCHDOWN;
+                    }
                 }
                 break;
             case SDL_FINGERMOTION:

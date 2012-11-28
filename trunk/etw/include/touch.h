@@ -7,10 +7,12 @@
 class TouchControl
 {  
         struct button {
-            int x, y, w, h, id;
+            int x, y, w, h;
+            uint32_t id;
             SDL_Texture *img, *pressed;
             bool is_pressed;
             int finger;
+            bool visible;
         };
 
         typedef std::vector<button> BtVec;
@@ -28,14 +30,18 @@ class TouchControl
         int touch_x_, touch_y_;
         SDL_Rect joyrect_, activation_;
         float distance_, delta_x_, delta_y_;
-        bool landscape_;
+        bool show_joy_;
 
         button *in_button(int x, int y) const {
-            for (BtVec::const_iterator it = buttons_.begin(); it != buttons_.end(); ++it)
+            for (BtVec::const_iterator it = buttons_.begin(); it != buttons_.end(); ++it) {
+                if (!it->visible)
+                    continue;
+
                 if (x >= it->x && y >= it->y &&
                     x <= (it->x + it->w) &&
                     y <= (it->y + it->h))
                     return const_cast<button *>(&(*it));
+            }
             
             return NULL;
         }
@@ -64,7 +70,8 @@ class TouchControl
                      BUTTONDOWN = 0x2000,
                      BUTTONUP = 0x4000,
                      FREE_TOUCH = 0x8000,
-                     QUIT = 0xff0000};
+                     FREE_TOUCHDOWN = 0x10000,
+                     QUIT = 0xf00000};
 
         TouchControl(SDL_Window *screen, const char *knob = NULL, const char *base = NULL);
         ~TouchControl();
@@ -74,11 +81,23 @@ class TouchControl
         }
         int touch_x() const { return touch_x_; }
         int touch_y() const { return touch_y_; }
-        void add_button(const char *normal, const char *pressed, int x, int y, int id);
+        void add_button(const char *normal, const char *pressed, int x, int y, uint32_t id);
         int iteration();
         void draw();
-        void landscape(bool flag) { landscape_ = flag; }
-        bool landscape() const { return landscape_; }
+
+        // joystick may be only shown if we have the images for it!
+        void show_button(uint32_t id, bool val) {
+            for (BtVec::iterator it = buttons_.begin(); it != buttons_.end(); ++it) 
+                if (it->id == id)
+                    it->visible = val;
+        }
+
+        void show_joy(bool val) { 
+           // if it's already visible we do not hide it since it means the player is 
+           // keeping is finger pressed on the screen while using another finger to pass
+            show_joy_ = val && joybase_ && knob_; 
+        }
+
         SDL_Texture *load_bmp(const char*, int&, int&);
 };
 
