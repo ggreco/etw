@@ -113,6 +113,7 @@ extern void EseguiCross(player_t *);
 extern void (*LongPass)(player_t *, uint32_t);
 extern void FreePass(player_t *, uint32_t);
 extern void TargetedPass(player_t *, uint32_t);
+extern void TouchTargetedPass(player_t *, player_t *);
 extern void Tira(player_t *);
 extern void Passaggio(player_t *);
 extern void Passaggio2(player_t *,char);
