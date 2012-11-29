@@ -383,6 +383,8 @@ void HandleControlledJ2B(int squadra)
             if(g2 != g && g2 != NULL)
                 ChangeControlled(g->team, g2->GNum);
         }
+        else if (g == pl->gioc_palla && g2 != g) 
+            TouchTargetedPass(g, g2);
     }
 
 
@@ -413,7 +415,7 @@ void HandleControlledJ2B(int squadra)
             {
                 g->TimePress++;
 
-                if(g->TimePress>8)
+                if(g->TimePress>16) // this was 8, the value was still at 25 fps logic? Very likely.
                 {
                     need_release[g->team->Joystick]=TRUE;
 

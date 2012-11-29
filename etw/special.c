@@ -529,55 +529,55 @@ void PreparaPassaggio(player_t *g,player_t *g_min)
     {
         if(pl->TipoTiro==TIRO_PASSAGGIO_SMARCANTE)
         {
-        ExpectedX+=(velocita_x[g_min->ActualSpeed-1][g_min->speed][g_min->dir]<<5);
-        ExpectedY+=(velocita_y[g_min->ActualSpeed-1][g_min->speed][g_min->dir]<<5);
+            ExpectedX+=(velocita_x[g_min->ActualSpeed-1][g_min->speed][g_min->dir]<<5);
+            ExpectedY+=(velocita_y[g_min->ActualSpeed-1][g_min->speed][g_min->dir]<<5);
         }
         else
         {
-        ExpectedX+=(velocita_x[g_min->ActualSpeed-1][g_min->speed][g_min->dir]<<2);
-        ExpectedY+=(velocita_y[g_min->ActualSpeed-1][g_min->speed][g_min->dir]<<2);
+            ExpectedX+=(velocita_x[g_min->ActualSpeed-1][g_min->speed][g_min->dir]<<2);
+            ExpectedY+=(velocita_y[g_min->ActualSpeed-1][g_min->speed][g_min->dir]<<2);
         }
     }
-        pl->TipoTiro=TIRO_RASOTERRA;
+    pl->TipoTiro=TIRO_RASOTERRA;
 
-        pl->dir=FindDirection256(g->world_x,g->world_y,ExpectedX,ExpectedY);
+    pl->dir=FindDirection256(g->world_x,g->world_y,ExpectedX,ExpectedY);
     distance=FindDistance(g->world_x,g->world_y,ExpectedX,ExpectedY,pl->dir);
 
     g->SpecialData=g_min->GNum;
 
     distance=min(distance,2200); // Limito la lunghezza massima del passaggio corto.
 
-// La velocita' e' distance /128 (32 per i passi per toccare terra e 4 per gli scatti della velocita' della palla)
+    // La velocita' e' distance /128 (32 per i passi per toccare terra e 4 per gli scatti della velocita' della palla)
 
     pl->velocita=distance>>7;
 
     if(distance<700)
         pl->velocita+=2;
 
-// Maxxo la velocita' a 32.
+    // Maxxo la velocita' a 32.
 
     if(pl->velocita>32)
         pl->velocita=32;
 
-        if(distance>1500)
+    if(distance>1500)
     {
         pl->TipoTiro=TIRO_ALTO;
-/*
-        g_min->dir=FindDirection(g_min->world_x,g_min->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
-        DoSpecialAnim(g_min,GIOCATORE_RESPIRA);
-*/
+        /*
+           g_min->dir=FindDirection(g_min->world_x,g_min->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
+           DoSpecialAnim(g_min,GIOCATORE_RESPIRA);
+         */
     }
 
-        if(g_min->SpecialData>3000)
+    if(g_min->SpecialData>3000)
     {
         pl->TipoTiro=TIRO_PALLONETTO;
-/*
-        g_min->dir=FindDirection(g_min->world_x,g_min->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
-        DoSpecialAnim(g_min,GIOCATORE_RESPIRA);
-*/
+        /*
+           g_min->dir=FindDirection(g_min->world_x,g_min->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
+           DoSpecialAnim(g_min,GIOCATORE_RESPIRA);
+         */
     }
 
-// Se non c'e' il joystick fermo il giocatore che riceve il passaggio.
+    // if it's a CPU player I stop him to wait for the pass
 
     if(g->team->Joystick<0)
     {
@@ -618,49 +618,49 @@ void Passaggio(player_t *g)
     }
 
     if(pos == 5) {
-        D(bug("Non dovrebbe succedere! Pos==5, fallito passaggio2!\n"));
+        // this happens in training mode, where the goalkeeper has no target for the pass!
+        // D(bug("Non dovrebbe succedere! Pos==5, fallito passaggio2!\n"));
 
         pl->velocita=10;
         g->dir=Dir;
-                pl->dir=g->dir<<5;
+        pl->dir=g->dir<<5;
         g->SpecialData=-1;
     }
 }
 
 void PassaggioB(player_t *g)
 {
-        pl->Rimbalzi=0;
+    pl->Rimbalzi=0;
     pl->Stage=0;
 
-        pl->MaxQuota=(pl->velocita>>2);
-        
-    if(pl->TipoTiro==TIRO_ALTO)
+    pl->MaxQuota=(pl->velocita>>2);
+
+    if (pl->TipoTiro==TIRO_ALTO)
         pl->MaxQuota+=7;
 
-    if(pl->TipoTiro==TIRO_PALLONETTO)
+    if (pl->TipoTiro==TIRO_PALLONETTO)
         pl->MaxQuota+=15;
 
     UpdateShotHeight();
     UpdateBallSpeed();
 
-        g->ActualSpeed=0;
+    g->ActualSpeed=0;
 
-// Questi servono solo per i giocatori controllati, ma non fanno male...
-        g->FirePressed=FALSE;
-        g->TimePress=0;
+    // Needed only for controlled players, but not harmful for CPU ones
+    g->FirePressed=FALSE;
+    g->TimePress=0;
 
-        DoSpecialAnim(g,GIOCATORE_PASSAGGIO);
+    DoSpecialAnim(g,GIOCATORE_PASSAGGIO);
 
-        TogliPalla();
+    TogliPalla();
 
-        if(g->SpecialData>-1&&g->SpecialData<10)
-        {
-           ChangeControlled(g->team,g->SpecialData);
-           g->SpecialData=-1;
-       g->WaitForControl=40;
-        }
+    if (g->SpecialData>-1&&g->SpecialData<10) {
+        ChangeControlled(g->team,g->SpecialData);
+        g->SpecialData=-1;
+        g->WaitForControl=40;
+    }
 
-        PlayBackSound(sound[PASS]);
+    PlayBackSound(sound[PASS]);
 }
 
 void Passaggio2(player_t *g,char Dir)
@@ -682,6 +682,18 @@ void Passaggio2(player_t *g,char Dir)
     else
         PassaggioB(g);
 }
+
+void TouchTargetedPass(player_t *g, player_t *d)
+{
+    int direction = FindDirection256(g->world_x, g->world_y, d->world_x, d->world_y) / 32;
+    PreparaPassaggio(g, d);
+
+    if(g->dir!=direction)
+        SetComando(g, ESEGUI_ROTAZIONE, ESEGUI_PASSAGGIO, direction);
+    else
+        PassaggioB(g);
+}
+
 
 void RimessaLaterale(player_t *g)
 {
@@ -1073,52 +1085,45 @@ void PunizioneCorner(player_t *g)
 {
     if(p->show_panel&0xff00)
         return;
-
-    if(pl->sector==PENALTY)
-    {
+ 
+    if (pl->sector==PENALTY)
         Rigore(g);
-    }
-    else if(g->team->Joystick>=0)
-    {
+    else if (g->team->Joystick>=0) {
         uint32_t l;
 
         l=r_controls[g->team->Joystick][counter];
 
         g->WaitForControl--;
 
-/*
-    Non va!
+        /*
+           we don't want to shoot anyway after some time
+           if(g->WaitForControl<0&&!free_kicks)
+           goto punizionecomputer;
+         */
 
-        if(g->WaitForControl<0&&!free_kicks)
-            goto punizionecomputer;
-*/
+        if (!g->Controlled)
+            ChangeControlled(g->team,g->GNum);
 
-                if(!g->Controlled)
-                        ChangeControlled(g->team,g->GNum);
-
-        if(pl->gioc_palla!=g)
-        {
+        if (pl->gioc_palla!=g) {
             TogliPalla();
             DaiPalla(g);
         }
 
-                if(l&MYBUTTONMASK)
-                {
+        if (l & MYBUTTONMASK) {
             g->team->ArcadeCounter=0;
 
-                        g->FirePressed=TRUE;
-                        g->TimePress++;
+            g->FirePressed=TRUE;
+            g->TimePress++;
 
-                        if(g->TimePress>32)
+            if(g->TimePress>32)
                 goto tirapunizione;
-                }
-                else if (g->FirePressed)
-                {
+        }
+        else if (g->FirePressed) {
 tirapunizione:
-                        g->FirePressed=FALSE;
+            g->FirePressed=FALSE;
             g->team->ArcadeCounter=0;
 
-                        pl->velocita=(g->TimePress>>1)+3;
+            pl->velocita=(g->TimePress>>1)+3;
 
             TogliPalla();
             DaiPalla(g);
@@ -1128,7 +1133,7 @@ tirapunizione:
             if(g->TimePress>6)
                 pl->TipoTiro=TIRO_CORNER;
             else {
-// Barra di potenza, solo dopo il check del passaggio
+                // Barra di potenza, solo dopo il check del passaggio
 
                 if(l&JP_DIRECTION_MASK)
                     g->dir=GetJoyDirection(l);
@@ -1140,7 +1145,7 @@ tirapunizione:
             RimuoviComandoSquadra( g->SNum^1 ,STAI_BARRIERA);
             RimuoviComandoSquadra( g->SNum^1 ,MANTIENI_DISTANZA);
 
-            
+
             {
                 player_t *g2;
                 WORD xs=pl->world_x+(pl->delta_x<<7);
@@ -1229,22 +1234,22 @@ tirapunizione:
                 }
                 break;
 
-// Punizioni:
+                // Punizioni:
             default:
-// Non dovrebbe piu' servire...
-/*
-                if(pl->dir>31)
-                {
-                    pl->dir=0;
-                }
-                else if(pl->dir<0)
-                {
-                    pl->dir=31;
-                }
-*/
+                // Non dovrebbe piu' servire...
+                /*
+                   if(pl->dir>31)
+                   {
+                   pl->dir=0;
+                   }
+                   else if(pl->dir<0)
+                   {
+                   pl->dir=31;
+                   }
+                 */
                 break;
         }
-        
+
         g->dir=((pl->dir+4)>>5);
 
         if(g->dir>7)
@@ -1258,13 +1263,11 @@ tirapunizione:
         else
             p->doing_shot=TRUE;
     }
-    else
-    {
+    else {
         g->WaitForControl--;
         p->doing_shot=FALSE;
 
-        if(g->WaitForControl<0)
-        {
+        if (g->WaitForControl < 0) {
             UBYTE c;
 
 // punizionecomputer: non usata per ora
@@ -1273,22 +1276,19 @@ tirapunizione:
 
             c=CanScore(g);
 
-            if(c==CS_NO&&g!=g->team->attivo)
-            {
-                        g->dir=FindDirection(g->world_x,g->world_y,g->team->attivo->world_x,g->team->attivo->world_y);
+            if (c==CS_NO&&g!=g->team->attivo) {
+                g->dir=FindDirection(g->world_x,g->world_y,g->team->attivo->world_x,g->team->attivo->world_y);
 
                 if(!g->Controlled)
                     ChangeControlled(g->team,g->GNum);
 
-                        Passaggio2(g,g->dir);
+                Passaggio2(g,g->dir);
             }
-            else
-            {
+            else {
                 if(!g->Controlled)
                     ChangeControlled(g->team,g->GNum);
 
-                if(c==CS_SI)
-                {
+                if(c==CS_SI) {
 /*
                     WORD dest_x;
 
@@ -1299,8 +1299,7 @@ tirapunizione:
 */
                     CPUShot(g);
                 }
-                else
-                {
+                else {
                     WORD dest_x;
 
                     if(g->SNum==0)
@@ -1325,8 +1324,7 @@ tirapunizione:
             p->mantieni_distanza=FALSE;
             p->doing_shot=FALSE;
 
-            if(free_kicks)
-            {
+            if(free_kicks) {
                 p->referee.Comando=FISCHIA_PREPUNIZIONE;
                 p->referee.Tick=100;
             }
@@ -1335,8 +1333,7 @@ tirapunizione:
 
             RestartTime();
         }
-        else
-        {
+        else {
             g->world_x=pl->world_x-avanzamento_x[g->dir];
             g->world_y=pl->world_y-avanzamento_y[g->dir];
         }
