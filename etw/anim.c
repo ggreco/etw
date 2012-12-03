@@ -14,10 +14,10 @@
 #define mysprintf sprintf
 
 
-#if 0
-
 #include "menu.h"
 #include "anim.h"
+#include <time.h>
+#include "myiff.h"
 
 #define AddTail MyAddTail
 #define AddHead MyAddHead
@@ -29,6 +29,7 @@
 #define MIN(a,b) min(a,b)
 #define ABS(a) abs(a)
 
+LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn);
 
 typedef struct
 {
@@ -42,7 +43,7 @@ typedef struct
 /* local prototypes */
 static                 BOOL                 FreeAbleFrame( struct AnimInstData *, struct FrameNode * );
 static                 struct FrameNode    *AllocFrameNode( void );
-static                 struct FrameNode    *FindFrameNode( struct MinList *, ULONG );
+static                 struct FrameNode    *FindFrameNode( struct MyList *, ULONG );
 static                 void                 CopyBitMap( struct BitMap *, struct BitMap * );
 static                 void                 XCopyMem( APTR, APTR, ULONG );
 static                 void                 ClearBitMap( struct BitMap * );
@@ -54,7 +55,7 @@ static                 LONG                 DrawDLTA( struct AnimInstData *, str
 static                 void                 DumpAnimHeader( struct AnimInstData *, ULONG, struct AnimHeader * );
 static                 struct FrameNode    *GetPrevFrameNode( struct FrameNode *, ULONG );
 
-void DeltaUnpack(struct BitMap *f_bm,long f_dlta_adr,long f_mode);
+void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,long f_mode);
 void BodyToBitMap(struct BitMap *f_bm,struct BitMapHeader *bmh,UBYTE *f_body,LONG dltasize);
 void MakeYTable(short f_BytesPerRow);
 
@@ -77,18 +78,19 @@ void FreeFrames(struct AnimInstData *a)
     for(fn=(struct FrameNode *)a->aid_FrameList.pHead;
         fn->fn_Node.mpNext ; fn=fnsucc)
     {
-            fnsucc=fn->fn_Node.mpNext;
+            fnsucc=(struct FrameNode*)fn->fn_Node.mpNext;
             free(fn->fn_BitMap);
             free(fn);
     }
-    free(aid);
+    free(a->bm);
+    free(a);
 }
 
 struct FrameNode *GetFrameNode(struct AnimInstData *a,int n)
 {
     register struct FrameNode *fn;
 
-    for(fn=(struct FrameNode *)a->aid_FrameList.mpHead;
+    for(fn=(struct FrameNode *)a->aid_FrameList.pHead;
         fn->fn_Node.mpNext && n>0; fn=(struct FrameNode *)fn->fn_Node.mpNext,n--);
 
     return fn;
@@ -97,19 +99,19 @@ struct FrameNode *GetFrameNode(struct AnimInstData *a,int n)
 void DisplayAnim(struct AnimInstData *a)
 {
     LONG sclk,i=0,l=0,t,current=0,s=0;
-    register struct FrameNode *fn;
-    register struct BitMap *bm;
+    struct FrameNode *fn;
+    struct BitMap *bm;
 
     sclk=clock()-20;
 
-    CopyBitMap(((struct FrameNode *)a->aid_FrameList.mpHead)->fn_BitMap,Temp);
+    CopyBitMap(((struct FrameNode *)a->aid_FrameList.pHead)->fn_BitMap, Temp);
 
-    for(fn=(struct FrameNode *)a->aid_FrameList.mpHead;
+    for(fn=(struct FrameNode *)a->aid_FrameList.pHead;
         fn->fn_Node.mpNext;fn=(struct FrameNode *)fn->fn_Node.mpNext)
     {
         if(!fn->fn_BitMap)
         {
-            DeltaUnpack(Temp,(LONG)fn->delta,0);
+            DeltaUnpack(Temp,fn->delta,0);
             bm=Temp;
         }
         else bm=fn->fn_BitMap;
@@ -120,33 +122,30 @@ void DisplayAnim(struct AnimInstData *a)
         {
             fn->fn_Sample->Rate=fn->fn_Rate;
             fn->fn_Sample->Volume=fn->fn_Volume;
-            fn->fn_Sample->Loops=fn->fn_Loops;
+            // XXX TODO actually we don't have sound loops!!!
+            //fn->fn_Sample->Loops=fn->fn_Loops;
             PlayBackSound(fn->fn_Sample);
         }
 
         t=(clock()-sclk);
 
-        if(fn->fn_Node.mpNext->mpNext && t>((struct FrameNode *)fn->fn_Node.mpNext)->Clock)
-        {
+        // frameskip is implemented here
+        if (fn->fn_Node.mpNext->mpNext && t>((struct FrameNode *)fn->fn_Node.mpNext)->Clock) {
             s++;
             continue;
 /*
-            fn=(struct FrameNode *)fn->fn_Node.mpNext;
+            fn=(struct FrameNode *)fn->fn_Node.pNext;
             DeltaUnpack(Temp,(LONG)fn->delta,0);
             fn->fn_BitMap=Temp;
-    Proviamo cosi'...
 */
         }
 
-// Inserire qui il plane2chunky e il blitting.
+// XXX TODO Inserire qui il plane2chunky e il blitting.
 
-        if( t<(fn->Clock) )
-        {
+        if( t<(fn->Clock) ) {
             SDL_Delay(10);
             i++;
         }
-
-        SDL_Flip();
 
 /*
         if( !(l&1) )
@@ -168,14 +167,13 @@ void DisplayAnim(struct AnimInstData *a)
 LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
 {
       LONG error=0;
-      BOOL new=IsListEmpty((struct List *)&aid->aid_FrameList);
+      BOOL new=IsListEmpty(&aid->aid_FrameList);
 
       struct IFFHandle *iff = NULL;
 
 #define NUM_PROPCHUNKS (9L)
 
-      if(iff=AllocIFF())
-      {
+      if (iff = AllocIFF()) {
           ULONG                pos        = 0UL,curframe=0L;      /* current file pos in IFF stream  */
           ULONG                modeid     = (ULONG)INVALID_ID;  /* anim view mode                  */
           ULONG                animwidth  = 0UL,                /* anim width                      */
@@ -185,10 +183,9 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
           ULONG                minreltime = 1UL,                /* Maximum ah_RelTime value        */
                                maxreltime = 0UL;                /* Minimum ah_RelTime              */
           struct StoredProperty *bmhdprop       = NULL, /* ILBM BMHD (struct BitMapHeader)        */
-                                      *camgprop       = NULL, /* ILBM CAMG (amiga view mode id)         */
-                                      *dpanprop       = NULL; /* DPaint DPAN chunk                      */
-          const LONG propchunks[ (NUM_PROPCHUNKS * 2) ] =
-            {
+                                *camgprop       = NULL, /* ILBM CAMG (amiga view mode id)         */
+                                *dpanprop       = NULL; /* DPaint DPAN chunk                      */
+          const LONG propchunks[ (NUM_PROPCHUNKS * 2) ] = {
               ID_ILBM, ID_BMHD,
               ID_ILBM, ID_CAMG,
               ID_ILBM, ID_GRAB,
@@ -198,485 +195,402 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
               ID_ILBM, ID_Copyright,
               ID_ILBM, ID_FVER,
               ID_ILBM, ID_NAME
-            };
+          };
 
-    iff->iff_Stream=fh;
+          iff->iff_Stream=fh;
 
-    InitIFFasDOS(iff);
+          InitIFFasDOS(iff);
 
-    if(!OpenIFF(iff,IFFF_READ))
-    {
-            if( !(error = PropChunks( iff, (LONG *)propchunks, NUM_PROPCHUNKS )) )
-            {
+          if (!OpenIFF(iff, IFFF_READ)) {
+              if ( !(error = PropChunks( iff, (int32_t *)propchunks, NUM_PROPCHUNKS )) )  {
 #define NUM_STOPCHUNKS (5L)
-              const
-              LONG stopchunks[ (NUM_STOPCHUNKS * 2) ] =
-              {
-                ID_ILBM, ID_FORM,
-                ID_ILBM, ID_ANHD,
-                ID_ILBM, ID_CMAP,
-                ID_ILBM, ID_BODY,
-                ID_ILBM, ID_DLTA
-              };
+                  const LONG stopchunks[ (NUM_STOPCHUNKS * 2) ] = {
+                      ID_ILBM, ID_FORM,
+                      ID_ILBM, ID_ANHD,
+                      ID_ILBM, ID_CMAP,
+                      ID_ILBM, ID_BODY,
+                      ID_ILBM, ID_DLTA
+                  };
 
-              if( !(error = StopChunks( iff, (LONG *)stopchunks, NUM_STOPCHUNKS )) )
-              {
-                struct FrameNode *fn         = NULL;
+                  if ( !(error = StopChunks( iff, (int32_t *)stopchunks, NUM_STOPCHUNKS )) ) {
+                      struct FrameNode *fn         = NULL;
 
-                /* Scan IFF stream until an error or an EOF occurs */
-                for( ;; )
-                {
-                  struct ContextNode *cn;
+                      /* Scan IFF stream until an error or an EOF occurs */
+                      for (;;) {
+                          struct ContextNode *cn;
 
-                  if( error = ParseIFF( iff, IFFPARSE_SCAN ) )
-                  {
-                    /* EOF (End Of File) is no error here... */
-                    if( error == IFFERR_EOF )
-                    {
-                      error = 0L;
-                    }
+                          if ( (error = ParseIFF( iff, IFFPARSE_SCAN ) ))  {
+                              /* EOF (End Of File) is no error here... */
+                              if( error == IFFERR_EOF )
+                                  error = 0L;
+                              break;
+                          }
 
-                    break;
-                  }
-
-                  /* Get file position */
-                  if( cn = CurrentChunk( iff ) )
-                  {
-                    pos = 0UL;
-
-                    while( cn = ParentChunk( cn ) )
-                    {
-                      pos += cn -> cn_Scan;
-                    }
-                  }
-
-                  /* bmhd header loaded ? */
-                  if( bmhdprop == NULL )
-                  {
-                    if( bmhdprop = FindProp( iff, ID_ILBM, ID_BMHD ) )
-                    {
-              struct BitMapHeader *bmh=aid->aid_BMH;
-                      ULONG poolsize,
-                            availmem;
-
-                      *bmh = *((struct BitMapHeader *)(bmhdprop -> sp_Data));
-
-                      animwidth  = bmh -> bmh_Width;
-                      animheight = bmh -> bmh_Height;
-                      animdepth  = bmh -> bmh_Depth;
-
-//                      availmem = AvailMem( MEMF_PUBLIC );
-                        if(IsListEmpty(aid->aid_FrameList))
-                        {
-// Questa roba mi serve solo se creo, non nel merge!
-
-                      /* Create a seperate pool for frames:
-                       * (((width + 7) / 8) * height * depth + struct BitMapHeader + Padding) * 4 frames
-                       */
-                            MakeYTable(animwidth>>3);
-
-                      /* Shrink pool to a fitting size */
-                        }
-                    }
-                  }
-
+                          /* Get file position */
 #if 0
-                  /* camg loaded ? */
-                  if( camgprop == NULL )
-                  {
-                    if( camgprop = FindProp( iff, ID_ILBM, ID_CAMG ) )
-                    {
-                      modeid = *(ULONG *)(camgprop -> sp_Data);
+                          if ( (cn = CurrentChunk( iff ) ))  {
+                              pos = 0UL;
 
-                      /* Check for invalid flags */
-                      if( (!(modeid & MONITOR_ID_MASK)) ||
-                          ((modeid & EXTENDED_MODE) &&
-                          (!(modeid & 0xFFFF0000UL))) )
-                      {
-                        /* Remove invalid flags (see include31:graphics/view.h) */
-                        modeid &= ~(GENLOCK_VIDEO | PFBA | GENLOCK_AUDIO | DUALPF | EXTENDED_MODE | VP_HIDE | SPRITES );
-                      }
-
-                      /* Be safe ! */
-                      if( (modeid & 0xFFFF0000UL) && (!(modeid & 0x00001000UL)) )
-                      {
-                        modeid = (ULONG)INVALID_ID;
-                      }
-                    }
-                  }
+                              while ((cn = ParentChunk(cn)))
+                                  pos += cn -> cn_Scan;
+                          }
+#else
+                          pos = ftell(fh);
 #endif
+                          /* bmhd header loaded ? */
+                          if ( bmhdprop == NULL ) {
+                              if ( (bmhdprop = FindProp( iff, ID_ILBM, ID_BMHD ) )) {
+                                  struct BitMapHeader *bmh=aid->aid_BMH;
+                                  ULONG poolsize,
+                                        availmem;
 
-                  /* grab loaded ? - TOLTO */
+                                  *bmh = *((struct BitMapHeader *)(bmhdprop -> sp_Data));
 
-                  /* dpan loaded ? */
-                  if( dpanprop == NULL )
-                  {
-                    if( dpanprop = FindProp( iff, ID_ILBM, ID_DPAN ) )
-                    {
-                      if( (aid -> aid_FPS) == 0UL )
-                      {
-                        struct DPAnimChunk *dpan = (struct DPAnimChunk *)(dpanprop -> sp_Data);
-                        
-                        if( (dpan -> dpan_FPS) <= 60UL )
-                        {
-                          aid -> aid_FPS = dpan -> dpan_FPS;
+                                  bmh -> bmh_Width = SDL_SwapBE16(bmh->bmh_Width);
+                                  bmh -> bmh_Height = SDL_SwapBE16(bmh->bmh_Height);
+                                  animwidth  = bmh -> bmh_Width;
+                                  animheight = bmh -> bmh_Height;
+                                  animdepth  = bmh -> bmh_Depth;
 
-                          D(bug( "DPAN found, FPS set to %lu\n", (aid -> aid_FPS) ));
-                        }
-                        else
-                        {
-                          D(bug( "DPAN found, ignoring invalid FPS value %lu\n", (ULONG)(dpan -> dpan_FPS) ));
-                        }
-                      }
-                    }
-                  }
+                                  //                      availmem = AvailMem( MEMF_PUBLIC );
+                                  if(IsListEmpty(&aid->aid_FrameList))
+                                  {
+                                      // Questa roba mi serve solo se creo, non nel merge!
 
-                    /* IFF ANNO found ? - TOLTO */
-                    /* IFF AUTH found ? - TOLTO */
-                    /* IFF (C) found ? -TOLTO */
-                    /* IFF FVER found ? -TOLTO */
-                    /* IFF NAME found ? -TOLTO */
+                                      /* Create a seperate pool for frames:
+                                       * (((width + 7) / 8) * height * depth + struct BitMapHeader + Padding) * 4 frames
+                                       */
+                                      MakeYTable(animwidth>>3);
 
-                  if( cn = CurrentChunk( iff ) )
-                  {
-                    switch( (cn -> cn_Type) )
-                    {
-                      case ID_ILBM:
-                      {
-                          switch( (cn -> cn_ID) )
+                                      /* Shrink pool to a fitting size */
+                                  }
+                              }
+                          }
+
+                          /* grab loaded ? - TOLTO */
+
+                          /* dpan loaded ? */
+                          if( dpanprop == NULL )
                           {
-                            case ID_FORM:
-                            {
-                                /* Create an prepare a new frame node */
-                                if( fn = AllocFrameNode() )
-                                {
-                                  AddTail( (struct List *)(&(aid -> aid_FrameList)), (struct Node *)(&(fn -> fn_Node)) );
-
-                                  fn -> fn_TimeStamp = timestamp++;
-
-                                  if(fn->fn_Node.mpPrev)
-                                    fn -> Clock = ((struct FrameNode *)fn->fn_Node.mpPrev)->Clock+(CLOCKS_PER_SEC/50);
-                                  else
-                                    fn -> Clock = (CLOCKS_PER_SEC/50);
-
-                                  fn -> fn_Frame     = fn -> fn_TimeStamp;
-                                  
-                                  fn -> fn_PrevFrame = fn;
-                  curframe++;
-                                }
-                                else
-                                {
-                                  /* can't alloc frame node */
-                                  error = ERROR_NO_FREE_STORE;
-                                }
-                            }
-                                break;
-
-                            case ID_ANHD:
-                            {
-                                if( fn )
-                                {
-                                  ULONG interleave;
-
-                                  /* Read struct AnimHeader */
-                                  error = ReadChunkBytes( iff, (&(fn -> fn_AH)), (LONG)sizeof( struct AnimHeader ) );
-                                  if( error == (LONG)sizeof( struct AnimHeader ) ) error = 0L;
-
-                                  /* Info */
-//                                  DumpAnimHeader( aid, (fn -> fn_TimeStamp), (&(fn -> fn_AH)) );
-
-                                  /* Check if we have dynamic timing */
-                                  maxreltime = MAX( maxreltime, (fn -> fn_AH . ah_RelTime) );
-                                  minreltime = MIN( minreltime, (fn -> fn_AH . ah_RelTime) );
-
-                                  interleave = (ULONG)(fn -> fn_AH . ah_Interleave);
-
-                                  /* An interleave of 0 means two frames back */
-                                  if( interleave == 0 )
+                              if( dpanprop = FindProp( iff, ID_ILBM, ID_DPAN ) )
+                              {
+                                  if( (aid -> aid_FPS) == 0UL )
                                   {
-                                    interleave = 2;
-                                  }
+                                      struct DPAnimChunk *dpan = (struct DPAnimChunk *)(dpanprop -> sp_Data);
 
-                                  /* Get previous frame */
-                                  fn -> fn_PrevFrame = GetPrevFrameNode( fn, interleave );
-                                }
-                            }
-                                break;
-
-                            case ID_CMAP:
-                            {
-                                if( fn )
-                                {
-                                  UBYTE *buff;
-
-                                  /* Allocate buffer */
-                                  if( buff = (UBYTE *)malloc((cn -> cn_Size) + 16UL) ) )
-                                  {
-                                    /* Load CMAP data */
-                                    error = ReadChunkBytes( iff, buff, (cn -> cn_Size) );
-
-                                    /* All read ? */
-                                    if( error == (cn -> cn_Size) )
-                                    {
-                                      error = 0L; /* Success ! */
-
-                                      if( timestamp == 1UL )
+                                      dpan->dpan_FPS = SDL_SwapBE32(dpan->dpan_FPS);
+                                      if( (dpan -> dpan_FPS) <= 60UL )
                                       {
-                                        UBYTE *rgb=buff;
-                                        int rgb_nc=cn->cn_Size/3,i;
+                                          aid -> aid_FPS = dpan -> dpan_FPS;
 
-                    // Qui se voglio carico la palette
-                                        for( i = 0UL ; i < rgb_nc ; i++ )
-                                        {
-                                            SDL_Color c;
-                                            c.r = *rgb++;
-                                            c.g = *rgb++;
-                                            c.b = *rgb++;
-
-                            /* Replicate color information (see CMAP2Object for details) and store them into colormap */
-                                            SDL_SetColors(screen,&c,i,1);
-                                        }
-                                      }
-                                    }
-
-                                    free(buff );
-                                  }
-                                  else
-                                  {
-                                    /* no load buff */
-                                    error = ERROR_NO_FREE_STORE;
-                                  }
-                                }
-                            }
-                                break;
-
-                            case ID_BODY:
-                            case ID_DLTA:
-                            {
-                                if( fn )
-                                {
-                                  /* Store position of DLTA (pos points to the DLTA ID) */
-                                  fn -> fn_BMOffset = pos;
-                                  fn -> fn_BMSize   = cn -> cn_Size;
-
-                                  if( (fn -> fn_BitMap) == NULL )
-                                  {
-                                    /* Preload frames only if requested or if this is the key frame (first frame of anim) */
-                                    if( (aid -> aid_LoadAll) || ((fn -> fn_TimeStamp) == 0UL) || !new )
-                                    {
-                                      if( animwidth && animheight && animdepth )
-                                      {
-                                        if( fn -> fn_BitMap = AllocBitMapPooled( animwidth, animheight, animdepth ) )
-                                        {
-                                          UBYTE *buff;
-
-                                          if(!new)
-                                          {
-                                            new=TRUE;
-                                          }
-                                          else Temp=fn->fn_BitMap;
-
-                                          /* Allocate buffer */
-                                          if( buff = (UBYTE *)malloc( (cn -> cn_Size) + 32UL ) )
-                                          {
-                                            struct FrameNode *prevfn;
-
-                                            /* Clear buffer to get rid of some problems with corrupted DLTAs */
-                                            memset( (void *)buff, 0, (size_t)((cn -> cn_Size) + 31UL) );
-
-                                            /* Get previous frame */
-                                            prevfn = fn -> fn_PrevFrame;
-
-                                            /* Load delta data */
-                                            error = ReadChunkBytes( iff, buff, (cn -> cn_Size) );
-
-                                            /* All bytes read ? */
-                                            if( error == (cn -> cn_Size) )
-                                            {
-                                              error = DrawDLTA( aid, /*(prevfn -> fn_BitMap)*/ Temp, (fn -> fn_BitMap), (&(fn -> fn_AH)), buff, (cn -> cn_Size) );
-
-                          D(bug("Processo il frame %ld\n",fn->fn_TimeStamp));
-
-                                              if( error )
-                                              {
-                                                D(bug( "scan/load: dlta unpacking error %lu\n", error ));
-                                              }
-                                            }
-
-                                            free( buff );
-                                          }
-                                          else
-                                          {
-                                            /* no load buff */
-                                            error = ERROR_NO_FREE_STORE;
-                                          }
-                                        }
-                                        else
-                                        {
-                                          /* no bitmap */
-                                          error = ERROR_NO_FREE_STORE;
-                                        }
+                                          D(bug( "DPAN found, FPS set to %lu\n", (aid -> aid_FPS) ));
                                       }
                                       else
                                       {
-                                        /* no dimensions for bitmap (possibly a missing bmhd) */
-                                        error = DTERROR_NOT_ENOUGH_DATA;
+                                          D(bug( "DPAN found, ignoring invalid FPS value %lu\n", (ULONG)(dpan -> dpan_FPS) ));
                                       }
-                                    }
-                                    else
-                                    {
-                                        if( fn->delta = (UBYTE *)malloc(((cn -> cn_Size) + 32UL) ) )
-                                        {
-                                            error = ReadChunkBytes( iff, fn->delta, (cn -> cn_Size) );
-
-                                            if( error == (cn -> cn_Size) )
-                                                error=0;
-
-                                        }
-                                        else error = ERROR_NO_FREE_STORE;
-                                    }
                                   }
-                                  else
-                                  {
-                                    D(bug( "scan/load: bitmap already loaded\n" ));
-                                  }
-                                }
-                            }
-                                break;
+                              }
+                          }
+
+                          /* IFF ANNO found ? - TOLTO */
+                          /* IFF AUTH found ? - TOLTO */
+                          /* IFF (C) found ? -TOLTO */
+                          /* IFF FVER found ? -TOLTO */
+                          /* IFF NAME found ? -TOLTO */
+
+                          if( cn = CurrentChunk( iff ) )
+                          {
+
+                                          switch( (cn -> cn_ID) )
+                                          {
+                                              case ID_FORM:
+                                                  {
+                                                      /* Create an prepare a new frame node */
+                                                      if( fn = AllocFrameNode() )
+                                                      {
+                                                          MyAddTail( &(aid -> aid_FrameList), (struct MyNode*)&(fn -> fn_Node) );
+
+                                                          fn -> fn_TimeStamp = timestamp++;
+
+                                                          if(fn->fn_Node.mpPrev)
+                                                              fn -> Clock = ((struct FrameNode *)fn->fn_Node.mpPrev)->Clock+(CLOCKS_PER_SEC/50);
+                                                          else
+                                                              fn -> Clock = (CLOCKS_PER_SEC/50);
+
+                                                          fn -> fn_Frame     = fn -> fn_TimeStamp;
+
+                                                          fn -> fn_PrevFrame = fn;
+                                                          curframe++;
+                                                      }
+                                                      else
+                                                      {
+                                                          /* can't alloc frame node */
+                                                          error = ERROR_NO_FREE_STORE;
+                                                      }
+                                                  }
+                                                  break;
+
+                                              case ID_ANHD:
+                                                  {
+                                                      if( fn )
+                                                      {
+                                                          ULONG interleave;
+
+                                                          /* Read struct AnimHeader */
+                                                          error = ReadChunkBytes( iff, (&(fn -> fn_AH)), (LONG)sizeof( struct AnimHeader ) );
+                                                          if( error == (LONG)sizeof( struct AnimHeader ) ) error = 0L;
+                                                          fn->fn_AH.ah_RelTime = SDL_SwapBE32(fn->fn_AH.ah_RelTime);
+                                                          fn->fn_AH.ah_AbsTime = SDL_SwapBE32(fn->fn_AH.ah_AbsTime);
+                                                          fn->fn_AH.ah_Flags = SDL_SwapBE32(fn->fn_AH.ah_Flags);
+
+                                                          /* Info */
+                                                          DumpAnimHeader( aid, (fn -> fn_TimeStamp), (&(fn -> fn_AH)) );
+
+                                                          /* Check if we have dynamic timing */
+                                                          maxreltime = MAX( maxreltime, (fn -> fn_AH . ah_RelTime) );
+                                                          minreltime = MIN( minreltime, (fn -> fn_AH . ah_RelTime) );
+
+                                                          interleave = (ULONG)(fn -> fn_AH . ah_Interleave);
+
+                                                          /* An interleave of 0 means two frames back */
+                                                          if( interleave == 0 )
+                                                          {
+                                                              interleave = 2;
+                                                          }
+
+                                                          /* Get previous frame */
+                                                          fn -> fn_PrevFrame = GetPrevFrameNode( fn, interleave );
+                                                      }
+                                                  }
+                                                  break;
+
+                                              case ID_CMAP:
+                                                  {
+                                                      if( fn ) {
+                                                          UBYTE *buff;
+
+                                                          /* Allocate buffer */
+                                                          if( buff = (UBYTE *)malloc((cn -> cn_Size) + 16UL) ) {
+                                                              /* Load CMAP data */
+                                                              error = ReadChunkBytes( iff, buff, (cn -> cn_Size) );
+
+                                                              /* All read ? */
+                                                              if( error == (cn -> cn_Size) )
+                                                              {
+                                                                  error = 0L; /* Success ! */
+
+                                                                  if( timestamp == 1UL )
+                                                                  {
+                                                                      UBYTE *rgb=buff;
+                                                                      int rgb_nc=cn->cn_Size/3,i;
+
+                                                                      D(bug("Loading %d colors from anim CMAP\n", rgb_nc));
+                                                                      // Qui se voglio carico la palette
+                                                                      for( i = 0UL ; i < rgb_nc ; i++ )
+                                                                      {
+                                                                          int r = *rgb++;
+                                                                          int g = *rgb++;
+                                                                          int b = *rgb++;
+                                                                          os_set_color(i, r, g, b);  
+                                                                      }
+                                                                  }
+                                                              }
+
+                                                              free(buff );
+                                                          }
+                                                          else
+                                                          {
+                                                              /* no load buff */
+                                                              error = ERROR_NO_FREE_STORE;
+                                                          }
+                                                      }
+                                                  }
+                                                  break;
+
+                                              case ID_BODY:
+                                              case ID_DLTA:
+                                                  {
+                                                      if( fn )
+                                                      {
+                                                          /* Store position of DLTA (pos points to the DLTA ID) */
+                                                          fn -> fn_BMOffset = pos;
+                                                          fn -> fn_BMSize   = cn -> cn_Size;
+
+                                                          if( (fn -> fn_BitMap) == NULL )
+                                                          {
+                                                              /* Preload frames only if requested or if this is the key frame (first frame of anim) */
+                                                              if( (aid -> aid_LoadAll) || ((fn -> fn_TimeStamp) == 0UL) || !new )
+                                                              {
+                                                                  if( animwidth && animheight && animdepth )
+                                                                  {
+                                                                      if( fn -> fn_BitMap = AllocBitMapPooled( animwidth, animheight, animdepth ) )
+                                                                      {
+                                                                          UBYTE *buff;
+
+                                                                          if(!new)
+                                                                          {
+                                                                              new=TRUE;
+                                                                          }
+                                                                          else Temp=fn->fn_BitMap;
+
+                                                                          /* Allocate buffer */
+                                                                          if( buff = (UBYTE *)malloc( (cn -> cn_Size) + 32UL ) )
+                                                                          {
+                                                                              struct FrameNode *prevfn;
+
+                                                                              /* Clear buffer to get rid of some problems with corrupted DLTAs */
+                                                                              memset( (void *)buff, 0, (size_t)((cn -> cn_Size) + 31UL) );
+
+                                                                              /* Get previous frame */
+                                                                              prevfn = fn -> fn_PrevFrame;
+
+                                                                              /* Load delta data */
+                                                                              error = ReadChunkBytes( iff, buff, (cn -> cn_Size) );
+
+                                                                              /* All bytes read ? */
+                                                                              if( error == (cn -> cn_Size) )
+                                                                              {
+                                                                                  error = DrawDLTA( aid, /*(prevfn -> fn_BitMap)*/ Temp, (fn -> fn_BitMap), (&(fn -> fn_AH)), buff, (cn -> cn_Size) );
+
+                                                                                  D(bug("Processo il frame %ld\n",fn->fn_TimeStamp));
+
+                                                                                  if( error )
+                                                                                  {
+                                                                                      D(bug( "scan/load: dlta unpacking error %lu\n", error ));
+                                                                                  }
+                                                                              }
+
+                                                                              free( buff );
+                                                                          }
+                                                                          else
+                                                                          {
+                                                                              /* no load buff */
+                                                                              error = ERROR_NO_FREE_STORE;
+                                                                          }
+                                                                      }
+                                                                      else
+                                                                      {
+                                                                          /* no bitmap */
+                                                                          error = ERROR_NO_FREE_STORE;
+                                                                      }
+                                                                  }
+                                                                  else
+                                                                  {
+                                                                      /* no dimensions for bitmap (possibly a missing bmhd) */
+                                                                      error = ERROR_NOT_ENOUGH_DATA;
+                                                                  }
+                                                              }
+                                                              else
+                                                              {
+                                                                  if( fn->delta = (UBYTE *)malloc(((cn -> cn_Size) + 32UL) ) )
+                                                                  {
+                                                                      error = ReadChunkBytes( iff, fn->delta, (cn -> cn_Size) );
+
+                                                                      if( error == (cn -> cn_Size) )
+                                                                          error=0;
+
+                                                                  }
+                                                                  else error = ERROR_NO_FREE_STORE;
+                                                              }
+                                                          }
+                                                          else
+                                                          {
+                                                              D(bug( "scan/load: bitmap already loaded\n" ));
+                                                          }
+                                                      }
+                                                  }
+                                                  break;
+                                          }
+                                      }
+                        
+
+                          /* on error: leave for-loop */
+                          if( error )
+                          {
+                              break;
                           }
                       }
-                          break;
-                    }
                   }
+              }
 
-                  /* on error: leave for-loop */
-                  if( error )
+              /* Check for required information */
+              if( error == 0L )
+              {
+                  /* bmh information available  ? */
+                  if( bmhdprop == NULL )
                   {
-                    break;
-                  }
-                }
-              }
-            }
-
-            /* Check for required information */
-            if( error == 0L )
-            {
-              /* bmh information available  ? */
-              if( bmhdprop == NULL )
-              {
-                D(bug( "scan: no bmhd found\n" ));
-                error=1;
-              }
-              else
-              {
-                /* Any frames loaded ? */
-                if( timestamp == 0UL )
-                {
-                    error=1;
-                }
-              }
-            }
-
-            /* Dynamic timing ? */
-            if( (minreltime != maxreltime) && ((aid -> aid_NoDynamicTiming) == FALSE) )
-            {
-              struct FrameNode *worknode,
-                               *nextnode;
-              ULONG             shift = 0UL;    
-              
-              if( minreltime == 0UL )
-              {
-                shift = 1UL;
-              }
-
-              D(bug( "using dynamic timing\n" ));
-
-              /* Renumber timestamps */
-              timestamp = 0UL; /* again we count from 0 */
-
-              worknode = (struct FrameNode *)(aid -> aid_FrameList . mpHead);
-
-              while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mpNext) )
-              {
-                ULONG duration = (worknode -> fn_AH . ah_RelTime) + shift - 1UL;
-
-                worknode -> fn_TimeStamp = timestamp;
-                worknode -> fn_Frame     = timestamp;
-                worknode -> fn_Duration  = duration;
-
-                timestamp += (duration + 1UL);
-
-                worknode = nextnode;
-              }
-            }
-
-            /* Any error ? */
-            if( error == 0L )
-            {
-                  /* ModeID... */
-                  if( (aid -> aid_ModeID) != INVALID_ID )
-                  {
-                    modeid = aid -> aid_ModeID;
+                      D(bug( "scan: no bmhd found\n" ));
+                      error=1;
                   }
                   else
                   {
-                    /* No mode id ? */
-                    if( modeid == INVALID_ID )
-                    {
-                      /* BUG: Does currently not support SUPERHIRES modes */
-                      if( animwidth >= 640UL )
+                      /* Any frames loaded ? */
+                      if( timestamp == 0UL )
                       {
-                        if( animheight >= 400 )
-                        {
-                          modeid = HIRESLACE_KEY;
-                        }
-                        else
-                        {
-                          modeid = HIRES_KEY;
-                        }
+                          error=1;
                       }
-                      else
-                      {
-                        if( animheight >= 400 )
-                        {
-                          modeid = LORESLACE_KEY;
-                        }
-                        else
-                        {
-                          modeid = LORES_KEY;
-                        }
-                      }
-                    }
                   }
+              }
 
-                  /* No FPS rate found ? */
-                  if( (aid -> aid_FPS) == 0UL )
+              /* Dynamic timing ? */
+              if( (minreltime != maxreltime) && ((aid -> aid_NoDynamicTiming) == FALSE) )
+              {
+                  struct FrameNode *worknode,
+                                   *nextnode;
+                  ULONG             shift = 0UL;    
+
+                  if( minreltime == 0UL )
                   {
-                    aid -> aid_FPS = 50UL; /* should be 60 (e.g. 1/60 sec per frame) */
-
-                    D(bug( "Non trovo la rate, vado a 50FPS...\n" ));
-
+                      shift = 1UL;
                   }
 
-                  /* Attach external sound */
-// TOLTO                  AttachSample( aid );
+                  D(bug( "using dynamic timing\n" ));
 
-                  /* Infos */
-                  D(bug( "width %lu height %lu depth %lu frames %lu fps %lu\n",
-                                animwidth,
-                                animheight,
-                                animdepth,
-                                timestamp,
-                                (aid -> aid_FPS) ));
+                  /* Renumber timestamps */
+                  timestamp = 0UL; /* again we count from 0 */
 
-            }
-            CloseIFF(iff);
+                  worknode = (struct FrameNode *)(aid -> aid_FrameList . pHead);
+
+                  while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mpNext) )
+                  {
+                      ULONG duration = (worknode -> fn_AH . ah_RelTime) + shift - 1UL;
+
+                      worknode -> fn_TimeStamp = timestamp;
+                      worknode -> fn_Frame     = timestamp;
+                      worknode -> fn_Duration  = duration;
+
+                      timestamp += (duration + 1UL);
+
+                      worknode = nextnode;
+                  }
+              }
+
+              /* No FPS rate found ? */
+              if( (aid -> aid_FPS) == 0UL )
+              {
+                  aid -> aid_FPS = 50UL; /* should be 60 (e.g. 1/60 sec per frame) */
+
+                  D(bug( "Non trovo la rate, vado a 50FPS...\n" ));
+
+              }
+
+              /* Infos */
+              D(bug( "width %lu height %lu depth %lu frames %lu fps %lu\n",
+                          animwidth,
+                          animheight,
+                          animdepth,
+                          timestamp,
+                          (aid -> aid_FPS) ));
+
+              aid->bm = AllocBitMapPooled(animwidth, animheight, animdepth);
+
+              CloseIFF(iff);
           }
           else
-          {
               error = ERROR_REQUIRED_ARG_MISSING;
-          }
-        FreeIFF(iff);
+          
+          FreeIFF(iff);
     }
 
     return error;
@@ -754,11 +668,11 @@ void StartAnim(struct AnimInstData *aid)
 
 struct FrameNode *LoadFrame(struct AnimInstData *aid,ULONG timestamp)
 {
-        struct FrameNode *fn;
+    struct FrameNode *fn;
 
-        /* Find frame by timestamp */
+    /* Find frame by timestamp */
 
-        if( fn = FindFrameNode( (&(aid -> aid_FrameList)), timestamp ) )
+    if( fn = FindFrameNode( (&(aid -> aid_FrameList)), timestamp ) )
         LoadFrameNode(aid,fn);
 
 
@@ -767,179 +681,173 @@ struct FrameNode *LoadFrame(struct AnimInstData *aid,ULONG timestamp)
 
 LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
 {
-          LONG error = 0L;
+    LONG error = 0L;
 
-//          ObtainSemaphore( (&(aid -> aid_SigSem)) );
+    //          ObtainSemaphore( (&(aid -> aid_SigSem)) );
 
-          if( fn )
-          {
+    if (fn) {
+        aid -> aid_CurrFN = fn;
 
-            aid -> aid_CurrFN = fn;
-
-            /* Load bitmaps only if we don't cache the whole anim and
-             * if we have a filehandle to load from (an empty object created using DTST_RAM don't have this)...
-             */
-            if( ((aid -> aid_LoadAll) == FALSE) && (aid -> aid_FH) )
-            {
-              /* If no bitmap is loaded, load it... */
-              if( (fn -> fn_BitMap) == NULL )
-              {
+        /* Load bitmaps only if we don't cache the whole anim and
+         * if we have a filehandle to load from (an empty object created using DTST_RAM don't have this)...
+         */
+        if ( ((aid -> aid_LoadAll) == FALSE) && (aid -> aid_FH) ) {
+            /* If no bitmap is loaded, load it... */
+            if ( (fn -> fn_BitMap) == NULL ) {
                 if( fn -> fn_BitMap = AllocBitMapPooled( (ULONG)(aid -> aid_BMH -> bmh_Width), (ULONG)(aid -> aid_BMH -> bmh_Height), (ULONG)(aid -> aid_BMH -> bmh_Depth)) ) 
                 {
-                  struct FrameNode *worknode = fn;
-                  ULONG             rollback = 0UL;
-                  UBYTE            *buff;
-                  ULONG             buffsize;
+                    struct FrameNode *worknode = fn;
+                    ULONG             rollback = 0UL;
+                    UBYTE            *buff;
+                    ULONG             buffsize;
 
-                  /* Buffer to fill. Below we try to read some more bytes
-                   * (the size value is stored in worknode -> fn_LoadSize)
-                   * (ANHD chunk (~68 bytes), maybe a CMAP) to save
-                   * the Seek in the next cycle.
-                   * This makes only much sense when doing async io (during playback)...
-                   */
+                    /* Buffer to fill. Below we try to read some more bytes
+                     * (the size value is stored in worknode -> fn_LoadSize)
+                     * (ANHD chunk (~68 bytes), maybe a CMAP) to save
+                     * the Seek in the next cycle.
+                     * This makes only much sense when doing async io (during playback)...
+                     */
 
-                  /* Not the last frame !
-                   * Note that this code is replicated in the loop below !!
-                   */
-
-                  worknode -> fn_LoadSize = worknode -> fn_BMSize;
-
-                  buffsize = worknode -> fn_LoadSize;
-
-                  do
-                  {
-                    worknode = worknode -> fn_PrevFrame;
-                    rollback++;
+                    /* Not the last frame !
+                     * Note that this code is replicated in the loop below !!
+                     */
 
                     worknode -> fn_LoadSize = worknode -> fn_BMSize;
 
-                    buffsize = MAX( buffsize, (worknode -> fn_LoadSize) );
-                  } while( ((worknode -> fn_BitMap) == NULL) && ((worknode -> fn_TimeStamp) != 0UL) );
+                    buffsize = worknode -> fn_LoadSize;
 
-                  if( ((worknode -> fn_BitMap) == NULL) && ((worknode -> fn_TimeStamp) == 0UL) )
-                  {
-                    D(bug( "first frame without bitmap ... !\n" ));
-                    ClearBitMap( (fn -> fn_BitMap) );
-                  }
-
-                  /* Alloc buffer for compressed frame (DLTA) data */
-                  if( buff = (UBYTE *)malloc( (buffsize + 32UL) ) )
-                  {
                     do
                     {
-                      ULONG current = rollback;
-
-                      worknode = fn;
-
-                      while( current-- )
-                      {
                         worknode = worknode -> fn_PrevFrame;
-                      }
+                        rollback++;
 
-                      if( (worknode -> fn_BitMap) && (worknode != fn) )
-                      {
-                        CopyBitMap( (worknode -> fn_BitMap), (fn -> fn_BitMap) );
-                      }
-                      else
-                      {
-                        LONG seekdist; /* seeking distance (later Seek result, if Seek'ed) */
+                        worknode -> fn_LoadSize = worknode -> fn_BMSize;
 
-                        seekdist = (((worknode -> fn_BMOffset) + 8UL) - (aid -> aid_CurrFilePos));
+                        buffsize = MAX( buffsize, (worknode -> fn_LoadSize) );
+                    } while( ((worknode -> fn_BitMap) == NULL) && ((worknode -> fn_TimeStamp) != 0UL) );
 
-                        /* Seek needed ? */
-                        if( seekdist != 0L )
+                    if( ((worknode -> fn_BitMap) == NULL) && ((worknode -> fn_TimeStamp) == 0UL) )
+                    {
+                        D(bug( "first frame without bitmap ... !\n" ));
+                        ClearBitMap( (fn -> fn_BitMap) );
+                    }
+
+                    /* Alloc buffer for compressed frame (DLTA) data */
+                    if( buff = (UBYTE *)malloc( (buffsize + 32UL) ) )
+                    {
+                        do
                         {
-                          seekdist = fseek( (aid -> aid_FH), seekdist, SEEK_CUR );
-                        }
+                            ULONG current = rollback;
 
-                        /* "Seek" success ? */
-                        if( seekdist != (-1L) )
-                        {
-                          LONG bytesread;
+                            worknode = fn;
 
-                          bytesread = fread( buff, 1, (worknode -> fn_LoadSize),(aid -> aid_FH) );
-
-                          /* No error during reading ? */
-                          if( (bytesread >= (worknode -> fn_BMSize)) && (bytesread != -1L) )
-                          {
-                       
-                            if( error = DrawDLTA( aid, (fn -> fn_BitMap), (fn -> fn_BitMap), (&(worknode -> fn_AH)), buff, (worknode -> fn_BMSize) ) )
+                            while( current-- )
                             {
-                              D(bug( "dlta unpacking error %lu\n", error ));
+                                worknode = worknode -> fn_PrevFrame;
                             }
 
-                            /* Bump file pos */
-                            aid -> aid_CurrFilePos = ((worknode -> fn_BMOffset) + 8UL) + bytesread;
-                          }
-                          else
-                          {
-                            /* Read error */
+                            if( (worknode -> fn_BitMap) && (worknode != fn) )
+                            {
+                                CopyBitMap( (worknode -> fn_BitMap), (fn -> fn_BitMap) );
+                            }
+                            else
+                            {
+                                LONG seekdist; /* seeking distance (later Seek result, if Seek'ed) */
 
-                            /* Error, rewind stream */
-                            fseek( (aid -> aid_FH), 0L, SEEK_SET );
-                            aid -> aid_CurrFilePos = 0L;
-                          }
+                                seekdist = (((worknode -> fn_BMOffset) + 8UL) - (aid -> aid_CurrFilePos));
 
-                          worknode -> fn_LoadSize = 0UL; /* destroy that this value won't affect anything else */
-                        }
-                        else
-                        {
-                          /* Seek error */
-                          D(bug("seek error\n"));
-                        }
-                      }
-                    } while( rollback-- && (error == 0L) );
+                                /* Seek needed ? */
+                                if( seekdist != 0L )
+                                {
+                                    seekdist = fseek( (aid -> aid_FH), seekdist, SEEK_CUR );
+                                }
 
-                    free( buff );
-                  }
-                  else
-                  {
-                    /* No memory for compressed frame data */
-                    error = ERROR_NO_FREE_STORE;
-                  }
+                                /* "Seek" success ? */
+                                if( seekdist != (-1L) )
+                                {
+                                    LONG bytesread;
+
+                                    bytesread = fread( buff, 1, (worknode -> fn_LoadSize),(aid -> aid_FH) );
+
+                                    /* No error during reading ? */
+                                    if( (bytesread >= (worknode -> fn_BMSize)) && (bytesread != -1L) )
+                                    {
+
+                                        if( error = DrawDLTA( aid, (fn -> fn_BitMap), (fn -> fn_BitMap), (&(worknode -> fn_AH)), buff, (worknode -> fn_BMSize) ) )
+                                        {
+                                            D(bug( "dlta unpacking error %lu\n", error ));
+                                        }
+
+                                        /* Bump file pos */
+                                        aid -> aid_CurrFilePos = ((worknode -> fn_BMOffset) + 8UL) + bytesread;
+                                    }
+                                    else
+                                    {
+                                        /* Read error */
+
+                                        /* Error, rewind stream */
+                                        fseek( (aid -> aid_FH), 0L, SEEK_SET );
+                                        aid -> aid_CurrFilePos = 0L;
+                                    }
+
+                                    worknode -> fn_LoadSize = 0UL; /* destroy that this value won't affect anything else */
+                                }
+                                else
+                                {
+                                    /* Seek error */
+                                    D(bug("seek error\n"));
+                                }
+                            }
+                        } while( rollback-- && (error == 0L) );
+
+                        free( buff );
+                    }
+                    else
+                    {
+                        /* No memory for compressed frame data */
+                        error = ERROR_NO_FREE_STORE;
+                    }
                 }
                 else
                 {
-                  /* No memory for frame bitmap */
-                  error = ERROR_NO_FREE_STORE;
+                    /* No memory for frame bitmap */
+                    error = ERROR_NO_FREE_STORE;
                 }
-              }
             }
+        }
 
-            /* Store frame/context information */
+        /* Store frame/context information */
 
-        CopyBitMap(fn->fn_BitMap,CurrentRP->BitMap);
+        CopyBitMap(fn->fn_BitMap,aid->bm);
 
-/*
-            alf -> alf_Frame    = fn -> fn_Frame;
-            alf -> alf_Duration = fn -> fn_Duration;
-            alf -> alf_UserData = (APTR)fn;
-*/
+        /*
+           alf -> alf_Frame    = fn -> fn_Frame;
+           alf -> alf_Duration = fn -> fn_Duration;
+           alf -> alf_UserData = (APTR)fn;
+         */
         /* Links back to this FrameNode (used by ADTM_UNLOADFRAME) */
 
-            /* Store bitmap information */
-/*
-            alf -> alf_BitMap = fn -> fn_BitMap;
-            alf -> alf_CMap   = fn -> fn_CMap;
-*/
+        /* Store bitmap information */
+        /*
+           alf -> alf_BitMap = fn -> fn_BitMap;
+           alf -> alf_CMap   = fn -> fn_CMap;
+         */
 
-            fn -> fn_UseCount++;
+        fn -> fn_UseCount++;
 
-            /* Is this node in the posted-free queue ? */
-            if( fn -> fn_PostedFree )
-            {
-              Remove( (struct Node *)(&(fn -> fn_PostedFreeNode)) );
-              fn -> fn_PostedFree = FALSE;
-            }
+        /* Is this node in the posted-free queue ? */
+        if ( fn -> fn_PostedFree ) {
+            MyRemove( (struct MyNode*) &(fn -> fn_PostedFreeNode) );
+            fn -> fn_PostedFree = FALSE;
+        }
 
-          }
-          else
-          {
-            /* no matching frame found */
-            D(bug("Frame non trovato\n"));
-          }
+    }
+    else {
+        /* no matching frame found */
+        D(bug("Frame non trovato\n"));
+    }
 
-//          ReleaseSemaphore( (&(aid -> aid_SigSem)) );
+    //          ReleaseSemaphore( (&(aid -> aid_SigSem)) );
 
     return error;
 }
@@ -951,7 +859,7 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
 
           if( (aid -> aid_LoadAll) == FALSE )
           {
-            struct MinNode *pfn;
+            struct MyMinNode *pfn;
             UWORD           i   = 10;
 
 //            ObtainSemaphore( (&(aid -> aid_SigSem)) );
@@ -963,14 +871,13 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
                 fn -> fn_UseCount--;
 
                 /* Free an existing bitmap if it isn't in use and if it is NOT the first bitmap */
-                if( ((fn -> fn_UseCount) == 0) && (fn -> fn_BitMap) && (fn != (struct FrameNode *)(aid -> aid_FrameList . mpHead)) )
+                if( ((fn -> fn_UseCount) == 0) && (fn -> fn_BitMap) && (fn != (struct FrameNode *)(aid -> aid_FrameList . pHead)) )
                 {
                   if( FALSE /*FreeAbleFrame( aid, fn )*/ )
                   {
                     /* Is this node in the posted-free queue ? */
-                    if( fn -> fn_PostedFree )
-                    {
-                      Remove( (struct Node *)(&(fn -> fn_PostedFreeNode)) );
+                    if( fn -> fn_PostedFree ) {
+                      MyRemove( (struct MyNode *)(&(fn -> fn_PostedFreeNode)) );
                       fn -> fn_PostedFree = FALSE;
 
                       D( kprintf( "free posted 1 %lu\n", (fn -> fn_TimeStamp) ) );
@@ -985,7 +892,7 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
                     {
                       D( bug( "posted free %lu\n", (fn -> fn_TimeStamp) ) );
 
-                      AddTail( (struct List *)(&(aid -> aid_PostedFreeList)), (struct Node *)(&(fn -> fn_PostedFreeNode)) );
+                      MyAddTail( &(aid -> aid_PostedFreeList), (struct MyNode *)(&(fn -> fn_PostedFreeNode)) );
                       fn -> fn_PostedFree = TRUE;
                     }
                   }
@@ -993,8 +900,7 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
               }
             }
 
-            while( pfn = (struct MinNode *)RemHead( (struct List *)(&(aid -> aid_PostedFreeList)) ) )
-            {
+            while( pfn = (struct MyMinNode *)MyRemHead( &(aid -> aid_PostedFreeList))  )  {
               fn = POSTEDFREENODE2FN( pfn );
               fn -> fn_PostedFree = FALSE;
 
@@ -1009,7 +915,7 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
                 }
                 else
                 {
-                  MyAddTail( (struct List *)(&(aid -> aid_PostedFreeList)), (struct Node *)(&(fn -> fn_PostedFreeNode)) );
+                  MyAddTail(&(aid -> aid_PostedFreeList), (struct MyNode *)&(fn -> fn_PostedFreeNode)) ;
                   fn -> fn_PostedFree = TRUE;
                 }
 
@@ -1042,8 +948,8 @@ static BOOL FreeAbleFrame( struct AnimInstData *aid, struct FrameNode *fn )
 
     /* Don't free the current nor the previous nor the next bitmap (to avoid problems with delta frames) */
     if( (fn == currfn) ||
-        (fn == (struct FrameNode *)(currfn -> fn_Node . mpNext)) ||
-        (fn == (struct FrameNode *)(currfn -> fn_Node . mpPrev)) )
+        (fn == (struct FrameNode *)(currfn->fn_Node.mpNext)) ||
+        (fn == (struct FrameNode *)(currfn->fn_Node.mpPrev)) )
     {
       return( FALSE );
     }
@@ -1062,36 +968,30 @@ struct AnimInstData *LoadFrames( FILE *fh )
     LONG error = 0L;
     /* Create a memory pool for frame nodes and delta buffers */
 
-      if(aid=malloc(sizeof(struct AnimInstData)))
-      {
-// E' importante azzerarla!
+    if (aid=malloc(sizeof(struct AnimInstData))) {
+        // E' importante azzerarla!
 
-    memset(aid,0,sizeof(struct AnimInstData));
+        memset(aid,0,sizeof(struct AnimInstData));
 
-//    InitSemaphore( (&(aid -> aid_SigSem)) );
-    MyNewList( (struct List *)(&(aid -> aid_FrameList)) );
-    MyNewList( (struct List *)(&(aid -> aid_PostedFreeList)) );
+        //    InitSemaphore( (&(aid -> aid_SigSem)) );
+        MyNewList(&(aid -> aid_FrameList));
+        MyNewList(&(aid -> aid_PostedFreeList));
 
-      aid -> aid_FH = fh;
-      aid -> aid_BMH = malloc(sizeof(struct BitMapHeader));
-
-    error=MergeAnim(aid,fh);
-      }
+        aid -> aid_FH = fh;
+        aid -> aid_BMH = malloc(sizeof(struct BitMapHeader));
+        aid -> bm = NULL;
+        error=MergeAnim(aid,fh);
     }
-    else
-    {
-      /* no memory pool */
-      error = ERROR_NO_FREE_STORE;
-    }
+
 
     /* Error codes below 0 are related to the IFFParse.library functions */
-    if( error < 0L )
-    {
+    if( error < 0L ) {
       D(bug( "iff error %ld\n", (long)error ));
     }
 
-    if(error!=0)
-    D(bug("Errore: %ld\n",error));
+    if(error!=0) {
+        D(bug("Errore: %ld\n",error));
+    }
 
     return( aid );
 }
@@ -1112,7 +1012,7 @@ struct FrameNode *AllocFrameNode(void )
 
 
 static
-struct FrameNode *FindFrameNode( struct MinList *fnl, ULONG timestamp )
+struct FrameNode *FindFrameNode( struct MyList *fnl, ULONG timestamp )
 {
     if( fnl )
     {
@@ -1120,23 +1020,19 @@ struct FrameNode *FindFrameNode( struct MinList *fnl, ULONG timestamp )
                        *nextnode,
                        *prevnode;
 
-      prevnode = worknode = (struct FrameNode *)(fnl -> mpHead);
+      prevnode = worknode = (struct FrameNode *)(fnl -> pHead);
 
-      while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mpNext) )
+      while( nextnode = (struct FrameNode *)(worknode -> fn_Node .mpNext) )
       {
         if( (worknode -> fn_TimeStamp) > timestamp )
-        {
           return( prevnode );
-        }
 
         prevnode = worknode;
         worknode = nextnode;
       }
 
-      if( !IsListEmpty( ((struct List *)fnl) ) )
-      {
+      if( !IsListEmpty( fnl) )
         return( prevnode );
-      }  
     }
 
     return( NULL );
@@ -1261,7 +1157,6 @@ void XORBitMaps( struct BitMap *op1, struct BitMap *op2 )
     }
 }
 
-
 static
 struct BitMap *AllocBitMapPooled( ULONG width, ULONG height, ULONG depth )
 {
@@ -1270,38 +1165,38 @@ struct BitMap *AllocBitMapPooled( ULONG width, ULONG height, ULONG depth )
                    moredepthsize,
                    size;
 
-    planesize       = (ULONG)RASSIZE( ((width + 63UL) & ~63UL), height );
+    planesize       = (ULONG)BITRASSIZE( ((width + 63UL) & ~63UL), height );
     moredepthsize   = (depth > 8UL)?((depth - 8UL) * sizeof( PLANEPTR )):(0UL);
     size            = ((ULONG)sizeof( struct BitMap )) + moredepthsize + (planesize * depth) + 31UL;
 
-    if( bm = (struct BitMap *)malloc( size ) )
-    {
-      UWORD    pl;
-      PLANEPTR plane;
+    if ( bm = (struct BitMap *)malloc( size ) ) {
+        UWORD    pl;
+        PLANEPTR plane;
 
-      InitBitMap( bm, depth, width, height );
+        bm->Depth = depth;
+        bm->Rows  = height;
+        bm->Flags = 0;
+        bm->pad   = 0;
+        bm->BytesPerRow = ((width + 15) >> 3) & ~0x1;
+        //      InitBitMap( bm, depth, width, height );
 
-      plane = ALIGN_QUADLONG( (PLANEPTR)(bm + 1) ); /* First plane follows struct BitMap */
+        plane = ALIGN_QUADLONG( (PLANEPTR)(bm + 1) ); /* First plane follows struct BitMap */
 
-      /* Set up plane data */
-      pl = 0U;
+        /* Set up plane data */
+        pl = 0U;
 
-      /* Set up plane ptrs */
-      while( pl < depth )
-      {
-        bm -> Planes[ pl ] = plane;
+        /* Set up plane ptrs */
+        while( pl < depth ) {
+            bm -> Planes[ pl ] = plane;
+            plane = ALIGN_QUADLONG( (PLANEPTR)(((UBYTE *)plane) + planesize) );
+            pl++;
+        }
 
-        plane = ALIGN_QUADLONG( (PLANEPTR)(((UBYTE *)plane) + planesize) );
-        pl++;
-      }
-
-      /* Clear the remaining plane ptrs (up to 8 planes) */
-      while( pl < 8U )
-      {
-        bm -> Planes[ pl ] = NULL;
-
-        pl++;
-      }
+        /* Clear the remaining plane ptrs (up to 8 planes) */
+        while ( pl < 8U ) {
+            bm -> Planes[ pl ] = NULL;
+            pl++;
+        }
     }
 
     return( bm );
@@ -1426,7 +1321,7 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
         case acmpStereoByteDelta:   /* 6 */
         {
 //            error = unpackbytedelta( unpackbm, dlta, dltasize );
-        DeltaUnpack(unpackbm,(LONG)dlta,0);
+        DeltaUnpack(unpackbm, dlta,0);
         }
             break;
 
@@ -1435,12 +1330,12 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
             if( (ah -> ah_Flags) & ahfLongData )
             {
 //              error = unpackanim7longdelta( unpackbm, dlta, dltasize );
-        DeltaUnpack(unpackbm,(LONG)dlta,2);
+        DeltaUnpack(unpackbm, dlta,2);
             }
             else
             {
 //              error = unpackanim7worddelta( unpackbm, dlta, dltasize );
-        DeltaUnpack(unpackbm,(LONG)dlta,1);
+        DeltaUnpack(unpackbm, dlta,1);
             }
         }
             break;
@@ -1489,35 +1384,33 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
 
 static void DumpAnimHeader( struct AnimInstData *aid, ULONG ti, struct AnimHeader *anhd )
 {
-    if( anhd )
-    {
-      D(bug( "%4lu: ", ti ));
+    if ( anhd )  {
+        D(bug( "%4lu: ", ti ));
 
-      switch( anhd -> ah_Operation )
-      {
-        case acmpILBM:              D(bug( "Operation ILBM" ));                  break;
-        case acmpXORILBM:           D(bug( "Operation XORILBM" ));               break;
-        case acmpLongDelta:         D(bug( "Operation LongDelta" ));             break;
-        case acmpShortDelta:        D(bug( "Operation ShortDelta" ));            break;
-        case acmpDelta:             D(bug( "Operation Delta" ));                 break;
-        case acmpByteDelta:         D(bug( "Operation ByteDelta" ));             break;
-        case acmpStereoByteDelta:   D(bug( "Operation StereoByteDelta" ));       break;
-        case acmpAnim7:             D(bug( "Operation Anim7" ));                 break;
-        case acmpAnim8:             D(bug( "Operation Anim8" ));                 break;
-        case acmpAnimJ:             D(bug( "Operation AnimJ" ));                 break;
-        default:                    D(bug( "Operation <unknown compression>" )); break;
-      }
+        switch( anhd -> ah_Operation )  {
+            case acmpILBM:              D(bug( "Operation ILBM" ));                  break;
+            case acmpXORILBM:           D(bug( "Operation XORILBM" ));               break;
+            case acmpLongDelta:         D(bug( "Operation LongDelta" ));             break;
+            case acmpShortDelta:        D(bug( "Operation ShortDelta" ));            break;
+            case acmpDelta:             D(bug( "Operation Delta" ));                 break;
+            case acmpByteDelta:         D(bug( "Operation ByteDelta" ));             break;
+            case acmpStereoByteDelta:   D(bug( "Operation StereoByteDelta" ));       break;
+            case acmpAnim7:             D(bug( "Operation Anim7" ));                 break;
+            case acmpAnim8:             D(bug( "Operation Anim8" ));                 break;
+            case acmpAnimJ:             D(bug( "Operation AnimJ" ));                 break;
+            default:                    D(bug( "Operation <unknown compression>" )); break;
+        }
 
-      D(bug( " AbsTime %3lu RelTime %3lu Interleave %3lu", (anhd -> ah_AbsTime), (anhd -> ah_RelTime), (ULONG)(anhd -> ah_Interleave) ));
+        D(bug( " AbsTime %3lu RelTime %3lu Interleave %3lu", (anhd -> ah_AbsTime), (anhd -> ah_RelTime), (ULONG)(anhd -> ah_Interleave) ));
 
-      if( (anhd -> ah_Flags) & ahfLongData          ) D(bug( " LongData"          ));
-      if( (anhd -> ah_Flags) & ahfXOR               ) D(bug( " XOR"               ));
-      if( (anhd -> ah_Flags) & ahfOneInfoList       ) D(bug( " OneInfoList"       ));
-      if( (anhd -> ah_Flags) & ahfRLC               ) D(bug( " RLC"               ));
-      if( (anhd -> ah_Flags) & ahfVertical          ) D(bug( " Vertical"          ));
-      if( (anhd -> ah_Flags) & ahfLongInfoOffsets   ) D(bug( " LongInfoOffsets"   ));
+        if( (anhd -> ah_Flags) & ahfLongData          ) D(bug( " LongData"          ));
+        if( (anhd -> ah_Flags) & ahfXOR               ) D(bug( " XOR"               ));
+        if( (anhd -> ah_Flags) & ahfOneInfoList       ) D(bug( " OneInfoList"       ));
+        if( (anhd -> ah_Flags) & ahfRLC               ) D(bug( " RLC"               ));
+        if( (anhd -> ah_Flags) & ahfVertical          ) D(bug( " Vertical"          ));
+        if( (anhd -> ah_Flags) & ahfLongInfoOffsets   ) D(bug( " LongInfoOffsets"   ));
 
-      D(bug( "\n" ));
+        D(bug( "\n" ));
 
     }
 }
@@ -1649,31 +1542,33 @@ void MakeYTable(short f_BytesPerRow)
  * 2 .. Anim7 Vert. Long DLTA
  */
 
-void DeltaUnpack(struct BitMap *f_bm,long f_dlta_adr,long f_mode)
+void decode_plane(uint8_t *opc, uint8_t *dta, uint8_t *plane, long bytesperrow, short *yt, long fmode)
 {
-   register unsigned char *opclist;
-        unsigned char *dtalist;
-   register short          i;
-   long          *deltadata;
+}
 
-   deltadata = (long *)(f_dlta_adr);
-   /* Loop for max. 8 Bitplanes */
+void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,long f_mode)
+{
+    register unsigned char *opclist;
+    unsigned char *dtalist;
+    register short i;
+    long          *deltadata;
 
-   for (i=0; i<8; i++)
-   {
-      if (deltadata[i])
-      {
-     opclist = (unsigned char *)deltadata + deltadata[i];
-     dtalist = (unsigned char *)deltadata + deltadata[i+8];
-     decode_plane(opclist,        /* in   (opc list)  */
-              dtalist,        /* dta  (data list) */
-              f_bm->Planes[i],  /* out  (bitplane)  */
-              (long)f_bm->BytesPerRow,
-              &g_ytable[0],
-              f_mode
-              );
-      }
-   }
+    deltadata = (long *)(f_dlta_adr);
+    /* Loop for max. 8 Bitplanes */
+
+    for (i=0; i < 8; i++) {
+        if (deltadata[i]) {
+            opclist = (unsigned char *)deltadata + deltadata[i];
+            dtalist = (unsigned char *)deltadata + deltadata[i+8];
+            decode_plane(opclist,        /* in   (opc list)  */
+                    dtalist,        /* dta  (data list) */
+                    f_bm->Planes[i],  /* out  (bitplane)  */
+                    (long)f_bm->BytesPerRow,
+                    &g_ytable[0],
+                    f_mode
+                    );
+        }
+    }
 }               /* end DeltaUnpack */
 
 void C_BdyUnpack( UBYTE *f_bdy, PTR_RING *f_ring_ptr,long f_row,long f_BytePerRow,long f_compress)
@@ -1752,4 +1647,3 @@ void C_BdyUnpack( UBYTE *f_bdy, PTR_RING *f_ring_ptr,long f_row,long f_BytePerRo
 
 }               /* end C_BdyUnpack */
 
-#endif
