@@ -29,3 +29,13 @@ void MyAddHead(struct MyList *l, struct MyNode *n)
     n->pPrev->pNext = n->pNext->pPrev = n;
 }
 
+struct MyNode *MyRemHead(struct MyList *l)
+{
+    struct MyNode *n = l->pHead->pNext;
+    if (n) {
+        n->pPrev = (struct MyNode *)l;
+        n = l->pHead;
+        l->pHead = n->pNext;
+    }
+    return n;
+}

@@ -235,6 +235,13 @@ void OpenTheScreen(void)
     D(bug("Opened window size %dx%d\n", WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 
+SDL_Texture *create_anim_texture(int width, int height)
+{
+    return SDL_CreateTexture(renderer, 
+                             SDL_PIXELFORMAT_RGB565, 
+                             SDL_TEXTUREACCESS_STREAMING, width, height);
+}
+
 int os_get_screen_width(void)
 {
     int w;
@@ -293,6 +300,21 @@ void os_load_palette(uint32_t *pal)
             palette16[224 + i] = (r << 11) | (g  << 5) | b;        
         }
     }
+}
+
+void os_set_color(int i, int r, int g, int b)
+{
+    SDL_palette[i].b = r;
+    SDL_palette[i].g = g;
+    SDL_palette[i].r = b;
+    r >>= 3;
+    g >>= 2;
+    b >>= 3;
+    
+    palette16[i] = (r << 11) | (g << 5) | b;
+
+    SDL_palette[i].unused = SDL_ALPHA_OPAQUE;
+
 }
 
 void ScreenSwap(void)

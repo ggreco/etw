@@ -36,5 +36,7 @@ void MyNewList(struct MyList *);
 void MyAddHead(struct MyList *,struct MyNode *);
 void MyAddTail(struct MyList *,struct MyNode *);
 void MyRemove(struct MyNode *);
+struct MyNode *MyRemHead(struct MyList *);
+#define IsListEmpty(l) ((l)->pHead->pNext == NULL)
 #endif
 

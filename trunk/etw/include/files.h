@@ -15,7 +15,7 @@ static inline uint8_t fread_u8(FILE *f)
 
 static inline void fwrite_u16(uint16_t var, FILE *f)
 {
-    var = SDL_Swap16(var);
+    var = SDL_SwapBE16(var);
     fwrite(&var, sizeof(uint16_t), 1, f);
 }
 
@@ -23,12 +23,12 @@ static inline uint16_t fread_u16(FILE *f)
 {
     uint16_t c;
     fread(&c, sizeof(uint16_t), 1, f);
-    return SDL_Swap16(c);
+    return SDL_SwapBE16(c);
 }
 
 static inline void fwrite_u32(uint32_t var, FILE *f)
 {
-    var = SDL_Swap32(var);
+    var = SDL_SwapBE32(var);
     fwrite(&var, sizeof(uint32_t), 1, f);
 }
 
@@ -36,7 +36,7 @@ static inline uint32_t fread_u32(FILE *f)
 {
     uint32_t c;
     fread(&c, sizeof(uint32_t), 1, f);
-    return SDL_Swap32(c);
+    return SDL_SwapBE32(c);
 }
 
 /* These can be used for data that doesn't need byteswap, eg. strings */

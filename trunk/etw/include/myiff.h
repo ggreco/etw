@@ -14,11 +14,39 @@
 #define ID_LIST    MAKE_ID('L','I','S','T')
 #define ID_CAT     MAKE_ID('C','A','T',' ')
 #define ID_PROP    MAKE_ID('P','R','O','P')
+#define ID_ILBM         MAKE_ID('I','L','B','M')
+#define ID_BMHD         MAKE_ID('B','M','H','D')
+#define ID_CMAP         MAKE_ID('C','M','A','P')
+#define ID_CAMG         MAKE_ID('C','A','M','G')
+#define ID_DLTA    	MAKE_ID('D','L','T','A')
+#define ID_BODY     MAKE_ID('B','O','D','Y')
+#define ID_GRAB     MAKE_ID('G','R','A','B')
+#define ID_ANHD     MAKE_ID('A','N','H','D')
+
+#define IFFERR_EOF        -1L
+#define IFFERR_EOC        -2L
+#define IFFERR_NOSCOPE    -3L
+#define IFFERR_NOMEM      -4L
+#define IFFERR_READ       -5L
+#define IFFERR_WRITE      -6L
+#define IFFERR_SEEK       -7L
+#define IFFERR_MANGLED    -8L
+#define IFFERR_SYNTAX     -9L
+#define IFFERR_NOTIFF     -10L
+#define IFFERR_NOHOOK     -11L
+
+#define INVALID_ID ~0
 
 #include "mytypes.h"
 #include "lists.h"
 
 /* Structs ... */
+
+struct StoredProperty
+{
+    LONG sp_Size;
+    APTR sp_Data;
+};
 
 struct ContextNode
 {
@@ -29,12 +57,21 @@ struct ContextNode
     long cn_Scan;    /*  # of bytes read/written so far */
 };
 
+struct PropNode
+{
+    struct PropNode *next;
+    long cn_ID;
+    long cn_Scan;
+    struct StoredProperty sp;
+};
+
 struct IFFHandle
 {
     FILE *iff_Stream;
-    unsigned long iff_Flags, iff_Stops;
-    int32_t *stops;
+    unsigned long iff_Flags, iff_Stops, iff_props;
+    int32_t *stops, *props;
     struct ContextNode Current;
+    struct PropNode *Prop;
 };
 
 /* Control modes for ParseIFF() function */
@@ -56,6 +93,10 @@ long OpenIFF(struct IFFHandle *iff, long rwMode);
 long ParseIFF(struct IFFHandle *iff, long control);
 void CloseIFF(struct IFFHandle *iff);
 void FreeIFF(struct IFFHandle *iff);
+
+/* additional anim parsing functions */
+struct StoredProperty *FindProp(struct IFFHandle *, LONG type, LONG id);
+long PropChunks(struct IFFHandle * iff, int32_t *chunks, int num_chunks);
 
 /* Read/Write functions */
 

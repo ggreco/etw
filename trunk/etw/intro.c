@@ -1,106 +1,64 @@
 #include "etw_locale.h"
 #include "menu.h"
 #include "SDL.h"
-
-#if 0
+#include "anim.h"
 
 void Intro(void)
 {
-    BPTR fh;
+    FILE *fh;
 
-    if(fh=Open("intro/intro.anim"/*-*/,MODE_OLDFILE))
-    {
-        char buffer[20];
-        BPTR fh2;
-        long int t=RangeRand(NUMERO_INTRO);
+    if (fh = fopen("intro/intro.anim"/*-*/, "rb")) {
+        char buffer[80];
+        FILE *fh2;
+        int t = RangeRand(NUMERO_INTRO);
 
-        D(bug("Playo la intro %ld...\n",t));
+        D(bug("Playing intro %ld...\n",t));
 
         sprintf(buffer,"intro/intro%lc.anim"/*-*/,'a'+t);
 
-        if(fh2=Open(buffer,MODE_OLDFILE))
-        {
-        struct AnimInstData *a;
-        struct Screen *scr=NULL;
-        unsigned int id;
+        if (fh2 = fopen(buffer, "rb")) {
+            struct AnimInstData *a;
+            unsigned int id;
 
-        if(    WINDOW_WIDTH!=320    ||
-            WINDOW_HEIGHT<256    ||
-            public_screen    )
-        {
-            id=BestModeID(BIDTAG_DesiredWidth,320,BIDTAG_DesiredHeight,256,BIDTAG_Depth,4,
-                BIDTAG_NominalWidth,320,BIDTAG_NominalHeight,256,
-                BIDTAG_DIPFMustHave,DIPF_IS_DBUFFER,
-                TAG_DONE);
-
-            if(id!=INVALID_ID)
-                scr=OpenScreenTags(NULL,
-                    SA_Behind,TRUE,
-                    SA_Width,320,
-                    SA_Height,256,
-                    SA_Interleaved,FALSE,
-                    SA_Depth,4,
-                    SA_Quiet,TRUE,
-                    SA_DisplayID,id,
-                    TAG_DONE);
-        }
-        else
-            scr=screen;
-
-        if(scr)
-        {
-            struct RastPort *OldRP=CurrentRP;
-            struct Screen *OldScr=screen;
-
-            screen=scr;
-
-            if(a=LoadFrames(fh))
-            {
-                if(!(id=MergeAnim(a,fh2)))
-                {
-                    register struct FrameNode *fn=(struct FrameNode *)a->aid_FrameList.mpHead;
+            if (a = LoadFrames(fh)) {
+                if (!(id = MergeAnim(a,fh2))) {
+                    struct FrameNode *fn=(struct FrameNode *)a->aid_FrameList.pHead;
                     int i;
 
-                    CurrentRP=&scr->RastPort;
-
-                    fn->fn_Sample=sound[1];
-                    fn->fn_Rate=sound[1]->Rate;
-                    fn->fn_Volume=sound[1]->Volume;
+                    fn->fn_Sample=menusound[1];
+                    fn->fn_Rate=menusound[1]->Rate;
+                    fn->fn_Volume=menusound[1]->Volume;
                     fn->fn_Loops=4;
 
-                    if(fn=GetFrameNode(a,90))
-                    {
-                        fn->fn_Sample=sound[2];
-                        fn->fn_Rate=sound[2]->Rate;
-                        fn->fn_Volume=sound[2]->Volume;
+                    if(fn=GetFrameNode(a,90)) {
+                        fn->fn_Sample=menusound[2];
+                        fn->fn_Rate=menusound[2]->Rate;
+                        fn->fn_Volume=menusound[2]->Volume;
                         fn->fn_Loops=1;
                     }
 
-                    if(fn=GetFrameNode(a,100))
-                    {
-                        fn->fn_Sample=sound[1];
-                        fn->fn_Rate=sound[1]->Rate;
-                        fn->fn_Volume=sound[1]->Volume/4;
+                    if(fn=GetFrameNode(a,100)) {
+                        fn->fn_Sample=menusound[1];
+                        fn->fn_Rate=menusound[1]->Rate;
+                        fn->fn_Volume=menusound[1]->Volume/4;
                         fn->fn_Loops=7;
                     }
 
-                    if(fn=GetFrameNode(a,300))
-                    {
-                        fn->fn_Sample=sound[1];
-                        fn->fn_Rate=sound[1]->Rate;
-                        fn->fn_Volume=sound[1]->Volume;
+                    if(fn=GetFrameNode(a,300)) {
+                        fn->fn_Sample=menusound[1];
+                        fn->fn_Rate=menusound[1]->Rate;
+                        fn->fn_Volume=menusound[1]->Volume;
                         fn->fn_Loops=4;
                     }
 
-                    switch(t)
-                    {
+                    // different sounds in different intros
+                    switch(t) {
                         case 3:
                             fn=GetFrameNode(a,401);
 
                             i=1;
 
-                            while(fn->fn_Node.mpNext)
-                            {
+                            while(fn->fn_Node.mpNext) {
                                 fn->Clock+=(20*i);
 
                                 i++;
@@ -109,174 +67,89 @@ void Intro(void)
                             }
                             break;
                         case 2:
-                            if(fn=GetFrameNode(a,410))
-                            {
+                            if(fn=GetFrameNode(a,410)) {
                                 fn->fn_Loops=1;
-                                fn->fn_Sample=sound[0];
-                                fn->fn_Rate=sound[0]->Rate;
-                                fn->fn_Volume=sound[0]->Volume;
+                                fn->fn_Sample=menusound[0];
+                                fn->fn_Rate=menusound[0]->Rate;
+                                fn->fn_Volume=menusound[0]->Volume;
                             }
                             break;
                         case 4:
-                            if(fn=GetFrameNode(a,423))
-                            {
+                            if(fn=GetFrameNode(a,423)) {
                                 fn->fn_Loops=1;
-                                fn->fn_Sample=sound[17];
-                                fn->fn_Rate=sound[17]->Rate;
-                                fn->fn_Volume=sound[17]->Volume;
+                                fn->fn_Sample=menusound[17];
+                                fn->fn_Rate=menusound[17]->Rate;
+                                fn->fn_Volume=menusound[17]->Volume;
                             }                            
-                            if(fn=GetFrameNode(a,429))
-                            {
+                            if(fn=GetFrameNode(a,429)) {
                                 fn->fn_Loops=1;
-                                fn->fn_Sample=sound[15];
-                                fn->fn_Rate=sound[15]->Rate;
-                                fn->fn_Volume=sound[15]->Volume;
+                                fn->fn_Sample=menusound[15];
+                                fn->fn_Rate=menusound[15]->Rate;
+                                fn->fn_Volume=menusound[15]->Volume;
                             }                            
-                            if(fn=GetFrameNode(a,445))
-                            {
+                            if(fn=GetFrameNode(a,445)) {
                                 fn->fn_Loops=1;
-                                fn->fn_Sample=sound[16];
-                                fn->fn_Rate=sound[16]->Rate;
-                                fn->fn_Volume=sound[16]->Volume;
+                                fn->fn_Sample=menusound[16];
+                                fn->fn_Rate=menusound[16]->Rate;
+                                fn->fn_Volume=menusound[16]->Volume;
                             }                            
                             break;
                         case 5:
-                            if(fn=GetFrameNode(a,405))
-                            {
+                            if(fn=GetFrameNode(a,405)) {
                                 fn->fn_Loops=1;
-                                fn->fn_Sample=sound[14];
-                                fn->fn_Rate=sound[14]->Rate;
-                                fn->fn_Volume=sound[14]->Volume;
+                                fn->fn_Sample=menusound[14];
+                                fn->fn_Rate=menusound[14]->Rate;
+                                fn->fn_Volume=menusound[14]->Volume;
                             }                            
                             break;
                     }
 
-                    if(scr!=OldScr)
-                        ScreenToFront(scr);
-
-                    AllocAnimScreenBuffers();
-
                     DisplayAnim(a);
 
-                    FreeAnimScreenBuffers();
+                    // wait one second
+                    os_delay(50);
 
-                    Delay(50);
-
-                    CurrentRP=OldRP;
                 }
-                else    D(bug("MergeAnim Fallita con codice %ld\n",id));
-            
+                else   
+                    D(bug("MergeAnim failed with code %ld\n",id));
+
                 FreeFrames(a);
             }
 
-            screen=OldScr;
-
-            if(scr!=OldScr)
-                CloseScreen(scr);
+            fclose(fh2);
         }
-
-        Close(fh2);
-        }
-        Close(fh);
+        fclose(fh);
     }        
 }
 
-#ifdef CD_VERSION
-
 void Outro(void)
 {
-    BPTR fh;
+    FILE *fh;
 
     StopMenuMusic();
 
-    if(fh=Open("intro/outro.anim"/*-*/,MODE_OLDFILE))
-    {
+    if (fh = fopen("intro/outro.anim"/*-*/, "rb")) {
         struct AnimInstData *a;
         struct Screen *scr=NULL;
         unsigned int id,i;
 
-        if(    WINDOW_WIDTH!=320    ||
-            WINDOW_HEIGHT<256    ||
-            public_screen    )
-        {
-            id=BestModeID(BIDTAG_DesiredWidth,320,BIDTAG_DesiredHeight,256,BIDTAG_Depth,4,
-                BIDTAG_NominalWidth,320,BIDTAG_NominalHeight,256,
-                BIDTAG_DIPFMustHave,DIPF_IS_DBUFFER,
-                TAG_DONE);
+        if (a = LoadFrames(fh)) {
+            PlayMenuMusic();
 
-            if(id!=INVALID_ID)
-                scr=OpenScreenTags(NULL,
-                    SA_Behind,TRUE,
-                    SA_Width,320,
-                    SA_Height,256,
-                    SA_Interleaved,FALSE,
-                    SA_Depth,4,
-                    SA_Quiet,TRUE,
-                    SA_DisplayID,id,
-                    TAG_DONE);
-        }
-        else
-        {
-            scr=screen;
+            for(i=0; i<16; i++)
+                DisplayAnim(a);
+
+            os_delay(100);
+
+            FreeFrames(a);
         }
 
-        if(scr)
-        {
-            struct RastPort *OldRP=CurrentRP;
-            struct Screen *OldScr=screen;
+        LoadIFFPalette("gfx/eat16menu.col"/*-*/);
+        ChangeMenu(current_menu);
 
-            screen=scr;
-
-            if(a=LoadFrames(fh))
-            {
-                PlayMenuMusic();
-
-                CurrentRP=&scr->RastPort;
-
-                if(scr!=OldScr)
-                    ScreenToFront(scr);
-
-                AllocAnimScreenBuffers();
-
-                for(i=0;i<16;i++)
-                    DisplayAnim(a);
-
-                FreeAnimScreenBuffers();
-
-                Delay(50);
-
-                CurrentRP=OldRP;
-            
-                FreeFrames(a);
-            }
-
-            screen=OldScr;
-
-            if(scr!=OldScr)
-                CloseScreen(scr);
-            else
-            {
-                LoadIFFPalette("gfx/eat16menu.col"/*-*/);
-                ChangeMenu(current_menu);
-            }
-        }
-
-        Close(fh);
+        fclose(fh);
     }        
 }
-
-#endif
-
-#else
-void Intro(void)
-{
-}
-
-void Outro(void)
-{
-}
-
-#endif
 
 #define ENDCREDITS 645
 

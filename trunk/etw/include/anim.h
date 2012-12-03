@@ -66,8 +66,53 @@ struct DPAnimChunk
 {
     UWORD dpan_Version;
     UWORD dpan_nframes;
-    ULONG dpan_flags;
-#define dpan_FPS dpan_flags
+    ULONG dpan_FPS;
+};
+
+
+struct BitMapHeader
+{
+    UWORD        bmh_Width;
+    UWORD        bmh_Height;
+    WORD         bmh_Left;
+    WORD         bmh_Top;
+    UBYTE        bmh_Depth;
+    UBYTE        bmh_Masking;
+    UBYTE        bmh_Compression;
+    UBYTE        bmh_Pad;
+    UWORD        bmh_Transparent;
+    UBYTE        bmh_XAspect;
+    UBYTE        bmh_YAspect;
+    WORD         bmh_PageWidth;
+    WORD         bmh_PageHeight;
+};
+
+typedef void * PLANEPTR;
+
+struct BitMap
+{
+    UWORD    BytesPerRow;
+    UWORD    Rows;
+    UBYTE    Flags;
+    UBYTE    Depth;
+    UWORD    pad;
+    PLANEPTR Planes[8];
+};
+
+struct AnimHeader
+{
+    UBYTE	 ah_Operation;
+    UBYTE	 ah_Mask;
+    UWORD	 ah_Width;
+    UWORD	 ah_Height;
+    WORD	 ah_Left;
+    WORD	 ah_Top;
+    ULONG	 ah_AbsTime;
+    ULONG	 ah_RelTime;
+    UBYTE	 ah_Interleave;
+    UBYTE	 ah_Pad0;
+    ULONG	 ah_Flags;
+    UBYTE	 ah_Pad[16];
 };
 
 /*****************************************************************************/
@@ -93,6 +138,7 @@ struct AnimInstData
     /* Disk-loading section */
     FILE                    *aid_FH;
     LONG                    aid_CurrFilePos;
+    struct BitMap           *bm; // dest bitmap to be used in planar2chunky
 };
 
 
@@ -103,7 +149,7 @@ struct FrameNode
     struct MyMinNode     fn_PostedFreeNode; /* Node in aid_PostedFreeList */
 
 /* Get beginning of struct FrameNode from fn_PostedFreeNode */
-#define POSTEDFREENODE2FN( pfn ) ((struct FrameNode *)(((struct MinNode *)(pfn)) - 1))
+#define POSTEDFREENODE2FN( pfn ) ((struct FrameNode *)(((struct MyMinNode *)(pfn)) - 1))
 
     struct FrameNode  *fn_PrevFrame;
 
@@ -137,5 +183,15 @@ struct FrameNode
     ULONG fn_Rate,fn_Volume,fn_Loops;
 };
 
+#define ERROR_NOT_IMPLEMENTED 6
+#define ERROR_NO_FREE_STORE 1
+#define ERROR_REQUIRED_ARG_MISSING 2
+#define ERROR_NOT_ENOUGH_DATA 3
+
+LONG MergeAnim(struct AnimInstData *,FILE *);
+struct FrameNode *GetFrameNode(struct AnimInstData *,int);
+void DisplayAnim(struct AnimInstData *);
+void FreeFrames(struct AnimInstData *);
+struct AnimInstData *LoadFrames( FILE * );
 /*****************************************************************************/
 
