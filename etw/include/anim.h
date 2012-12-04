@@ -62,6 +62,11 @@
 #define ID_DPAN         MAKE_ID('D','P','A','N')
 #endif /* !ID_DPAN */
 
+
+#pragma pack(push, 2)
+
+// we need this alignment (2) here
+
 struct DPAnimChunk
 {
     UWORD dpan_Version;
@@ -87,18 +92,6 @@ struct BitMapHeader
     WORD         bmh_PageHeight;
 };
 
-typedef void * PLANEPTR;
-
-struct BitMap
-{
-    UWORD    BytesPerRow;
-    UWORD    Rows;
-    UBYTE    Flags;
-    UBYTE    Depth;
-    UWORD    pad;
-    PLANEPTR Planes[8];
-};
-
 struct AnimHeader
 {
     UBYTE	 ah_Operation;
@@ -114,6 +107,21 @@ struct AnimHeader
     ULONG	 ah_Flags;
     UBYTE	 ah_Pad[16];
 };
+#pragma pack(pop)
+
+typedef void * PLANEPTR;
+
+struct BitMap
+{
+    UWORD    BytesPerRow;
+    UWORD    Rows;
+    UBYTE    Flags;
+    UBYTE    Depth;
+    UWORD    pad;
+    PLANEPTR Planes[8];
+};
+
+
 
 /*****************************************************************************/
 
@@ -138,7 +146,6 @@ struct AnimInstData
     /* Disk-loading section */
     FILE                    *aid_FH;
     LONG                    aid_CurrFilePos;
-    struct BitMap           *bm; // dest bitmap to be used in planar2chunky
 };
 
 

@@ -385,7 +385,7 @@ int main(int argc, char *argv[])
 #ifdef MACOSX
     chdir("ETW.app/Contents/Resources/data");
 #endif
-//    srand(clock());
+    srand(time(NULL));
     
     InitStrings();
 

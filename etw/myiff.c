@@ -73,28 +73,31 @@ long ParseIFF(struct IFFHandle * iff, long control)
         if (ferror(iff->iff_Stream))
             return IFFERR_READ;
 
-#if 0
         if (temp == ID_FORM) {
-            int32_t len = fread_u32(iff->iff_Stream);
+            iff->Current.cn_Size = fread_u32(iff->iff_Stream);
             temp = fread_u32(iff->iff_Stream);
-            D(bug("Found %c%c%c%c chunk of %d bytes\n", temp >> 24, temp >> 16 & 0xff, temp >> 8 & 0xff, temp & 0xff));
+//            D(bug("Found FORM %c%c%c%c chunk of %d bytes\n", temp >> 24, temp >> 16 & 0xff, temp >> 8 & 0xff, temp & 0xff, iff->Current.cn_Size));
             iff->Current.cn_Type = temp;
+            temp = ID_FORM;
         }
-        else 
-#endif     
+
        for (i = 0; i < iff->iff_Stops; i++)  {
-            if (temp == (uint32_t)iff->stops[i * 2 + 1]) {
-                D(bug("Stopping at stop %c%c%c%c\n", temp >> 24, temp >> 16 & 0xff, temp >> 8 & 0xff, temp & 0xff));
+            if (temp == (uint32_t)iff->stops[i * 2 + 1] &&
+                iff->Current.cn_Type == (uint32_t)iff->stops[i * 2]) {
+//                D(bug("Stopping at stop %c%c%c%c\n", temp >> 24, temp >> 16 & 0xff, temp >> 8 & 0xff, temp & 0xff));
                 iff->Current.cn_ID = temp;
-                temp = fread_u32(iff->iff_Stream);
-                iff->Current.cn_Size = temp;
+                if (temp != ID_FORM) { // if FORM we have already read size
+                    temp = fread_u32(iff->iff_Stream);
+                    iff->Current.cn_Size = temp;
+                }
                 iff->Current.cn_Scan = ftell(iff->iff_Stream);
                 return 0L;
             }
         }
         for (i = 0; i < iff->iff_props; i++) {
-            if (temp == (uint32_t)iff->props[i * 2 + 1]) {
-                D(bug("Inserted prop %c%c%c%c\n", temp >> 24, temp >> 16 & 0xff, temp >> 8 & 0xff, temp & 0xff));
+            if (temp == (uint32_t)iff->props[i * 2 + 1] &&
+                iff->Current.cn_Type == (uint32_t)iff->stops[i * 2]) {
+//                D(bug("Inserted prop %c%c%c%c\n", temp >> 24, temp >> 16 & 0xff, temp >> 8 & 0xff, temp & 0xff));
                 struct PropNode *p = (struct PropNode *)malloc(sizeof(struct PropNode));
                 p->next = iff->Prop;
                 p->cn_ID = temp;
@@ -105,11 +108,12 @@ long ParseIFF(struct IFFHandle * iff, long control)
                 p->cn_Scan = ftell(iff->iff_Stream);
 
                 iff->Prop = p;
-                continue; // do not seek backward
+                continue; // do not seek backward, we are aligned
             }
         }
 
-        fseek(iff->iff_Stream, -2, SEEK_CUR);
+        // this is to realign
+        fseek(iff->iff_Stream, -3, SEEK_CUR);
     }
 }
 
