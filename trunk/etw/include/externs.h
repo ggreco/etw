@@ -243,7 +243,7 @@ void RemoveArcadeEffect(player_t *,UBYTE);
 void GetArcadeEffect(player_t *,object_t *);
 void HandleArcade(void);
 
-// Da os_video.c
+// From os_video.c
 
 void close_graphics(void);
 void os_resize(void);
@@ -254,6 +254,8 @@ int os_get_inner_width(void);
 int os_get_inner_height(void);
 void os_load_palette(uint32_t *);
 void os_set_color(int, int, int , int);
+int create_anim_context(int, int);
+void delete_anim_context();
 
 // from menu.c
 const char *get_tactic_name(int);

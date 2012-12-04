@@ -33,8 +33,7 @@ struct BufferInfo
 
 struct SoundInfo
 {
-    ULONG    Rate, Length, Volume,    Flags;
-    // ULONG Loops; ???
+    ULONG    Rate, Length, Volume, Flags, Loops; 
 
     ULONG    Offset;
     void    *SoundData;
