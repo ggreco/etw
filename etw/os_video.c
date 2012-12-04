@@ -278,11 +278,23 @@ void OpenTheScreen(void)
     D(bug("Opened window size %dx%d\n", WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 
-SDL_Texture *create_anim_texture(int width, int height)
+static SDL_Texture *anim_texture = NULL;
+
+int create_anim_context(int width, int height)
 {
-    return SDL_CreateTexture(renderer, 
-                             SDL_PIXELFORMAT_RGB565, 
-                             SDL_TEXTUREACCESS_STREAMING, width, height);
+    anim_texture = SDL_CreateTexture(renderer, 
+                                     SDL_PIXELFORMAT_RGB565, 
+                                     SDL_TEXTUREACCESS_STREAMING, width, height);
+
+    return anim_texture != NULL;
+}
+
+void delete_anim_context()
+{
+    if (anim_texture) {
+        SDL_DestroyTexture(anim_texture);
+        anim_texture = NULL;
+    }
 }
 
 int os_get_screen_width(void)
@@ -387,22 +399,29 @@ void ScreenSwap(void)
     }
 }
 
-void p2tex(struct BitMap *src, struct SDL_Texture *dst)
+void blit_anim(struct BitMap *src, SDL_Rect *dest)
 {
     void *pixels;
     int pitch;
-    
-    if(!SDL_LockTexture(dst, NULL, &pixels, &pitch)) {
-        if (pitch == (src->BytesPerRow*8) * 2)
+
+    if (!anim_texture)
+        return;
+
+    if(!SDL_LockTexture(anim_texture, NULL, &pixels, &pitch)) {
+        int width = (src->BytesPerRow*8),
+            height = src->Rows;
+
+        if (pitch == width * 2)
             blitBitmap16(src, pixels);
-        else if (pitch == (src->BytesPerRow*8) * 4)
+        else if (pitch == width * 4)
             blitBitmap32(src, pixels);
         else {
             D(bug("Unsupported pitch: %d (width %d)\n", pitch,(src->BytesPerRow*8)));
         }
 
-        SDL_UnlockTexture(dst);
-        SDL_RenderCopy(renderer, dst, NULL, NULL);
+        SDL_UnlockTexture(anim_texture);
+
+        SDL_RenderCopy(renderer, anim_texture, dest, NULL);
 
         SDL_RenderPresent(renderer);
     }

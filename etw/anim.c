@@ -99,18 +99,31 @@ struct FrameNode *GetFrameNode(struct AnimInstData *a,int n)
 
 void DisplayAnim(struct AnimInstData *a)
 {
-    extern SDL_Texture *create_anim_texture(int, int);
-    extern void p2tex(struct BitMap *src, struct SDL_Texture *dest);
     LONG i=0,l=0,t,current=0,s=0;
+    extern void blit_anim(struct BitMap *, SDL_Rect *);
     struct FrameNode *fn;
     struct BitMap *bm;
     uint32_t sclk = os_get_timer();
     int w = a->aid_BMH->bmh_Width, h = a->aid_BMH->bmh_Height, d = a->aid_BMH->bmh_Depth;
-    struct SDL_Texture *tex = create_anim_texture(w, h);
+    float dst_ratio = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
+          src_ratio = (float)w / (float)h;
 
-    if (!tex) {
+    if (!create_anim_context(w, h)) {
         D(bug("Unable to create animation texture!\n"));
         return;
+    }
+
+    SDL_Rect srect = {0, 0, w, h};
+
+    if (dst_ratio > src_ratio) {
+        int wanted_height = ((float)w / dst_ratio);
+        srect.h = wanted_height;
+        srect.y = (h - wanted_height) / 2;
+    }
+    else if (dst_ratio < src_ratio) {
+        int wanted_width = ((float)h / dst_ratio);
+        srect.w = wanted_width;
+        srect.x = (w - wanted_width) / 2;
     }
 
     CopyBitMap(((struct FrameNode *)a->aid_FrameList.pHead)->fn_BitMap, Temp);
@@ -129,8 +142,7 @@ void DisplayAnim(struct AnimInstData *a)
         if(fn->fn_Sample) {
             fn->fn_Sample->Rate=fn->fn_Rate;
             fn->fn_Sample->Volume=fn->fn_Volume;
-            // XXX TODO actually we don't have sound loops!!!
-            //fn->fn_Sample->Loops=fn->fn_Loops;
+            fn->fn_Sample->Loops=fn->fn_Loops;
             PlayBackSound(fn->fn_Sample);
         }
 
@@ -148,7 +160,7 @@ void DisplayAnim(struct AnimInstData *a)
         }
 
         // this function convert the bitmap to the texture and display it
-        p2tex(bm, tex);
+        blit_anim(bm, &srect);
 
         if( t < (fn->Clock - 19) ) {
             SDL_Delay(fn->Clock - 18 - t);
@@ -170,7 +182,7 @@ void DisplayAnim(struct AnimInstData *a)
     if ( (t - sclk) > 0) {
         D(bug("%ld waits on %ld frames. (Rate: %ld fps, skip: %ld)\n", i , l , l * 1000 / (t - sclk), s));
     }
-    SDL_DestroyTexture(tex);
+    delete_anim_context();
 }
 
 

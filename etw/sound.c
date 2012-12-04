@@ -93,8 +93,12 @@ void handle_sound(void *unused, Uint8 * stream, int len)
  * cori & commenti.
  */
            if (busy[i] && busy[i]->Offset >= busy[i]->Length) {                
-            if (busy[i]->Flags & SOUND_LOOP) {
+            if (busy[i]->Flags & SOUND_LOOP || busy[i]->Loops > 1) {
 reinit_sound:
+                // this loop field is used by the intro
+                if (busy[i]->Loops > 1)
+                    busy[i]->Loops--;
+
                 busy[i]->Offset = 0;
 
                 if (busy[i]->Flags & SOUND_DISK) {
