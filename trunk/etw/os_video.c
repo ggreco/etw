@@ -13,6 +13,49 @@ static SDL_Renderer *renderer = NULL;
 SDL_Color SDL_palette[256];
 static uint16_t palette16[256];
 
+#include "anim.h"
+
+
+static void blitBitmap16(struct BitMap *src, uint16_t *dst)
+{
+    int x, y, i, current_bit;
+    uint8_t *plane[8];
+    for (i = 0; i < src->Depth; ++i) 
+        plane[i] = (uint8_t*)src->Planes[i];
+
+    for (x = 0; x < (src->BytesPerRow * src->Rows); ++x) {
+        for(current_bit = 128; current_bit > 0; current_bit >>= 1) {
+            uint8_t source_color = 0;
+
+            for(i = 0; i < src->Depth; i++)
+                if(plane[i][x] & current_bit)
+                    source_color |= (1 << i); 
+
+            *(dst++) = palette16[source_color];
+        }			
+    }
+}
+
+static void blitBitmap32(struct BitMap *src, uint32_t *dst)
+{
+    int x, y, i, current_bit;
+    uint8_t *plane[8];
+    for (i = 0; i < src->Depth; ++i) 
+        plane[i] = (uint8_t*)src->Planes[i];
+
+    for (x = 0; x < (src->BytesPerRow * src->Rows); ++x) {
+        for(current_bit = 128; current_bit > 0; current_bit >>= 1) {
+            uint8_t source_color = 0;
+
+            for(i = 0; i < src->Depth; i++)
+                if(plane[i][x] & current_bit)
+                    source_color |= (1 << i); 
+
+            *(dst++) = *((uint32_t*)&(SDL_palette[source_color]));
+        }			
+    }
+}
+
 static void blitScreen16(uint16_t *dst)
 {
     uint8_t *src = main_bitmap;    
@@ -339,6 +382,27 @@ void ScreenSwap(void)
             if (!pause_mode ||
                 (pause_mode && replay_mode))
             draw_touch();
+
+        SDL_RenderPresent(renderer);
+    }
+}
+
+void p2tex(struct BitMap *src, struct SDL_Texture *dst)
+{
+    void *pixels;
+    int pitch;
+    
+    if(!SDL_LockTexture(dst, NULL, &pixels, &pitch)) {
+        if (pitch == (src->BytesPerRow*8) * 2)
+            blitBitmap16(src, pixels);
+        else if (pitch == (src->BytesPerRow*8) * 4)
+            blitBitmap32(src, pixels);
+        else {
+            D(bug("Unsupported pitch: %d (width %d)\n", pitch,(src->BytesPerRow*8)));
+        }
+
+        SDL_UnlockTexture(dst);
+        SDL_RenderCopy(renderer, dst, NULL, NULL);
 
         SDL_RenderPresent(renderer);
     }
