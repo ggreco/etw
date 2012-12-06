@@ -68,12 +68,18 @@ int display_touched()
 
 
 void hide_vjoy() {
-    if (touch)
+    if (touch) {
         touch->show_joy(false);
+        touch->show_button(TouchControl::BUTTON_1, false);
+        touch->show_button(TouchControl::BUTTON_2, false);
+    }
 }
 void show_vjoy() {
-    if (touch)
+    if (touch) {
         touch->show_joy(true);
+        touch->show_button(TouchControl::BUTTON_1, true);
+        touch->show_button(TouchControl::BUTTON_2, true);
+    }
 }
 
 void check_cpuvscpu_touch()

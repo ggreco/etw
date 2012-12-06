@@ -976,7 +976,7 @@ void PrintButtonType(struct Button *b, WORD bl, WORD bt,
         
         switch (b->Color) {
             case COLOR_TEAM_A:
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
                 c = "_J2" /*-*/ ;
 #else
                 c = "_P" /*-*/;

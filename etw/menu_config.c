@@ -75,7 +75,7 @@ void load_config(FILE *f)
                     if(value>0)
                         framerate=1000000/value;
             }
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
             else if(!strnicmp(buffer,"width="/*-*/,6))
             {
                 if((value=atol(&buffer[6]))>0)

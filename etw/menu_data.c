@@ -32,7 +32,7 @@ char *menu_soundname[]=
 
 struct Button main_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {27,76,150,91,4,7,9,msg_85}, // Main menu
     {27,111,150,126,MENU_PREFS,3,0,msg_86},
     {27,148,150,163,3,6,8,msg_87},
@@ -53,7 +53,7 @@ struct Button main_bottoni[]=
 // mobile version does not need a "save settings", saving is done anyway, neither the system panel
 struct Button prefs_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,67,150,80,MENU_GAME_PREFS,3,0,msg_92},  // Preferences
     {20,93,150,106,MENU_VIDEO_PREFS,0,13,msg_93},
     {20,119,150,132,MENU_AUDIO_PREFS,0,13,msg_94},
@@ -69,7 +69,7 @@ struct Button prefs_bottoni[]=
 
 struct Button high_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,67,150,80,MENU_HIGH_SELECTION,11,12,msg_97},  // Highlights
     {20,93,150,106,MENU_HIGH_SELECTION,11,12,msg_98},
     {20,119,150,132,-1,11,12,msg_99},
@@ -94,7 +94,7 @@ struct Button teams_bottoni[]=
 
 struct Button start_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,57,150,70,MENU_ARCADE,7,9,msg_102},  // Game Start
     {20,83,150,96,MENU_SIMULATION,7,9,msg_103},
     {20,109,150,122,-1,7,9,msg_104},
@@ -128,7 +128,7 @@ struct Button pause_panels[] =
 
 struct Button arcade_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,67,150,80,MENU_SELECTION_TYPE,7,9,msg_106},  // Arcade
     {20,93,150,106,MENU_SELECTION_TYPE,7,9,msg_107},
     {20,119,150,132,MENU_ARCADE_SELECTION,7,9,msg_1},
@@ -143,7 +143,7 @@ struct Button arcade_bottoni[]=
 
 struct Button sim_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,47,150,60,0,7,9,NULL},  // Simulation
     {20,73,150,86,MENU_TEAM_SELECTION,7,9,msg_109},
     {20,99,150,112,MENU_TEAM_SELECTION,7,9,msg_110},
@@ -174,7 +174,7 @@ struct Button career_bottoni[]=
 
 struct Button train_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,67,150,80,MENU_TEAM_SELECTION,7,9,msg_115},  // Training
     {20,93,150,106,MENU_TEAM_SELECTION,7,9,msg_116},
     {20,119,150,132,MENU_TEAM_SELECTION,7,9,msg_117},
@@ -189,7 +189,7 @@ struct Button train_bottoni[]=
 
 struct Button score_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,67,150,80,MENU_VIEW_SCORES,8,15,msg_97},  // Scores
     {20,93,150,106,-1,8,15,msg_118},
     {72,210,246,222,MENU_MAIN_MENU,14,13,msg_95},
@@ -202,7 +202,7 @@ struct Button score_bottoni[]=
 
 struct Button gprefs_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {10,64,100,72,-1,0,3,msg_119},{101,64,184,71,-1,3,0,NULL},
     {10,76,100,84,-1,0,3,msg_120},{101,75,184,82,-1,3,0,NULL},
     {10,88,100,96,-1,0,3,msg_121},{101,86,184,93,-1,3,0,NULL},
@@ -277,7 +277,7 @@ struct Button aprefs_bottoni[]=
 
 struct Button seltype_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,67,150,80,MENU_ARCADE_SELECTION,7,9,msg_139},  // Selection Type
     {20,93,150,106,MENU_TEAM_SELECTION,7,9,msg_140},
     {72,210,246,222,MENU_ARCADE,14,13,msg_108},
@@ -290,7 +290,7 @@ struct Button seltype_bottoni[]=
 
 struct Button scorelist_bottoni[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {60,229,259,241,MENU_SCORES,7,9,msg_0}, // Score list
 #else
     {60,210,259,246,MENU_SCORES,7,9,msg_0}, // Score list
@@ -301,7 +301,7 @@ struct Button scorelist_bottoni[]=
 // highlights (hl[]) and teamselection must have the same number of items
 struct Button teamselection[]=
 {
-#ifdef IPHONE
+#ifdef MOBILE_VERSION
     {5,32,79,48    ,-1,14,13,NULL},{83,32,157,48    ,-17,14,13,NULL},{161,32,235,48    ,-33,14,13,NULL},{239,32,313,48,-49,14,13,NULL},
     {5,53,79,69    ,-2,14,13,NULL},{83,53,157,69    ,-18,14,13,NULL},{161,53,235,69    ,-34,14,13,NULL},{239,53,313,69,-50,14,13,NULL},
     {5,74,79,90    ,-3,14,13,NULL},{83,74,157,90    ,-19,14,13,NULL},{161,74,235,90    ,-35,14,13,NULL},{239,74,313,90,-51,14,13,NULL},
@@ -399,7 +399,7 @@ struct Button teamsettings[]=
     {14,201,22,208,-1,6,8,numero[15]},{24,201,136,208,-1,6,8,NULL},
     {14,218,22,225,-1,14,13,numero[16]},{24,218,136,225,-1,14,13,NULL},
 
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {211,187,238,194,-100,14,13,"4-4-2"/*-*/},{242,187,269,194,-101,14,13,"4-3-3"/*-*/},{273,187,300,194,-102,14,13,"3-4-3"/*-*/},
     {211,198,238,205,-103,14,13,"5-3-2"/*-*/},{242,198,269,205,-104,14,13,"5-4-1"/*-*/},{273,198,300,205,-105,14,13,"3-5-2"/*-*/},
     {211,209,254,216,-110,14,13,msg_99},{256,209,300,216,-110,14,13,NULL},
@@ -604,7 +604,7 @@ struct Button asb[]=
     {16,20,85,89,0,COLOR_UNSELECTED,9,"\20\0"/*-*/},{88,20,157,89,1,COLOR_UNSELECTED,9,"\20\1"/*-*/},{160,20,229,89,2,COLOR_UNSELECTED,9,"\20\2"/*-*/},{232,20,301,89,3,COLOR_UNSELECTED,9,"\20\3"/*-*/},
     {16,92,85,161,4,COLOR_UNSELECTED,9,"\20\4"/*-*/},{232,92,301,161,7,COLOR_UNSELECTED,9,"\20\7"/*-*/},
     {16,164,85,233,5,COLOR_UNSELECTED,9,"\20\5"/*-*/},{88,164,157,233,8,COLOR_UNSELECTED,9,"\20\10"/*-*/},{160,164,229,233,9,COLOR_UNSELECTED,9,"\20\11"/*-*/},{232,164,301,233,6,COLOR_UNSELECTED,9,"\20\6"/*-*/},
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {10,238,106,250,-1,7,9,NULL},
     {111,238,207,250,-1,14,13,msg_6},
     {212,238,309,250,-1,11,12,NULL},
@@ -636,7 +636,7 @@ void free_menus()
 }
 struct Button cb[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {20,229,154,241,MENU_CHALLENGE,7,9,msg_0},
     {165,229,299,241,MENU_ARCADE,11,12,msg_6},
 #else
@@ -659,7 +659,7 @@ struct Button mr[]=
 
 struct Button mrb[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {60,229,259,241,MENU_SIMULATION,7,9,msg_0},
 #else
     {60,215,259,245,MENU_SIMULATION,7,9,msg_0},
@@ -712,7 +712,7 @@ struct Button wcfp[]=
 // highlights and teamselection must have the same number of items
 struct Button hl[]=
 {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     {5,31,79,38    ,-1,14,13,NULL},{83,31,157,38    ,-17,14,13,NULL},{161,31,235,38    ,-33,14,13,NULL},{239,31,313,38,-49,14,13,NULL},
     {5,42,79,49    ,-2,14,13,NULL},{83,42,157,49    ,-18,14,13,NULL},{161,42,235,49    ,-34,14,13,NULL},{239,42,313,49,-50,14,13,NULL},
     {5,53,79,60    ,-3,14,13,NULL},{83,53,157,60    ,-19,14,13,NULL},{161,53,235,60    ,-35,14,13,NULL},{239,53,313,60,-51,14,13,NULL},

@@ -214,7 +214,7 @@ BOOL LoadMenuStuff(void)
         return FALSE;
     }
 
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
     LoadPLogo("gfx/etwlogo" /*-*/ );
 #else
     LoadPLogo("gfx/etwmobile" /*-*/ );

@@ -415,7 +415,7 @@ void HandleControlledJ2B(int squadra)
             {
                 g->TimePress++;
 
-                if(g->TimePress>16) // this was 8, the value was still at 25 fps logic? Very likely.
+                if(g->TimePress>20) // this was 8, the value was still at 25 fps logic? Very likely.
                 {
                     need_release[g->team->Joystick]=TRUE;
 
