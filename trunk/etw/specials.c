@@ -517,7 +517,7 @@ BOOL TeamSelection(WORD button)
             }
             else
             {
-#ifndef IPHONE                
+#ifndef MOBILE_VERSION                
                 b->Color = COLOR_TEAM_B;
                 controllo[-b->ID - 1] = 0;
 #else
@@ -531,7 +531,7 @@ BOOL TeamSelection(WORD button)
             b->Color = COLOR_UNSELECTED;
             selected_number--;
         } // on mobile devices we can have only a single player
-#ifndef IPHONE        
+#ifndef MOBILE_VERSION        
         else if (b->Color == COLOR_TEAM_A
                  && (!team2_selected || wanted_number > 2
                       || wanted_number <= 0 || selected_number > 2))
@@ -1034,7 +1034,7 @@ BOOL ArcadeTeamSelection(WORD button)
             {
                 team2_selected = TRUE;
 // max one human team in mobile version!
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
                 controllo[b->ID] = 0;
                 b->Color = COLOR_TEAM_B;
 #else
@@ -1048,7 +1048,7 @@ BOOL ArcadeTeamSelection(WORD button)
             b->Color = COLOR_UNSELECTED;
             selected_number--;
         }
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
         else if (b->Color == COLOR_TEAM_A
                   && (!team2_selected || wanted_number > 2
                        || wanted_number <= 0 || selected_number > 2))
@@ -2505,7 +2505,7 @@ BOOL HighSelection(WORD button)
         }
         else
         {
-#ifndef IPHONE
+#ifndef MOBILE_VERSION
             FILE *fh;
 
             if ((fh = fopen(buffer, "rb")))

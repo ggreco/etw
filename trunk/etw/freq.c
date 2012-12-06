@@ -1,4 +1,4 @@
-#if !defined(WINCE) && !defined(IPHONE)
+#if !defined(WINCE) && !defined(MOBILE_VERSION)
 static char szFileName[300];
 #endif
 

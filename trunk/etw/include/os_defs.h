@@ -12,7 +12,9 @@
 #endif
 #endif
 
-
+#if defined(IPHONE) || defined(ANDROID)
+#define MOBILE_VERSION
+#endif
 /* set the default arch to Linux */
 #if !defined(WIN) && !defined(IPHONE) && !defined(LINUX) && !defined(MACOSX) && !defined(AMIGA)
 #   define LINUX

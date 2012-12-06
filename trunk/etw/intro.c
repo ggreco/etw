@@ -161,7 +161,7 @@ struct Stage
 
 struct Stage stage[]=
 {
-#ifdef IPHONE
+#ifdef MOBILE_VERSION
     {{NULL,"EAT THE WHISTLE"/*-*/,NULL,"MOBILE EDITION"/*-*/,NULL},0},
 #else
     {{NULL,"EAT THE WHISTLE"/*-*/,NULL,"2012 EDITION"/*-*/,NULL},0},

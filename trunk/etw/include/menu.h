@@ -81,7 +81,7 @@
 
 // Defines per teamselection, the mobile version support max 32 teams for set
 
-#ifdef IPHONE
+#ifdef MOBILE_VERSION
 #define TS_RIGHE   8
 #else
 #define TS_RIGHE   16

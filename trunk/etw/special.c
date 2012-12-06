@@ -790,34 +790,36 @@ void HandleRimessa(player_t *g)
         if(!g->Controlled)
             ChangeControlled(g->team,g->GNum);
 
-        if (l & JPF_TOUCH) {
-            player_t *dst = find_touch_player(g);
+        if (use_touch) {
+            if (l & JPF_TOUCH) {
+                player_t *dst = find_touch_player(g);
 
-            if (dst) {            
-                show_vjoy();
+                if (dst) {            
+                    show_vjoy();
 
-                pl->dir = FindDirection256(g->world_x, g->world_y, dst->world_x, dst->world_y);
-                g->dir = pl->dir / 32;
-                int d=FindDistance(g->world_x, g->world_y, dst->world_x, dst->world_y,pl->dir);
-                TogliPalla();
-                DaiPalla(g);
+                    pl->dir = FindDirection256(g->world_x, g->world_y, dst->world_x, dst->world_y);
+                    g->dir = pl->dir / 32;
+                    int d=FindDistance(g->world_x, g->world_y, dst->world_x, dst->world_y,pl->dir);
+                    TogliPalla();
+                    DaiPalla(g);
 
-                D(bug("Doing touch throw in from %s to %s, distance: %d, dir: %d", g->name, dst->name, d, pl->dir));
-                // don't allow throw in too far or too near
-                if (d > 1500)
-                    d = 1500;
-                else if (d < 300)
-                    d = 300;
+                    D(bug("Doing touch throw in from %s to %s, distance: %d, dir: %d", g->name, dst->name, d, pl->dir));
+                    // don't allow throw in too far or too near
+                    if (d > 1500)
+                        d = 1500;
+                    else if (d < 300)
+                        d = 300;
 
-                // we put the wanted ball speed in SpecialData, see RimessaLaterale() for details
-                g->SpecialData = (d>>7)+1;
-                pl->TipoTiro=TIRO_RIMESSA;
-                // I need to do this to change the active player to the destination of our touch
-                g->TimePress= -dst->GNum;
-                dst->SpecialData = -1;
-                g->FirePressed=FALSE;
-                DoSpecialAnim(g,GIOCATORE_RIMESSA);
-                return;
+                    // we put the wanted ball speed in SpecialData, see RimessaLaterale() for details
+                    g->SpecialData = (d>>7)+1;
+                    pl->TipoTiro=TIRO_RIMESSA;
+                    // I need to do this to change the active player to the destination of our touch
+                    g->TimePress= -dst->GNum;
+                    dst->SpecialData = -1;
+                    g->FirePressed=FALSE;
+                    DoSpecialAnim(g,GIOCATORE_RIMESSA);
+                    return;
+                }
             }
         }
         else if(l&MYBUTTONMASK)
