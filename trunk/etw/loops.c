@@ -237,9 +237,8 @@ void graphic_frame(void)
               min(WINDOW_WIDTH, background->width), 
               min(WINDOW_HEIGHT, background->height), bitmap_width);
 
-    if (p->doing_shot) {
+    if (p->doing_shot && !use_touch) 
         UpdateCornerLine();
-    }
 
     if (p->flash_mode)
         DoFlash();

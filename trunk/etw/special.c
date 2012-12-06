@@ -935,10 +935,8 @@ rimessacomputer:
 
 void Rigore(player_t *g)
 {
-    if(!p->penalty_onscreen)
-    {
-        if(p->penalty_counter<80)
-        {
+    if(!p->penalty_onscreen) {
+        if(p->penalty_counter<80) {
             p->penalty_counter++;
             return;
         }
@@ -979,44 +977,36 @@ void Rigore(player_t *g)
     if(g->SNum)
         p->marker_x=1270-p->marker_x;
 
-    if(p->marker_y>(GOAL_Y_S/8)||
-        p->marker_y<(GOAL_Y_N/8) )
+    if(p->marker_y>(GOAL_Y_S/8)|| p->marker_y<(GOAL_Y_N/8) )
         p->adder=-p->adder;
 
     MoveAnimObj(p->extras,p->marker_x-field_x,p->marker_y-field_y);
 
-    if(g->team->Joystick>=0)
-    {
-        uint32_t l;
+    if(g->team->Joystick>=0) {
+        uint32_t l = r_controls[g->team->Joystick][counter];
 
-        g->WaitForControl--;
-
-        l=r_controls[g->team->Joystick][counter];
+//        g->WaitForControl--; not used!
 
         if(!g->Controlled)
             ChangeControlled(g->team,g->GNum);
 
+        if(l&MYBUTTONMASK) {
+            g->FirePressed=TRUE;
+            g->TimePress++;
 
-                if(l&MYBUTTONMASK)
-                {
-                        g->FirePressed=TRUE;
-                        g->TimePress++;
-
-                        if(g->TimePress>16)
+            if(g->TimePress > 32)
                 goto tirarigore;
         }
-        else if (g->FirePressed)
-        {
+        else if (g->FirePressed) {
 tirarigore:
-                        g->FirePressed=FALSE;
-                        pl->MaxQuota=g->TimePress;
-            pl->velocita=12+g->Tiro+(g->TimePress>>1);
+            g->FirePressed=FALSE;
+            pl->MaxQuota=g->TimePress;
+            pl->velocita= 12 + g->Tiro + (g->TimePress>>2);
 
             goto finetiro;
         }
     }
-    else
-    {
+    else {
         g->WaitForControl--;
 
         if(!g->Controlled)
@@ -1026,57 +1016,57 @@ tirarigore:
         {
             UBYTE tt=GetTable(); 
 
-// Occhio questa parentesi potrebbe causare dei bei casini!
+            // Occhio questa parentesi potrebbe causare dei bei casini!
 
             if ( (abs(p->marker_y-(pl->world_y>>3)-((tt-3)<<1)))<(18-g->Tiro) ) 
             {
-// rigorecomputer: come sopra, non viene usato...
-                        pl->MaxQuota=(GetTable()+1)<<1;
+                // rigorecomputer: come sopra, non viene usato...
+                pl->MaxQuota=(GetTable()+1)<<1;
 
-            if(pl->MaxQuota>8)
-                pl->MaxQuota-=(g->Tiro>>1);
+                if(pl->MaxQuota>8)
+                    pl->MaxQuota-=(g->Tiro>>1);
 
-            pl->velocita=12+g->Tiro+GetTable();
+                pl->velocita=12+g->Tiro+GetTable();
 
-//            pl->dir=FindDirection256(pl->world_x+24,pl->world_y+24,(p->marker_x+9)<<3,(p->marker_y+4)<<3);
+                //            pl->dir=FindDirection256(pl->world_x+24,pl->world_y+24,(p->marker_x+9)<<3,(p->marker_y+4)<<3);
 
 finetiro:
-            pl->dir=FindDirection256(pl->world_x+24,
-                pl->world_y+24,((p->marker_x+9)<<3)+(g->SNum ? (200) : (-200) ) ,
-                (p->marker_y+4)<<3);
+                pl->dir=FindDirection256(pl->world_x+24,
+                        pl->world_y+24,((p->marker_x+9)<<3)+(g->SNum ? (200) : (-200) ) ,
+                        (p->marker_y+4)<<3);
 
-            D(bug("direction rigore: %ld (wx: %ld, mx: %ld)\n",pl->dir,pl->world_x,p->marker_x));
+                D(bug("direction rigore: %ld (wx: %ld, mx: %ld)\n",pl->dir,pl->world_x,p->marker_x));
 
-            TogliPalla();
-            DaiPalla(g);
+                TogliPalla();
+                DaiPalla(g);
 
-            g->SpecialData=-1;
-            pl->TipoTiro=TIRO_CORNER;
+                g->SpecialData=-1;
+                pl->TipoTiro=TIRO_CORNER;
 
-                        Tira(g);
+                Tira(g);
 
-            if(GetTable()<4)
-            {
-                keeper_t *po=&p->team[g->SNum^1]->keepers;
+                if(GetTable()<4)
+                {
+                    keeper_t *po=&p->team[g->SNum^1]->keepers;
 
-                DoSpecialAnim(po,PORTIERE_PRERIGORE);
+                    DoSpecialAnim(po,PORTIERE_PRERIGORE);
+                }
+
+                pl->InGioco=TRUE;
+                RemAnimObj(p->extras);
+                p->penalty_onscreen=FALSE;
+                p->penalty_counter=0;
+                RimuoviComandoSquadra( g->SNum^1 ,MANTIENI_DISTANZA);
+                p->mantieni_distanza=FALSE;
+
+                RestartTime();
+
+                if(penalties)
+                {
+                    p->referee.Comando=FISCHIA_PREPUNIZIONE;
+                    p->referee.Tick=90;
+                }
             }
-
-            pl->InGioco=TRUE;
-                        RemAnimObj(p->extras);
-            p->penalty_onscreen=FALSE;
-            p->penalty_counter=0;
-            RimuoviComandoSquadra( g->SNum^1 ,MANTIENI_DISTANZA);
-            p->mantieni_distanza=FALSE;
-
-            RestartTime();
-
-            if(penalties)
-            {
-                p->referee.Comando=FISCHIA_PREPUNIZIONE;
-                p->referee.Tick=90;
-            }
-           }
         }
     }
 }
@@ -1095,6 +1085,13 @@ void PunizioneCorner(player_t *g)
 
         g->WaitForControl--;
 
+        if (use_touch) {
+            hide_vjoy();
+            p->show_panel |= PANEL_CORNER;
+            if (p->show_time < 50)
+                p->show_time = 50;
+        }
+
         /*
            we don't want to shoot anyway after some time
            if(g->WaitForControl<0&&!free_kicks)
@@ -1109,13 +1106,46 @@ void PunizioneCorner(player_t *g)
             DaiPalla(g);
         }
 
-        if (l & MYBUTTONMASK) {
+        if (use_touch) {
+            uint32_t k = r_controls[g->team->Joystick^1][counter];
+            // start point of the movement
+            if (l & JPF_TOUCH_DOWN) {
+                p->corner_sx = k & 0xffff;
+                p->corner_sy = k >> 16;
+                D(bug("Started corner swipe at %d,%d\n", p->corner_sx, p->corner_sy));
+            }
+            // end point of the movement
+            if (l & JPF_TOUCH) {
+                p->corner_ex = k & 0xffff;
+                p->corner_ey = k >> 16;
+                D(bug("Ended corner swipe at %d,%d\n", p->corner_ex, p->corner_ey));
+            }
+
+            if (p->corner_sx != -1 && p->corner_ex != -1) {            
+                int d;
+                show_vjoy();
+
+                pl->dir = FindDirection256(p->corner_sx, p->corner_sy, p->corner_ex, p->corner_ey);
+                g->dir = pl->dir / 32;
+                d = FindDistance(p->corner_sx, p->corner_sy, p->corner_ex, p->corner_ey, pl->dir);
+
+                D(bug("Corner/FreeKick swipe from %d,%d to %d,%d, direction %d, distance %d\n",
+                        p->corner_sx, p->corner_sy, p->corner_ex, p->corner_ey, pl->dir, d));
+
+
+                // clear them before shooting, we clear only the x coordinate since the y is also set
+                // with a valid value if the x is
+                p->corner_sx = p->corner_ex = -1;
+                goto tirapunizione;
+            }
+        }
+        else if (l & MYBUTTONMASK) {
             g->team->ArcadeCounter=0;
 
             g->FirePressed=TRUE;
             g->TimePress++;
 
-            if(g->TimePress>32)
+            if(g->TimePress>48)
                 goto tirapunizione;
         }
         else if (g->FirePressed) {
@@ -1123,19 +1153,19 @@ tirapunizione:
             g->FirePressed=FALSE;
             g->team->ArcadeCounter=0;
 
-            pl->velocita=(g->TimePress>>1)+3;
+            pl->velocita=(g->TimePress * 2 / 3) + 3;
 
             TogliPalla();
             DaiPalla(g);
 
             g->SpecialData=-1;
 
-            if(g->TimePress>6)
+            if(g->TimePress > 15)
                 pl->TipoTiro=TIRO_CORNER;
             else {
                 // Barra di potenza, solo dopo il check del passaggio
 
-                if(l&JP_DIRECTION_MASK)
+                if(!use_touch && l&JP_DIRECTION_MASK)
                     g->dir=GetJoyDirection(l);
 
                 Passaggio(g);
@@ -1258,10 +1288,7 @@ tirapunizione:
         g->world_x=pl->world_x-avanzamento_x[g->dir];
         g->world_y=pl->world_y-avanzamento_y[g->dir];
 
-        if(nosync)
-            UpdateCornerLine();
-        else
-            p->doing_shot=TRUE;
+        p->doing_shot=TRUE;
     }
     else {
         g->WaitForControl--;

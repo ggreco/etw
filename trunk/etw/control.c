@@ -1003,9 +1003,8 @@ void HandleExtras(void)
                 AddAnimObj(g->anim,xg-field_x,yg-field_y,g->AnimType);
                 g->OnScreen=TRUE;
             }
-            else { /* move the ALSO the nets if(g->otype!=TIPO_PORTA || nosync) */
+            else
                 MoveAnimObj(g->anim,xg-field_x,yg-field_y);
-            }
 
 
             if(     pl->world_x>(g->world_x+r->MinX)     &&

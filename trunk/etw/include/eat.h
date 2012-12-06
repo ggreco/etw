@@ -85,6 +85,7 @@ struct game
     uint8_t TabCounter, result_len, last_touch;
     int8_t arcade_on_field, RiservaAttuale;
 //    struct linesman linesman[2]; tolti per non modificare la struttura
+    uint16_t corner_sx, corner_sy, corner_ex, corner_ey;
 };
 
 struct DOggetto

@@ -93,7 +93,7 @@ extern void SetHighSelection(void);
 extern player *network_player;
 extern struct Button teamselection[], teamsettings[], pannelli[], wcp[], league[], mp[], mb[], lb[],
     asb[], cb[], cp[], wcfp[], mr[], scores[], hl[], sprefs_bottoni[];
-extern BOOL no_sound, nosync, allow_replay, nocpu, saved, wb_game, big, injuries, substitutions,
+extern BOOL no_sound, allow_replay, nocpu, saved, wb_game, big, injuries, substitutions,
     arcade, situation, training, use_crowd, use_speaker, use_replay, bookings, free_longpass, offside,
     menu_music, use_speaker, no_sound, use_crowd, special, random_draw, nopari, make_setup, id_change,
     window_opened, game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams,
