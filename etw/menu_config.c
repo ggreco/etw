@@ -103,11 +103,6 @@ void load_config(FILE *f)
             {
                 no_sound=TRUE;
             }
-            else if(!strnicmp(buffer,"nosync=on"/*-*/,9) )
-            {
-                D(bug("Setto nosync!\n"/*-*/));
-                nosync=TRUE;
-            }
             else if(!strnicmp(buffer,"newchange"/*-*/,9))
             {
                 newchange=TRUE;
@@ -307,9 +302,6 @@ void write_config(char *dest)
 
         if(network_server[0])
             fprintf(f,"server=%s\n", network_server);
-
-        if(nosync)
-            fprintf(f,"nosync=on\n"/*-*/);
 
         if(nointro)
             fprintf(f,"nointro\n"/*-*/);

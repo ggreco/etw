@@ -28,7 +28,7 @@ int oldwidth = 320, oldheight = 256;
 //WORD players = 1;
 static int music_channel = -1;
 BOOL quit_game = FALSE, no_sound = FALSE;
-BOOL training = FALSE, nosync = FALSE, firsttime = TRUE, arcade_back =
+BOOL training = FALSE, firsttime = TRUE, arcade_back =
     FALSE;
 uint8_t control[4] = { CTRL_JOY, CTRL_JOY, CTRL_JOY, CTRL_JOY };
 anim_t *logos = NULL, *symbols = NULL;

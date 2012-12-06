@@ -12,7 +12,7 @@ extern char team_name[2][16],fieldname[24],palette[24],shirt[2][24];
 extern object_t *pezzi_porte[4],*bonus[MAX_ARCADE_ON_FIELD];
 extern int8_t need_release[MAX_PLAYERS], arcade_team[2], starting_team;
 extern int8_t Table[],strictness,current_field,slowdown[];
-extern BOOL quit_game,no_sound,soft_scroll,pause_mode,nosync,final,full_replay,killer,
+extern BOOL quit_game,no_sound,soft_scroll,pause_mode,final,full_replay,killer,
     start_replay,replay_mode,use_replay,allow_replay,nocpu,teams_swapped,first_kickoff,
     arcade,situation,training,use_crowd,slow_motion,use_speaker,replay_looped,highlight,
     substitutions,bookings,injuries,window_opened,screen_opened,nopari,free_longpass,
