@@ -511,6 +511,29 @@ void DisplayText(struct Button *b, int xs, int ys, char *text, int len,
     }
 }
 
+void save_prefs()
+{
+    FILE *f;
+
+    if (!(f = fopen("etw.cfg" /*-*/ , "w"))) {
+        char buf[1024];
+        snprintf(buf, 1024, "%setw.cfg", TEMP_DIR);
+        if (!(f = fopen(buf, "w"))) {
+            easy.es_TextFormat = msg_69;
+            easy.es_GadgetFormat = msg_58;
+
+            MyEasyRequest(hwin, &easy, NULL);
+            return;
+        } else {
+            fclose(f);
+            write_config(buf);
+        }
+    } else {
+        fclose(f);
+        write_config("etw.cfg" /*-*/ );
+    }
+}
+
 BOOL DoAction(WORD button)
 {
     struct Button *b = &actual_menu->Button[button];
@@ -703,9 +726,16 @@ BOOL DoAction(WORD button)
             }
             break;
         case MENU_PREFS:
+#ifdef MOBILE_VERSION
+            if (button < 2)
+                UpdatePrefs(b->ID);
+            else
+                save_prefs();
+#else
             if (button < 4) {
                 UpdatePrefs(b->ID);
             }
+#endif
             break;
         case MENU_CAREER:
             arcade = FALSE;
@@ -791,25 +821,7 @@ BOOL DoAction(WORD button)
             break;
         case MENU_PREFS:
             if (button == 5) {
-                FILE *f;
-
-                if (!(f = fopen("etw.cfg" /*-*/ , "w"))) {
-                    char buf[1024];
-                    snprintf(buf, 1024, "%setw.cfg", TEMP_DIR);
-                    if (!(f = fopen(buf /*-*/ , "w"))) {
-                        easy.es_TextFormat = msg_69;
-                        easy.es_GadgetFormat = msg_58;
-
-                        MyEasyRequest(hwin, &easy, NULL);
-                        break;
-                    } else {
-                        fclose(f);
-                        write_config(buf /*-*/ );
-                    }
-                } else {
-                    fclose(f);
-                    write_config("etw.cfg" /*-*/ );
-                }
+                save_prefs();
 
                 easy.es_TextFormat = msg_70;
                 easy.es_GadgetFormat = msg_58;
