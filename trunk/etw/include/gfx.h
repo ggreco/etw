@@ -22,12 +22,6 @@
 
 #define TYPE_GFXOBJ  1
 #define TYPE_ANIMOBJ 2  
-#define TYPE_RASTPORT   3
-#define TYPE_DBUFINFO   4
-#define TYPE_BITMAP  5
-#define TYPE_SCREENBUFFER 6
-#define TYPE_PORT 7
-#define TYPE_MEMORY  8
 
 struct anim
 {
@@ -109,7 +103,6 @@ extern BOOL use_scaling; /* Abilita il supporto dello scaling */
 
 extern BOOL use_clipping; /* Abilita il clipping, disabilitato per default */
 
-extern BOOL use_template; /* Usa BltTemplate+ BltBitMap invece di BltMaskBitMapRastPort */
 
 extern int ClipX,ClipY;
 

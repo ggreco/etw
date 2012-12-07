@@ -369,13 +369,16 @@ void LoadScores(void)
         PositionScores();
         fclose(f);
     }
+    else {
+        D(bug("Scores file not found"));
+    }
 }
 
 void WriteScores(void)
 {
     FILE *f;
 
-    if ((f=fopen("ETWScores"/*-*/,"r")))     {
+    if ((f=fopen("ETWScores"/*-*/,"w")))     {
         int i,j;
 
         fprintf(f, "%d\n", score_number);

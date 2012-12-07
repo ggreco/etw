@@ -11,39 +11,6 @@ extern unsigned long NetJoyPos[];
 
 extern void ResizeWin(SDL_Event *);
 
-#ifdef DEMOVERSION
-void WaitOrKey(int secs)
-{
-    int i;
-    SDL_event ev;
-
-    while(secs>0)
-    {
-        for(i=0;i<5;i++)
-        {
-            BOOL ok=TRUE;
-
-            os_delay(10);
-
-            if(SDL_PollEvent(&ev))
-            {
-                if(ev.type==SDL_MOUSEBUTTONDOWN ||
-                    ev.type==SDL_KEYDOWN )
-                    ok=FALSE;
-            }
-            if( (MyReadPort0(0)&MYBUTTONMASK) ||
-                (MyReadPort1(1)&MYBUTTONMASK) )
-                ok=FALSE;
-
-            if(ok==FALSE)
-                return;
-        }
-        secs--;
-    }
-}
-
-#endif
-
 uint32_t ReadNetworkPort(uint32_t l)
 {
 //    fprintf(stderr, "Read network %ld: %ld\n", l, NetJoyPos[l]);
@@ -350,6 +317,8 @@ void CheckKeys(void)
         case SDL_WINDOWEVENT:
             if (e.window.event ==  SDL_WINDOWEVENT_RESIZED) 
                 ResizeWin(&e);
+            else if (e.window.event == SDL_WINDOWEVENT_MINIMIZED && !pause_mode)
+                DoPause();
             break;
         case SDL_KEYDOWN:
             if(!(p->show_panel&PANEL_CHAT)) {

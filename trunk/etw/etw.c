@@ -19,13 +19,9 @@
 #include <pwd.h> // For home directory
 #endif
 
-// char versione[]="\0$VER: ETW-Menu " ETW_VERSION " " __AMIGADATE__ " by Gabriele Greco - Hurricane Studios";
-
 extern SDL_Surface *screen;
-// ULONG detail_level=~(USA_RISULTATO);
 extern int Colors;
 int oldwidth = 320, oldheight = 256;
-//WORD players = 1;
 static int music_channel = -1;
 BOOL quit_game = FALSE, no_sound = FALSE;
 BOOL training = FALSE, firsttime = TRUE, arcade_back =
@@ -44,7 +40,6 @@ void PlayMenuMusic(void)
 
     if (!menu_music || music_playing || no_sound)
         return;
-
 
     sprintf(buffer, "+.music/back%d.wav" /*-*/ , RangeRand(NUMERO_LOOPS));
 
@@ -140,9 +135,7 @@ void FreeMenuStuff(void)
     D(bug("Freeing logos...\n"));
 
 /*
-    Non dovrebbe servire...
-
-    .... e invece sembra esser necessario...
+    stop music here is needed to avoid a crash 
 */
     if (menu_music && music_playing)
         StopMenuMusic();
@@ -183,7 +176,6 @@ BOOL LoadMenuStuff(void)
         save_back = FALSE;        /* Non mi interessa conservare gli sfondi */
         use_clipping = FALSE;    /* Voglio vedere gli omini parzialmente fuori dallo schermo */
         use_window = TRUE;
-
     }
 
     D(bug("Palette allocation...\n"));
@@ -244,14 +236,9 @@ BOOL LoadMenuStuff(void)
             return FALSE;
         }
     }
-// Creo tre RP per evitare di usare SetAPen che e' molto lenta.
-
-
-    D(bug("Main bitmap creation\n" /*-*/ ));
-
 
     if (firsttime) {
-        D(bug("Loading logo...\n" /*-*/ ));
+        D(bug("Loading intro...\n" /*-*/ ));
 
         if (!nointro)
             Intro();

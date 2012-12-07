@@ -687,24 +687,10 @@ void FreeGraphics(void)
 
         switch (n->ln_Type) {
         case TYPE_GFXOBJ:
-            D(bug("Freeing a gfx_t.\n"));
             FreeGfxObj((gfx_t *) n->ln_Name);
             break;
         case TYPE_ANIMOBJ:
-            D(bug("Freeing a anim_t.\n"));
             FreeAnimObj((anim_t *) n->ln_Name);
-            break;
-        case TYPE_RASTPORT:
-            D(bug("Freeing a RastPort.\n"));
-            free(n->ln_Name);
-            break;
-        case TYPE_SCREENBUFFER:
-            D(bug("Freeing a screen buffer...\n"));
-// Viene gia' fatta in os_free_dbuffer();
-            break;
-        case TYPE_BITMAP:
-            D(bug("Freeing a bitmap.\n"));
-            free(n->ln_Name);
             break;
         default:
             D(bug("WARNING Freeing unknown resource!\n"));
