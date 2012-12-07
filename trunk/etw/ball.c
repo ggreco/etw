@@ -25,7 +25,7 @@ void RimbalzoOrizzontale(void)
 {
     pl->dir-=128;
 
-    D(bug("Chiamato Rimbalzo orizzontale!\n"));
+//    D(bug("Chiamato Rimbalzo orizzontale!\n"));
 
     RimbalzoVerticale();
 }
@@ -315,13 +315,7 @@ void HandleBall(void)
         p->check_sector=9;
 
         if(pl->InGioco)
-        {
             pl->sector = (pl->world_y/1450 << 2) + (pl->world_x/2560);
-        }
-
-//        Printf("Settore  palla: %ld\n",pl->sector);
-
-// Controllo se viene chiusa la finestra, solo se lo schermo e' pubblico...
 
         CheckActive();
 
