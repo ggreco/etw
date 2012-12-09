@@ -240,8 +240,10 @@ BOOL LoadMenuStuff(void)
     if (firsttime) {
         D(bug("Loading intro...\n" /*-*/ ));
 
-        if (!nointro)
+        if (!nointro) {
+            os_start_audio();
             Intro();
+        }
 
         StoreButtonList();
     }

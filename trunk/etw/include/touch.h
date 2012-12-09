@@ -88,8 +88,11 @@ class TouchControl
         // joystick may be only shown if we have the images for it!
         void show_button(uint32_t id, bool val) {
             for (BtVec::iterator it = buttons_.begin(); it != buttons_.end(); ++it) 
-                if (it->id == id)
+                if (it->id == id) {
                     it->visible = val;
+                    if (!val)
+                        it->pressed = false;
+                }
         }
 
         void show_joy(bool val) { 

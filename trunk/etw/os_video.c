@@ -18,7 +18,7 @@ static uint16_t palette16[256];
 
 static void blitBitmap16(struct BitMap *src, uint16_t *dst)
 {
-    int x, y, i, current_bit;
+    int x, i, current_bit;
     uint8_t *plane[8];
     for (i = 0; i < src->Depth; ++i) 
         plane[i] = (uint8_t*)src->Planes[i];
@@ -38,7 +38,7 @@ static void blitBitmap16(struct BitMap *src, uint16_t *dst)
 
 static void blitBitmap32(struct BitMap *src, uint32_t *dst)
 {
-    int x, y, i, current_bit;
+    int x, i, current_bit;
     uint8_t *plane[8];
     for (i = 0; i < src->Depth; ++i) 
         plane[i] = (uint8_t*)src->Planes[i];
@@ -408,8 +408,7 @@ void blit_anim(struct BitMap *src, SDL_Rect *dest)
         return;
 
     if(!SDL_LockTexture(anim_texture, NULL, &pixels, &pitch)) {
-        int width = (src->BytesPerRow*8),
-            height = src->Rows;
+        int width = (src->BytesPerRow*8);
 
         if (pitch == width * 2)
             blitBitmap16(src, pixels);

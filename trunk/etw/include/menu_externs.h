@@ -129,6 +129,11 @@ extern UBYTE colore_team[3], highlight_team[3];
 extern struct SoundInfo *menusound[];
 extern struct championship_disk campionato;
 
+// from os_video
+void os_set_color(int, int, int , int);
+int create_anim_context(int, int);
+void delete_anim_context();
+
 // Moduli generici...
 void ResizeWindow(int, int);
 void bltchunkybitmap(uint8_t *, int, int, uint8_t *, int, int, int, int, int, int);
