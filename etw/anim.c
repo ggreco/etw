@@ -99,12 +99,12 @@ struct FrameNode *GetFrameNode(struct AnimInstData *a,int n)
 
 void DisplayAnim(struct AnimInstData *a)
 {
-    LONG i=0,l=0,t,current=0,s=0;
+    LONG i=0,l=0,t,s=0;
     extern void blit_anim(struct BitMap *, SDL_Rect *);
     struct FrameNode *fn;
     struct BitMap *bm;
     uint32_t sclk = os_get_timer();
-    int w = a->aid_BMH->bmh_Width, h = a->aid_BMH->bmh_Height, d = a->aid_BMH->bmh_Depth;
+    int w = a->aid_BMH->bmh_Width, h = a->aid_BMH->bmh_Height;
     float dst_ratio = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
           src_ratio = (float)w / (float)h;
 
@@ -195,9 +195,8 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
 
 #define NUM_PROPCHUNKS (9L)
 
-      if (iff = AllocIFF()) {
+      if ((iff = AllocIFF())) {
           ULONG                pos        = 0UL,curframe=0L;      /* current file pos in IFF stream  */
-          ULONG                modeid     = (ULONG)INVALID_ID;  /* anim view mode                  */
           ULONG                animwidth  = 0UL,                /* anim width                      */
                                animheight = 0UL,                /* anim height                     */
                                animdepth  = 0UL;                /* anim depth                      */
@@ -205,7 +204,6 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
           ULONG                minreltime = 1UL,                /* Maximum ah_RelTime value        */
                                maxreltime = 0UL;                /* Minimum ah_RelTime              */
           struct StoredProperty *bmhdprop       = NULL, /* ILBM BMHD (struct BitMapHeader)        */
-                                *camgprop       = NULL, /* ILBM CAMG (amiga view mode id)         */
                                 *dpanprop       = NULL; /* DPaint DPAN chunk                      */
           const LONG propchunks[ (NUM_PROPCHUNKS * 2) ] = {
               ID_ILBM, ID_BMHD,
@@ -265,8 +263,6 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                           if ( bmhdprop == NULL ) {
                               if ( (bmhdprop = FindProp( iff, ID_ILBM, ID_BMHD ) )) {
                                   struct BitMapHeader *bmh=aid->aid_BMH;
-                                  ULONG poolsize,
-                                        availmem;
 
                                   *bmh = *((struct BitMapHeader *)(bmhdprop -> sp_Data));
 
@@ -297,7 +293,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                           /* dpan loaded ? */
                           if( dpanprop == NULL )
                           {
-                              if( dpanprop = FindProp( iff, ID_ILBM, ID_DPAN ) )
+                              if( (dpanprop = FindProp( iff, ID_ILBM, ID_DPAN )) )
                               {
                                   if( (aid -> aid_FPS) == 0UL )
                                   {
@@ -329,7 +325,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                   case ID_FORM:
                                       {
                                           /* Create an prepare a new frame node */
-                                          if ( fn = AllocFrameNode() ) {
+                                          if ( (fn = AllocFrameNode()) ) {
                                               MyAddTail( &(aid -> aid_FrameList), (struct MyNode*)&(fn -> fn_Node) );
 
 //                                              D(bug("Allocating frame %d\n", timestamp));
@@ -400,7 +396,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                               UBYTE *buff;
 
                                               /* Allocate buffer */
-                                              if( buff = (UBYTE *)malloc((cn -> cn_Size) + 16UL) ) {
+                                              if( (buff = (UBYTE *)malloc((cn -> cn_Size) + 16UL)) ) {
                                                   /* Load CMAP data */
                                                   error = ReadChunkBytes( iff, buff, (cn -> cn_Size) );
 
@@ -449,7 +445,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                                   /* Preload frames only if requested or if this is the key frame (first frame of anim) */
                                                   if ( (aid -> aid_LoadAll) || ((fn -> fn_TimeStamp) == 0UL) || !new ) {
                                                       if( animwidth && animheight && animdepth ) {
-                                                          if( fn -> fn_BitMap = AllocBitMapPooled( animwidth, animheight, animdepth ) ) {
+                                                          if( (fn -> fn_BitMap = AllocBitMapPooled( animwidth, animheight, animdepth )) ) {
                                                               UBYTE *buff;
 
                                                               if(!new)
@@ -459,7 +455,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                                               else Temp=fn->fn_BitMap;
 
                                                               /* Allocate buffer */
-                                                              if( buff = (UBYTE *)malloc( (cn -> cn_Size) + 32UL ) )
+                                                              if( (buff = (UBYTE *)malloc( (cn -> cn_Size) + 32UL )) )
                                                               {
                                                                   struct FrameNode *prevfn;
 
@@ -496,7 +492,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                                           error = ERROR_NOT_ENOUGH_DATA;
                                                   }
                                                   else {
-                                                      if( fn->delta = (UBYTE *)malloc(((cn -> cn_Size) + 32UL) ) ) {
+                                                      if( (fn->delta = (UBYTE *)malloc(((cn -> cn_Size) + 32UL) )) ) {
                                                           error = ReadChunkBytes( iff, fn->delta, (cn -> cn_Size) );
 
                                                           if( error == (cn -> cn_Size) ) {
@@ -563,7 +559,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
 
                   worknode = (struct FrameNode *)(aid -> aid_FrameList . pHead);
 
-                  while ( nextnode = (struct FrameNode *)(worknode -> fn_Node . mpNext) )  {
+                  while ( (nextnode = (struct FrameNode *)(worknode -> fn_Node . mpNext)) )  {
                       ULONG duration = (worknode -> fn_AH . ah_RelTime) + shift - 1UL;
 
                       worknode -> fn_TimeStamp = ts;
@@ -678,7 +674,7 @@ struct FrameNode *LoadFrame(struct AnimInstData *aid,ULONG timestamp)
 
     /* Find frame by timestamp */
 
-    if( fn = FindFrameNode( (&(aid -> aid_FrameList)), timestamp ) )
+    if( (fn = FindFrameNode( (&(aid -> aid_FrameList)), timestamp )) )
         LoadFrameNode(aid,fn);
 
 
@@ -700,8 +696,7 @@ LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
         if ( ((aid -> aid_LoadAll) == FALSE) && (aid -> aid_FH) ) {
             /* If no bitmap is loaded, load it... */
             if ( (fn -> fn_BitMap) == NULL ) {
-                if( fn -> fn_BitMap = AllocBitMapPooled( (ULONG)(aid -> aid_BMH -> bmh_Width), (ULONG)(aid -> aid_BMH -> bmh_Height), (ULONG)(aid -> aid_BMH -> bmh_Depth)) ) 
-                {
+                if( (fn -> fn_BitMap = AllocBitMapPooled( aid->aid_BMH->bmh_Width, aid->aid_BMH->bmh_Height, aid ->aid_BMH->bmh_Depth))) {
                     struct FrameNode *worknode = fn;
                     ULONG             rollback = 0UL;
                     UBYTE            *buff;
@@ -739,10 +734,8 @@ LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
                     }
 
                     /* Alloc buffer for compressed frame (DLTA) data */
-                    if( buff = (UBYTE *)malloc( (buffsize + 32UL) ) )
-                    {
-                        do
-                        {
+                    if( (buff = (UBYTE *)malloc( (buffsize + 32UL) )))   {
+                        do {
                             ULONG current = rollback;
 
                             worknode = fn;
@@ -779,7 +772,7 @@ LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
                                     if( (bytesread >= (worknode -> fn_BMSize)) && (bytesread != -1L) )
                                     {
 
-                                        if( error = DrawDLTA( aid, (fn -> fn_BitMap), (fn -> fn_BitMap), (&(worknode -> fn_AH)), buff, (worknode -> fn_BMSize) ) )
+                                        if( (error = DrawDLTA( aid, (fn -> fn_BitMap), (fn -> fn_BitMap), (&(worknode -> fn_AH)), buff, (worknode -> fn_BMSize) )) )
                                         {
                                             D(bug( "dlta unpacking error %lu\n", error ));
                                         }
@@ -902,7 +895,7 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
               }
             }
 
-            while( pfn = (struct MyMinNode *)MyRemHead( &(aid -> aid_PostedFreeList))  )  {
+            while( (pfn = (struct MyMinNode *)MyRemHead( &(aid -> aid_PostedFreeList)))  )  {
               fn = POSTEDFREENODE2FN( pfn );
               fn -> fn_PostedFree = FALSE;
 
@@ -970,7 +963,7 @@ struct AnimInstData *LoadFrames( FILE *fh )
     LONG error = 0L;
     /* Create a memory pool for frame nodes and delta buffers */
 
-    if (aid=malloc(sizeof(struct AnimInstData))) {
+    if ((aid=malloc(sizeof(struct AnimInstData)))) {
         // E' importante azzerarla!
 
         memset(aid,0,sizeof(struct AnimInstData));
@@ -1003,7 +996,7 @@ struct FrameNode *AllocFrameNode(void )
 {
     struct FrameNode *fn;
 
-    if( fn = (struct FrameNode *)malloc((ULONG)sizeof( struct FrameNode ) ) )
+    if( (fn = (struct FrameNode *)malloc((ULONG)sizeof( struct FrameNode ) )) )
     {
       memset( fn, 0, sizeof( struct FrameNode ) );
     }
@@ -1023,7 +1016,7 @@ struct FrameNode *FindFrameNode( struct MyList *fnl, ULONG timestamp )
 
       prevnode = worknode = (struct FrameNode *)(fnl -> pHead);
 
-      while( nextnode = (struct FrameNode *)(worknode -> fn_Node .mpNext) )
+      while( (nextnode = (struct FrameNode *)(worknode -> fn_Node .mpNext)) )
       {
         if( (worknode -> fn_TimeStamp) > timestamp )
           return( prevnode );
@@ -1083,8 +1076,8 @@ void CopyBitMap( struct BitMap *bm1, struct BitMap *bm2 )
 
       for( p = bm1 -> Depth - 1 ; p >= 0 ; p-- )
       {
-        src = (BYTE *)bm1 -> Planes[ p ];
-        dst = (BYTE *)bm2 -> Planes[ p ];
+        src = (UBYTE *)bm1 -> Planes[ p ];
+        dst = (UBYTE *)bm2 -> Planes[ p ];
 
         for( r = bm1 -> Rows - 1 ; r >= 0 ; r-- )
         {
@@ -1170,7 +1163,7 @@ struct BitMap *AllocBitMapPooled( ULONG width, ULONG height, ULONG depth )
     moredepthsize   = (depth > 8UL)?((depth - 8UL) * sizeof( PLANEPTR )):(0UL);
     size            = ((ULONG)sizeof( struct BitMap )) + moredepthsize + (planesize * depth) + 31UL;
 
-    if ( bm = (struct BitMap *)malloc( size ) ) {
+    if ( (bm = (struct BitMap *)malloc( size )) ) {
         UWORD    pl;
         PLANEPTR plane;
 
@@ -1426,7 +1419,7 @@ struct FrameNode *GetPrevFrameNode( struct FrameNode *currfn, ULONG interleave )
     /* Get previous frame */
     worknode = currfn;
 
-    while( prevnode = (struct FrameNode *)(worknode -> fn_Node . mpPrev) )
+    while( (prevnode = (struct FrameNode *)(worknode -> fn_Node . mpPrev)) )
     {
       if( (interleave-- == 0U) || ((prevnode -> fn_Node . mpPrev) == NULL) )
       {

@@ -526,6 +526,7 @@ void ShowPanel(void)
         }
     }
 
+#ifndef MOBILE_VERSION
     if (p->show_panel & PANEL_REPLAY) {
         char *c = "PRESS R TO REPLAY THE PERIOD";
         int x, y, l = strlen(c);
@@ -550,7 +551,8 @@ void ShowPanel(void)
             TextShadow(x, y, c, l);
         }
     }
-
+#endif
+    
     // new panels used only in the mobile version
     if (p->show_panel & PANEL_THROW_IN) {
         const char *txt =  "TOUCH A PLAYER TO THROW IN TO HIM";
@@ -561,7 +563,7 @@ void ShowPanel(void)
     }
 
     if (p->show_panel & PANEL_CORNER) {
-        const char *txt =  "TOUCH THE PLAYER YOU WANT TO SERVE";
+        const char *txt =  "SWIPE IN THE DIRECTION YOU WANT TO SHOOT OR PASS";
         int l = strlen(txt);
         int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;

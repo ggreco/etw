@@ -280,9 +280,13 @@ void read_menu_config(void)
 {
     FILE *f;
     D(bug("Reading configuration...\n"/*-*/));
+    char b[128];
+    snprintf(b, sizeof(b), "%s/etw.cfg", TEMP_DIR);
+    
+    if (!(f = fopen(b, "r")))
+        f=fopen("etw.cfg"/*-*/,"r");
 
-    f=fopen("etw.cfg"/*-*/,"r");
-
+    // close is done inside load config
     load_config(f);
 
     SetCurrentResolution();
@@ -292,7 +296,7 @@ void write_config(char *dest)
 {
     FILE *f;
 
-    D(bug("Writing configuration...\n"/*-*/));
+    D(bug("Writing configuration to %s...\n"/*-*/, dest));
 
     if ((f = fopen(dest,"w"))) {
 // Obsoleto        fprintf(f,"players=%ld\n"/*-*/,players);
@@ -394,7 +398,7 @@ void write_config(char *dest)
     }
     else
     {
-        D(bug("File di configurazione non trovato!\n"));
+        D(bug("Unable to write to %s!\n", dest));
     }
 }
 

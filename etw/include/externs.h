@@ -253,9 +253,7 @@ int os_get_screen_height(void);
 int os_get_inner_width(void);
 int os_get_inner_height(void);
 void os_load_palette(uint32_t *);
-void os_set_color(int, int, int , int);
-int create_anim_context(int, int);
-void delete_anim_context();
+
 
 // from menu.c
 const char *get_tactic_name(int);

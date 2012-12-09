@@ -1,3 +1,5 @@
+#include "os_defs.h"
+
 #if !defined(WINCE) && !defined(MOBILE_VERSION)
 static char szFileName[300];
 #endif

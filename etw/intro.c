@@ -7,7 +7,7 @@ void Intro(void)
 {
     FILE *fh;
 
-    if (fh = fopen("intro/intro.anim"/*-*/, "rb")) {
+    if ((fh = fopen("intro/intro.anim"/*-*/, "rb"))) {
         char buffer[80];
         FILE *fh2;
         int t = RangeRand(NUMERO_INTRO);
@@ -16,11 +16,11 @@ void Intro(void)
 
         sprintf(buffer,"intro/intro%lc.anim"/*-*/,'a'+t);
 
-        if (fh2 = fopen(buffer, "rb")) {
+        if ((fh2 = fopen(buffer, "rb"))) {
             struct AnimInstData *a;
             unsigned int id;
 
-            if (a = LoadFrames(fh)) {
+            if ((a = LoadFrames(fh))) {
                 if (!(id = MergeAnim(a,fh2))) {
                     struct FrameNode *fn=(struct FrameNode *)a->aid_FrameList.pHead;
                     int i;
@@ -30,21 +30,21 @@ void Intro(void)
                     fn->fn_Volume=menusound[1]->Volume;
                     fn->fn_Loops=4;
 
-                    if(fn=GetFrameNode(a,90)) {
+                    if((fn=GetFrameNode(a,90))) {
                         fn->fn_Sample=menusound[2];
                         fn->fn_Rate=menusound[2]->Rate;
                         fn->fn_Volume=menusound[2]->Volume;
                         fn->fn_Loops=1;
                     }
 
-                    if(fn=GetFrameNode(a,100)) {
+                    if((fn=GetFrameNode(a,100))) {
                         fn->fn_Sample=menusound[1];
                         fn->fn_Rate=menusound[1]->Rate;
                         fn->fn_Volume=menusound[1]->Volume/4;
                         fn->fn_Loops=7;
                     }
 
-                    if(fn=GetFrameNode(a,300)) {
+                    if((fn=GetFrameNode(a,300))) {
                         fn->fn_Sample=menusound[1];
                         fn->fn_Rate=menusound[1]->Rate;
                         fn->fn_Volume=menusound[1]->Volume;
@@ -67,7 +67,7 @@ void Intro(void)
                             }
                             break;
                         case 2:
-                            if(fn=GetFrameNode(a,410)) {
+                            if((fn=GetFrameNode(a,410))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[0];
                                 fn->fn_Rate=menusound[0]->Rate;
@@ -75,19 +75,19 @@ void Intro(void)
                             }
                             break;
                         case 4:
-                            if(fn=GetFrameNode(a,423)) {
+                            if((fn=GetFrameNode(a,423))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[17];
                                 fn->fn_Rate=menusound[17]->Rate;
                                 fn->fn_Volume=menusound[17]->Volume;
                             }                            
-                            if(fn=GetFrameNode(a,429)) {
+                            if((fn=GetFrameNode(a,429))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[15];
                                 fn->fn_Rate=menusound[15]->Rate;
                                 fn->fn_Volume=menusound[15]->Volume;
                             }                            
-                            if(fn=GetFrameNode(a,445)) {
+                            if((fn=GetFrameNode(a,445))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[16];
                                 fn->fn_Rate=menusound[16]->Rate;
@@ -95,7 +95,7 @@ void Intro(void)
                             }                            
                             break;
                         case 5:
-                            if(fn=GetFrameNode(a,405)) {
+                            if((fn=GetFrameNode(a,405))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[14];
                                 fn->fn_Rate=menusound[14]->Rate;
@@ -128,12 +128,11 @@ void Outro(void)
 
     StopMenuMusic();
 
-    if (fh = fopen("intro/outro.anim"/*-*/, "rb")) {
+    if ((fh = fopen("intro/outro.anim"/*-*/, "rb"))) {
         struct AnimInstData *a;
-        struct Screen *scr=NULL;
-        unsigned int id,i;
+        unsigned int i;
 
-        if (a = LoadFrames(fh)) {
+        if ((a = LoadFrames(fh))) {
             PlayMenuMusic();
 
             for(i=0; i<16; i++)
