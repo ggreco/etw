@@ -308,19 +308,17 @@ void HandleBall(void)
         }
     }
 
-    p->check_sector--;
 
-    if(p->check_sector<=0)
-    {
-        p->check_sector=9;
+    // was 10, still there from 25fps logic?
+    if((p->check_sector % 20) == 0 && pl->InGioco)
+        pl->sector = (pl->world_y/1450 << 2) + (pl->world_x/2560);
 
-        if(pl->InGioco)
-            pl->sector = (pl->world_y/1450 << 2) + (pl->world_x/2560);
-
+    // was checked every 10 loops, I'm changing it to 50 (one sec) to see if there is an improvement
+    if ((p->check_sector % 50) == 0)
         CheckActive();
-
-    }
     
+    p->check_sector++;
+
     if(pl->ActualFrame>=4)
         pl->ActualFrame=0;
 
