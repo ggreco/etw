@@ -79,7 +79,8 @@ struct game
     struct team *possesso;
     ULONG TempoPassato;
     LONG show_panel, show_time;
-    WORD check_sector, shotheight[SHOT_LENGTH], flash_pos;
+    UWORD check_sector;
+    WORD shotheight[SHOT_LENGTH], flash_pos;
     BOOL goal, sopra_rete, flash_mode, doing_shot, mantieni_distanza, penalty_onscreen;
     WORD arcade_counter, marker_x, marker_y, penalty_counter, adder;
     uint8_t TabCounter, result_len, last_touch;

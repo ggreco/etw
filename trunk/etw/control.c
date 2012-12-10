@@ -951,16 +951,14 @@ skipchange:
 
 void ChangeControlled(team_t *s,WORD i)
 {
-// Occhio qui, potrebbe dar problemi.
-
     if(s->gioco_ruolo||s->players[i].Comando||s->players[i].AnimType==GIOCATORE_ESPULSO)
         return;
 
-        if(s->attivo->Controlled && s->MarkerOnScreen)
-        {
-                s->MarkerOnScreen=FALSE;
-                RemAnimObj(s->Marker);
-        }
+    if(s->attivo->Controlled && s->MarkerOnScreen)
+    {
+        s->MarkerOnScreen=FALSE;
+        RemAnimObj(s->Marker);
+    }
 
     if(s->attivo->ArcadeEffect)
     {
@@ -968,10 +966,10 @@ void ChangeControlled(team_t *s,WORD i)
             RemoveArcadeEffect(s->attivo,s->attivo->ArcadeEffect);
     }
 
-        s->attivo->Controlled=FALSE;
+    s->attivo->Controlled=FALSE;
 
-        s->attivo=&s->players[i];
-        s->attivo->Controlled=TRUE;
+    s->attivo=&s->players[i];
+    s->attivo->Controlled=TRUE;
 
     if(detail_level&USA_NOMI)
         PrintSmall(s->NomeAttivo,s->attivo->surname,s->attivo->NameLen);
