@@ -95,14 +95,20 @@ draw()
         // visible and fading will never be not null if we don't have a knob & a joybase
         if (freetouch_on_screen_ > 0 && free_) {
             SDL_Rect dest = freerect_;
-            int delta = 25 - freetouch_on_screen_;
+            int delta;
+            // first we enlarge
+            if (freetouch_on_screen_ >= 20)
+                delta = freetouch_on_screen_ - 20;
+            else // and then we shrink twice as fast
+                delta = (20 - freetouch_on_screen_) * 2;
+            
             dest.x += delta/2;
             dest.y += delta/2;
             dest.w -= delta;
             dest.h -= delta;
             freetouch_on_screen_--;
 
-            SDL_RenderCopy(rend, free_, NULL, &freerect_);
+            SDL_RenderCopy(rend, free_, NULL, &dest);
         }
 
         if (visible_ || fading_ > 0) {

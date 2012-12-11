@@ -372,6 +372,9 @@ void MainLoop(void)
 
     os_start_audio();
 
+    if (use_touch)
+        show_vjoy();
+    
     ideal = start = StartGameTime = Timer();
     EndTime = time_length * MY_CLOCKS_PER_SEC + start;
 

@@ -1976,7 +1976,7 @@ void UpdatePrefs(BYTE set)
     case MENU_MOBILE_PREFS:
         m->Button[1].Text = (detail_level & USA_RADAR)
                           ? radar_options[radar_position] : disabled;
-        m->Button[3].Text = nointro ? enabled : disabled;
+        m->Button[3].Text = nointro ? disabled : enabled;
         m->Button[5].Text = no_sound ? disabled : enabled;
         m->Button[7].Text = menu_music ? enabled : disabled;
         break;

@@ -1112,6 +1112,8 @@ void PunizioneCorner(player_t *g)
             uint32_t k = r_controls[g->team->Joystick^1][counter];
             // start point of the movement
             if (l & JPF_TOUCH_DOWN) {
+                // reset the end swipe, we need a correct start -> end sequence
+                p->corner_ex = -1;
                 p->corner_sx = k & 0xffff;
                 p->corner_sy = k >> 16;
                 D(bug("Started corner swipe at %d,%d\n", p->corner_sx, p->corner_sy));
