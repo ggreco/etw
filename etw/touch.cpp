@@ -94,6 +94,12 @@ draw()
     if (SDL_Renderer *rend = SDL_GetRenderer(screen_)) {
         // visible and fading will never be not null if we don't have a knob & a joybase
         if (freetouch_on_screen_ > 0 && free_) {
+            SDL_Rect dest = freerect_;
+            int delta = 25 - freetouch_on_screen_;
+            dest.x += delta/2;
+            dest.y += delta/2;
+            dest.w -= delta;
+            dest.h -= delta;
             freetouch_on_screen_--;
 
             SDL_RenderCopy(rend, free_, NULL, &freerect_);
@@ -184,8 +190,8 @@ iteration()
                         touch_y_ = e.tfinger.y * screen_h_ / t->yres;
                         result |= FREE_TOUCH;
                         freetouch_on_screen_ = 25; // show the touch trace for half second
-                        freerect_.x = touch_x_;
-                        freerect_.y = touch_y_;
+                        freerect_.x = touch_x_ - freerect_.w / 2;
+                        freerect_.y = touch_y_ - freerect_.h / 2;
                     }
                 }
                 break;
