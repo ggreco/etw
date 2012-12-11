@@ -1184,10 +1184,7 @@ game_t *SetupSquadre(void)
     }
 
     Progress();
-#ifdef DEMOVERSION
-    LoadPLogo("gfx/etwlogo");
-    os_delay(50);
-#endif
+
 
     if(!(p->team[0] = CreateTeam(0)))
     {
@@ -1196,11 +1193,6 @@ game_t *SetupSquadre(void)
     }
 
     snum = 1;
-
-#ifdef DEMOVERSION
-    LoadPLogo("gfx/control.gfx");
-    os_delay(100);
-#endif
 
     if(!(p->team[1] = CreateTeam(1)))
     {
@@ -1348,7 +1340,9 @@ game_t *SetupSquadre(void)
     p->referee.cattiveria = strictness;
     p->referee.Tick = 0;
     pl=&p->ball;
-
+    // reset swipe handlers (se special.c)
+    p->corner_sx = p->corner_ex = -1;
+    
     if(penalties || free_kicks)
     {
         detail_level &= ~USA_RADAR;
