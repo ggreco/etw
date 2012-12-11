@@ -20,7 +20,7 @@ class TouchControl
 
         BtVec buttons_;
         SDL_Window *screen_;
-        SDL_Texture *knob_, *joybase_;
+        SDL_Texture *knob_, *joybase_, *free_;
         int knob_w_, knob_h_;
         bool visible_;
         int joyfinger_;
@@ -28,7 +28,8 @@ class TouchControl
         int center_y_, center_x_, screen_w_, screen_h_;
         int reference_y_, reference_x_;
         int touch_x_, touch_y_;
-        SDL_Rect joyrect_, activation_;
+        SDL_Rect joyrect_, activation_, freerect_;
+        int freetouch_on_screen_;
         float distance_, delta_x_, delta_y_;
         bool show_joy_;
 
@@ -73,7 +74,7 @@ class TouchControl
                      FREE_TOUCHDOWN = 0x10000,
                      QUIT = 0xf00000};
 
-        TouchControl(SDL_Window *screen, const char *knob = NULL, const char *base = NULL);
+        TouchControl(SDL_Window *screen, const char *knob = NULL, const char *base = NULL, const char *touch = NULL);
         ~TouchControl();
         void activation(int x, int y, int w, int h) {
             activation_.x = x; activation_.y = y;
