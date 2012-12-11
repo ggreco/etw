@@ -22,7 +22,7 @@ void touch_init()
 
     D(bug("Starting touch interface for window size %dx%d\n", w, h));
     
-    touch = new TouchControl(screen, "mobile/knob.bmp", "mobile/joystick-base.bmp");
+    touch = new TouchControl(screen, "mobile/knob.bmp", "mobile/joystick-base.bmp", "mobile/free-touch.bmp");
 
     // only pause key in CPU vs CPU matches and highlights
     if ((p->team[0]->Joystick != -1 ||

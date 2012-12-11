@@ -45,16 +45,18 @@ add_button(const char *normal, const char *pressed, int x, int y, uint32_t id)
 
        
 TouchControl::
-TouchControl(SDL_Window *screen, const char *knob, const char *base) :
-    screen_(screen), knob_(NULL), joybase_(NULL),
-    visible_(false), fading_(0), 
+TouchControl(SDL_Window *screen, const char *knob, const char *base, const char *freetouch) :
+    screen_(screen), knob_(NULL), joybase_(NULL), free_(NULL),
+    visible_(false), fading_(0), freetouch_on_screen_(0),
     distance_(0.0), delta_x_(0.0), delta_y_(0.0)
 {
     if (knob)
         knob_ = load_bmp(knob, knob_w_, knob_h_);
     if (base)
         joybase_ = load_bmp(base, joyrect_.w, joyrect_.h);
-    
+    if (freetouch)
+        free_ = load_bmp(freetouch, freerect_.w, freerect_.h);
+
     SDL_RenderGetLogicalSize(SDL_GetRenderer(screen), &screen_w_, &screen_h_);
 
     if (knob_ && joybase_) {
@@ -77,6 +79,8 @@ TouchControl::
         SDL_DestroyTexture(knob_);
     if (joybase_)
         SDL_DestroyTexture(joybase_);
+    if (free_)
+        SDL_DestroyTexture(free_);
 
     for (BtIt it = buttons_.begin(); it != buttons_.end(); ++it) {
         SDL_DestroyTexture(it->img);
@@ -89,6 +93,12 @@ draw()
 {
     if (SDL_Renderer *rend = SDL_GetRenderer(screen_)) {
         // visible and fading will never be not null if we don't have a knob & a joybase
+        if (freetouch_on_screen_ > 0 && free_) {
+            freetouch_on_screen_--;
+
+            SDL_RenderCopy(rend, free_, NULL, &freerect_);
+        }
+
         if (visible_ || fading_ > 0) {
             if (!visible_)
                 fading_--;
@@ -130,6 +140,7 @@ draw()
 
             SDL_RenderCopy(rend, it->is_pressed ? it->pressed : it->img, NULL, &r);
         }
+
     }
 }
 
@@ -172,6 +183,9 @@ iteration()
                         touch_x_ = e.tfinger.x * screen_w_ / t->xres;
                         touch_y_ = e.tfinger.y * screen_h_ / t->yres;
                         result |= FREE_TOUCH;
+                        freetouch_on_screen_ = 25; // show the touch trace for half second
+                        freerect_.x = touch_x_;
+                        freerect_.y = touch_y_;
                     }
                 }
                 break;
