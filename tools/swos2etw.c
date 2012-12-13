@@ -607,17 +607,21 @@ int main(int argc, char *argv[])
 	FILE *f,*out;
 	struct SWOS_Team swos_team;
 	struct Squadra_Disk etw_team;
-
+    char *input_name;
+    
 	if(argc<3||argc>4)
 	{
 		printf("Usage: %s SWOS-TeamFile ETW-TeamFile [League Name]\n",argv[0]);
 		exit(0);
 	}
 
+    input_name = argv[1];
+
 	if(argc==4)
 		strcpy(camp.Nome,argv[3]);
 
-	if(f=fopen(argv[1],"rb"))
+retry:    
+	if(f=fopen(input_name,"rb"))
 	{
 		short team_number;
 		int i,k,allow_skip=0;
@@ -627,10 +631,30 @@ int main(int argc, char *argv[])
         team_number = ntohs(team_number);
 
         if(team_number==0x524e) {
-			printf("This file is packed with RNC, you have to depack it!\n");
-			exit(0);
+            char buffer[1024];
+            fclose(f);
+            input_name = malloc(strlen(argv[1]) + 4);
+            sprintf(input_name, "%s.bk", argv[1]);
+
+			printf("This file is packed with RNC, trying to unpack it...\n");
+            if (strrchr(argv[0], '/')) {
+                char *c;
+                strcpy(buffer, argv[0]);    
+                c = strrchr(buffer, '/') + 1;
+                *c = 0;
+            }
+            else
+                *buffer = 0;
+
+            sprintf(buffer + strlen(buffer), "rncdecode %s %s", argv[1], input_name);
+
+            if (!system(buffer)) {
+                fprintf(stderr, "Unable to find rncdecode ('%s' failed)\n", buffer);
+            }
+            goto retry;
 		}
-		printf("%d teams found in <%s>...\n",team_number,argv[1]);
+
+		printf("%d teams found in <%s>...\n",team_number, input_name);
 
 		if(!(out=fopen(argv[2],"wb")))
 		{
@@ -654,6 +678,7 @@ int main(int argc, char *argv[])
 
 		fwrite(&camp,sizeof(struct Campionato_Disk),1,out);
 
+        printf("Writing teams: ");
 		for(i=0,k=0;i<team_number && k<64;i++)
 		{
 			fread(&swos_team,sizeof(struct SWOS_Team),1,f);
@@ -664,7 +689,9 @@ int main(int argc, char *argv[])
 			k++;
 			ConvertTeam(&swos_team,&etw_team);
 			fwrite(&etw_team,sizeof(struct Squadra_Disk),1,out);
+            printf("%s, ", etw_team.nome);
 		}
+        printf("OK\n");
 
 		if(allow_skip)
 		{
