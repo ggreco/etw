@@ -18,7 +18,7 @@ extern BOOL quit_game,no_sound,soft_scroll,pause_mode,final,full_replay,killer,
     substitutions,bookings,injuries,window_opened,screen_opened,nopari,free_longpass,
     no_record,penalties,free_kicks,arcade_teams,first_half,extratime,left_sel,right_sel,
     friendly,golden_gol,use_key0,use_key1,joyonly,use_offside, use_touch,
-    network_game, game_start;
+    network_game, game_start, tutorial;
 extern uint8_t control[4], tipo_porta;
 extern char *controls[CONTROLS], spk_basename[64];
 extern int32_t Pens[256];

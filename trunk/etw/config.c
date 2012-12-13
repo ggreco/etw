@@ -9,7 +9,7 @@ int highlight_size=0;
 extern BOOL wb_game;
 extern int32_t display_id;
 
-BOOL joyonly=FALSE,
+BOOL joyonly=FALSE, tutorial = TRUE,
     arcade_teams=FALSE,first_half=TRUE,extratime=FALSE,
     final=FALSE,use_width=FALSE,use_height=FALSE,first_kickoff=TRUE,
     friendly=FALSE,use_direct=FALSE,use_offside=TRUE; // Da mettere false di default

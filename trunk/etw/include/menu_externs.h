@@ -97,8 +97,8 @@ extern BOOL no_sound, allow_replay, nocpu, saved, wb_game, big, injuries, substi
     arcade, situation, training, use_crowd, use_speaker, use_replay, bookings, free_longpass, offside,
     menu_music, use_speaker, no_sound, use_crowd, special, random_draw, nopari, make_setup, id_change,
     window_opened, game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams,
-    cgxmode, final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
-    audio_to_fast, use_gfx_scaling;
+    final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
+    audio_to_fast, use_gfx_scaling, tutorial;
 extern int32_t Pens[256];
 extern int framerate, display_id, framerate, overscan;
 extern long int t_l, situation_time;

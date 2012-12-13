@@ -15,7 +15,7 @@ int radar_position = 7;
 BOOL wb_game=FALSE,use_replay=TRUE,allow_replay=TRUE,nocpu=FALSE,arcade=FALSE,substitutions=TRUE,
     situation=FALSE,use_crowd=TRUE,use_speaker=FALSE,free_longpass=FALSE,injuries=TRUE,    
     bookings=TRUE,nopari=FALSE,id_change=FALSE,window_opened=FALSE,newchange=FALSE,
-    penalties=FALSE,free_kicks=FALSE,cgxmode=FALSE,nointro=FALSE,killer=FALSE,warp=FALSE,
+    penalties=FALSE,free_kicks=FALSE,nointro=FALSE,killer=FALSE,warp=FALSE,
     music_playing=FALSE,golden_gol=FALSE,
     offside=FALSE,screen_opened=TRUE,network_game=FALSE, menu_music=TRUE;
 
@@ -44,8 +44,7 @@ void load_config(FILE *f)
     char buffer[120];
     int value;
 
-    if(f)
-    {
+    if(f) {
         while(fgets(buffer,119,f)!=NULL)
         {
 // Due giocatori?
@@ -102,6 +101,10 @@ void load_config(FILE *f)
             else if(!strnicmp(buffer,"sound=off"/*-*/,9) )
             {
                 no_sound=TRUE;
+            }
+            else if(!strnicmp(buffer,"notutorial"/*-*/,7) )
+            {
+                tutorial=FALSE;
             }
             else if(!strnicmp(buffer,"newchange"/*-*/,9))
             {
@@ -308,7 +311,7 @@ void write_config(char *dest)
             fprintf(f,"server=%s\n", network_server);
 
         if(nointro)
-            fprintf(f,"nointro\n"/*-*/);
+            fputs("nointro\n"/*-*/, f);
 
 
         if(use_gfx_scaling)
@@ -316,35 +319,38 @@ void write_config(char *dest)
             extern int FIXED_SCALING_HEIGHT;
 
             fprintf(f,"scaling_y=%d\n"/*-*/,FIXED_SCALING_HEIGHT);
-            fprintf(f,"scaling\n"/*-*/);
+            fputs("scaling\n"/*-*/, f);
         }
 
+        if (!tutorial)
+            fputs( "notutorial\n"/*-*/, f);
+
         if(penalties)
-            fprintf(f,"penalties\n"/*-*/);
+            fputs("penalties\n"/*-*/, f);
         else if(free_kicks)
-            fprintf(f,"freekicks\n"/*-*/);
+            fputs("freekicks\n"/*-*/, f);
 
         if(golden_gol)
-            fprintf(f,"golden\n"/*-*/);
+            fputs("golden\n"/*-*/, f);
 
         if(newchange)
-            fprintf(f,"newchange\n"/*-*/);
+            fputs("newchange\n"/*-*/, f);
 
         if(killer) // Ogni fallo causa un infortunio!
-            fprintf(f,"killer\n"/*-*/);
+            fputs("killer\n"/*-*/, f);
 
         if(wb_game)
-            fprintf(f,"workbench\nwidth=%d\nheight=%d\n"/*-*/,
+            fprintf(f, "workbench\nwidth=%d\nheight=%d\n"/*-*/,
                       WINDOW_WIDTH, WINDOW_HEIGHT);
         else        
-            fprintf(f,"width=%d\nheight=%d\n"/*-*/,
+            fprintf(f, "width=%d\nheight=%d\n"/*-*/,
                       wanted_width, wanted_height);
    
         if(!(detail_level&USA_RADAR))
-            fprintf(f,"radar=off\n"/*-*/);
+            fputs("radar=off\n"/*-*/, f);
         else
         {
-            fprintf(f,"radar=%d\n"/*-*/, radar_position);
+            fprintf(f, "radar=%d\n"/*-*/, radar_position);
         }
 
 /* Tutta la gestione dei joystick e' un po' sconfusionata, questo perche' la
@@ -365,7 +371,7 @@ void write_config(char *dest)
 
         if(arcade)
         {
-            fprintf(f,"arcade\n"/*-*/);
+            fputs("arcade\n"/*-*/, f);
 
             if(situation)
             {
@@ -377,13 +383,13 @@ void write_config(char *dest)
 // team non serve, uso quelle predefinite.
 
         if(nopari)    
-            fprintf(f,"nopari\n"/*-*/);
+            fputs("nopari\n"/*-*/, f);
 
         if(training)
-            fprintf(f,"training\n"/*-*/);
+            fputs("training\n"/*-*/, f);
 
         if(free_longpass)
-            fprintf(f,"freepass\n"/*-*/);
+            fputs("freepass\n"/*-*/, f);
 
         fprintf(f,"strictness=%d\n", strictness);
         

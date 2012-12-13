@@ -164,8 +164,11 @@ iteration()
 
     while(SDL_PollEvent(&e)) {
         switch (e.type) {
-            case SDL_QUIT:
-                return QUIT;
+            case SDL_WINDOWEVENT:
+                if (e.window.event = SDL_WINDOWEVENT_CLOSE)
+                    return QUIT;
+                else if (e.window.event == SDL_WINDOWEVENT_MINIMIZED)
+                    return MINIMIZED;
 
             case SDL_FINGERUP:
                 if (visible_ && e.tfinger.fingerId == joyfinger_) {
