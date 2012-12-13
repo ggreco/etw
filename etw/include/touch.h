@@ -72,6 +72,7 @@ class TouchControl
                      BUTTONUP = 0x4000,
                      FREE_TOUCH = 0x8000,
                      FREE_TOUCHDOWN = 0x10000,
+                     MINIMIZED = 0x20000,
                      QUIT = 0xf00000};
 
         TouchControl(SDL_Window *screen, const char *knob = NULL, const char *base = NULL, const char *touch = NULL);

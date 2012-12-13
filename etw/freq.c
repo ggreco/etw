@@ -119,81 +119,36 @@ BOOL FileRequest(struct MyFileRequest *fr)
 #include <gtk/gtk.h>
 #include <unistd.h>
 
-typedef struct fdt {
-    GtkWidget *fs;
-    struct MyFileRequest *ofn;
-    int success;
-} fsdatas;
-
-void fw_cancel(GtkWidget * w, fsdatas * fs)
-{
-    fs->success = 0;
-    gtk_widget_destroy(fs->fs);
-    gtk_main_quit();
-}
-
-void fw_ok(GtkWidget * w, fsdatas * fs)
-{
-    strcpy(fs->ofn->File,
-           gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs->fs)));
-    D(bug("Selected: %s\n", fs->ofn->File));
-    gtk_widget_destroy(fs->fs);
-    fs->success = 1;
-    gtk_main_quit();
-}
-
 BOOL FileRequest(struct MyFileRequest *fr)
 {
     char buffer[200];
-    fsdatas fs;
-    fs.success = 0;
-    fs.ofn = fr;
-    fs.fs = gtk_file_selection_new(fr->Title);
+    BOOL ok = FALSE;
+    GtkWidget *dialog = gtk_file_chooser_dialog_new (fr->Title, NULL,
+				      fr->Save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
+				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				      fr->Save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				      NULL);
 
     fr->File = szFileName;
+    if (fr->Dir)
+        gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), fr->Dir);
 
-    gtk_signal_connect(GTK_OBJECT
-                       (GTK_FILE_SELECTION(fs.fs)->cancel_button),
-                       "clicked", (GtkSignalFunc) fw_cancel, &fs);
-    gtk_signal_connect(GTK_OBJECT(fs.fs), "destroy",
-                       (GtkSignalFunc) fw_cancel, &fs);
-    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs.fs)->ok_button),
-                       "clicked", (GtkSignalFunc) fw_ok, &fs);
+    D(bug("Open freq (title:%s, dir:%s)...\n", fr->Title ? fr->Title : "NONE", fr->Dir ? fr->Dir : "NONE"));
 
-/*    if(!fr->Save)
-        f.Flags = OFN_FILEMUSTEXIST;
- */
-
-    if (fr->Dir) {
-        if (getcwd(buffer, sizeof(buffer))) {
-            strcat(buffer, "/");
-            strcat(buffer, fr->Dir);
-
-            if (buffer[strlen(buffer) - 1] != '/')
-                strcat(buffer, "/");
-
-            gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs.fs),
-                                            buffer);
-        }
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+        gchar *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+        strcpy(fr->File, filename);
+        g_free (filename);
+        ok = TRUE;
     }
 
-    if (fr->Filter) {
-        char *temp = strrchr(fr->Filter, '|');
+    gtk_widget_destroy (dialog);
 
-        if (temp)
-            gtk_file_selection_complete(GTK_FILE_SELECTION(fs.fs),
-                                        temp + 1);
-    }
-//      f.lpstrTitle = fr->Title;
+    while (gtk_events_pending())
+        gtk_main_iteration();
 
-
-    gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(fs.fs));
-    gtk_widget_show(fs.fs);
-
-    D(bug("Open freq...\n"));
-    gtk_main();
-    D(bug("Closed filereq...(%d)\n", fs.success));
-    return fs.success;
+    D(bug("Closed filereq...(%d)\n", ok));
+    return ok;
 }
 
 #elif defined(MACOSX)

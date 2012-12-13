@@ -1745,7 +1745,7 @@ BOOL MobilePrefs(WORD button)
             }            
             break;
         case 3:
-            nointro = (nointro) ? FALSE : TRUE;            
+            nointro = nointro ? FALSE : TRUE;            
             break;
         case 5:   
             no_sound = no_sound ? FALSE : TRUE;
@@ -1770,6 +1770,9 @@ BOOL MobilePrefs(WORD button)
                 StopMenuMusic();
             else
                 PlayMenuMusic();            
+            break;
+        case 9:
+            tutorial = tutorial ? FALSE : TRUE;
             break;
     }
 
@@ -1979,6 +1982,7 @@ void UpdatePrefs(BYTE set)
         m->Button[3].Text = nointro ? disabled : enabled;
         m->Button[5].Text = no_sound ? disabled : enabled;
         m->Button[7].Text = menu_music ? enabled : disabled;
+        m->Button[9].Text = tutorial ? enabled : disabled;
         break;
     case MENU_AUDIO_PREFS:
         m->Button[1].Text = no_sound ? disabled : enabled;

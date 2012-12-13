@@ -97,6 +97,9 @@ void check_cpuvscpu_touch()
             return;
         }
     }
+    if (res & TouchControl::MINIMIZED && !pause_mode)
+        DoPause();
+
     if (res & TouchControl::QUIT) {
         SetResult("break");
         final = FALSE;

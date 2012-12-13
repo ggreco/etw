@@ -378,10 +378,6 @@ int main(int argc, char *argv[])
     
     InitStrings();
 
-#if defined(LINUX) || defined(SOLARIS_X86)
-    gtk_init(&argc, &argv);
-#endif
-
 /* Fix of an old language catalog bug... */
 
     {
@@ -475,6 +471,11 @@ int main(int argc, char *argv[])
         }
 
     atexit(SDL_Quit);
+
+#if defined(LINUX) || defined(SOLARIS_X86)
+    D(bug("GTK initialization...\n"));
+    gtk_init(&argc, &argv);
+#endif
 
     if (!InitMenuFonts()) 
         return FALSE;
