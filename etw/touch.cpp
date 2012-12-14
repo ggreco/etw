@@ -165,7 +165,7 @@ iteration()
     while(SDL_PollEvent(&e)) {
         switch (e.type) {
             case SDL_WINDOWEVENT:
-                if (e.window.event = SDL_WINDOWEVENT_CLOSE)
+                if (e.window.event == SDL_WINDOWEVENT_CLOSE)
                     return QUIT;
                 else if (e.window.event == SDL_WINDOWEVENT_MINIMIZED)
                     return MINIMIZED;
