@@ -34,6 +34,27 @@ int bitmap_width, bitmap_height;
 struct SoundInfo *music = NULL;
 char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE;
 
+#ifdef IPHONE
+SDL_uikitviewcontroller *gViewColtroller = NULL;
+UIWindow *gWindow = NULL;
+SDL_uikitopenglview *gView = NULL;
+// SDLUIKitDelegate *gApplicationDelegate = NULL;
+
+void SetUIViewController(SDL_Window *aWindow)
+{
+    SDL_WindowData *data = (SDL_WindowData *)aWindow->driverdata;
+    gViewColtroller = data->viewcontroller;
+    gWindow = data->uiwindow;
+    gView = data->view;
+   // gApplicationDelegate = [SDLUIKitDelegate sharedAppDelegate];
+}
+
+extern void init_game_center();
+#else
+#define SetUIViewController(x)
+void init_game_center() {}
+#endif
+
 void PlayMenuMusic(void)
 {
     char buffer[120];
@@ -193,8 +214,6 @@ BOOL LoadMenuStuff(void)
     D(bug("Menu palette remapped.\n" /*-*/ ));
 
 // ModifyIDCMP
-
-    D(bug("Opening game window...\n"));
 
     ClipX = WINDOW_WIDTH - 1;
     ClipY = WINDOW_HEIGHT - 1;
@@ -484,9 +503,13 @@ int main(int argc, char *argv[])
     // initalize strings in user changable menus
     initialize_menus();
 
+    D(bug("Opening game window...\n"));
+
     OpenMenuScreen();
 
     if (screen) {
+        SetUIViewController(screen);
+
         if (LoadMenuStuff()) {
             
             D(bug("Starting ChangeMenu...\n"));
