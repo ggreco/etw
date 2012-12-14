@@ -13,11 +13,64 @@ void init_game_center()
     [[GameCenter getInstance] authenticateLocalPlayer];
 }
 
+typedef struct SDL_uikitopenglview SDL_uikitopenglview;
+
+/* Define the SDL window structure, corresponding to toplevel windows */
+struct SDL_Window
+{
+    const void *magic;
+    Uint32 id;
+    char *title;
+    int x, y;
+    int w, h;
+    int min_w, min_h;
+    Uint32 flags;
+    
+    /* Stored position and size for windowed mode */
+    SDL_Rect windowed;
+    
+    SDL_DisplayMode fullscreen_mode;
+    
+    float brightness;
+    Uint16 *gamma;
+    Uint16 *saved_gamma;        /* (just offset into gamma) */
+    
+    SDL_Surface *surface;
+    SDL_bool surface_valid;
+    
+    void *shaper;
+    void *data;
+    void *driverdata;
+    
+    SDL_Window *prev;
+    SDL_Window *next;
+};
+
+struct SDL_WindowData
+{
+    UIWindow *uiwindow;
+    SDL_uikitopenglview *view;
+    SDL_uikitviewcontroller *viewcontroller;
+};
+typedef struct SDL_WindowData SDL_WindowData;
+
+SDL_uikitviewcontroller *gViewColtroller = NULL;
+UIWindow *gWindow = NULL;
+SDL_uikitopenglview *gView = NULL;
+// SDLUIKitDelegate *gApplicationDelegate = NULL;
+
+void SetUIViewController(SDL_Window *aWindow)
+{
+    SDL_WindowData *data = (SDL_WindowData *)aWindow->driverdata;
+    gViewColtroller = data->viewcontroller;
+    gWindow = data->uiwindow;
+    gView = data->view;
+    // gApplicationDelegate = [SDLUIKitDelegate sharedAppDelegate];
+}
+
 @implementation GameCenter
 
 NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
-
-extern UIViewController *gViewColtroller;
 
 // Public stuff
 
