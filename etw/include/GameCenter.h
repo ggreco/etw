@@ -9,6 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
 
+#include "SDL.h"
+
+@interface SDL_uikitviewcontroller : UIViewController {
+@private
+    SDL_Window *window;
+}
+@end
+
 @interface GameCenter : NSObject <GKLeaderboardViewControllerDelegate, GKAchievementViewControllerDelegate, UIAlertViewDelegate> {
     GKLocalPlayer *localPlayer;
     NSArray *descriptions;

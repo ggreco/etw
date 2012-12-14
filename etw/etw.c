@@ -19,7 +19,7 @@
 #include <pwd.h> // For home directory
 #endif
 
-extern SDL_Surface *screen;
+extern SDL_Window *screen;
 extern int Colors;
 int oldwidth = 320, oldheight = 256;
 static int music_channel = -1;
@@ -35,23 +35,10 @@ struct SoundInfo *music = NULL;
 char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE;
 
 #ifdef IPHONE
-SDL_uikitviewcontroller *gViewColtroller = NULL;
-UIWindow *gWindow = NULL;
-SDL_uikitopenglview *gView = NULL;
-// SDLUIKitDelegate *gApplicationDelegate = NULL;
-
-void SetUIViewController(SDL_Window *aWindow)
-{
-    SDL_WindowData *data = (SDL_WindowData *)aWindow->driverdata;
-    gViewColtroller = data->viewcontroller;
-    gWindow = data->uiwindow;
-    gView = data->view;
-   // gApplicationDelegate = [SDLUIKitDelegate sharedAppDelegate];
-}
-
+extern void SetUIViewController(SDL_Window *);
 extern void init_game_center();
 #else
-#define SetUIViewController(x)
+void SetUIViewController(SDL_Window *x) { x; }
 void init_game_center() {}
 #endif
 
@@ -508,10 +495,8 @@ int main(int argc, char *argv[])
     OpenMenuScreen();
 
     if (screen) {
-        SetUIViewController(screen);
-
         if (LoadMenuStuff()) {
-            
+            SetUIViewController(screen);
             D(bug("Starting ChangeMenu...\n"));
 
             os_start_audio();
