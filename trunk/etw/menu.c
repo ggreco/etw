@@ -789,12 +789,21 @@ BOOL DoAction(WORD button)
 
         switch (current_menu) {
         case MENU_SCORES:
-            easy.es_TextFormat = msg_65;
-            easy.es_GadgetFormat = msg_66;
-
-            if (MyEasyRequest(hwin, &easy, NULL))
-                ClearScores();
-
+                switch (button) {
+                    case 3:
+                        easy.es_TextFormat = msg_65;
+                        easy.es_GadgetFormat = msg_66;
+                        
+                        if (MyEasyRequest(hwin, &easy, NULL))
+                            ClearScores();
+                        break;
+                    case 1:
+                        show_world_scores();
+                        break;
+                    case 2:
+                        show_achievements();
+                        break;
+                }
             break;
         case MENU_MATCHES:
         case MENU_LEAGUE:

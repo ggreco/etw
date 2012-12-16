@@ -2302,14 +2302,18 @@ void PlayMatches(void)
 
                 if ((result & 0xff) > (result >> 8))
                 {
+                    add_achievement("1_arcadewin", 100.0f);
+                    add_achievement("6_amateur", 20.0);
                     cb[0].ID = MENU_CHALLENGE;
                     arcade_score += turno * 20;
                     turno++;
                 }
                 else
                 {
-                    if (turno > 0)
+                    if (turno > 0) {
                         AddScore(*teamarray);
+                        add_score(arcade_score);
+                    }
                     turno = 0;
                     competition = MENU_TEAMS;
                     LoadTeams("teams/arcade"/*-*/); // Reload original teams...

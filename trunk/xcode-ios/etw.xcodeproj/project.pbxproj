@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B3DE794167BF4F400457D3F /* GameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B3DE793167BF4F400457D3F /* GameCenter.m */; };
+		0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3DE795167BF61100457D3F /* GameKit.framework */; };
 		0BAD164C16539DCB0071C986 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAD164B16539DCB0071C986 /* SDL.framework */; };
 		0BAD164E1655361D0071C986 /* iphone-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD164D1655361D0071C986 /* iphone-icon.png */; };
 		0BAD16581656AF290071C986 /* mobile in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD16571656AF290071C986 /* mobile */; };
@@ -91,6 +93,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B3DE78F167BF4E100457D3F /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameCenter.h; path = include/GameCenter.h; sourceTree = "<group>"; };
+		0B3DE790167BF4E100457D3F /* player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = player.h; path = include/player.h; sourceTree = "<group>"; };
+		0B3DE791167BF4E100457D3F /* referee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = referee.h; path = include/referee.h; sourceTree = "<group>"; };
+		0B3DE792167BF4E100457D3F /* team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = team.h; path = include/team.h; sourceTree = "<group>"; };
+		0B3DE793167BF4F400457D3F /* GameCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenter.m; sourceTree = "<group>"; };
+		0B3DE795167BF61100457D3F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		0BAD164B16539DCB0071C986 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../SDL.framework; sourceTree = "<group>"; };
 		0BAD164D1655361D0071C986 /* iphone-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-icon.png"; sourceTree = "<group>"; };
 		0BAD16571656AF290071C986 /* mobile */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mobile; path = ../data/mobile; sourceTree = "<group>"; };
@@ -218,6 +226,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */,
 				0BAD164C16539DCB0071C986 /* SDL.framework in Frameworks */,
 				0BD74ED2165245940045909C /* UIKit.framework in Frameworks */,
 				0BD74ED4165245940045909C /* Foundation.framework in Frameworks */,
@@ -278,6 +287,7 @@
 		0BD74ED0165245940045909C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0B3DE795167BF61100457D3F /* GameKit.framework */,
 				0BAD164B16539DCB0071C986 /* SDL.framework */,
 				0BB5CD1216524B3700BF007B /* QuartzCore.framework */,
 				0BB5CD1316524B3700BF007B /* CoreAudio.framework */,
@@ -310,6 +320,7 @@
 				0BD74F2E165246760045909C /* etw_locale.c */,
 				0BD74F3E165249290045909C /* font.c */,
 				0BD74F3F165249290045909C /* freq.c */,
+				0B3DE793167BF4F400457D3F /* GameCenter.m */,
 				0BD74F40165249290045909C /* generic_video.c */,
 				0BD74F41165249290045909C /* gfx.c */,
 				0BD74F42165249290045909C /* goalkeeper.c */,
@@ -381,6 +392,7 @@
 				0BD74F90165249980045909C /* externs.h */,
 				0BD74F91165249980045909C /* files.h */,
 				0BD74F92165249980045909C /* freq.h */,
+				0B3DE78F167BF4E100457D3F /* GameCenter.h */,
 				0BD74F93165249980045909C /* gfx.h */,
 				0BD74F94165249980045909C /* highdirent.h */,
 				0BD74F95165249980045909C /* highsocket.h */,
@@ -394,13 +406,16 @@
 				0BD74F9D165249980045909C /* mytypes.h */,
 				0BD74F9E165249980045909C /* network.h */,
 				0BD74F9F165249980045909C /* os_defs.h */,
+				0B3DE790167BF4E100457D3F /* player.h */,
 				0BD74FA0165249980045909C /* preinclude.h */,
+				0B3DE791167BF4E100457D3F /* referee.h */,
 				0BD74FA1165249980045909C /* resource.h */,
 				0BD74FA2165249980045909C /* SDLMain.h */,
 				0BD74FA3165249980045909C /* sound.h */,
 				0BD74FA4165249980045909C /* structs.h */,
 				0BD74FA5165249980045909C /* suoni.h */,
 				0BD74FA6165249980045909C /* tactics.h */,
+				0B3DE792167BF4E100457D3F /* team.h */,
 				0BD74FA7165249980045909C /* teamsetup.h */,
 				0BAD165E1656B37E0071C986 /* touch.h */,
 				0BD74FA8165249980045909C /* version.h */,
@@ -543,6 +558,7 @@
 				0BB5CD1F1652646B00BF007B /* ball.c in Sources */,
 				0BAD165B1656AFCE0071C986 /* touch.cpp in Sources */,
 				0BAD165D1656B0110071C986 /* vjoy.cpp in Sources */,
+				0B3DE794167BF4F400457D3F /* GameCenter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

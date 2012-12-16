@@ -12,6 +12,15 @@ static UIViewController *gViewColtroller = NULL;
 static UIWindow *gWindow = NULL;
 static UIView *gView = NULL;
 
+void show_world_scores()
+{
+    [[GameCenter getInstance] showHighScores:@"arcade_results"];
+}
+
+void show_achievements()
+{
+    [[GameCenter getInstance] showAchievements];
+}
 void add_achievement(const char *id, float percent)
 {
     BOOL isnew = NO;
@@ -31,6 +40,13 @@ void add_achievement(const char *id, float percent)
         if (isnew)
             [[GameCenter getInstance].achievementCache setObject:achievement forKey:nid];
     }
+    else
+        NSLog(@"Not submitting already earned achievement %@", nid);
+}
+
+void add_score(int value)
+{
+    [[GameCenter getInstance] saveScore:value withIdentifier:@"arcade_results"];
 }
 
 void init_game_center()
@@ -140,12 +156,14 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
             //[GameCenter showHighScores:@""];
             [GKAchievement loadAchievementsWithCompletionHandler: ^(NSArray *scores, NSError *error)
              {
-                 self.achievementCache = [NSMutableDictionary dictionaryWithCapacity: [scores count]];
-                 
-                 for (GKAchievement* achievement in scores) {
-                     // work with achievement here, store it in your cache or smith
-                     [self.achievementCache setObject: achievement forKey:achievement.identifier];
-                     NSLog(@"Achievement %@ completed: %d", achievement.description, achievement.completed);
+                 if (error == nil) {
+                     self.achievementCache = [NSMutableDictionary dictionaryWithCapacity: [scores count]];
+                     
+                     for (GKAchievement* achievement in scores) {
+                         // work with achievement here, store it in your cache or smith
+                         [self.achievementCache setObject: achievement forKey:achievement.identifier];
+                         NSLog(@"Achievement %@ completed: %d", achievement.description, achievement.completed);
+                     }
                  }
              }];
         }
@@ -215,12 +233,10 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     return localPlayer.isAuthenticated;
 }
 
-+ (void) showHighScores:(NSString *) identifier
+- (void) showHighScores:(NSString *) identifier
 {
     if (![GameCenter isGameCenterAPIAvailable])
-    {
         return;
-    }
     
     GKLeaderboardViewController *leaderboardController = [[GKLeaderboardViewController alloc] init];
     if (leaderboardController != nil)
@@ -291,7 +307,10 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
 }
 - (void) showAchievements
 {
-	GKAchievementViewController *achievements = [[GKAchievementViewController alloc] init];
+    if (![GameCenter isGameCenterAPIAvailable])
+        return;
+	
+    GKAchievementViewController *achievements = [[GKAchievementViewController alloc] init];
 	if (achievements != NULL)
 	{
 		achievements.achievementDelegate = self;

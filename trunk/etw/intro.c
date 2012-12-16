@@ -176,22 +176,18 @@ struct Stage stage[]=
     {{NULL,NULL,NULL,NULL,NULL},205},
     {{"SOUND"/*-*/,NULL,"DANIELE CARAMASCHI"/*-*/,"GABRIELE GRECO"/*-*/,NULL},210},
     {{NULL,NULL,NULL,NULL,NULL},255},
-
-#if 0
-    {"ETW USES SDL"/*-*/,NULL,"WWW.LIBSDL.ORG"/*-*/,"FOR MORE INFO"/*-*/,NULL,210},
-    {NULL,NULL,NULL,NULL,NULL,255},
-#endif
-
-    {{"BETATESTING"/*-*/,NULL,"ANDREA CAROLFI"/*-*/,"FRANCESCO DUTTO"/*-*/,"MAURIZIO FAGGIONI"/*-*/},405},
-    {{NULL,NULL,NULL,NULL,NULL},445},
-    {{NULL,"LORENZO MORSELLI"/*-*/,"THOMAS STEIDING"/*-*/,NULL,msg_81},450},
-    {{NULL,NULL,NULL,NULL,NULL},505},
-    {{"SPECIAL THANKS"/*-*/,NULL,"SARA CAPPUCCINI"/*-*/,"DAVIDE CARGIOLLI"/*-*/,"FAUSTO CENDERELLI"/*-*/},510},
-    {{NULL,NULL,NULL,NULL,NULL},550},
-    {{"CLAUDIA CHIARDO"/*-*/,"ELENA FACONTI"/*-*/,"PAOLA FROLA"/*-*/,"GIULIANO GRECO"/*-*/,"ANDREA MENCONI"/*-*/},555},
-    {{NULL,NULL,NULL,NULL,NULL},595},
-    {{"MICHELE PANELLA"/*-*/,"NICOLO' PANELLA"/*-*/,"MATTEO RATTI"/*-*/,"GRAZIANO VIVIANI"/*-*/,"GIANLUIGI ZUNINO"/*-*/},600},
-    {{NULL,NULL,NULL,NULL,NULL},645},
+    {"ETW USES SDL"/*-*/,NULL,"WWW.LIBSDL.ORG"/*-*/,"FOR MORE INFO"/*-*/,NULL,260},
+    {NULL,NULL,NULL,NULL,NULL,290},
+    {{"BETATESTING"/*-*/,NULL,"ANDREA CAROLFI"/*-*/,"FRANCESCO DUTTO"/*-*/,"MAURIZIO FAGGIONI"/*-*/},295},
+    {{NULL,NULL,NULL,NULL,NULL},345},
+    {{NULL,"LORENZO MORSELLI"/*-*/,"THOMAS STEIDING"/*-*/,NULL,msg_81},350},
+    {{NULL,NULL,NULL,NULL,NULL},405},
+    {{"SPECIAL THANKS"/*-*/,NULL,"SARA CAPPUCCINI"/*-*/,"DAVIDE CARGIOLLI"/*-*/,"FAUSTO CENDERELLI"/*-*/},410},
+    {{NULL,NULL,NULL,NULL,NULL},450},
+    {{"CLAUDIA CHIARDO"/*-*/,"ELENA FACONTI"/*-*/,"PAOLA FROLA"/*-*/,"GIULIANO GRECO"/*-*/,"ANDREA MENCONI"/*-*/},455},
+    {{NULL,NULL,NULL,NULL,NULL},495},
+    {{"MICHELE PANELLA"/*-*/,"NICOLO' PANELLA"/*-*/,"MATTEO RATTI"/*-*/,"GRAZIANO VIVIANI"/*-*/,"GIANLUIGI ZUNINO"/*-*/},500},
+    {{NULL,NULL,NULL,NULL,NULL},555},
     {{NULL,NULL,NULL,NULL,NULL},ENDCREDITS+2}, // Questo deve sempre rimanere, e' per riferimento
 };
 
@@ -214,17 +210,20 @@ void ShowCredits(void)
     if(!(o=LoadGfxObject("newgfx/credits.gfx"/*-*/,Pens,NULL)))
         o=LoadGfxObject("menugfx/credits.gfx"/*-*/,Pens,NULL);
 
+    
     if(o) {
+        BOOL interrupted = FALSE;
         SDL_Event e;
 
+        // empty event queue
+        while (SDL_PollEvent(&e));
+        
         ScaleGfxObj(o,back);
         FreeGfxObj(o);
 
         memcpy(main_bitmap,back,WINDOW_WIDTH*WINDOW_HEIGHT);
         ScreenSwap();
-
-        // vuoto la porta
-
+        
         while(ticks<ENDCREDITS)        
         {    
             os_delay(5);
@@ -233,11 +232,12 @@ void ShowCredits(void)
             {
                 switch(e.type)
                 {
+                    case SDL_FINGERDOWN:
+                    case SDL_FINGERUP:
                     case SDL_MOUSEBUTTONUP:
                     case SDL_MOUSEBUTTONDOWN:
-                        ticks=ENDCREDITS;
-                        break;
                     case SDL_KEYDOWN:
+                        interrupted = TRUE;
                         ticks=ENDCREDITS;
                         break;
                 }
@@ -280,6 +280,9 @@ void ShowCredits(void)
             }
         }
 
+        if (!interrupted)
+            add_achievement("9_credits", 100.0);
+        
         LoadBack();
         ChangeMenu(current_menu);
     }

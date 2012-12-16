@@ -161,3 +161,6 @@ extern void free_menus();
 
 // achievement api
 void add_achievement(const char *, float);
+void show_world_scores();
+void show_achievements();
+void add_score(int);
