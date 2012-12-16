@@ -11,12 +11,6 @@
 
 #include "SDL.h"
 
-@interface SDL_uikitviewcontroller : UIViewController {
-@private
-    SDL_Window *window;
-}
-@end
-
 @interface GameCenter : NSObject <GKLeaderboardViewControllerDelegate, GKAchievementViewControllerDelegate, UIAlertViewDelegate> {
     GKLocalPlayer *localPlayer;
     NSArray *descriptions;
@@ -28,11 +22,11 @@
 + (GameCenter *)getInstance;
 - (void) authenticateLocalPlayer;
 - (BOOL) isAuthenticated;
-+ (void) showHighScores:(NSString *) identifier;
+- (void) showHighScores:(NSString *) identifier;
 - (void) showAchievements;
 - (void) getPlayerAlias: (char *)aliasBuf: (int) length;
 - (void) sendAchievement:(GKAchievement*) achievement;
-+ (void) saveScore: (int) score withIdentifier:(NSString *) rawIdentifier;
+- (void) saveScore: (int) score withIdentifier:(NSString *) rawIdentifier;
 + (BOOL) isGameCenterAPIAvailable;
 
 @end

@@ -405,19 +405,9 @@ void game_iteration()
     
     logic++;
     
-    if (Timer() < ideal) {
+    if (Timer() < ideal)
         graphic_frame();
-        
-        while (Timer() < ideal) {
-            rep++;
-            
-            SDL_Delay(5); // give some time to ther processes
-            
-            /*                if (network_game)
-             HandleNetwork();*/
-            //                              graphic_frame();
-        }
-    } else
+    else
         f_skip++;
     
     if (quit_game)
