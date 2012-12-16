@@ -14,10 +14,10 @@ int radar_position = 7;
 
 BOOL wb_game=FALSE,use_replay=TRUE,allow_replay=TRUE,nocpu=FALSE,arcade=FALSE,substitutions=TRUE,
     situation=FALSE,use_crowd=TRUE,use_speaker=FALSE,free_longpass=FALSE,injuries=TRUE,    
-    bookings=TRUE,nopari=FALSE,id_change=FALSE,window_opened=FALSE,newchange=FALSE,
+    bookings=TRUE,nopari=FALSE,newchange=FALSE,
     penalties=FALSE,free_kicks=FALSE,nointro=FALSE,killer=FALSE,warp=FALSE,
     music_playing=FALSE,golden_gol=FALSE,
-    offside=FALSE,screen_opened=TRUE,network_game=FALSE, menu_music=TRUE;
+    offside=FALSE,network_game=FALSE, menu_music=TRUE;
 
 int8_t situation_result[2]={0,0},strictness=10;
 

@@ -23,13 +23,15 @@
     BOOL attemptedLogin;
 }
 
+@property (strong,atomic) NSMutableDictionary *achievementCache;
+
 + (GameCenter *)getInstance;
 - (void) authenticateLocalPlayer;
 - (BOOL) isAuthenticated;
 + (void) showHighScores:(NSString *) identifier;
-+ (void) showAchievements;
+- (void) showAchievements;
 - (void) getPlayerAlias: (char *)aliasBuf: (int) length;
-
+- (void) sendAchievement:(GKAchievement*) achievement;
 + (void) saveScore: (int) score withIdentifier:(NSString *) rawIdentifier;
 + (BOOL) isGameCenterAPIAvailable;
 

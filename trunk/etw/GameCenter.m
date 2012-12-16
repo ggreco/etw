@@ -8,65 +8,72 @@
 
 #import "GameCenter.h"
 
+static UIViewController *gViewColtroller = NULL;
+static UIWindow *gWindow = NULL;
+static UIView *gView = NULL;
+
+void add_achievement(const char *id, float percent)
+{
+    BOOL isnew = NO;
+    NSString *nid = [NSString stringWithCString:id encoding:NSUTF8StringEncoding];
+    GKAchievement* achievement = [[GameCenter getInstance].achievementCache objectForKey: nid];
+    
+    if (achievement == NULL) {
+        achievement = [[GKAchievement alloc] initWithIdentifier:nid];
+        isnew = YES;
+    }
+    
+    if (achievement && achievement.percentComplete < 100.0f) {
+        achievement.percentComplete += percent;
+    
+        [[GameCenter getInstance] sendAchievement:achievement];
+        
+        if (isnew)
+            [[GameCenter getInstance].achievementCache setObject:achievement forKey:nid];
+    }
+}
+
 void init_game_center()
 {
+    gWindow = [[UIApplication sharedApplication] keyWindow];
+    gView = [gWindow.subviews objectAtIndex:0];
+    id nextResponder = [gView nextResponder];
+    if ([nextResponder isKindOfClass:[UIViewController class]])
+        gViewColtroller = (UIViewController *) nextResponder;
+    else
+        NSLog(@"Unable to find viewcontroller!");
+    
     [[GameCenter getInstance] authenticateLocalPlayer];
 }
 
-typedef struct SDL_uikitopenglview SDL_uikitopenglview;
-
-/* Define the SDL window structure, corresponding to toplevel windows */
-struct SDL_Window
-{
-    const void *magic;
-    Uint32 id;
-    char *title;
-    int x, y;
-    int w, h;
-    int min_w, min_h;
-    Uint32 flags;
-    
-    /* Stored position and size for windowed mode */
-    SDL_Rect windowed;
-    
-    SDL_DisplayMode fullscreen_mode;
-    
-    float brightness;
-    Uint16 *gamma;
-    Uint16 *saved_gamma;        /* (just offset into gamma) */
-    
-    SDL_Surface *surface;
-    SDL_bool surface_valid;
-    
-    void *shaper;
-    void *data;
-    void *driverdata;
-    
-    SDL_Window *prev;
-    SDL_Window *next;
-};
-
-struct SDL_WindowData
-{
-    UIWindow *uiwindow;
-    SDL_uikitopenglview *view;
-    SDL_uikitviewcontroller *viewcontroller;
-};
-typedef struct SDL_WindowData SDL_WindowData;
-
-SDL_uikitviewcontroller *gViewColtroller = NULL;
-UIWindow *gWindow = NULL;
-SDL_uikitopenglview *gView = NULL;
 // SDLUIKitDelegate *gApplicationDelegate = NULL;
 
-void SetUIViewController(SDL_Window *aWindow)
+@implementation GKMatchmakerViewController (LandscapeOnly)
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    SDL_WindowData *data = (SDL_WindowData *)aWindow->driverdata;
-    gViewColtroller = data->viewcontroller;
-    gWindow = data->uiwindow;
-    gView = data->view;
-    // gApplicationDelegate = [SDLUIKitDelegate sharedAppDelegate];
+    return ( interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight);
 }
+
+-(NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+- (BOOL)shouldAutorotate {
+    
+    return NO;
+}
+@end
+
+@implementation UIApplication (LandscapeOnly)
+
+- (NSUInteger)application:(UIApplication*)application supportedInterfaceOrientationsForWindow:(UIWindow*)window
+{
+    NSLog(@"Venngo chiam?");
+    return UIInterfaceOrientationMaskAllButUpsideDown;
+}
+@end
 
 @implementation GameCenter
 
@@ -95,6 +102,7 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     if ((self = [super init]))
     {
         attemptedLogin = NO;
+        self.achievementCache = nil;
 	}
     
 	return self;
@@ -130,6 +138,16 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
             printf("game center started!\n");
              //[GKNotificationBanner showBannerWithTitle:@"Title" message:@"Message" completionHandler:^{}];
             //[GameCenter showHighScores:@""];
+            [GKAchievement loadAchievementsWithCompletionHandler: ^(NSArray *scores, NSError *error)
+             {
+                 self.achievementCache = [NSMutableDictionary dictionaryWithCapacity: [scores count]];
+                 
+                 for (GKAchievement* achievement in scores) {
+                     // work with achievement here, store it in your cache or smith
+                     [self.achievementCache setObject: achievement forKey:achievement.identifier];
+                     NSLog(@"Achievement %@ completed: %d", achievement.description, achievement.completed);
+                 }
+             }];
         }
         
         NSLog(@"Player Authenticated %d", localPlayer.isAuthenticated);
@@ -251,7 +269,27 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     [gViewColtroller dismissModalViewControllerAnimated: YES];
 }
 
-+ (void) showAchievements
+- (void)sendAchievement:(GKAchievement *)achievement {
+    
+    if (achievement.percentComplete >= 100.0)   //Indicates the achievement is done
+        achievement.showsCompletionBanner = YES;    //Indicate that a banner should be shown
+    else
+        achievement.showsCompletionBanner = NO;
+    
+    [achievement reportAchievementWithCompletionHandler:
+     ^(NSError *error) {
+         dispatch_async(dispatch_get_main_queue(), ^(void)
+                        {
+                            if (error == NULL) {
+                                NSLog(@"Successfully sent archievement!");
+                            } else {
+                                NSLog(@"Achievement failed to send... will try again \
+                                      later.  Reason: %@", error.localizedDescription);
+                            }
+                        });
+     }];
+}
+- (void) showAchievements
 {
 	GKAchievementViewController *achievements = [[GKAchievementViewController alloc] init];
 	if (achievements != NULL)

@@ -271,8 +271,8 @@ void graphic_frame(void)
 }
 
 void logic_frame(void)
-{
-      if (network_game)
+{   
+    if (network_game)
         HandleNetwork(p->TabCounter, pl->world_x);
 
     if (!p->flash_mode) {
@@ -332,12 +332,101 @@ void logic_frame(void)
     }
 }
 
+void handle_pause_status()
+{
+    extern BOOL HandleMenuIDCMP();
+
+    if (replay_mode) {
+        if (use_touch) {
+            if (!check_replay_touch())
+                pause_mode = FALSE;
+        }
+        else {
+            CheckKeys();
+        }
+        // it's necessary to screenswap here?
+    }
+    else {
+        if(!HandleMenuIDCMP()) {
+            quit_game=TRUE;
+            pause_mode = FALSE;
+            SetResult("break");
+            
+            // in one player games you loose 5-0 if u leave
+            if(p->team[0]->Joystick<0 || p->team[1]->Joystick<0) {
+                if(p->team[0]->Joystick>=0) {
+                    p->team[0]->Reti=0;
+                    p->team[1]->Reti=5;
+                }
+                else {
+                    p->team[0]->Reti=5;
+                    p->team[1]->Reti=0;
+                }
+            }
+        }
+    }
+    
+    if (!pause_mode) {
+        extern BOOL was_stopped;
+        extern uint8_t *back;
+        if (back) {
+            free(back);
+            back = NULL;
+        }
+        os_start_audio();
+        
+        if (!was_stopped)
+            RestartTime();
+        ideal = Timer() - 1;
+    }
+}
+
+static int logic = 0, f_skip = 0, rep = 0;
+static mytimer start;
+
+#ifdef IPHONE
+void game_iteration()
+{
+    extern int framemode;
+    
+    if (pause_mode) {
+        handle_pause_status();
+        if (quit_game)
+            framemode = 0;
+        return;
+    }
+    
+    logic_frame();
+    
+    if (pause_mode)
+        return;
+    
+    ideal += MY_CLOCKS_PER_SEC_50;
+    
+    logic++;
+    
+    if (Timer() < ideal) {
+        graphic_frame();
+        
+        while (Timer() < ideal) {
+            rep++;
+            
+            SDL_Delay(5); // give some time to ther processes
+            
+            /*                if (network_game)
+             HandleNetwork();*/
+            //                              graphic_frame();
+        }
+    } else
+        f_skip++;
+    
+    if (quit_game)
+        framemode = 0;
+}
+#endif
 
 void MainLoop(void)
 {
-    int logic = 0, f_skip = 0, rep = 0;
-    mytimer start;
-
     field_x = max((pl->world_x >> 3) - WINDOW_WIDTH / 2, 0);
 
     field_y = max((pl->world_y >> 3) - WINDOW_HEIGHT / 2, 0);
@@ -390,10 +479,18 @@ void MainLoop(void)
 
         EndTime -= (situation_time * t_l * 60 / 45);
     }
-
+#ifndef IPHONE
     while (!quit_game) {
+        if (pause_mode) {
+            handle_pause_status();
+            continue;
+        }
+        
         logic_frame();
 
+        if (pause_mode)
+            continue;
+        
         ideal += MY_CLOCKS_PER_SEC_50;
 
         logic++;
@@ -413,13 +510,14 @@ void MainLoop(void)
         } else
             f_skip++;
     }
-
-    if (final)
-        ShowFinal();
-
-    os_stop_audio();
+#endif
+}
 
 
+void free_game()
+{
+    extern void FreeStuff();
+    
 #ifndef DEBUG_DISABLED
     D(bug
       ("Totale frames: %ld real, %ld logic, skip %ld, repeated %ld\n",
@@ -427,4 +525,34 @@ void MainLoop(void)
     logic = (Timer() - start) / MY_CLOCKS_PER_SEC;
     D(bug("Total time: %ld secs, %ld FPS\n", logic, frames / logic));
 #endif
+    
+    char buf[1024];
+    
+    if (final)
+        ShowFinal();
+    
+    os_stop_audio();
+    
+    os_delay(20);
+    
+    situation_result[0] = p->team[0]->Reti;
+    situation_result[1] = p->team[0]->Reti;
+    
+    D(bug("Start: FreeStuff...\n"));
+    FreeStuff();
+    
+    D(bug("End: FreeStuff()...\n"));
+    
+    if (use_speaker)
+        free_speaker();
+    
+    
+    LiberaListe();
+    use_touch = FALSE;
+    quit_game = FALSE;
+    
+    snprintf(buf, 1024, "%slock", TEMP_DIR);
+    remove(buf);
+    
+    D(bug("Match end!\n"));
 }

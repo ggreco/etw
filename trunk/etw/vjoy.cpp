@@ -133,7 +133,7 @@ int check_replay_touch()
             if (pause_mode)
                 pause_mode = FALSE;
             else
-                return DoPause();
+                DoPause();
         }
 
         if (res & TouchControl::BUTTON_4) {

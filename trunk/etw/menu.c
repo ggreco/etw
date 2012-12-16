@@ -197,7 +197,7 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
 
     reqqing = TRUE;
 
-
+// XXX TODO: sistemare gestione loop per questa casistica.
     
     while (HandleMenuIDCMP());
 
@@ -729,8 +729,10 @@ BOOL DoAction(WORD button)
 #ifdef MOBILE_VERSION
             if (button < 2)
                 UpdatePrefs(b->ID);
-            else
+            else {
+                add_achievement("4_change", 100.0);
                 save_prefs();
+            }
 #else
             if (button < 4) {
                 UpdatePrefs(b->ID);
@@ -1612,8 +1614,8 @@ BOOL HandleMenuIDCMP(void)
 {
     SDL_Event e;
     BOOL returncode = TRUE;
-    
-    if (SDL_WaitEvent(&e)) {
+
+    while (SDL_PollEvent(&e)) {
 
         switch (e.type) {
             case SDL_WINDOWEVENT:

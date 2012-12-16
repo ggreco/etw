@@ -147,7 +147,7 @@ extern void VuotaCLista(void);
 
 extern void LoadKeyDef(int, char *);
 extern void SaveKeyDef(int, char *);
-extern BOOL DoPause(void);
+extern void DoPause(void);
 // extern char GetTable(void); e' una ,macro ora
 extern void DoFlash(void);
 extern void UpdateBallSpeed(void);
@@ -288,8 +288,7 @@ BOOL os_audio2fast(void);
 void UrgentSpeaker(int);
 void StartSpoken(void);
 
-#ifdef DEMOVERSION
-void WaitOrKey(int);
-#endif
+// achievements
+void add_achievement(const char*, float);
 
 #endif

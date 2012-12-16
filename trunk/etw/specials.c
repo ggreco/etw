@@ -1230,6 +1230,8 @@ friendlymatch:
     return TRUE;
 }
 
+void (*TeamSettingsCallback)();
+
 BOOL TeamSettings(WORD button)
 {
     struct Button *b;
@@ -1246,8 +1248,10 @@ BOOL TeamSettings(WORD button)
 
         if (teamsettings[42].Text == msg_6)
             ChangeMenu(b->ID);
-        else
+        else if (!TeamSettingsCallback)
             return FALSE;
+        else
+            TeamSettingsCallback();
     }
     else if (button == 43)
     {
@@ -1798,8 +1802,6 @@ BOOL VideoPrefs(WORD button)
     switch(button)
     {
         case 1:
-            id_change = TRUE;
-
             if (wb_game)
             {
                 wb_game = FALSE;

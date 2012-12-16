@@ -785,8 +785,6 @@ BOOL LoadStuff(void)
 
 int game_main(void)
 {
-    char buf[1024];
-
     progress_called = 0;
 
     read_config();
@@ -815,22 +813,14 @@ int game_main(void)
     golden_gol = FALSE;
 
     init_system();
-
-    if (use_speaker)
-        free_speaker();
-
-
-    LiberaListe();
-    use_touch = FALSE;
-    quit_game = FALSE;
-
-    snprintf(buf, 1024, "%slock", TEMP_DIR);
-#ifdef __CODEGUARD__
-    if(access(buf,0) != -1)
+#ifndef IPHONE
+    free_game();
+#else
+    {
+        extern int framemode;
+        D(bug("Match initialization sequence completed."));
+        framemode = 1;
+    }
 #endif
-    remove(buf);
-
-    D(bug("Match end!\n"));
-
     return 0;
 }
