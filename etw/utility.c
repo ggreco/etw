@@ -232,39 +232,26 @@ BOOL handle_pause(WORD button)
     return TRUE;
 }
 
+BOOL was_stopped=TRUE;
 
-BOOL DoPause(void)
+void DoPause(void)
 {
     extern uint8_t *back;
-    extern BOOL HandleMenuIDCMP();
     extern BOOL time_stopped;
-    BOOL was_stopped=TRUE, rc = TRUE;
 
     if(!time_stopped) {
         StopTime();
-        was_stopped=FALSE;
+        was_stopped = FALSE;
     }
+    else
+        was_stopped = TRUE;
 
     pause_mode=TRUE;
 
     os_stop_audio();
 
-    if (replay_mode) {
-        while (pause_mode) {
-            if (use_touch) {
-                if (!check_replay_touch()) {
-                    pause_mode = FALSE;
-                    rc = FALSE;
-                }
-            } else
-                CheckKeys();
-
-            os_delay(10);
-            ScreenSwap();
-        }
-    }
-    else {
-        DrawPause();
+    if (!replay_mode) {
+         DrawPause();
 
         if (back)
             free(back);
@@ -272,41 +259,7 @@ BOOL DoPause(void)
             memcpy(back, main_bitmap, bitmap_width * bitmap_height);
 
         ScreenSwap();
-
-        while(pause_mode)  {
-            /* Forced quit if HandleMenuIDCM returns false */
-            if(!HandleMenuIDCMP()) {
-                quit_game=TRUE;
-                SetResult("break");
-
-                // in one player games you loose 5-0 if u leave
-                if(p->team[0]->Joystick<0 || p->team[1]->Joystick<0) {
-                    if(p->team[0]->Joystick>=0) {
-                        p->team[0]->Reti=0;
-                        p->team[1]->Reti=5;
-                    }
-                    else {
-                        p->team[0]->Reti=5;
-                        p->team[1]->Reti=0;
-                    }
-                }
-                break;
-            }
-        }
-
-        if (back) { 
-            free(back);
-            back = NULL;
-        }
     }
-    os_start_audio();
-
-    if(!was_stopped)
-        RestartTime();
-    
-    ideal=Timer()-1;
-
-    return rc;
 }
 
 player_t *FindNearestDirPlayer(player_t *g)

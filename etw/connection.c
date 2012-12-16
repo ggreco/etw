@@ -119,15 +119,21 @@ void ReadGameConfig(FILE *f)
     time_length = fread_u32(f);
 }
 
+static int old_button, old_menu;
+static struct GfxMenu *old_gfxmenu;
+
+
+extern int actual_button;
+extern struct GfxMenu *actual_menu;
+
+
 BOOL StartGame(void)
 {
-    char buf[1024];
     int i;
-    extern int actual_button;
-    extern struct GfxMenu *actual_menu;
-    struct GfxMenu *old = actual_menu;
-    int old_button = actual_button, old_menu = current_menu;
-
+    old_gfxmenu = actual_menu;
+    old_button = actual_button;
+    old_menu = current_menu;
+    
     StopMenuMusic();
 
     D(bug("Before FreeMenuStuff()\n"));
@@ -143,54 +149,28 @@ BOOL StartGame(void)
 
     game_main();
 
-    // restore previous menu state
-    actual_button = old_button;
-    actual_menu = old;
-    current_menu = old_menu;
-
-    if(network_game) {
-        network_game=FALSE;
-        free_network();
-    }
-
-    {
-        SDL_Event e;
-
-        while(SDL_PollEvent(&e));
-    }
-
-    game_start = FALSE;
-
-    snprintf(buf, 1024, "%sthismatch", TEMP_DIR);
-    remove(buf/*-*/);
-
-    WINDOW_WIDTH=wanted_width;
-    WINDOW_HEIGHT=wanted_height;
-
-    SDL_ShowCursor(1);
-
-    if(!(LoadMenuStuff())) {
-        request("Unable to load the menu datas!");
-        return FALSE;
-    }
-
-    os_start_audio();
-
-    if(arcade_teams)
-        LoadArcadeGfx();
-
-    ClearSelection();
-
     return TRUE;
 }
 
-WORD StartMatch(BYTE team1,BYTE team2)
-{
-    FILE *f;
-    BOOL /*swapped=FALSE,*/ team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
-    WORD risultato=-1,parent_menu;
-    int t;
+static BOOL team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
+static WORD parent_menu, team1, team2;
+static WORD match_result;
 
+WORD LastMatchResult()
+{
+    return match_result;
+}
+
+extern void (*TeamSettingsCallback)(void);
+void StartMatchFinal();
+void StartMatchTwoPlayers();
+
+void StartMatch(BYTE t1,BYTE t2)
+{
+    TeamSettingsCallback = NULL;
+    match_result = -1;
+    team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
+    team1 = t1; team2 = t2;
     parent_menu=current_menu;
 
 // temporanea, solo x evitare l'apertura della squadra!
@@ -232,17 +212,25 @@ WORD StartMatch(BYTE team1,BYTE team2)
     if(controllo[team1]>=0&&!arcade_teams) {
         SetTeamSettings(team1, TRUE);
         ChangeMenu(MENU_TEAM_SETTINGS);
-        while(HandleMenuIDCMP());
+        TeamSettingsCallback = (controllo[team2]>=0&&!training&&!arcade_teams) ? StartMatchTwoPlayers : StartMatchFinal;
     }
-
-    if(controllo[team2]>=0&&!training&&!arcade_teams) {
+    else if (controllo[team2]>=0&&!training&&!arcade_teams) {
         SetTeamSettings(team2, TRUE);
         ChangeMenu(MENU_TEAM_SETTINGS);
-        while(HandleMenuIDCMP());
+        TeamSettingsCallback = StartMatchFinal;
     }
+    else
+        StartMatchFinal();
+}
 
-    window_opened=FALSE;
-//    write_config(TEMP_DIR "thismatch"/*-*/);
+void StartMatchTwoPlayers() {
+    SetTeamSettings(team2, TRUE);
+    ChangeMenu(MENU_TEAM_SETTINGS);
+}
+
+void StartMatchFinal()
+{
+    int t;
 
     if(arcade_teams)
     {
@@ -262,21 +250,21 @@ WORD StartMatch(BYTE team1,BYTE team2)
  */
     if(!network_game || network_player->num == 0) {
         if(network_game && !SendTeam(team1))
-                return -1;
+                return;
 
         leftteam_dk=teamlist[team1];
     }
     else if(network_game && !ReceiveTeam(&leftteam_dk))
-            return -1;
+            return;
 
     if(!network_game || network_player->num == 1) {
         if(network_game && !SendTeam(team2))
-                return -1;
+                return;
 
         rightteam_dk=teamlist[team2];
     }
     else if(network_game && !ReceiveTeam(&rightteam_dk))
-            return -1;
+            return;
 
     if(!training && !network_game)
     {
@@ -360,16 +348,12 @@ WORD StartMatch(BYTE team1,BYTE team2)
     if(use_gfx_scaling)
         use_scaling=TRUE;
 
-#ifndef DEMOVERSION
     t=t_l;
 
     if(arcade&&competition==MENU_CHALLENGE)
         t=3;
     else if(training)
         t=20;
-#else
-    t=1
-#endif
 
     t_l=t;
 
@@ -415,7 +399,7 @@ WORD StartMatch(BYTE team1,BYTE team2)
     player_type[1]=(!training ? controllo[team2] : -1);
 
 
-    D(bug("Tipo giocatore 0: %d\nTipo giocatore 1: %d\n", player_type[0], player_type[1]));
+    D(bug("Player 0 type: %d\nPlayer 1 type: %d\n", player_type[0], player_type[1]));
     
     if(!StartGame())
     {
@@ -425,29 +409,77 @@ WORD StartMatch(BYTE team1,BYTE team2)
         final=FALSE;
         friendly=FALSE;
         ChangeMenu(0);
-        return -1;
+        return;
     }
+#ifndef IPHONE
+    restore_menus();
+#endif
+}
 
+WORD restore_menus()
+{
+    char buf[1024];
+    FILE *f;
+    WORD risultato=-1;
+    
+    // restore previous menu state
+    actual_button = old_button;
+    actual_menu = old_gfxmenu;
+    current_menu = old_menu;
+    
+    if(network_game) {
+        network_game=FALSE;
+        free_network();
+    }
+    
+    {
+        SDL_Event e;
+        
+        while(SDL_PollEvent(&e));
+    }
+    
+    game_start = FALSE;
+    
+    snprintf(buf, 1024, "%sthismatch", TEMP_DIR);
+    remove(buf/*-*/);
+    
+    WINDOW_WIDTH=wanted_width;
+    WINDOW_HEIGHT=wanted_height;
+    
+    SDL_ShowCursor(1);
+    
+    if(!(LoadMenuStuff())) {
+        request("Unable to load the menu datas!");
+        return risultato;
+    }
+    
+    os_start_audio();
+    
+    if(arcade_teams)
+        LoadArcadeGfx();
+    
+    ClearSelection();
+    
     if(random_strict)
         strictness=10;
-
+    
     if(control_swap)
         controllo[team2]=controllo[team1];
-
+    
     warp=FALSE;
     final=FALSE;
     friendly=FALSE;
     use_scaling=FALSE;
-
-    /* AC: Stranamente non veniva usata la define. */ 
+    
+    /* AC: Stranamente non veniva usata la define. */
     if((f=fopen(RESULT_FILE, "r")))    {
         char buffer[20];
         int i,l;
-
-// Qui devo gestire il risultato
+        
+        // Qui devo gestire il risultato
         
         fgets(buffer,19,f);
-
+        
         if(!strnicmp(buffer,"error",5))
         {
             request(msg_84);
@@ -455,10 +487,10 @@ WORD StartMatch(BYTE team1,BYTE team2)
         else if(!strnicmp(buffer,"break",5))
         {
             if( (controllo[team1]>=0 && controllo[team2]>=0) ||
-                (controllo[team1]<0 && controllo[team2]<0)  )
+               (controllo[team1]<0 && controllo[team2]<0)  )
                 risultato=0; // Se si gioca in due o in 0 il risultato e' 0 a 0.
             else if( (controllo[team1]<0&&team_swap==FALSE) ||
-                 (controllo[team2]<0&&team_swap==TRUE) )
+                    (controllo[team2]<0&&team_swap==TRUE) )
                 risultato=5;  // 5 a 0
             else
                 risultato=(5<<8); // 0 a 5
@@ -466,131 +498,131 @@ WORD StartMatch(BYTE team1,BYTE team2)
         else
         {
             int gol_a=0,gol_b=0;
-
+            
             if(sscanf(buffer,"%d-%d",&gol_a,&gol_b)==2)    {
                 D(bug("Result before swap %d-%d\n", gol_a, gol_b));
                 
                 if(team_swap != arcade) { // this is the fix for the arcade match bug
                     int s;
-
+                    
                     s=gol_a;
                     gol_a=gol_b;
                     gol_b=s;
                 }
-
+                
                 D(bug("Result after swap %d-%d\n", gol_a, gol_b));
                 
-                risultato=gol_a | (gol_b<<8); 
+                risultato=gol_a | (gol_b<<8);
             }
-
+            
             if(!arcade_teams&&!training) {
                 int yl=FixedScaledY(125);
                 int yr;
                 char *c=buffer,*d;
-
+                
                 yr=yl;
-
-// Codice per ricavarmi due stringhe che abbiano i punteggi delle due squadre.
+                
+                // Codice per ricavarmi due stringhe che abbiano i punteggi delle due squadre.
                 while(*c!='-')
                     c++;
-
+                
                 *c=0;
                 c++;
                 d=c;
-
+                
                 while(*d>' ')
                     d++;
                 *d=0;
-
-
+                
+                
                 mr[2].Color=mr[0].Color=colore_team[controllo[team1]+1];
                 mr[2].Highlight=mr[0].Highlight=highlight_team[controllo[team1]+1];
                 mr[1].Color=mr[3].Color=colore_team[controllo[team2]+1];
                 mr[1].Highlight=mr[3].Highlight=highlight_team[controllo[team2]+1];
-
+                
                 mr[0].Text=teamlist[team1].name;
                 mr[1].Text=teamlist[team2].name;
-
+                
                 mr[2].Text=buffer;
                 mr[3].Text=c;
-
+                
                 ChangeMenu(MENU_MATCH_RESULT);
-
+                
                 for(i=0;i<(gol_a+gol_b);i++)
                 {
                     int team,num,min;
-
+                    
                     if(fgets(buffer,19,f))
                     {
                         if(!strnicmp(buffer,"penalties"/*-*/,9))
                         {
                             int reti=gol_a+gol_b;
-
+                            
                             fgets(buffer,19,f);
-
+                            
                             D(bug("Partita finita ai rigori, reti originali: %ld, %ld ai rigori!\n",reti,atol(buffer)));
-
+                            
                             reti-=atol(buffer);
                             gol_a=reti;
                             gol_b=0;
-
+                            
                             fgets(buffer,19,f);
                         }
-
+                        
                         if(sscanf(buffer,"%d %d %d",&team,&num,&min)==3)
                         {
                             int t= (team==0 ? team1 : team2),og=0,j;
                             struct player_disk *g = NULL;
-
+                            
                             if(num&OWN_GOAL)
                             {
                                 og=1;
                                 t= t==team1 ? team2 : team1;
                                 num&=~(OWN_GOAL);
                             }
-        
+                            
                             for(j=0;j<teamlist[t].nplayers;j++)
                                 if(teamlist[t].players[j].number==num)
                                     g=&teamlist[t].players[j];
-    
+                            
                             if(g)
                             {
                                 int x=mr[0].X1,*y=&yl;
                                 char buf[40];
-
+                                
                                 if(WINDOW_HEIGHT>350&&WINDOW_WIDTH>430)
                                     setfont(bigfont);
                                 else
                                     setfont(smallfont);
-
+                                
                                 if( (t==team2&&!og) || (t==team1&&og))
                                 {
                                     x=mr[1].X1;
                                     y=&yr;
                                 }
-
+                                
                                 l=sprintf(buf,"%s (%s%d)",g->surname, og ? "OG " : "" ,min);
-
+                                
                                 d=buf;
-
+                                
                                 while(*d)
                                 {
                                     *d=toupper(*d);
                                     d++;
                                 }
-
+                                
                                 D(bug("Gol %ld: %s (%ld,%ld)\n",i,buf,x,*y));
-
+                                
                                 if(*y<(WINDOW_HEIGHT-bigfont->height))
                                 {
                                     TextShadow(x,*y,buf,l);
                                 }
-
+                                
                                 if(WINDOW_HEIGHT>350&&WINDOW_WIDTH>430)
                                     *y+=(bigfont->height+2);
                                 else
                                     *y+=smallfont->height;
-
+                                
                                 *y+=3;
                             }
                             else
@@ -605,52 +637,52 @@ WORD StartMatch(BYTE team1,BYTE team2)
                     {
                         D(bug("Errore nel parsing dei marcatori (FGets)!\n"/*-*/));
                     }
-    
+                    
                 }
-
+                
                 /* AC: Non comparivano i nomi dei marcatori. */
                 ScreenSwap();
-
+                
                 while(HandleMenuIDCMP());
-    
+                
                 while(fgets(buffer,19,f))
                 {
                     int num,team;
                     char op;
-    
+                    
                     if(sscanf(buffer,"%d %d %c"/*-*/,&team,&num,&op)==3)
                     {
                         int t= (team==0 ? team1 : team2);
                         struct player_disk *g=NULL;
-    
+                        
                         for(i=0;i<teamlist[t].nplayers;i++)
                             if(teamlist[t].players[i].number==num)
                                 g=&teamlist[t].players[i];
-        
+                        
                         if(g)
                         {
                             D(bug("Eseguo %lc sul giocatore n.%d della squadra %d\n"/*-*/,(long int)op,num,t));
-    
+                            
                             switch(op)
                             {
                                 case 'e':
                                     g->Ammonizioni=4;
                                     break;
-                                
+                                    
                                 case 'a':
                                     g->Ammonizioni++;
-    
+                                    
                                     if(g->Ammonizioni>1)
                                         g->Ammonizioni=4;
                                     break;
-        
+                                    
                                 case 'i':
                                     if(competition==MENU_WORLD_CUP||competition==MENU_MATCHES)
                                         g->injury+=RangeRand(5)+1;
                                     else
                                         g->injury+=RangeRand(10)+1;
                                     break;
-        
+                                    
                                 default:
                                     D(bug("Operazione non definita...\n"/*-*/));
                             }
@@ -667,16 +699,18 @@ WORD StartMatch(BYTE team1,BYTE team2)
                 }
             }
         }
-
+        
         fclose(f);
     }
-
+    
     if(parent_menu==MENU_ARCADE_SELECTION||parent_menu==MENU_TEAM_SELECTION)
         ChangeMenu(parent_menu);
     else {
         D(bug("No menu change! Parent menu: %ld\n"/*-*/,parent_menu));
     }
-
+    
+    match_result = risultato;
+    
     return risultato;
 }
 

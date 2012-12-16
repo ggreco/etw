@@ -35,11 +35,34 @@ struct SoundInfo *music = NULL;
 char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE;
 
 #ifdef IPHONE
-extern void SetUIViewController(SDL_Window *);
 extern void init_game_center();
-#else
-void SetUIViewController(SDL_Window *x) { x; }
-void init_game_center() {}
+int framemode = 0;
+extern void game_iteration();
+extern void free_game();
+extern WORD restore_menus();
+
+void ShowFrame(void*unused)
+{
+    static int last_mode = 0;
+    
+    if (framemode == 0) {
+        if (last_mode == 1) {
+            D(bug("MATCH ENDED, SWITCHING TO MENU MODE\n"));
+            free_game();
+            restore_menus();
+        }
+        last_mode = framemode;
+        HandleMenuIDCMP();
+    }
+    else if (framemode == 1){
+        if (last_mode == 0) {
+            D(bug("MATCH STARTED, SWITCHING TO GAME MODE\n"));
+        }
+        last_mode = framemode;
+        game_iteration();
+    }
+    
+}
 #endif
 
 void PlayMenuMusic(void)
@@ -496,16 +519,22 @@ int main(int argc, char *argv[])
 
     if (screen) {
         if (LoadMenuStuff()) {
-            SetUIViewController(screen);
             D(bug("Starting ChangeMenu...\n"));
 
             os_start_audio();
 
             ChangeMenu(0);
-
             D(bug("Entering main loop...\n"));
+#ifndef IPHONE
+            do {
+                SDL_WaitEvent(NULL);
+            }
             while (HandleMenuIDCMP());
-
+#else
+            init_game_center();
+            SDL_iPhoneSetAnimationCallback(screen, 1, ShowFrame, 0);
+            return 0; // return control to the cocoa loop
+#endif
             DeleteAudio2Fast();
 
             D(bug("Start: FreeMenuStuff...\n" /*-*/ ));

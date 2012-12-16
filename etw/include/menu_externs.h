@@ -66,7 +66,8 @@ extern void DisplayTactic(int, int);
 extern void AddPlayer(struct player_disk *, int);
 extern void AddName(struct player_disk *, int);
 extern void SetPlayerStatus(int, char, char, long);
-extern WORD StartMatch(BYTE, BYTE);
+extern void StartMatch(BYTE, BYTE);
+extern WORD LastMatchResult();
 extern void ScaleGfxObj(gfx_t *, uint8_t *);
 extern void UpdateButtonList(void);
 
@@ -95,8 +96,8 @@ extern struct Button teamselection[], teamsettings[], pannelli[], wcp[], league[
     asb[], cb[], cp[], wcfp[], mr[], scores[], hl[], sprefs_bottoni[];
 extern BOOL no_sound, allow_replay, nocpu, saved, wb_game, big, injuries, substitutions,
     arcade, situation, training, use_crowd, use_speaker, use_replay, bookings, free_longpass, offside,
-    menu_music, use_speaker, no_sound, use_crowd, special, random_draw, nopari, make_setup, id_change,
-    window_opened, game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams,
+    menu_music, use_speaker, no_sound, use_crowd, special, random_draw, nopari, make_setup,
+    game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams,
     final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
     audio_to_fast, use_gfx_scaling, tutorial;
 extern int32_t Pens[256];
@@ -157,3 +158,6 @@ extern int os_get_joy_button(int);
 extern char network_server[];
 extern void initialize_menus();
 extern void free_menus();
+
+// achievement api
+void add_achievement(const char *, float);

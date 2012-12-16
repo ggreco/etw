@@ -28,11 +28,14 @@ struct Match turni[64][32];
 
 char *empty=" "/*-*/;
 
+// XXX TODO Fix for iOS
 
 WORD PlayMatch(BYTE a, BYTE b)
 {
-    if(controllo[a]>=0 || controllo[b]>=0)
-        return StartMatch(a, b);
+    if(controllo[a]>=0 || controllo[b]>=0) {
+        StartMatch(a, b);
+        return LastMatchResult();
+    }
     else
         return ComputerMatch(a, b);
 
@@ -572,7 +575,7 @@ void SetTeamSettings(WORD team, BOOL starting)
     {
         if(k==11)
             k++;
-        D(bug("teamlist[team].nplayers<15)"));
+
         for(i=k; i<17; i++)
         {
             if(teamsettings[i*2+1].Text)
@@ -593,7 +596,6 @@ void SetTeamSettings(WORD team, BOOL starting)
             pannelli[i*3+1].Text=pannelli[i*3].Text=pannelli[i*3+2].Text=NULL;
         }
     }
-    D(bug("SetTeamSettings FREEING"));
     
     for(i=0; i<6; i++) {
         if(!stricmp(teamsettings[34+i].Text, teamlist[team].tactics[0]))
@@ -605,8 +607,6 @@ void SetTeamSettings(WORD team, BOOL starting)
 
     AddName((struct player_disk *)&teamlist[team].keepers[0], 0);
     SetPlayerStatus(0, teamlist[team].keepers[0].injury, 0, (((teamlist[team].keepers[0].Parata*2+teamlist[team].keepers[0].Attenzione-2*3+2)*10)/7)/3);
-
-    D(bug("SetTeamSettings after SetPlayerStatus, AddName"));
     
     if(teamlist[team].nkeepers<2)
     {
@@ -649,7 +649,7 @@ void SetTeamSettings(WORD team, BOOL starting)
     else
         teamsettings[42].Text = msg_6;
         
-    D(bug("SetTeamSettings FINISH"));
+    D(bug("SetTeamSettings for %d (%d) ok\n", team, starting));
 }
 
 void SetTeamSelection(void)

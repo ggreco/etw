@@ -996,6 +996,7 @@ void SaveReplay(void)
 
     free(m);
     fclose(f);
+    add_achievement("7_replay", 100.0);
 }
 
 BOOL AllocReplayBuffers(void)

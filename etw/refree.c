@@ -43,6 +43,18 @@ player_t *PrendiPalla(void)
     return v;
 }
 
+void check_goal_achievements(int t)
+{
+    if (p->team[t]->Joystick >= 0 &&
+        p->team[t^1]->Joystick < 0) {
+        add_achievement("1_score", 100.0);
+        
+        // if we scored three goals it's an hattrick!
+        if (p->team[t]->Reti > 2)
+            add_achievement("3_ht", 100.0);
+    }
+}
+
 void HandleReferee(void)
 {
     register referee_t *g=&p->referee;
@@ -296,7 +308,9 @@ void HandleReferee(void)
                         }
 
                         p->team[0]->Reti++;
-
+                        
+                        check_goal_achievements(0);
+                        
                         if(penalties)
                             golrig[0]++;
 
@@ -323,6 +337,8 @@ void HandleReferee(void)
 
                         p->team[1]->Reti++;
 
+                        check_goal_achievements(1);
+                        
                         if(penalties)
                             golrig[1]++;
 
@@ -852,8 +868,11 @@ void HandleReferee(void)
                                 p->show_time=150;
                             }
 
-                            if(!use_speaker&&!penalties)
+                            if(!use_speaker&&!penalties) {
+                                if (p->team[0]->Joystick >= 0)
+                                    add_achievement("8_penalty", 100.0);
                                 PlayBackSound(sound[RIGORE]);
+                            }
                             else
                             {
                                 if(!replay_mode)
@@ -879,6 +898,9 @@ void HandleReferee(void)
 // y-136 = 31x - 33139
                             p->team[1]->Rigori++;
 
+                            if (p->team[1]->Joystick >= 0 && !penalties)
+                                add_achievement("8_penalty", 100.0);
+                            
                             PlayBackSound(sound[RIGORE]);
                             pl->sector=PENALTY;
                             pl->world_x=RIGORE_X_E;

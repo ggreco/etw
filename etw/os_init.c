@@ -101,18 +101,6 @@ void init_system(void)
     MainLoop();
 
     // Abbasso la priorita' in modo che le D(bug()) vengano piazzate nel punto giusto!
-
-    SetCrowd(FONDO);
-
-    os_delay(20);
-
-    situation_result[0] = p->team[0]->Reti;
-    situation_result[1] = p->team[0]->Reti;
-
-    D(bug("Start: FreeStuff...\n"));
-    FreeStuff();
-
-    D(bug("End: FreeStuff()...\n"));
 }
 
 BOOL os_audio2fast(void)
