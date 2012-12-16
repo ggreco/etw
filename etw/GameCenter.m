@@ -97,6 +97,16 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
 
 // Public stuff
 
+- (void) resetAchievements
+{
+    self.achievementCache= NULL;
+	[GKAchievement resetAchievementsWithCompletionHandler: ^(NSError *error)
+     {
+         NSLog(error == nil ? @"Achievements resetted" : @"Unable to reset achievements!");
+		 //[self callDelegateOnMainThread: @selector(achievementResetResult:) withArg: NULL error: error];
+     }];
+}
+
 + (GameCenter *)getInstance
 {
 	static GameCenter *gameCenterInstance;
