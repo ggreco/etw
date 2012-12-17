@@ -28,20 +28,6 @@ struct Match turni[64][32];
 
 char *empty=" "/*-*/;
 
-// XXX TODO Fix for iOS
-
-WORD PlayMatch(BYTE a, BYTE b)
-{
-    if(controllo[a]>=0 || controllo[b]>=0) {
-        StartMatch(a, b);
-        return LastMatchResult();
-    }
-    else
-        return ComputerMatch(a, b);
-
-    final=FALSE;
-}
-
 void ViewEliminazioneDiretta(int n)
 {
     int i;
@@ -63,41 +49,6 @@ void ViewEliminazioneDiretta(int n)
         }
     }
     ClearMatches(n);
-}
-
-void EliminazioneDiretta(int n)
-{
-    int i;
-
-    nopari=TRUE;
-
-    for(i=0; i<n; i++)
-    {
-        BYTE a=teamarray[i*2], b=teamarray[i*2+1];
-        WORD risultato;
-
-        risultato=PlayMatch(a, b);
-
-        mp[i*4+3].Text=strdup(ElaboraRisultato(a, b, risultato));
-
-        if((risultato>>8)>(risultato&0xff))
-        {
-            teamarray[i]=b;
-            teamarray[i+n*2]=a;
-        }
-        else
-        {
-            teamarray[i]=a;
-            teamarray[i+n*2]=b;
-        }
-    }
-
-// Riordino le squadre...
-
-    for(i=0; i<n; i++)
-        teamarray[i+n]=teamarray[i+n*2];
-
-    nopari=FALSE;
 }
 
 void SetupSpecialEvent(struct Button *b)

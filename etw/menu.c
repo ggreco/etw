@@ -778,11 +778,12 @@ BOOL DoAction(WORD button)
                 SetupMatches();
             } else {
 // Qui vengono giocate le partite
-                PlayMatches();
+                PlayMatches(ID);
+                return TRUE;
             }
         }
-
         ChangeMenu(ID);
+
     } else {
         if (b->ID == ID_QUIT_GAME)
             return FALSE;
@@ -832,6 +833,7 @@ BOOL DoAction(WORD button)
             break;
         case MENU_PREFS:
             if (button == 5) {
+                add_achievement("4_change", 100.0);
                 save_prefs();
 
                 easy.es_TextFormat = msg_70;

@@ -774,7 +774,7 @@ struct GfxMenu menu[]=
     {msg_174,asb,NULL,SZ(asb),0,-1,0,0,-1,7,9,(void *)ArcadeTeamSelection},
     {msg_41,cb,cp,SZ(cb),SZ(cp),-1,0,0,-1,7,9,NULL},
     {msg_175,wcfb,wcfp,1,8,-1,0,0,-1,7,9,NULL},
-    {msg_176,mrb,mr,1,4,-1,0,0,-1,7,9,(void *)ReturnFalse},
+    {msg_176,mrb,mr,1,4,-1,0,0,-1,7,9,(void *)ChangeMRMenu},
     {msg_177,scorelist_bottoni,scores,SZ(scorelist_bottoni),40,-1,0,0,-1,8,15,NULL},
     {NULL,hl,NULL,SZ(hl),0,-1,0,0,-1,11,12,(void *)HighSelection},
     {"SYSTEM",sprefs_bottoni,NULL,SZ(sprefs_bottoni),0,-1,190,38,0,3,0,(void *)SystemPrefs},

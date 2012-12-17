@@ -28,7 +28,7 @@ set(sources highdirent.c cpu.c human.c myiff.c specials.c
         	config.c font.c menu_config.c replay.c speed_data.c 
         	connection.c generic_video.c menu_data.c sound.c wc.c 
         	control.c gfx.c menu_font.c special.c network.c 
-        	highsocket.c prefix.c vjoy.cpp touch.cpp)
+        	highsocket.c prefix.c vjoy.cpp touch.cpp world.c)
 
 # comment this for release mode        
 set(CMAKE_BUILD_TYPE Debug)

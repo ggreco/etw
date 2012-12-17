@@ -154,11 +154,17 @@ BOOL StartGame(void)
 
 static BOOL team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
 static WORD parent_menu, team1, team2;
-static WORD match_result;
+static WORD match_result = -1;
 
+
+void restore_menus();
+
+// you can read the match result only once
 WORD LastMatchResult()
 {
-    return match_result;
+    WORD rc = match_result;
+    match_result = -1;
+    return rc;
 }
 
 extern void (*TeamSettingsCallback)(void);
@@ -226,6 +232,7 @@ void StartMatch(BYTE t1,BYTE t2)
 void StartMatchTwoPlayers() {
     SetTeamSettings(team2, TRUE);
     ChangeMenu(MENU_TEAM_SETTINGS);
+    TeamSettingsCallback = StartMatchFinal;
 }
 
 void StartMatchFinal()
@@ -416,12 +423,13 @@ void StartMatchFinal()
 #endif
 }
 
-WORD restore_menus()
+void restore_menus()
 {
+    extern void (*PostCbk)();
     char buf[1024];
     FILE *f;
     WORD risultato=-1;
-    
+  
     // restore previous menu state
     actual_button = old_button;
     actual_menu = old_gfxmenu;
@@ -432,6 +440,8 @@ WORD restore_menus()
         free_network();
     }
     
+
+    // clear event queue
     {
         SDL_Event e;
         
@@ -450,7 +460,7 @@ WORD restore_menus()
     
     if(!(LoadMenuStuff())) {
         request("Unable to load the menu datas!");
-        return risultato;
+        return;
     }
     
     os_start_audio();
@@ -642,9 +652,7 @@ WORD restore_menus()
                 
                 /* AC: Non comparivano i nomi dei marcatori. */
                 ScreenSwap();
-                
-                while(HandleMenuIDCMP());
-                
+
                 while(fgets(buffer,19,f))
                 {
                     int num,team;
@@ -701,17 +709,26 @@ WORD restore_menus()
         }
         
         fclose(f);
-    }
+    }                 
     
-    if(parent_menu==MENU_ARCADE_SELECTION||parent_menu==MENU_TEAM_SELECTION)
-        ChangeMenu(parent_menu);
+    if(parent_menu==MENU_ARCADE_SELECTION||parent_menu==MENU_TEAM_SELECTION) {
+        extern struct Button mrb[];
+        if (arcade_teams || training)
+            ChangeMenu(parent_menu);
+        else
+            mrb[0].ID = parent_menu;
+    }
     else {
         D(bug("No menu change! Parent menu: %ld\n"/*-*/,parent_menu));
     }
     
     match_result = risultato;
-    
-    return risultato;
+
+    if (PostCbk) {
+        D(bug("Executing post game cbk\n"));
+        PostCbk();
+        PostCbk = NULL;
+    }
 }
 
 void LoadHigh(char *file)
@@ -748,10 +765,11 @@ void LoadHigh(char *file)
         highlight = TRUE;
 
         StartGame();
-
+#ifndef IPHONE
         highlight = FALSE;
 
         ChangeMenu(current_menu);
+#endif
     }
 }
 
