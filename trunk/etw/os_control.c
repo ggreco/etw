@@ -295,6 +295,40 @@ joy_try_again:
         touch_init();
 }
 
+
+void fake_goal(int idx)
+{
+    p->team[idx]->Reti++;
+    if(!penalties && (p->team[idx]->Reti+p->team[idx ^ 1]->Reti)<GA_SIZE )
+    {
+        mytimer temptime;
+        int i=p->team[idx]->Reti+p->team[idx ^ 1]->Reti-1;
+
+        goal_array[i]=p->last_touch;
+
+        goal_team[i]= (p->last_touch&32)==0 ? teams_swapped : teams_swapped^1;
+
+        temptime=Timer();
+
+        goal_minute[i]=((((temptime-StartGameTime)/MY_CLOCKS_PER_SEC)*45)/t_l/60);
+
+        if(extratime)
+        {
+            goal_minute[i]/=3;
+
+            if(first_half)
+                goal_minute[i]+=90;
+            else
+                goal_minute[i]+=105;
+        }
+        else if(!first_half)
+        {
+            goal_minute[i]+=45;
+        }
+
+    }
+    D(bug("I have signed a GOAL for team %s\n",p->team[idx]->name));
+}
 void CheckKeys(void)
 {
     SDL_Event e;
@@ -392,36 +426,10 @@ void CheckKeys(void)
 
                         /* AC: make a fake goal for team 0. */
                     case SDLK_g:
-                        p->team[0]->Reti++;
-                        if(!penalties && (p->team[0]->Reti+p->team[1]->Reti)<GA_SIZE )
-                        {
-                            mytimer temptime;
-                            int i=p->team[0]->Reti+p->team[1]->Reti-1;
-
-                            goal_array[i]=p->last_touch;
-
-                            goal_team[i]= (p->last_touch&32)==0 ? teams_swapped : teams_swapped^1;
-
-                            temptime=Timer();
-
-                            goal_minute[i]=((((temptime-StartGameTime)/MY_CLOCKS_PER_SEC)*45)/t_l/60);
-
-                            if(extratime)
-                            {
-                                goal_minute[i]/=3;
-
-                                if(first_half)
-                                    goal_minute[i]+=90;
-                                else
-                                    goal_minute[i]+=105;
-                            }
-                            else if(!first_half)
-                            {
-                                goal_minute[i]+=45;
-                            }
-
-                        }
-                        D(bug("I have signed a GOAL for team %s\n",p->team[0]->name));
+                        fake_goal(0);
+                        break;
+                    case SDLK_j:
+                        fake_goal(1);
                         break;
 #endif
                     case SDLK_r:
@@ -463,7 +471,7 @@ void CheckKeys(void)
                             }
                         }
                         break;
-                        // S - enables/disables the radar
+                        // W - enables/disables the radar
                     case SDLK_s:
                         if(detail_level&USA_RADAR)
                             detail_level&=(~USA_RADAR);

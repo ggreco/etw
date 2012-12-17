@@ -454,9 +454,11 @@ BOOL CanContinue(void)
                   (wanted_number < 0 && selected_number >= -wanted_number));
 }
 
-BOOL ReturnFalse(WORD button)
+BOOL ChangeMRMenu(WORD button)
 {
-    return FALSE;
+    extern struct Button mrb[];
+    ChangeMenu(mrb[button].ID);
+    return TRUE;
 }
 
 BOOL TeamSelection(WORD button)
@@ -2256,9 +2258,230 @@ void SetupMatches(void)
     }
 }
 
-void PlayMatches(void)
+extern struct Button mrb[];
+static int final_menu = -1;
+void (*PostCbk)() = NULL;
+static void (*PostEliCbk)() = NULL;
+
+static void PostPlayMatchArcadeChallenge()
+{
+    char *c;
+    WORD result = LastMatchResult();
+
+
+    cp[2].Text = teamlist[*teamarray].name;
+    cp[3].Text = teamlist[arcade_sequence[turno]].name;
+
+    c = cp[4].Text = strdup(ElaboraRisultato(*teamarray, arcade_sequence[turno], result));
+
+    while(*c != '-')
+        c++;
+
+    *c++ = 0;
+
+    cp[5].Text = c;
+
+    make_setup = TRUE;
+
+    arcade_score -= ((result >> 8) * 10);
+    arcade_score += ((result & 0xff) * 15);
+
+    if ((result & 0xff) > (result >> 8) || turno == 10)
+    {
+        cb[0].ID = MENU_CHALLENGE;
+        arcade_score += turno * 20;
+        turno++;
+    }
+    else
+    {
+        // we won the challenge mode!
+        if (turno == 10 && (result & 0xff) > (result >> 8)) 
+            add_achievement("13_challenge", 100.0);
+
+        if (turno > 0) {
+            AddScore(*teamarray);
+            // for world
+            add_score(arcade_score);
+        }
+        turno = 0;
+        competition = MENU_TEAMS;
+        LoadTeams("teams/arcade"/*-*/); // Reload original teams...
+        cp[2].Text = teamlist[*teamarray].name;
+        cp[3].Text = teamlist[arcade_sequence[turno]].name;
+        cp[6].Text = msg_52;
+        cb[0].ID = MENU_ARCADE;
+    }
+    D(bug("Setting destination menu to %d\n", final_menu));
+    ChangeMenu(final_menu);
+}
+
+static void PostMatches()
+{
+    nteams /= 2;
+
+    mb[0].ID = final_menu;
+
+    if (nteams > 1)
+    {
+        NewTurn();
+        make_setup = TRUE;
+    }
+    else
+    {
+        if (!arcade)
+            mb[0].ID = MENU_SIMULATION;
+        else
+            mb[0].ID = MENU_ARCADE;
+
+        turno = 0;
+        competition = MENU_TEAMS;
+    }
+    ChangeMenu(MENU_MATCHES);
+}
+
+static int last_played = 0;
+static int cup_team_number = 0;
+
+static void prepare_table(int i, WORD risultato)
+{
+    BYTE a=teamarray[i*2], b=teamarray[i*2+1];
+
+    mp[i*4+3].Text=strdup(ElaboraRisultato(a, b, risultato));
+
+    if((risultato>>8)>(risultato&0xff))
+    {
+        teamarray[i]=b;
+        teamarray[i+cup_team_number*2]=a;
+    }
+    else
+    {
+        teamarray[i]=a;
+        teamarray[i+cup_team_number*2]=b;
+    }
+}
+
+static void EliminazioneDiretta()
 {
     int i;
+
+    nopari=TRUE;
+
+    // if we have only a game it's a final
+    if (cup_team_number == 1)
+        final = TRUE;
+
+    // if we already played a game (human game) we have to update
+    // the matches panel
+    if (last_played) {
+        D(bug("Continuing match parsing from match %d", last_played));
+        prepare_table(last_played - 1, LastMatchResult());
+    }
+
+    // then we can start to parse the following match
+    for(i = last_played; i < cup_team_number; i++)
+    {
+        BYTE a=teamarray[i*2], b=teamarray[i*2+1];
+        WORD risultato;
+
+        // on human players we mark the point that we reach
+        // and we leave the loop...
+        if(controllo[a]>=0 || controllo[b]>=0) {
+            last_played = i + 1;
+            StartMatch(a, b);
+            mrb[0].ID = MENU_MATCHES;
+            PostCbk = EliminazioneDiretta;
+            return;
+        }
+        else
+            risultato = ComputerMatch(a, b);
+
+        final=FALSE;
+
+        prepare_table(i, risultato);
+    }
+
+// Riordino le squadre...
+
+    for(i=0; i<cup_team_number; i++)
+        teamarray[i+cup_team_number]=teamarray[i+cup_team_number*2];
+
+    nopari=FALSE;
+
+    // we have to call the termination callback
+    if (PostEliCbk) {
+        PostEliCbk();
+        PostEliCbk = NULL;
+    }
+}
+
+static void LeagueRound()
+{
+    WORD risultato;
+    BYTE a, b;
+    int k;
+
+    nopari = FALSE;
+
+    if (last_played > 0) {
+        D(bug("Setting result for human player match %d\n", last_played - 1));
+        risultato = LastMatchResult();
+        a = teamarray[turni[turno][last_played - 1].t1 - 1];
+        b = teamarray[turni[turno][last_played - 1].t2 - 1];
+        mp[(last_played - 1) * 4 + 3].Text = strdup(ElaboraRisultato(a, b, risultato));
+    }
+
+    for (k = last_played; k < nteams / 2; k++) {
+        a = teamarray[turni[turno][k].t1 - 1];
+        b = teamarray[turni[turno][k].t2 - 1];
+
+        if (a != FAKE_TEAM && b != FAKE_TEAM)
+        {
+            if(controllo[a]>=0 || controllo[b]>=0) {
+                 last_played = k + 1;
+                 StartMatch(a, b);
+                 mrb[0].ID = MENU_MATCHES;
+                 PostCbk = LeagueRound;
+                 return;
+            }
+            else
+                risultato = ComputerMatch(a, b);
+
+            mp[k * 4 + 3].Text = strdup(ElaboraRisultato(a, b, risultato));
+        }
+    }
+
+    D(bug("Completed league round %d (%d)\n", turno, scontri));
+
+    NewTurn();
+    UpdateLeagueTable();
+    mb[0].ID = MENU_LEAGUE;
+
+    if (turno == totale_giornate)
+    {
+        turno = 0;
+
+        if (scontri < 2)
+        {
+            if (controllo[league_pos[0]] >= 0 && nteams >= 8)
+                add_achievement("12_league", 100.0);
+            lb[0].ID = MENU_LEAGUE;
+            competition = MENU_TEAMS;
+        }
+        else
+        {
+            scontri--;
+            SwapAllTeams();
+        }
+    }
+    ChangeMenu(MENU_MATCHES);
+}
+
+
+void PlayMatches(int destmenu)
+{
+    int i;
+    // let's set the final menu we want to go
+    final_menu = destmenu;
 
     switch(competition)
     {
@@ -2279,119 +2502,27 @@ void PlayMatches(void)
 
                 if (turno == 10)
                     final = TRUE;
-
-                result = PlayMatch(*teamarray, arcade_sequence[turno]);
-
-
-                cp[2].Text = teamlist[*teamarray].name;
-                cp[3].Text = teamlist[arcade_sequence[turno]].name;
-
-                c = cp[4].Text = strdup(ElaboraRisultato(*teamarray, arcade_sequence[turno], result));
-
-                while(*c != '-')
-                    c++;
-
-                *c++ = 0;
-
-                cp[5].Text = c;
-
-                make_setup = TRUE;
-
-                arcade_score -= ((result >> 8) * 10);
-                arcade_score += ((result & 0xff) * 15);
-
-                if ((result & 0xff) > (result >> 8))
-                {
-                    add_achievement("1_arcadewin", 100.0f);
-                    add_achievement("6_amateur", 20.0);
-                    cb[0].ID = MENU_CHALLENGE;
-                    arcade_score += turno * 20;
-                    turno++;
-                }
-                else
-                {
-                    if (turno > 0) {
-                        AddScore(*teamarray);
-                        add_score(arcade_score);
-                    }
-                    turno = 0;
-                    competition = MENU_TEAMS;
-                    LoadTeams("teams/arcade"/*-*/); // Reload original teams...
-                    cp[2].Text = teamlist[*teamarray].name;
-                    cp[3].Text = teamlist[arcade_sequence[turno]].name;
-                    cp[6].Text = msg_52;
-                    cb[0].ID = MENU_ARCADE;
-                }
+                
+                PostCbk = PostPlayMatchArcadeChallenge;
+                StartMatch(*teamarray, arcade_sequence[turno]);
             }
             break;
         case MENU_MATCHES:
             menu[MENU_MATCHES].Title = arcade ? msg_53 : msg_54;
 
-            if (nteams == 2)
-                final = TRUE;
-
-            EliminazioneDiretta(nteams / 2);
-
-            nteams /= 2;
-
-            if (nteams > 1)
-            {
-                NewTurn();
-                make_setup = TRUE;
-            }
-            else
-            {
-                if (!arcade)
-                    mb[0].ID = MENU_SIMULATION;
-                else
-                    mb[0].ID = MENU_ARCADE;
-
-                turno = 0;
-                competition = MENU_TEAMS;
-            }
+            cup_team_number = nteams / 2;
+            last_played = 0;
+            EliminazioneDiretta();
+            PostEliCbk = PostMatches;
+            
             break;
         case MENU_LEAGUE:
             menu[MENU_MATCHES].Title = msg_55;
 
             if (turno < totale_giornate)
             {
-                WORD risultato;
-                BYTE a, b;
-                int k;
-
-                nopari = FALSE;
-
-                for (k = 0; k < nteams / 2; k++)
-                {
-                    a = teamarray[turni[turno][k].t1 - 1];
-                    b = teamarray[turni[turno][k].t2 - 1];
-
-                    if (a != FAKE_TEAM && b != FAKE_TEAM)
-                    {
-                        risultato = PlayMatch(a, b);
-                        mp[k * 4 + 3].Text = strdup(ElaboraRisultato(a, b, risultato));
-                    }
-                }
-
-                NewTurn();
-                UpdateLeagueTable();
-                mb[0].ID = MENU_LEAGUE;
-
-                if (turno == totale_giornate)
-                {
-                    turno = 0;
-
-                    if (scontri < 2)
-                    {
-                        lb[0].ID = MENU_LEAGUE;
-                        competition = MENU_TEAMS;
-                    }
-                    else
-                    {
-                        scontri--;
-                        SwapAllTeams();
-                    }
-                }
+                last_played = 0;
+                LeagueRound();
             }
             break;
         case MENU_WORLD_CUP:
@@ -2412,7 +2543,9 @@ void PlayMatches(void)
                         a = start_groups[i][camp4[turno][j].t1 - 1];
                         b = start_groups[i][camp4[turno][j].t2 - 1];
 
-                        risultato = PlayMatch(a, b);
+                        // TODO XXX 
+                        D(bug("TODO world cup!!\n"));
+//                        risultato = PlayMatch(a, b);
 
                         mp[k * 4 + 3].Text = strdup(ElaboraRisultato(a, b, risultato));
 
@@ -2439,7 +2572,9 @@ void PlayMatches(void)
                 if (turno == 7)
                     final = TRUE;
 
-                EliminazioneDiretta(mondiali[turno - 3]);
+                // TODO
+//                EliminazioneDiretta(mondiali[turno - 3]);
+                D(bug("BUGGGG, fix world cup!"));
                 make_setup = TRUE;
                 NewTurn();
 
@@ -2509,7 +2644,7 @@ BOOL HighSelection(WORD button)
 
         if (!savehigh)
         {
-            D(bug("Load %s...\n", b->Text));
+            D(bug("Load highlight %s...\n", b->Text));
 
             LoadHigh(buffer);
         }

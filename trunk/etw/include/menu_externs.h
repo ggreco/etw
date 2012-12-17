@@ -55,7 +55,6 @@ extern BOOL VideoPrefs(WORD);
 extern BOOL SystemPrefs(WORD);
 extern BOOL MobilePrefs(WORD);
 extern BOOL GamePrefs(WORD);
-extern BOOL ReturnFalse(WORD);
 extern BOOL AudioPrefs(WORD);
 extern BOOL HighSelection(WORD);
 extern BOOL JoyCfg(WORD);
@@ -79,17 +78,17 @@ extern void ClearSelection(void);
 extern void ClearMatches(int);
 extern void GroupsUpdate(void);
 extern void SetupMatches(void);
-extern void PlayMatches(void);
+extern void PlayMatches(int);
 extern WORD ComputerMatch(BYTE, BYTE);
 extern WORD PlayMatch(BYTE, BYTE);
 char *ElaboraRisultato(int8_t, int8_t, uint16_t);
 extern BOOL GroupsClear(void);
 extern void request(char *);
-extern void EliminazioneDiretta(int);
 extern void ViewEliminazioneDiretta(int);
 extern BOOL HandleMenuIDCMP(void);
 extern void LoadHigh(char *);
 extern void SetHighSelection(void);
+extern BOOL ChangeMRMenu(WORD);
 
 extern player *network_player;
 extern struct Button teamselection[], teamsettings[], pannelli[], wcp[], league[], mp[], mb[], lb[],

@@ -381,7 +381,7 @@ void handle_pause_status()
     }
 }
 
-static int logic = 0, f_skip = 0, rep = 0;
+static int f_skip = 0;
 static mytimer start;
 
 #ifdef IPHONE
@@ -402,9 +402,7 @@ void game_iteration()
         return;
     
     ideal += MY_CLOCKS_PER_SEC_50;
-    
-    logic++;
-    
+        
     if (Timer() < ideal)
         graphic_frame();
     else
@@ -417,6 +415,7 @@ void game_iteration()
 
 void MainLoop(void)
 {
+    int logic = 0, rep = 0;
     field_x = max((pl->world_x >> 3) - WINDOW_WIDTH / 2, 0);
 
     field_y = max((pl->world_y >> 3) - WINDOW_HEIGHT / 2, 0);
@@ -507,14 +506,12 @@ void MainLoop(void)
 void free_game()
 {
     extern void FreeStuff();
-    
-#ifndef DEBUG_DISABLED
-    D(bug
-      ("Totale frames: %ld real, %ld logic, skip %ld, repeated %ld\n",
-       frames, logic, f_skip, rep));
-    logic = (Timer() - start) / MY_CLOCKS_PER_SEC;
-    D(bug("Total time: %ld secs, %ld FPS\n", logic, frames / logic));
-#endif
+    long temp; 
+
+    D(bug("Totale frames: %ld real, skip %ld\n", frames, f_skip));
+    if ((temp = (Timer() - start) / MY_CLOCKS_PER_SEC)) {
+        D(bug("Total time: %ld secs, %ld FPS\n", temp, frames / temp));
+    }
     
     char buf[1024];
     

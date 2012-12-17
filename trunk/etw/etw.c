@@ -49,7 +49,12 @@ void ShowFrame(void*unused)
         if (last_mode == 1) {
             D(bug("MATCH ENDED, SWITCHING TO MENU MODE\n"));
             free_game();
-            restore_menus();
+            if (!highlight)
+                restore_menus();
+            else {
+                highlight = FALSE;
+                ChangeMenu(current_menu);
+            }
         }
         last_mode = framemode;
         HandleMenuIDCMP();

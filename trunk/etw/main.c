@@ -73,6 +73,24 @@ void SetResult(const char *fstring, ...)
                 p->team[1]->Reti -= golrig[1];
                 fprintf(f, "penalties\n%d\n", (int) golrig[0] + golrig[1]);
             }
+            else {
+                if ((p->team[0]->Reti > p->team[1]->Reti &&
+                     p->team[0]->Joystick >= 0 && p->team[1]->Joystick == -1) ||
+                    (p->team[1]->Reti > p->team[0]->Reti &&
+                     p->team[1]->Joystick >= 0 && p->team[0]->Joystick == -1))  {
+
+                    // update victory achievements
+
+                    if (arcade)
+                        add_achievement("1_arcadewin", 100.0f);
+                    else
+                        add_achievement("2_win", 100.0f);
+
+                    add_achievement("6_amateur", 20.0);
+                    add_achievement("10_semipro", 10.0);
+                    add_achievement("11_pro", 4.0);
+                }
+            }
 
             l = min(GA_SIZE, (p->team[0]->Reti + p->team[1]->Reti));
 
