@@ -2363,7 +2363,6 @@ static void prepare_table(int i, WORD risultato)
 static void EliminazioneDiretta()
 {
     int i;
-
     nopari=TRUE;
 
     // if we have only a game it's a final
@@ -2476,6 +2475,38 @@ static void LeagueRound()
     ChangeMenu(MENU_MATCHES);
 }
 
+static void WorldCupStageTwo()
+{
+    int i;
+    make_setup = TRUE;
+    NewTurn();
+
+    if (turno == 7)
+    {
+        BYTE temp = teamarray[2];
+
+        teamarray[2] = teamarray[1];
+        teamarray[1] = temp;
+
+        mb[0].ID = MENU_WORLD_CUP_END;
+
+        mp[5 * 4 + 3].Text = mp[4 + 3].Text;
+        mp[2 * 4 + 3].Text = mp[3].Text;
+        mp[3].Text = mp[4 + 3].Text = NULL;
+
+        for (i = 0; i < 4; i++)
+        {
+            wcfp[i].Text = teamlist[teamarray[i]].name;
+            wcfp[i].Color = colore_team[controllo[teamarray[i]] + 1];
+            wcfp[i].Highlight = highlight_team[controllo[teamarray[i]] + 1];
+        }
+
+        turno = 0;
+        competition = MENU_TEAMS;
+    }
+    ChangeMenu(MENU_MATCHES);    
+}
+
 static void handle_worldcup()
 {
     int i;
@@ -2530,54 +2561,29 @@ static void handle_worldcup()
         mb[0].ID = MENU_WORLD_CUP;
         
         // Create array to use for direct elimination
-        if (turno == 3)
-        {
-            for (i = 0; i < 8; i++)
-            {
+        if (turno == 3) {
+            for (i = 0; i < 8; i++) {
                 teamarray[i * 2] = groups[i][0];
                 teamarray[i * 2 + 1] = groups[7 - i][1];
             }
+            nteams = 16;
         }
     }
     else if (turno < 7)
     {
         if (turno == 7)
             final = TRUE;
-        
-        // TODO
-        //                EliminazioneDiretta(mondiali[turno - 3]);
-        D(bug("BUGGGG, fix world cup!"));
-        make_setup = TRUE;
-        NewTurn();
-        
-        if (turno == 7)
-        {
-            BYTE temp = teamarray[2];
-            
-            teamarray[2] = teamarray[1];
-            teamarray[1] = temp;
-            
-            mb[0].ID = MENU_WORLD_CUP_END;
-            
-            mp[5 * 4 + 3].Text = mp[4 + 3].Text;
-            mp[2 * 4 + 3].Text = mp[3].Text;
-            mp[3].Text = mp[4 + 3].Text = NULL;
-            
-            for (i = 0; i < 4; i++)
-            {
-                wcfp[i].Text = teamlist[teamarray[i]].name;
-                wcfp[i].Color = colore_team[controllo[teamarray[i]] + 1];
-                wcfp[i].Highlight = highlight_team[controllo[teamarray[i]] + 1];
-            }
-            
-            turno = 0;
-            competition = MENU_TEAMS;
-        }
+
+        cup_team_number = nteams / 2;
+        PostEliCbk = WorldCupStageTwo;
+        EliminazioneDiretta();
+        nteams /= 2;
     }
     else
     {
         D(bug("I wouldn't arrive here! (eighth world-wide turn)\n"/*-*/));
     }
+    ChangeMenu(MENU_MATCHES);
 }
 
 void PlayMatches(int destmenu)
@@ -2609,8 +2615,8 @@ void PlayMatches(int destmenu)
 
             cup_team_number = nteams / 2;
             last_played = 0;
-            EliminazioneDiretta();
             PostEliCbk = PostMatches;
+            EliminazioneDiretta();
             
             break;
         case MENU_LEAGUE:
