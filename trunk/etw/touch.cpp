@@ -287,7 +287,7 @@ iteration()
     for (BtVec::const_iterator it = buttons_.begin(); it != buttons_.end(); ++it) {
         if (!it->visible)
             continue;
-        if (it->pressed) {
+        if (it->is_pressed) {
             result |= it->id;
             result |= BUTTONDOWN;
         }

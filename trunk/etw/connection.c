@@ -423,12 +423,15 @@ void StartMatchFinal()
 #endif
 }
 
+BOOL interrupted = FALSE;
+
 void restore_menus()
 {
     extern void (*PostCbk)();
     char buf[1024];
     FILE *f;
     WORD risultato=-1;
+    interrupted = FALSE;
   
     // restore previous menu state
     actual_button = old_button;
@@ -504,6 +507,7 @@ void restore_menus()
                 risultato=5;  // 5 a 0
             else
                 risultato=(5<<8); // 0 a 5
+            interrupted = TRUE;
         }
         else
         {
@@ -713,7 +717,7 @@ void restore_menus()
     
     if(parent_menu==MENU_ARCADE_SELECTION||parent_menu==MENU_TEAM_SELECTION) {
         extern struct Button mrb[];
-        if (arcade_teams || training)
+        if (arcade_teams || training || interrupted)
             ChangeMenu(parent_menu);
         else
             mrb[0].ID = parent_menu;

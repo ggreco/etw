@@ -2319,6 +2319,7 @@ static void PostPlayMatchArcadeChallenge()
 
 static int last_played = 0, last_group = 0, last_match_index = 0;
 static int cup_team_number = 0, isworldcupfinal = 0;
+extern BOOL interrupted;
 
 static void PostMatches()
 {
@@ -2342,7 +2343,7 @@ static void PostMatches()
         competition = MENU_TEAMS;
     }
     // if "all cpu" we need to switch to matches screen
-    if (!last_played)
+    if (!last_played || interrupted)
         ChangeMenu(MENU_MATCHES);
 }
 
@@ -2481,7 +2482,7 @@ static void LeagueRound()
         }
     }
     // if "all cpu" we need to switch to matches screen
-    if (!last_played)
+    if (!last_played || interrupted)
         ChangeMenu(MENU_MATCHES);
 }
 
@@ -2519,7 +2520,7 @@ static void WorldCupStageTwo()
         competition = MENU_TEAMS;
     }
 
-    if (!last_played)
+    if (!last_played || interrupted)
         ChangeMenu(MENU_MATCHES);    
 }
 
@@ -2608,7 +2609,7 @@ static void handle_worldcup()
     {
         D(bug("I wouldn't arrive here! (eighth world-wide turn)\n"/*-*/));
     }
-    if (!last_played)
+    if (!last_played || interrupted)
         ChangeMenu(MENU_MATCHES);
 }
 
