@@ -102,7 +102,9 @@ void SetupSpecialEvent(struct Button *b)
             break;
         case CAMP_WORLDCUP:
             menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE].Text=msg_1;
-            menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE + 2].Text=msg_2;
+            if (menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE + 2].Text)
+                free(menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE + 2].Text);
+            menu[MENU_TEAM_SELECTION].Button[TS_RIGHE * TS_COLONNE + 2].Text=strdup(msg_2);
 
             competition=MENU_WORLD_CUP;
             b->ID=MENU_TEAM_SELECTION;
@@ -125,7 +127,7 @@ void SetupSpecialEvent(struct Button *b)
 
     i=0;
 
-    while(selected_number<wanted_number&&i<64)
+    while(selected_number<wanted_number&&i<(TS_RIGHE *TS_COLONNE))
     {
         while(!teamselection[i].Text&&i< (TS_RIGHE *TS_COLONNE))
             i++;
@@ -140,7 +142,7 @@ void SetupSpecialEvent(struct Button *b)
         i++;
     }
 
-    for(i=0; i<64; i++)
+    for(i=0; i < 64; i++)
         controllo[i]=-1;
 
     if(selected_number<wanted_number)
