@@ -415,7 +415,9 @@ void game_iteration()
 
 void MainLoop(void)
 {
+#ifndef IPHONE
     int logic = 0, rep = 0;
+#endif
     field_x = max((pl->world_x >> 3) - WINDOW_WIDTH / 2, 0);
 
     field_y = max((pl->world_y >> 3) - WINDOW_HEIGHT / 2, 0);

@@ -35,6 +35,7 @@ struct SoundInfo *music = NULL;
 char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE;
 
 #ifdef IPHONE
+extern BOOL highlight;
 extern void init_game_center();
 int framemode = 0;
 extern void game_iteration();
