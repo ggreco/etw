@@ -150,7 +150,7 @@ void Outro(void)
     }        
 }
 
-#define ENDCREDITS 645
+#define ENDCREDITS 580
 
 struct Stage
 {
@@ -193,97 +193,106 @@ struct Stage stage[]=
 
 #define MAXSTRINGLEN 20
 
+static long int actual=0, started;
+extern int framemode;
+static BOOL clean=TRUE;
+
 void ShowCredits(void)
 {
     gfx_t *o;
-    BOOL clean=TRUE;
-    long int ticks=0,actual=0;
-    int top_x=WINDOW_WIDTH/4-MAXSTRINGLEN*bigfont->width/2,
-        top_y=WINDOW_HEIGHT/2-(bigfont->height+6)*3,
-        width=(MAXSTRINGLEN*bigfont->width)+4,
-        height=(bigfont->height+6)*6+4; // I +4 sono per sicurezza.
-
-    setfont(bigfont);
-
-// Serching in newgfx and then in menugfx...
-
+    
+    // Serching in newgfx and then in menugfx...
+    
     if(!(o=LoadGfxObject("newgfx/credits.gfx"/*-*/,Pens,NULL)))
         o=LoadGfxObject("menugfx/credits.gfx"/*-*/,Pens,NULL);
-
+    
     
     if(o) {
-        BOOL interrupted = FALSE;
+        setfont(bigfont);
+        
         SDL_Event e;
-
+        
         // empty event queue
         while (SDL_PollEvent(&e));
         
-        ScaleGfxObj(o,back);
+        ScaleGfxObj(o, back);
         FreeGfxObj(o);
-
+        
         memcpy(main_bitmap,back,WINDOW_WIDTH*WINDOW_HEIGHT);
         ScreenSwap();
+        framemode = 2;
+        actual = 0;
+        clean = TRUE;
+        started = os_get_timer();
+    }
+}
+
+void credits_iteration()
+{
+    int top_x=WINDOW_WIDTH/4-MAXSTRINGLEN*bigfont->width/2,
+    top_y=WINDOW_HEIGHT/2-(bigfont->height+6)*3,
+    width=(MAXSTRINGLEN*bigfont->width)+4,
+    height=(bigfont->height+6)*6+4; // I +4 sono per sicurezza.
+    
+    long int ticks = (os_get_timer() - started) / 100;
+    
+    if (ticks < ENDCREDITS) {
+        SDL_Event e;
         
-        while(ticks<ENDCREDITS)        
-        {    
-            os_delay(5);
-
-            if(SDL_PollEvent(&e))
-            {
-                switch(e.type)
-                {
-                    case SDL_FINGERDOWN:
-                    case SDL_FINGERUP:
-                    case SDL_MOUSEBUTTONUP:
-                    case SDL_MOUSEBUTTONDOWN:
-                    case SDL_KEYDOWN:
-                        interrupted = TRUE;
-                        ticks=ENDCREDITS;
-                        break;
-                }
-            }
-            ticks++;
-
-            if(ticks>stage[actual].Tick)
-            {
-                int i,x,y;
-
-                if(!clean)
-                    bltchunkybitmap(back,top_x-2,top_y-2,
-                            main_bitmap,top_x-2,top_y-2,
-                            width,height,bitmap_width,bitmap_width);
-
-// I -2 sono per compensare i +4 di prima!
-
-                clean=TRUE;
-
-                y=top_y+bigfont->height;
-
-                for(i=0;i<5;i++)
-                {
-                    if(stage[actual].string[i])
-                    {
-                        int l=strlen(stage[actual].string[i]);
-
-                        x=top_x+((MAXSTRINGLEN-l)*bigfont->width)/2;
-
-                        ColorTextShadow(x,y,stage[actual].string[i],l,P_GIALLO);
-
-                        clean=FALSE;
-                    }
-
-                    y+=(bigfont->height+6);
-                }
-
-                actual++;
-                ScreenSwap();
+        while (SDL_PollEvent(&e)) {
+            
+            switch(e.type) {
+                case SDL_FINGERDOWN:
+                case SDL_FINGERUP:
+                case SDL_MOUSEBUTTONUP:
+                case SDL_MOUSEBUTTONDOWN:
+                case SDL_KEYDOWN:
+                    LoadBack();
+                    ChangeMenu(current_menu);
+                    framemode = 0;
+                    return;
             }
         }
-
-        if (!interrupted)
-            add_achievement("9_credits", 100.0);
         
+        if(ticks > stage[actual].Tick) {
+            int i,x,y;
+            
+            if(!clean)
+                bltchunkybitmap(back,top_x-2,top_y-2,
+                                main_bitmap,top_x-2,top_y-2,
+                                width,height,bitmap_width,bitmap_width);
+            
+            // I -2 sono per compensare i +4 di prima!
+            
+            clean = TRUE;
+            
+            y=top_y+bigfont->height;
+            
+            for(i=0;i<5;i++)
+            {
+                if(stage[actual].string[i])
+                {
+                    int l=strlen(stage[actual].string[i]);
+                    
+                    x=top_x+((MAXSTRINGLEN-l)*bigfont->width)/2;
+                    
+                    ColorTextShadow(x,y,stage[actual].string[i],l,P_GIALLO);
+                    
+                    clean=FALSE;
+                }
+                
+                y+=(bigfont->height+6);
+            }
+            
+            actual++;
+            ScreenSwap();
+        }
+    }
+    else {
+        add_achievement("9_credits", 100.0);
+    
         LoadBack();
         ChangeMenu(current_menu);
+        framemode = 0;
     }
 }

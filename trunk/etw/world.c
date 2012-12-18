@@ -5,6 +5,11 @@ void add_achievement(const char *name, float progress)
     D(bug("Adding to achievement %s progress %f\n", name, progress));
 }
 
+void reset_achievements()
+{
+    D(bug("TODO reset achievements\n"));
+}
+
 void add_score(int score)
 {
     D(bug("Adding global score %d", score));
