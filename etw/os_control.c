@@ -299,18 +299,15 @@ joy_try_again:
 void fake_goal(int idx)
 {
     p->team[idx]->Reti++;
-    if(!penalties && (p->team[idx]->Reti+p->team[idx ^ 1]->Reti)<GA_SIZE )
+    if(!penalties && (p->team[0]->Reti+p->team[1]->Reti)<GA_SIZE )
     {
-        mytimer temptime;
-        int i=p->team[idx]->Reti+p->team[idx ^ 1]->Reti-1;
+        int i=p->team[0]->Reti+p->team[1]->Reti - 1;
 
-        goal_array[i]=p->last_touch;
+        goal_array[i]=(random() % 10) + 2;
 
-        goal_team[i]= (p->last_touch&32)==0 ? teams_swapped : teams_swapped^1;
+        goal_team[i]= idx;
 
-        temptime=Timer();
-
-        goal_minute[i]=((((temptime-StartGameTime)/MY_CLOCKS_PER_SEC)*45)/t_l/60);
+        goal_minute[i]=(random() % 45) + 1;
 
         if(extratime)
         {

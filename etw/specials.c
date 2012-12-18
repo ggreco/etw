@@ -565,6 +565,8 @@ BOOL TeamSelection(WORD button)
                 else
                 {
                     b2->Text = msg_1;
+                    if (b3->Text)
+                        free(b3->Text);
                     b3->Text = strdup(msg_2);
                     RedrawButton(b3, b3->Color);
                 }
@@ -2315,6 +2317,9 @@ static void PostPlayMatchArcadeChallenge()
     ChangeMenu(final_menu);
 }
 
+static int last_played = 0, last_group = 0, last_match_index = 0;
+static int cup_team_number = 0, isworldcupfinal = 0;
+
 static void PostMatches()
 {
     nteams /= 2;
@@ -2336,11 +2341,10 @@ static void PostMatches()
         turno = 0;
         competition = MENU_TEAMS;
     }
-    ChangeMenu(MENU_MATCHES);
+    // if "all cpu" we need to switch to matches screen
+    if (!last_played)
+        ChangeMenu(MENU_MATCHES);
 }
-
-static int last_played = 0, last_group = 0, last_match_index = 0;
-static int cup_team_number = 0;
 
 static void prepare_table(int i, WORD risultato)
 {
@@ -2384,11 +2388,15 @@ static void EliminazioneDiretta()
 
         // on human players we mark the point that we reach
         // and we leave the loop...
+        if (i == 0 && isworldcupfinal)
+            final = TRUE;
+        
         if(controllo[a]>=0 || controllo[b]>=0) {
+
             last_played = i + 1;
-            StartMatch(a, b);
             mrb[0].ID = MENU_MATCHES;
             PostCbk = EliminazioneDiretta;
+            StartMatch(a, b);
             return;
         }
         else
@@ -2437,9 +2445,9 @@ static void LeagueRound()
         {
             if(controllo[a]>=0 || controllo[b]>=0) {
                  last_played = k + 1;
-                 StartMatch(a, b);
                  mrb[0].ID = MENU_MATCHES;
                  PostCbk = LeagueRound;
+                 StartMatch(a, b);
                  return;
             }
             else
@@ -2472,7 +2480,9 @@ static void LeagueRound()
             SwapAllTeams();
         }
     }
-    ChangeMenu(MENU_MATCHES);
+    // if "all cpu" we need to switch to matches screen
+    if (!last_played)
+        ChangeMenu(MENU_MATCHES);
 }
 
 static void WorldCupStageTwo()
@@ -2480,9 +2490,9 @@ static void WorldCupStageTwo()
     int i;
     make_setup = TRUE;
     NewTurn();
+    isworldcupfinal = 0;
 
-    if (turno == 7)
-    {
+    if (turno == 7) {
         BYTE temp = teamarray[2];
 
         teamarray[2] = teamarray[1];
@@ -2494,17 +2504,23 @@ static void WorldCupStageTwo()
         mp[2 * 4 + 3].Text = mp[3].Text;
         mp[3].Text = mp[4 + 3].Text = NULL;
 
-        for (i = 0; i < 4; i++)
-        {
+        nteams *= 2;
+
+        for (i = 0; i < 4; i++) {
             wcfp[i].Text = teamlist[teamarray[i]].name;
             wcfp[i].Color = colore_team[controllo[teamarray[i]] + 1];
             wcfp[i].Highlight = highlight_team[controllo[teamarray[i]] + 1];
         }
 
+        if (controllo[teamarray[0]] >= 0) 
+            add_achievement("13_worldcup", 100.0);
+
         turno = 0;
         competition = MENU_TEAMS;
     }
-    ChangeMenu(MENU_MATCHES);    
+
+    if (!last_played)
+        ChangeMenu(MENU_MATCHES);    
 }
 
 static void handle_worldcup()
@@ -2512,7 +2528,7 @@ static void handle_worldcup()
     int i;
     if (turno < 3)
     {
-        int j, k = last_match_index;
+        int j, k = last_match_index, resumed = 0;
         BYTE a, b;
         WORD risultato;
         extern struct Match camp4[3][2];
@@ -2531,6 +2547,7 @@ static void handle_worldcup()
                 last_match_index = 0;
                 // we have to reset this because there are 8 groups
                 last_played = 0;
+                resumed = 1;
             }
             
             for (j = idx; j < 2; j++)
@@ -2542,9 +2559,9 @@ static void handle_worldcup()
                     last_played = j + 1;
                     last_group = i;
                     last_match_index = k;
-                    StartMatch(a, b);
                     mrb[0].ID = MENU_MATCHES;
                     PostCbk = handle_worldcup;
+                    StartMatch(a, b);
                     return;
                 }
                 else
@@ -2555,7 +2572,11 @@ static void handle_worldcup()
                 k++;
             }
         }
-        
+       
+        // force the variable to be sure to not swap the screen if not needed 
+        if (resumed)
+            last_played = 2;
+
         NewTurn();
         GroupsUpdate();
         mb[0].ID = MENU_WORLD_CUP;
@@ -2571,10 +2592,14 @@ static void handle_worldcup()
     }
     else if (turno < 7)
     {
-        if (turno == 7)
-            final = TRUE;
+        // the sixth round has also the 3rd place final
+        if (turno == 6) {
+            cup_team_number = nteams;
+            isworldcupfinal = 1;
+        }
+        else
+            cup_team_number = nteams / 2;
 
-        cup_team_number = nteams / 2;
         PostEliCbk = WorldCupStageTwo;
         EliminazioneDiretta();
         nteams /= 2;
@@ -2583,7 +2608,8 @@ static void handle_worldcup()
     {
         D(bug("I wouldn't arrive here! (eighth world-wide turn)\n"/*-*/));
     }
-    ChangeMenu(MENU_MATCHES);
+    if (!last_played)
+        ChangeMenu(MENU_MATCHES);
 }
 
 void PlayMatches(int destmenu)
