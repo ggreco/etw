@@ -39,6 +39,7 @@ extern BOOL highlight;
 extern void init_game_center();
 int framemode = 0;
 extern void game_iteration();
+extern void credits_iteration();
 extern void free_game();
 extern WORD restore_menus();
 
@@ -67,7 +68,8 @@ void ShowFrame(void*unused)
         last_mode = framemode;
         game_iteration();
     }
-    
+    else if (framemode == 2)
+        credits_iteration();
 }
 #endif
 

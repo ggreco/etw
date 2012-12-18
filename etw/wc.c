@@ -299,6 +299,8 @@ void ClearScores(void)
             scores[i*2+1].Text=NULL;
         }
     }
+    
+    reset_achievements();
 }
 
 void PositionScores(void)

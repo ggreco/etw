@@ -24,6 +24,7 @@
 - (BOOL) isAuthenticated;
 - (void) showHighScores:(NSString *) identifier;
 - (void) showAchievements;
+- (void) resetAchievements;
 - (void) getPlayerAlias: (char *)aliasBuf: (int) length;
 - (void) sendAchievement:(GKAchievement*) achievement;
 - (void) saveScore: (int) score withIdentifier:(NSString *) rawIdentifier;

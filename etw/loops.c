@@ -270,6 +270,8 @@ void graphic_frame(void)
 #endif
 }
 
+BOOL has_practice_achievement = FALSE;
+
 void logic_frame(void)
 {   
     if (network_game)
@@ -329,6 +331,11 @@ void logic_frame(void)
                 }
             }
         }
+    } // five minutes of training for the achievement
+    else if ( training && !has_practice_achievement &&
+             (ideal - StartGameTime) > 300000) {
+        has_practice_achievement = TRUE;
+        add_achievement("15_practice", 100.0);
     }
 }
 

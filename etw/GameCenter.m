@@ -17,6 +17,11 @@ void show_world_scores()
     [[GameCenter getInstance] showHighScores:@"arcade_results"];
 }
 
+void reset_achievements()
+{
+    [[GameCenter getInstance] resetAchievements];
+}
+
 void show_achievements()
 {
     [[GameCenter getInstance] showAchievements];
