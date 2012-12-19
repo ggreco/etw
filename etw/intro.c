@@ -194,38 +194,12 @@ struct Stage stage[]=
 #define MAXSTRINGLEN 20
 
 static long int actual=0, started;
+#ifndef IPHONE
+static int framemode = 0;
+#else
 extern int framemode;
+#endif
 static BOOL clean=TRUE;
-
-void ShowCredits(void)
-{
-    gfx_t *o;
-    
-    // Serching in newgfx and then in menugfx...
-    
-    if(!(o=LoadGfxObject("newgfx/credits.gfx"/*-*/,Pens,NULL)))
-        o=LoadGfxObject("menugfx/credits.gfx"/*-*/,Pens,NULL);
-    
-    
-    if(o) {
-        setfont(bigfont);
-        
-        SDL_Event e;
-        
-        // empty event queue
-        while (SDL_PollEvent(&e));
-        
-        ScaleGfxObj(o, back);
-        FreeGfxObj(o);
-        
-        memcpy(main_bitmap,back,WINDOW_WIDTH*WINDOW_HEIGHT);
-        ScreenSwap();
-        framemode = 2;
-        actual = 0;
-        clean = TRUE;
-        started = os_get_timer();
-    }
-}
 
 void credits_iteration()
 {
@@ -296,3 +270,40 @@ void credits_iteration()
         framemode = 0;
     }
 }
+
+void ShowCredits(void)
+{
+    gfx_t *o;
+    
+    // Serching in newgfx and then in menugfx...
+    
+    if(!(o=LoadGfxObject("newgfx/credits.gfx"/*-*/,Pens,NULL)))
+        o=LoadGfxObject("menugfx/credits.gfx"/*-*/,Pens,NULL);
+    
+    
+    if(o) {
+        setfont(bigfont);
+        
+        SDL_Event e;
+        
+        // empty event queue
+        while (SDL_PollEvent(&e));
+        
+        ScaleGfxObj(o, back);
+        FreeGfxObj(o);
+        
+        memcpy(main_bitmap,back,WINDOW_WIDTH*WINDOW_HEIGHT);
+        ScreenSwap();
+        framemode = 2;
+        actual = 0;
+        clean = TRUE;
+        started = os_get_timer();
+#ifndef IPHONE
+        while (framemode == 2) {
+            os_delay(5);
+            credits_iteration();
+        }
+#endif
+    }
+}
+

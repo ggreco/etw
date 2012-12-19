@@ -82,7 +82,7 @@ struct Button high_bottoni[]=
 #endif
 };
 
-// not available in mobile
+/ not available in mobile
 struct Button teams_bottoni[]=
 {
     {20,67,150,80,-1,6,8,msg_100},  // Teams
@@ -479,24 +479,42 @@ struct Button wcp[]=
 
 struct Button wcb[]=
 {
+#ifndef MOBILE_VERSION
     {10,229,106,241,MENU_MATCHES,7,9,msg_0},
     {111,229,207,241,-1,14,13,msg_98},
     {212,229,309,241,MENU_SIMULATION,11,12,msg_6},
+#else
+    {10,220,106,250,MENU_MATCHES,7,9,msg_0},
+    {111,220,207,250,-1,14,13,msg_98},
+    {212,220,309,250,MENU_SIMULATION,11,12,msg_6},
+#endif
 };
 
 struct Button mb[]=
 {
+#ifndef MOBILE_VERSION
     {10,229,106,241,MENU_MATCHES,7,9,msg_0},
     {111,229,207,241,-1,14,13,msg_98},
     {212,229,309,241,MENU_SIMULATION,11,12,msg_6},
+#else
+    {10,220,106,250,MENU_MATCHES,7,9,msg_0},
+    {111,220,207,250,-1,14,13,msg_98},
+    {212,220,309,250,MENU_SIMULATION,11,12,msg_6},
+#endif
 };
 
 
 struct Button lb[]=
 {
+#ifndef MOBILE_VERSION
     {10,229,106,241,MENU_MATCHES,7,9,msg_0},
     {111,229,207,241,-1,14,13,msg_98},
     {212,229,309,241,MENU_SIMULATION,11,12,msg_6},
+#else
+    {10,220,106,250,MENU_MATCHES,7,9,msg_0},
+    {111,220,207,250,-1,14,13,msg_98},
+    {212,220,309,250,MENU_SIMULATION,11,12,msg_6},
+#endif
 };
 
 /* In reality control 0 would be the BLUE keyboard, but for praticity
