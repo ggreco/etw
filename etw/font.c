@@ -231,6 +231,12 @@ void ShowPanel(void)
     BOOL goal_onscreen = InAnimList(goal_banner);
 
     if (replay_mode) {
+        if (slow_motion) {
+            const char *txt = "SLOW MOTION";
+            int l = strlen(txt);
+            int x = (WINDOW_WIDTH - l * font_width) >> 1;                
+            TextShadow(x, font_height + 2, txt, l);
+        }
         if (p->show_panel & PANEL_HIGHSAVE) {
             const char *txt =  "HIGHLIGHT SAVED";
             int l = strlen(txt);
