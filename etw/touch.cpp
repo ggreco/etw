@@ -212,8 +212,7 @@ iteration()
                     bool found = false;
 
                     if (button *b = in_button(x, y)) {
-                        result |= b->id;
-                        result |= BUTTONDOWN;
+                        
                         b->is_pressed = true;
                         b->finger = e.tfinger.fingerId;
                         found = true;
