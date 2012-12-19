@@ -328,7 +328,8 @@ void ShowPanel(void)
         TextShadow(x, y, sp, l);
     }
 
-    if (p->show_panel & PANEL_TIME) {
+    // always show the clock
+    if (!penalties && !free_kicks /* && p->show_panel & PANEL_TIME */) {
         char buffer[8];
         int mins, secs;
         mytimer temptime;
@@ -343,7 +344,7 @@ void ShowPanel(void)
 
                 temptime = StopTimeVal;
             } else
-                temptime = ideal;
+                temptime = Timer();
 
             temptime -= StartGameTime;
 
@@ -353,22 +354,17 @@ void ShowPanel(void)
             mins /= 60;
         }
 
-// Gestione del tempo divisa a seconda del periodo
-
         if (extratime) {
             if (first_half)
                 mins += 90;
             else
                 mins += 105;
-        } else if (!first_half) {
+        } else if (!first_half)
             mins += 45;
-        }
 
-        if (!penalties && !free_kicks) {
-            sprintf(buffer, "%3ld:%02d", mins + situation_time, (int) secs);
-            // center the timer, it was in the right corner where we have the pause button now            
-            TextShadow((WINDOW_WIDTH - (font_width * 6)) / 2, font_height + 2, buffer, 6);
-        }
+        sprintf(buffer, "%3ld:%02d", mins + situation_time, (int) secs);
+        // center the timer, it was in the right corner where we have the pause button now
+        TextShadow((WINDOW_WIDTH - (font_width * 6)) / 2, font_height + 2, buffer, 6);
     }
 
     if (p->player_injuried) {
@@ -557,7 +553,7 @@ void ShowPanel(void)
             TextShadow(x, y, c, l);
         }
     }
-#endif
+#else
     
     // new panels used only in the mobile version
     if (p->show_panel & PANEL_THROW_IN) {
@@ -569,12 +565,13 @@ void ShowPanel(void)
     }
 
     if (p->show_panel & PANEL_CORNER) {
-        const char *txt =  "SWIPE IN THE DIRECTION YOU WANT TO SHOOT OR PASS";
+        const char *txt =  "SWIPE TO SHOOT OR TOUCH TO PASS";
         int l = strlen(txt);
         int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;
         TextShadow(x, y, txt, l);
     }
+#endif
 
     if (p->show_panel & PANEL_STATS) {
         char buffer[20], c;

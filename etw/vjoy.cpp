@@ -184,7 +184,8 @@ uint32_t MyReadTouchPort(uint32_t l)
     }
 
     // trigger pause on button_3 press
-    if (res & TouchControl::BUTTON_3) {
+    if ((res & TouchControl::BUTTON_3) &&
+        (res & TouchControl::BUTTONUP)) {
         if (!network_game) {
             DoPause();
             return 0;
