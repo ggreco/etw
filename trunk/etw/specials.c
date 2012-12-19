@@ -2535,6 +2535,7 @@ static void handle_worldcup()
         extern struct Match camp4[3][2];
         extern BYTE start_groups[8][4], groups[8][4];
         
+        final = FALSE;
         for (i = last_group; i < 8; i++)
         {
             int idx = last_played;
