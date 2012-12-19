@@ -249,13 +249,13 @@ void graphic_frame(void)
         if (detail_level & USA_RADAR)
             HandleRadar();
 
-        if (detail_level & USA_NOMI)
+//        if (detail_level & USA_NOMI)
             PrintNames();
 
-        if (detail_level & USA_RISULTATO)
+//        if (detail_level & USA_RISULTATO)
             PrintResult();
 
-        if (p->show_panel)
+//        if (p->show_panel)
             ShowPanel();
 
         if (replay_mode)
@@ -307,7 +307,7 @@ void logic_frame(void)
         p->flash_pos++;
     }
 
-    if (ideal > EndTime) {
+    if (Timer() > EndTime) {
         if (p->referee.Comando != FISCHIA_FINE
             && InAnyArea(pl->world_x, pl->world_y)) {
             game_status = S_ULTIMA_AZIONE;
@@ -410,12 +410,13 @@ void game_iteration()
     // I do not process a frame out of 5 in standard mode, all the frames 60fps in fast mode
     // only a frame every 5 in "slow motion", while I'm in pause_mode I have to process
     // EVERY frame
-    if (fast_mode)
-        logic_frame();
-    else if (slow_motion) {
+    
+    if (slow_motion) {
         if ( (frames % 5) == 0)
             logic_frame();
     }
+    else if (fast_mode)
+        logic_frame();
     else if (frames % 5)
         logic_frame();
     
