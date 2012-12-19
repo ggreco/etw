@@ -424,10 +424,10 @@ void StartMatchFinal()
 }
 
 BOOL interrupted = FALSE;
+extern void (*PostCbk)();
 
 void restore_menus()
 {
-    extern void (*PostCbk)();
     char buf[1024];
     FILE *f;
     WORD risultato=-1;
@@ -735,6 +735,13 @@ void restore_menus()
     }
 }
 
+static void PostHigh()
+{
+    D(bug("Highlight playing completed\n"));
+    highlight = FALSE;
+    ChangeMenu(MENU_HIGH_SELECTION);
+}
+
 void LoadHigh(char *file)
 {
     char buf[1024];
@@ -768,11 +775,10 @@ void LoadHigh(char *file)
         
         highlight = TRUE;
 
+        PostCbk = PostHigh;
         StartGame();
 #ifndef IPHONE
-        highlight = FALSE;
-
-        ChangeMenu(current_menu);
+        restore_menus();
 #endif
     }
 }
