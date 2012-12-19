@@ -46,7 +46,7 @@ player_t *PrendiPalla(void)
 void check_goal_achievements(int t)
 {
     if (p->team[t]->Joystick >= 0 &&
-        p->team[t^1]->Joystick < 0) {
+        p->team[t^1]->Joystick < 0 && !training && !highlight) {
         add_achievement("1_score", 100.0);
         
         // if we scored three goals it's an hattrick!
