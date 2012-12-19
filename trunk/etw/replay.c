@@ -819,8 +819,8 @@ void HandleReplay(void)
 
         if (counter >= real_counter) {
             if (highlight) {
-                D(bug("Highlight finished, quitting."));
-
+                D(bug("Highlight finished, quitting.\n"));
+                SetResult("break");
                 if(slow_motion)    {
                     slow_motion = FALSE;
                     MY_CLOCKS_PER_SEC_50 >>= 2;

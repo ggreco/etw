@@ -121,10 +121,12 @@ int check_replay_touch()
     if (res & TouchControl::BUTTONUP) {
         if (res  & TouchControl::BUTTON_1) {
             if(!slow_motion) {
+                D(bug("Slow motion mode ON\n"));
                 MY_CLOCKS_PER_SEC_50<<=2;
                 slow_motion=TRUE;
             }
             else {
+                D(bug("Slow motion mode OFF\n"));
                 slow_motion=FALSE;
                 MY_CLOCKS_PER_SEC_50>>=2;
             }

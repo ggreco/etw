@@ -740,6 +740,7 @@ static void PostHigh()
     D(bug("Highlight playing completed\n"));
     highlight = FALSE;
     ChangeMenu(MENU_HIGH_SELECTION);
+    add_achievement("16_tvaddict", 10.0);
 }
 
 void LoadHigh(char *file)

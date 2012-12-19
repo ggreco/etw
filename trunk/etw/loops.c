@@ -392,9 +392,13 @@ static int f_skip = 0;
 static mytimer start;
 
 #ifdef IPHONE
+BOOL fast_mode = FALSE;
+
 void game_iteration()
 {
+    static unsigned int frames = 0;
     extern int framemode;
+    frames ++;
     
     if (pause_mode) {
         handle_pause_status();
@@ -403,17 +407,30 @@ void game_iteration()
         return;
     }
     
-    logic_frame();
+    // I do not process a frame out of 5 in standard mode, all the frames 60fps in fast mode
+    // only a frame every 5 in "slow motion", while I'm in pause_mode I have to process
+    // EVERY frame
+    if (fast_mode)
+        logic_frame();
+    else if (slow_motion) {
+        if ( (frames % 5) == 0)
+            logic_frame();
+    }
+    else if (frames % 5)
+        logic_frame();
     
     if (pause_mode)
         return;
     
     ideal += MY_CLOCKS_PER_SEC_50;
-        
+    
+    /*
     if (Timer() < ideal)
         graphic_frame();
     else
         f_skip++;
+    */
+    graphic_frame();
     
     if (quit_game)
         framemode = 0;
