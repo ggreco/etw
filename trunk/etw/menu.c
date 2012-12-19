@@ -1130,7 +1130,7 @@ void ChangeMenu(WORD m)
 
     static int menu_changes = 0;
     int i;
-
+    
     restore_w = restore_h = 0;
 
     bltchunkybitmap(back, 0, 0, main_bitmap, 0, 0, WINDOW_WIDTH,

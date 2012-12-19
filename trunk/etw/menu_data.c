@@ -82,7 +82,7 @@ struct Button high_bottoni[]=
 #endif
 };
 
-/ not available in mobile
+// not available in mobile
 struct Button teams_bottoni[]=
 {
     {20,67,150,80,-1,6,8,msg_100},  // Teams
@@ -484,9 +484,9 @@ struct Button wcb[]=
     {111,229,207,241,-1,14,13,msg_98},
     {212,229,309,241,MENU_SIMULATION,11,12,msg_6},
 #else
-    {10,220,106,250,MENU_MATCHES,7,9,msg_0},
-    {111,220,207,250,-1,14,13,msg_98},
-    {212,220,309,250,MENU_SIMULATION,11,12,msg_6},
+    {10,225,106,250,MENU_MATCHES,7,9,msg_0},
+    {111,225,207,250,-1,14,13,msg_98},
+    {212,225,309,250,MENU_SIMULATION,11,12,msg_6},
 #endif
 };
 
@@ -497,9 +497,9 @@ struct Button mb[]=
     {111,229,207,241,-1,14,13,msg_98},
     {212,229,309,241,MENU_SIMULATION,11,12,msg_6},
 #else
-    {10,220,106,250,MENU_MATCHES,7,9,msg_0},
-    {111,220,207,250,-1,14,13,msg_98},
-    {212,220,309,250,MENU_SIMULATION,11,12,msg_6},
+    {10,225,106,250,MENU_MATCHES,7,9,msg_0},
+    {111,225,207,250,-1,14,13,msg_98},
+    {212,225,309,250,MENU_SIMULATION,11,12,msg_6},
 #endif
 };
 
@@ -511,9 +511,9 @@ struct Button lb[]=
     {111,229,207,241,-1,14,13,msg_98},
     {212,229,309,241,MENU_SIMULATION,11,12,msg_6},
 #else
-    {10,220,106,250,MENU_MATCHES,7,9,msg_0},
-    {111,220,207,250,-1,14,13,msg_98},
-    {212,220,309,250,MENU_SIMULATION,11,12,msg_6},
+    {10,225,106,250,MENU_MATCHES,7,9,msg_0},
+    {111,225,207,250,-1,14,13,msg_98},
+    {212,225,309,250,MENU_SIMULATION,11,12,msg_6},
 #endif
 };
 
