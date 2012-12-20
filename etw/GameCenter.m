@@ -51,7 +51,8 @@ void add_achievement(const char *id, float percent)
 
 void add_score(int value)
 {
-    [[GameCenter getInstance] saveScore:value withIdentifier:@"arcade_results"];
+    if (value > 0)
+        [[GameCenter getInstance] saveScore:value withIdentifier:@"arcade_results"];
 }
 
 void init_game_center()
@@ -177,8 +178,8 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
                      for (GKAchievement* achievement in scores) {
                          // work with achievement here, store it in your cache or smith
                          [self.achievementCache setObject: achievement forKey:achievement.identifier];
-                         NSLog(@"Achievement %@ completed: %d", achievement.description, achievement.completed);
                      }
+                     NSLog(@"Obtained %d achievements, partially/totally completed", [scores count]);
                  }
              }];
         }
@@ -272,7 +273,7 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     }
 }
 
-+ (void) saveScore: (int) score withIdentifier:(NSString *) identifier
+- (void) saveScore: (int) score withIdentifier:(NSString *) identifier
 {
     NSLog(@"Logging score %d with id %@", score, identifier);
     
