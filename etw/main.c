@@ -517,6 +517,8 @@ BOOL LoadStuff(void)
             use_crowd = FALSE;
             use_speaker = FALSE;
         }
+        else
+            use_crowd = TRUE; // sempre attivo
 
         //              wanted_sound=-1;
 
