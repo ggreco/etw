@@ -270,7 +270,7 @@ void graphic_frame(void)
 #endif
 }
 
-BOOL has_practice_achievement = FALSE;
+static BOOL has_practice_achievement = FALSE;
 
 void logic_frame(void)
 {   
@@ -306,8 +306,8 @@ void logic_frame(void)
     } else {
         p->flash_pos++;
     }
-
-    if (Timer() > EndTime) {
+    uint32_t now = Timer();
+    if (now > EndTime) {
         if (p->referee.Comando != FISCHIA_FINE
             && InAnyArea(pl->world_x, pl->world_y)) {
             game_status = S_ULTIMA_AZIONE;
@@ -333,7 +333,7 @@ void logic_frame(void)
         }
     } // five minutes of training for the achievement
     else if ( training && !has_practice_achievement &&
-             (ideal - StartGameTime) > 300000) {
+             (now - StartGameTime) > 300000) {
         has_practice_achievement = TRUE;
         add_achievement("15_practice", 100.0);
     }
@@ -544,7 +544,7 @@ void free_game()
     
     if (final)
         ShowFinal();
-    
+
     os_stop_audio();
     
     os_delay(20);
