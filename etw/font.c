@@ -157,21 +157,6 @@ void PrintNames(void)
                     (CHAR_X * MAX_LEN), bitmap_width);
 }
 
-
-#ifdef DEMOVERSION
-void LoadPLogo(char *name)
-{
-    memset(main_bitmap, Pens[P_NERO], bitmap_width * bitmap_height);
-    ScreenSwap();
-
-    LoadGfxObjPalette(name, screen);
-
-    LoadLogo(name);
-
-    ScreenSwap();
-}
-#endif
-
 void LoadLogo(char *name)
 {
     gfx_t *o;

@@ -253,6 +253,7 @@ void graphic_frame(void)
             PrintNames();
 
 //        if (detail_level & USA_RISULTATO)
+          if (!replay_mode || highlight)
             PrintResult();
 
 //        if (p->show_panel)
