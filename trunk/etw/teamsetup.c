@@ -163,8 +163,7 @@ BOOL NumeroDiverso(team_t *s, char n)
 
 void RimuoviGuardalinee(void)
 {
-    if((detail_level & USA_GUARDALINEE) && linesman)
-    {
+    if(linesman) {
         D(bug("Removing linesmen...\n"));
 
         RimuoviLista((object_t *)&linesman[1]);
@@ -1128,8 +1127,7 @@ game_t *SetupSquadre(void)
 
     Progress();
 
-    if(!(p->ball.anim = LoadAnimObject(current_field == 7 ? "gfx/ballsnow.obj" : "gfx/ball.obj", Pens)))
-    {
+    if(!(p->ball.anim = LoadAnimObject(current_field == 7 ? "gfx/ballsnow.obj" : "gfx/ball.obj", Pens))) {
         free(p);
         return NULL;
     }
@@ -1140,34 +1138,26 @@ game_t *SetupSquadre(void)
 
     snum = 0;
 
-    if(!(players[0] = LoadAnimObject(shirt[0], Pens)))
-    {
+    if(!(players[0] = LoadAnimObject(shirt[0], Pens))) {
         free(p);
         return NULL;
     }
 
-#ifdef DEMOVERSION
-    LoadPLogo("gfx/hurricane");
-    os_delay(110);
-#endif
     Progress();
 
     cols[0][3] = shirt[0][strlen(shirt[0]) - 5];
 
-    if(!stricmp(shirt[0], shirt[1]))
-    {
+    if(!stricmp(shirt[0], shirt[1])) {
         D(bug("Cloning shirt of team 0...\n"));
 
         cols[1][3] = cols[0][3];
 
-        if(!(players[1] = CopyAnimObj(players[0])))
-        {
+        if(!(players[1] = CopyAnimObj(players[0]))) {
             free(p);
             return NULL;
         }
     }
-    else
-    {
+    else {
         anim_t *obj;
 
         D(bug("Loading %s for team 1 shirt...\n", shirt[1]));
@@ -1245,63 +1235,56 @@ game_t *SetupSquadre(void)
 
     Progress();
 
-    if(detail_level & USA_ARBITRO)
+    if(!(p->referee.anim = LoadAnimObject((current_field == 7 ? "gfx/arbisnow.obj" : "gfx/arbitro.obj"), Pens)))
     {
-        if(!(p->referee.anim = LoadAnimObject((current_field == 7 ? "gfx/arbisnow.obj" : "gfx/arbitro.obj"), Pens)))
-        {
-            // Non riesco a caricare l'arbitro... Lo disabilito.
-            detail_level &= ~USA_ARBITRO;
-        }
-        else {
-            if(detail_level & USA_ARBITRO)
-                AggiungiLista((object_t *)&p->referee);
+        // Non riesco a caricare l'arbitro... Lo disabilito.
+        detail_level &= ~USA_ARBITRO;
+    }
+    else {
+        detail_level |= USA_ARBITRO;
 
-            p->referee.otype = TIPO_ARBITRO;
-        }
+        AggiungiLista((object_t *)&p->referee);
 
-        Progress();
+        p->referee.otype = TIPO_ARBITRO;
     }
 
-    if(detail_level & USA_GUARDALINEE)
-    {
-        if (!(linesman = calloc(2, sizeof(linesman_t))))
+    Progress();
+
+    if (!(linesman = calloc(2, sizeof(linesman_t))))
+        detail_level &= ~USA_GUARDALINEE;
+    else if(!(linesman[0].anim = LoadAnimObject(
+                    (current_field == 7 ? NEWGFX_DIR "gls.obj" :
+                     NEWGFX_DIR "gl.obj"), Pens))) {
+        // Non riesco a caricare i guardalinee... Li disabilito.
+        free(linesman);
+        detail_level &= ~USA_GUARDALINEE;
+    }
+    else {
+        if ((linesman[1].anim = CloneAnimObj(linesman[0].anim)))
         {
-            detail_level &= ~USA_GUARDALINEE;
-        }
-        else if(!(linesman[0].anim = LoadAnimObject(
-                        (current_field == 7 ? NEWGFX_DIR "gls.obj" :
-                         NEWGFX_DIR "gl.obj"), Pens)))
-        {
-            // Non riesco a caricare i guardalinee... Li disabilito.
-            free(linesman);
-            detail_level &= ~USA_GUARDALINEE;
+            int k;
+
+            detail_level |= USA_GUARDALINEE;
+
+            for(k = 0; k < 2; k++)
+            {
+                AggiungiLista((object_t *)&linesman[k]);
+                linesman[k].otype = TIPO_GUARDALINEE;
+                linesman[k].OnScreen = FALSE;
+                linesman[k].world_x = CENTROCAMPO_X;
+                linesman[k].world_y = k ? (RIMESSA_Y_S - 20)
+                                        : (RIMESSA_Y_N - 140);
+                linesman[k].dir = k ? 6 : 2;
+            }
         }
         else
         {
-            if ((linesman[1].anim = CloneAnimObj(linesman[0].anim)))
-            {
-                int k;
-
-                for(k = 0; k < 2; k++)
-                {
-                    AggiungiLista((object_t *)&linesman[k]);
-                    linesman[k].otype = TIPO_GUARDALINEE;
-                    linesman[k].OnScreen = FALSE;
-                    linesman[k].world_x = CENTROCAMPO_X;
-                    linesman[k].world_y = k ? (RIMESSA_Y_S - 20)
-                                            : (RIMESSA_Y_N - 140);
-                    linesman[k].dir = k ? 6 : 2;
-                }
-            }
-            else
-            {
-                FreeAnimObj(linesman[0].anim);
-                free(linesman);
-                detail_level &= ~USA_GUARDALINEE;
-            }
+            FreeAnimObj(linesman[0].anim);
+            free(linesman);
+            detail_level &= ~USA_GUARDALINEE;
         }
-        Progress();
     }
+    Progress();
 
     result_width = (strlen(p->team[0]->name) + strlen(p->team[1]->name) + 9) * VS_CHAR_X;
 
@@ -1318,10 +1301,10 @@ game_t *SetupSquadre(void)
 
     if(!(InizializzaOggetti(p)))
     {
-        if(detail_level & USA_RISULTATO)
+        if(p->result)
             free(p->result);
 
-        if(detail_level & USA_ARBITRO)
+        if(p->referee.anim)
             RimuoviLista((object_t *)&p->referee);
 
         RimuoviGuardalinee();
@@ -1340,8 +1323,7 @@ game_t *SetupSquadre(void)
     // reset swipe handlers (se special.c)
     p->corner_sx = p->corner_ex = -1;
     
-    if(penalties || free_kicks)
-    {
+    if(penalties || free_kicks) {
         detail_level &= ~USA_RADAR;
         p->referee.Comando = FISCHIA_PREPUNIZIONE;
     }
@@ -1432,13 +1414,13 @@ void LiberaPartita(game_t *game)
     DestroyTeam(p->team[1]);
     DestroyTeam(p->team[0]);
 
-    if(detail_level & USA_ARBITRO)
+    if (game->referee.anim)
         FreeAnimObj(game->referee.anim);
 
     FreeAnimObj(game->ball.anim);
 
     // Questo controllo prima mancava!!!!
-    if(game->result)
+    if (game->result)
         free(game->result);
 
     free(game);
