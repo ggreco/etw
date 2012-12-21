@@ -418,9 +418,8 @@ void StartMatchFinal()
         ChangeMenu(0);
         return;
     }
-#ifndef IPHONE
+
     restore_menus();
-#endif
 }
 
 BOOL interrupted = FALSE;
@@ -778,9 +777,7 @@ void LoadHigh(char *file)
 
         PostCbk = PostHigh;
         StartGame();
-#ifndef IPHONE
         restore_menus();
-#endif
     }
 }
 

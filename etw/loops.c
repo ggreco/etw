@@ -392,7 +392,7 @@ void handle_pause_status()
 static int f_skip = 0;
 static mytimer start;
 
-#ifdef IPHONE
+#if 0
 BOOL fast_mode = FALSE;
 
 void game_iteration()
@@ -441,9 +441,7 @@ void game_iteration()
 
 void MainLoop(void)
 {
-#ifndef IPHONE
     int logic = 0, rep = 0;
-#endif
     field_x = max((pl->world_x >> 3) - WINDOW_WIDTH / 2, 0);
 
     field_y = max((pl->world_y >> 3) - WINDOW_HEIGHT / 2, 0);
@@ -496,7 +494,6 @@ void MainLoop(void)
 
         EndTime -= (situation_time * t_l * 60 / 45);
     }
-#ifndef IPHONE
     while (!quit_game) {
         if (pause_mode) {
             handle_pause_status();
@@ -527,7 +524,6 @@ void MainLoop(void)
         } else
             f_skip++;
     }
-#endif
 }
 
 

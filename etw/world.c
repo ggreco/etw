@@ -1,5 +1,10 @@
 #include "eat.h"
 
+
+void init_game_center() 
+{
+   D(bug("Initializing achievement cross platform API... TODO!\n"));
+}
 void add_achievement(const char *name, float progress)
 {
     D(bug("Adding to achievement %s progress %f\n", name, progress));

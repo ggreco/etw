@@ -194,14 +194,9 @@ struct Stage stage[]=
 #define MAXSTRINGLEN 20
 
 static long int actual=0, started;
-#ifndef IPHONE
-static int framemode = 0;
-#else
-extern int framemode;
-#endif
 static BOOL clean=TRUE;
 
-void credits_iteration()
+BOOL credits_iteration()
 {
     int top_x=WINDOW_WIDTH/4-MAXSTRINGLEN*bigfont->width/2,
     top_y=WINDOW_HEIGHT/2-(bigfont->height+6)*3,
@@ -223,8 +218,7 @@ void credits_iteration()
                 case SDL_KEYDOWN:
                     LoadBack();
                     ChangeMenu(current_menu);
-                    framemode = 0;
-                    return;
+                    return FALSE;
             }
         }
         
@@ -267,8 +261,10 @@ void credits_iteration()
     
         LoadBack();
         ChangeMenu(current_menu);
-        framemode = 0;
+        return FALSE;
     }
+
+    return TRUE;
 }
 
 void ShowCredits(void)
@@ -294,16 +290,12 @@ void ShowCredits(void)
         
         memcpy(main_bitmap,back,WINDOW_WIDTH*WINDOW_HEIGHT);
         ScreenSwap();
-        framemode = 2;
         actual = 0;
         clean = TRUE;
         started = os_get_timer();
-#ifndef IPHONE
-        while (framemode == 2) {
+
+        while (credits_iteration()) 
             os_delay(5);
-            credits_iteration();
-        }
-#endif
     }
 }
 
