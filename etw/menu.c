@@ -1631,10 +1631,34 @@ BOOL HandleMenuIDCMP(void)
         switch (e.type) {
             case SDL_WINDOWEVENT:
                 switch (e.window.event) {
+                    case SDL_WINDOWEVENT_MINIMIZED:
+                    {
+                        extern SDL_Window *screen;
+                        int w, h;
+                        SDL_GetWindowSize(screen, &w, &h);
+                        D(bug("Received a minimize event, actual window %dx%d\n", w, h));
+                        break;
+                    }                        
+                    case SDL_WINDOWEVENT_RESTORED:
+                    {
+                        extern SDL_Window *screen;
+                        int w, h;
+                        SDL_GetWindowSize(screen, &w, &h);
+                        SDL_RenderSetLogicalSize(SDL_GetRenderer(screen), WINDOW_WIDTH, WINDOW_HEIGHT);
+                        D(bug("Received a restore event, actual window %dx%d (%dx%d)\n", w, h, WINDOW_WIDTH, WINDOW_HEIGHT));
+                        ScreenSwap();
+                        break;
+                    }
                     case SDL_WINDOWEVENT_RESIZED:
+                    {
+                        extern SDL_Window *screen;
+                        int w, h;
+                        SDL_GetWindowSize(screen, &w, &h);
+                        D(bug("Received a resize event, actual window %dx%d\n", w, h));
                         if (!reqqing)
                             ScreenSwap();
                         break;
+                    }
                     case SDL_WINDOWEVENT_EXPOSED:
                         ScreenSwap();
                         break;

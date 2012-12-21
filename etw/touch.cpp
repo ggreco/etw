@@ -165,11 +165,18 @@ iteration()
     while(SDL_PollEvent(&e)) {
         switch (e.type) {
             case SDL_WINDOWEVENT:
-                if (e.window.event == SDL_WINDOWEVENT_CLOSE)
-                    return QUIT;
-                else if (e.window.event == SDL_WINDOWEVENT_MINIMIZED)
-                    return MINIMIZED;
-
+                switch(e.window.event) {
+                    case SDL_WINDOWEVENT_MINIMIZED:
+                        D(bug("Received a minimize event during game\n"));
+                        return MINIMIZED;
+                    case SDL_WINDOWEVENT_RESTORED:
+                        SDL_RenderSetLogicalSize(SDL_GetRenderer(screen_), WINDOW_WIDTH, WINDOW_HEIGHT);
+                        D(bug("Received a restore event during game\n"));
+                        return RESTORED;
+                    case SDL_WINDOWEVENT_CLOSE:
+                        return QUIT;
+                }
+                break;
             case SDL_FINGERUP:
                 if (visible_ && e.tfinger.fingerId == joyfinger_) {
                     delta_x_ = delta_y_ = distance_ = 0.0;

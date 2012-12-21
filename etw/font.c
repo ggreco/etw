@@ -77,7 +77,7 @@ void FreeFonts(void)
 
     if (gsmallfont) {
         FreeGfxObj(gsmallfont);
-        gsmallfont = NULL'
+        gsmallfont = NULL;
     }
 
     if (verysmallfont) {

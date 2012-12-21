@@ -1303,20 +1303,17 @@ game_t *SetupSquadre(void)
         Progress();
     }
 
-    if(detail_level & USA_RISULTATO)
-    {
-        result_width = (strlen(p->team[0]->name) + strlen(p->team[1]->name) + 9) * VS_CHAR_X;
+    result_width = (strlen(p->team[0]->name) + strlen(p->team[1]->name) + 9) * VS_CHAR_X;
 
-        if(!(p->result = malloc(result_width * (VS_CHAR_Y+1))))
-        {
-            D(bug("Unable to allocate result bitmap... disabled.\n"));
-            detail_level &= ~USA_RISULTATO;
-        }
-        else
-        {
-            rectfill(p->result, 0, 0, result_width - 1, VS_CHAR_Y, Pens[P_VERDE2], result_width);
-            MakeResult();
-        }
+    if(!(p->result = malloc(result_width * (VS_CHAR_Y+1))))
+    {
+        D(bug("Unable to allocate result bitmap... disabled.\n"));
+        detail_level &= ~USA_RISULTATO;
+    }
+    else
+    {
+        rectfill(p->result, 0, 0, result_width - 1, VS_CHAR_Y, Pens[P_VERDE2], result_width);
+        MakeResult();
     }
 
     if(!(InizializzaOggetti(p)))
@@ -1441,7 +1438,7 @@ void LiberaPartita(game_t *game)
     FreeAnimObj(game->ball.anim);
 
     // Questo controllo prima mancava!!!!
-    if(detail_level & USA_RISULTATO && game->result)
+    if(game->result)
         free(game->result);
 
     free(game);
