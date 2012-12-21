@@ -260,6 +260,7 @@ void DoPause(void)
 
         ScreenSwap();
     }
+    D(bug("Pause mode\n"));
 }
 
 player_t *FindNearestDirPlayer(player_t *g)

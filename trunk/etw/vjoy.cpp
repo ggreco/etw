@@ -97,9 +97,13 @@ void check_cpuvscpu_touch()
             return;
         }
     }
-    if (res & TouchControl::MINIMIZED && !pause_mode)
+    if (res & TouchControl::MINIMIZED && !pause_mode) {
         DoPause();
-
+        return;
+    }
+    if (res & TouchControl::RESTORED && pause_mode)
+        ScreenSwap();
+    
     if (res & TouchControl::QUIT) {
         SetResult("break");
         final = FALSE;
@@ -118,6 +122,14 @@ int check_replay_touch()
 
     int res = replay_touch->iteration();
 
+    
+    if (res & TouchControl::MINIMIZED && !pause_mode) {
+        DoPause();
+        return TRUE;
+    }
+    if (res & TouchControl::RESTORED && pause_mode)
+        ScreenSwap();
+    
     if (res & TouchControl::BUTTONUP) {
         if (res  & TouchControl::BUTTON_1) {
             if(!slow_motion) {
@@ -131,6 +143,7 @@ int check_replay_touch()
                 MY_CLOCKS_PER_SEC_50>>=2;
             }
         }
+        
         if (res & TouchControl::BUTTON_2) {
             if (pause_mode)
                 pause_mode = FALSE;
@@ -162,6 +175,14 @@ uint32_t MyReadTouchPort(uint32_t l)
 
     int res = touch->iteration();
 
+    if (res & TouchControl::MINIMIZED && !pause_mode) {
+        DoPause();
+        return 0;
+    }
+    if (res & TouchControl::RESTORED && pause_mode) {
+        ScreenSwap();
+        return 0;
+    }
     // if we don't have the ball and we got a touch out of a button
     // we count on the fact that only one touch player can play at once
     // and use the other player controller struct as additional data,
