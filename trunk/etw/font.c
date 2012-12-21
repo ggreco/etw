@@ -9,8 +9,8 @@ anim_t *goal_banner = NULL, *replay = NULL;
 gfx_t *pause_gfx = NULL;
 
 // static gfx_t *last_obj=NULL;
-static gfx_t *gsmallfont, *verysmallfont;
-struct myfont *gtf;
+static gfx_t *gsmallfont = NULL, *verysmallfont = NULL;
+struct myfont *gtf = NULL;
 
 BOOL left_sel, right_sel;
 
@@ -55,10 +55,7 @@ BOOL InitFonts(void)
     if (!(gsmallfont = LoadGfxObject("gfx/smallfont", Pens, NULL)))
         return FALSE;
 
-    if (detail_level & USA_RISULTATO)
-        if (!
-            (verysmallfont =
-             LoadGfxObject("gfx/verysmallfont", Pens, NULL)))
+    if (!(verysmallfont = LoadGfxObject("gfx/verysmallfont", Pens, NULL)))
             return FALSE;
 
     if ((gtf = openfont(GAME_FONT))) {
@@ -73,15 +70,20 @@ BOOL InitFonts(void)
 
 void FreeFonts(void)
 {
-    if (gtf)
+    if (gtf) {
         closefont(gtf);
+        gtf = NULL;
+    }
 
-    if (gsmallfont)
+    if (gsmallfont) {
         FreeGfxObj(gsmallfont);
+        gsmallfont = NULL'
+    }
 
-    if (detail_level & USA_RISULTATO)
-        if (verysmallfont)
-            FreeGfxObj(verysmallfont);
+    if (verysmallfont) {
+        FreeGfxObj(verysmallfont);
+        verysmallfont = NULL;
+    }
 }
 
 void PrintSmall(uint8_t *dest, char *text, char len)
