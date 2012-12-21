@@ -2,7 +2,7 @@
 #include "eat.h"
 #include "network.h"
 
-SDL_Joystick *joy[2] = {NULL, NULL};
+SDL_Joystick *joy[4] = {NULL, NULL, NULL, NULL};
 char joybuttons[2];
 uint8_t joycfg_buttons[2][8];
 char num_joys=0;
@@ -81,10 +81,12 @@ void free_joyports(void)
 
     for(i=0;i<num_joys;i++)
     {
-        if(!SDL_JoystickOpened(i))
+        if(!joy[i])
             num_joys++;
-        else
+        else {
             SDL_JoystickClose(joy[i]);
+            joy[i] = NULL;
+        }
     }
 
     has_joystick=FALSE;
@@ -184,7 +186,7 @@ joy_try_again:
                 has_joystick=TRUE;
 
                 D(bug("Opened Joystick %ld\n",p->team[0]->Joystick));
-                D(bug("Name: %s\n", SDL_JoystickName(p->team[0]->Joystick)));
+                D(bug("Name: %s\n", SDL_JoystickName(joy[p->team[0]->Joystick])));
                 D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->team[0]->Joystick])));
                 D(bug("Number of Hats: %ld\n", SDL_JoystickNumAxes(joy[p->team[0]->Joystick])));
                 D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->team[0]->Joystick])));
@@ -257,7 +259,7 @@ joy_try_again:
                 has_joystick=TRUE;
                 num_joys++;
                 D(bug("Opened Joystick %ld\n",p->team[1]->Joystick));
-                D(bug("Name: %ld\n", SDL_JoystickName(p->team[1]->Joystick)));
+                D(bug("Name: %ld\n", SDL_JoystickName(joy[p->team[1]->Joystick])));
                 D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->team[1]->Joystick])));
                 D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->team[1]->Joystick])));
                 D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->team[1]->Joystick])));
