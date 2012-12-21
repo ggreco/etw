@@ -70,6 +70,7 @@ void init_game_center()
 
 // SDLUIKitDelegate *gApplicationDelegate = NULL;
 
+#if 0
 @implementation GKMatchmakerViewController (LandscapeOnly)
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -96,6 +97,7 @@ void init_game_center()
     return UIInterfaceOrientationMaskAllButUpsideDown;
 }
 @end
+#endif
 
 @implementation GameCenter
 
