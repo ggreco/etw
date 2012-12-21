@@ -833,14 +833,6 @@ int game_main(void)
     golden_gol = FALSE;
 
     init_system();
-#ifndef IPHONE
     free_game();
-#else
-    {
-        extern int framemode;
-        D(bug("Match initialization sequence completed."));
-        framemode = 1;
-    }
-#endif
     return 0;
 }
