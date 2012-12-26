@@ -513,6 +513,11 @@ WORD restore_menus()
                 risultato=gol_a | (gol_b<<8);
             }
             
+            // 50 played games, veteran achievement
+            if (controllo[team1] >= 0 ||
+                controllo[team2] >= 0)
+                add_achievement("18_veteran", 2.0);
+            
             if(!arcade_teams&&!training) {
                 int yl=FixedScaledY(125);
                 int yr;

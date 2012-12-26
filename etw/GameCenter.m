@@ -286,10 +286,10 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
          dispatch_async(dispatch_get_main_queue(), ^(void)
                         {
                             if (error == NULL) {
-                                NSLog(@"Successfully sent archievement!");
+                                NSLog(@"Successfully sent archievement %@!", achievement.description);
                             } else {
-                                NSLog(@"Achievement failed to send... will try again \
-                                      later.  Reason: %@", error.localizedDescription);
+                                NSLog(@"Achievement %@ failed to send... will try again \
+                                      later.  Reason: %@", achievement.description, error.localizedDescription);
                             }
                         });
      }];

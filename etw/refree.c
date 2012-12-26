@@ -43,7 +43,17 @@ player_t *PrendiPalla(void)
     return v;
 }
 
-void check_goal_achievements(int t)
+BOOL zona_cesarini = FALSE;
+
+static void check_zona_cesarini(int t)
+{
+    if (p->team[t]->Joystick >= 0 &&
+        p->team[t^1]->Joystick < 0 &&
+        p->team[t]->Reti == (p->team[t^1]->Reti + 1))
+        add_achievement("17_cesarini", 100.0);
+}
+
+static void check_goal_achievements(int t)
 {
     if (p->team[t]->Joystick >= 0 &&
         p->team[t^1]->Joystick < 0 && !training && !highlight) {
@@ -52,6 +62,13 @@ void check_goal_achievements(int t)
         // if we scored three goals it's an hattrick!
         if (p->team[t]->Reti > 2)
             add_achievement("3_ht", 100.0);
+        
+        if (p->team[t]->Reti == (p->team[t ^ 1]->Reti + 1) && !first_half) {
+            uint32_t now = Timer();
+            
+            if (now >= (EndTime - MY_CLOCKS_PER_SEC * 5))
+                zona_cesarini = TRUE;
+        }
     }
 }
 
@@ -160,6 +177,11 @@ void HandleReferee(void)
                         }
                         else if(g->Argomento>0 && (!replay_looped) )
                         {
+                            if (!arcade && !training && zona_cesarini) {
+                                check_zona_cesarini(0);
+                                check_zona_cesarini(1);
+                            }
+                            
                             p->show_panel=PANEL_REPLAY;
                             full_replay=TRUE;
                             g->Tick=150;
@@ -170,20 +192,18 @@ void HandleReferee(void)
                             g->Comando=0;
                             quit_game=TRUE;
                             full_replay=FALSE;
-//                            if(teams_swapped)
-//                            {
-                                SetResult("%ld-%ld\n",p->team[1]->Reti,p->team[0]->Reti);
-                                D(bug("\t\tHandleReferee: inverto il risultato %s: %d - %s: %d!\n",
+                            if (!arcade && !training) {
+                                
+                                if ((p->team[0]->Joystick >= 0 && p->team[0]->Falli == 0) ||
+                                    (p->team[1]->Joystick >= 0 && p->team[1]->Falli == 0) )
+                                    add_achievement("19_fairplay", 100.0);
+                            }
+
+                            // matches always have an even number of periods so we always have to invert the result to match the expected team order.
+                            SetResult("%ld-%ld\n",p->team[1]->Reti,p->team[0]->Reti);
+                            D(bug("\t\tHandleReferee: inverting result %s: %d - %s: %d!\n",
                                     p->team[0]->name,p->team[0]->Reti,
                                     p->team[1]->name,p->team[1]->Reti));
-//                            }
-//                            else
-//                            {
-//                                SetResult("%ld-%ld\n",p->team[0]->Reti,p->team[1]->Reti);
-//                                D(bug("\t\tHandleReferee: mantengo il risultato %s: %d - %s: %d!\n",
-//                                    p->team[0]->name,p->team[0]->Reti,
-//                                    p->team[1]->name,p->team[1]->Reti));
-//                            }
                         }
                         else if(!extratime)
                         {
