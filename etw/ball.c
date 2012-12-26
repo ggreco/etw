@@ -314,7 +314,8 @@ void HandleBall(void)
         pl->sector = (pl->world_y/1450 << 2) + (pl->world_x/2560);
 
     // was checked every 10 loops, I'm changing it to 50 (one sec) to see if there is an improvement
-    if ((p->check_sector % 50) == 0)
+    // we never change active player by hand in touch enviroment
+    if ((p->check_sector % 50) == 0 && !use_touch)
         CheckActive();
     
     p->check_sector++;

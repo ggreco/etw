@@ -883,7 +883,7 @@ void CheckActive(void)
 
 // Modifica, ora lo faccio SOLO se la palla NON e' libera (quindi e' dell'altra squadra)...
 
-    if(i>=0 && joyonly && pl->gioc_palla&&(r_controls[i][counter]&JP_DIRECTION_MASK))
+    if(!use_touch && i>=0 && joyonly && pl->gioc_palla&&(r_controls[i][counter]&JP_DIRECTION_MASK))
         return;
 
     if(     g->world_x<(pl->world_x-500) || // tolti 100

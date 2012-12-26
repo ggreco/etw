@@ -1235,7 +1235,8 @@ game_t *SetupSquadre(void)
 
     Progress();
 
-    if(!(p->referee.anim = LoadAnimObject((current_field == 7 ? "gfx/arbisnow.obj" : "gfx/arbitro.obj"), Pens)))
+    // arcade matches do not have referee and linesmen!
+    if(arcade || training|| !(p->referee.anim = LoadAnimObject((current_field == 7 ? "gfx/arbisnow.obj" : "gfx/arbitro.obj"), Pens)))
     {
         // Non riesco a caricare l'arbitro... Lo disabilito.
         detail_level &= ~USA_ARBITRO;
@@ -1250,7 +1251,7 @@ game_t *SetupSquadre(void)
 
     Progress();
 
-    if (!(linesman = calloc(2, sizeof(linesman_t))))
+    if (arcade || training || !(linesman = calloc(2, sizeof(linesman_t))))
         detail_level &= ~USA_GUARDALINEE;
     else if(!(linesman[0].anim = LoadAnimObject(
                     (current_field == 7 ? NEWGFX_DIR "gls.obj" :

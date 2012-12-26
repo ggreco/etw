@@ -70,35 +70,6 @@ void init_game_center()
 
 // SDLUIKitDelegate *gApplicationDelegate = NULL;
 
-#if 0
-@implementation GKMatchmakerViewController (LandscapeOnly)
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return ( interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight);
-}
-
--(NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskLandscape;
-}
-
-- (BOOL)shouldAutorotate {
-    
-    return NO;
-}
-@end
-
-@implementation UIApplication (LandscapeOnly)
-
-- (NSUInteger)application:(UIApplication*)application supportedInterfaceOrientationsForWindow:(UIWindow*)window
-{
-    NSLog(@"Venngo chiam?");
-    return UIInterfaceOrientationMaskAllButUpsideDown;
-}
-@end
-#endif
-
 @implementation GameCenter
 
 NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
