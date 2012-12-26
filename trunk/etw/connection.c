@@ -87,6 +87,7 @@ void WriteGameConfig(FILE *f)
     fwrite_data(&fieldname, sizeof(fieldname), f);
 
     fwrite_u32(time_length, f);
+    fwrite_u8(use_touch, f);
 }
 
 void ReadGameConfig(FILE *f)
@@ -117,6 +118,7 @@ void ReadGameConfig(FILE *f)
     fread_data(&fieldname, sizeof(fieldname), f);
 
     time_length = fread_u32(f);
+    use_touch = fread_u8(f);
 }
 
 static int old_button, old_menu;
@@ -157,7 +159,7 @@ static WORD parent_menu, team1, team2;
 static WORD match_result = -1;
 
 
-void restore_menus();
+WORD restore_menus();
 
 // you can read the match result only once
 WORD LastMatchResult()
@@ -167,13 +169,9 @@ WORD LastMatchResult()
     return rc;
 }
 
-extern void (*TeamSettingsCallback)(void);
-void StartMatchFinal();
-void StartMatchTwoPlayers();
-
-void StartMatch(BYTE t1,BYTE t2)
+WORD StartMatch(BYTE t1,BYTE t2)
 {
-    TeamSettingsCallback = NULL;
+    int t;
     match_result = -1;
     team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
     team1 = t1; team2 = t2;
@@ -218,26 +216,14 @@ void StartMatch(BYTE t1,BYTE t2)
     if(controllo[team1]>=0&&!arcade_teams) {
         SetTeamSettings(team1, TRUE);
         ChangeMenu(MENU_TEAM_SETTINGS);
-        TeamSettingsCallback = (controllo[team2]>=0&&!training&&!arcade_teams) ? StartMatchTwoPlayers : StartMatchFinal;
+        while (HandleMenuIDCMP());
     }
-    else if (controllo[team2]>=0&&!training&&!arcade_teams) {
+    
+    if (controllo[team2]>=0&&!training&&!arcade_teams) {
         SetTeamSettings(team2, TRUE);
         ChangeMenu(MENU_TEAM_SETTINGS);
-        TeamSettingsCallback = StartMatchFinal;
+        while (HandleMenuIDCMP());
     }
-    else
-        StartMatchFinal();
-}
-
-void StartMatchTwoPlayers() {
-    SetTeamSettings(team2, TRUE);
-    ChangeMenu(MENU_TEAM_SETTINGS);
-    TeamSettingsCallback = StartMatchFinal;
-}
-
-void StartMatchFinal()
-{
-    int t;
 
     if(arcade_teams)
     {
@@ -257,21 +243,21 @@ void StartMatchFinal()
  */
     if(!network_game || network_player->num == 0) {
         if(network_game && !SendTeam(team1))
-                return;
+                return 0;
 
         leftteam_dk=teamlist[team1];
     }
     else if(network_game && !ReceiveTeam(&leftteam_dk))
-            return;
+            return 0;
 
     if(!network_game || network_player->num == 1) {
         if(network_game && !SendTeam(team2))
-                return;
+                return 0;
 
         rightteam_dk=teamlist[team2];
     }
     else if(network_game && !ReceiveTeam(&rightteam_dk))
-            return;
+            return 0;
 
     if(!training && !network_game)
     {
@@ -416,16 +402,15 @@ void StartMatchFinal()
         final=FALSE;
         friendly=FALSE;
         ChangeMenu(0);
-        return;
+        return 0;
     }
 
-    restore_menus();
+    return restore_menus();
 }
 
 BOOL interrupted = FALSE;
-extern void (*PostCbk)();
 
-void restore_menus()
+WORD restore_menus()
 {
     char buf[1024];
     FILE *f;
@@ -462,7 +447,7 @@ void restore_menus()
     
     if(!(LoadMenuStuff())) {
         request("Unable to load the menu datas!");
-        return;
+        return 0;
     }
     
     os_start_audio();
@@ -726,20 +711,7 @@ void restore_menus()
     }
     
     match_result = risultato;
-
-    if (PostCbk) {
-        D(bug("Executing post game cbk\n"));
-        PostCbk();
-        PostCbk = NULL;
-    }
-}
-
-static void PostHigh()
-{
-    D(bug("Highlight playing completed\n"));
-    highlight = FALSE;
-    ChangeMenu(MENU_HIGH_SELECTION);
-    add_achievement("16_tvaddict", 10.0);
+    return risultato;
 }
 
 void LoadHigh(char *file)
@@ -775,9 +747,11 @@ void LoadHigh(char *file)
         
         highlight = TRUE;
 
-        PostCbk = PostHigh;
         StartGame();
+        D(bug("Highlight playing completed\n"));
         restore_menus();
-    }
+        highlight = FALSE;
+        ChangeMenu(MENU_HIGH_SELECTION);
+        add_achievement("16_tvaddict", 10.0);    }
 }
 

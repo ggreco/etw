@@ -370,24 +370,6 @@ void HandleControlledJ2B(int squadra)
         return;
     }
 
-
-   // handling free touch
-   if (joystate & JPF_TOUCH) {
-        player_t *g2 = find_touch_player(g);
-
-        if ((pl->gioc_palla && pl->gioc_palla->team != g->team) ||
-                (!pl->gioc_palla)) {
-            // we can change the active player to the nearest one...
-
-            D(bug("Detected free touch change player from %s to %s\n", g->name, g2 ? g2->name : "NONE"));
-            if(g2 != g && g2 != NULL)
-                ChangeControlled(g->team, g2->GNum);
-        }
-        else if (g == pl->gioc_palla && g2 != g) 
-            TouchTargetedPass(g, g2);
-    }
-
-
    // handling fire button
 
     if(!need_release[g->team->Joystick])
@@ -628,6 +610,285 @@ void HandleControlledJ2B(int squadra)
         else
         {
             g->ActualSpeed--;
+        }
+    }
+}
+
+void HandleControlledTouch(int squadra)
+{
+    player_t *g = p->team[squadra]->attivo;
+    uint32_t joystate = r_controls[g->team->Joystick][counter];
+    
+    if(joystate&JPF_BUTTON_PLAY) {
+        DoPause();
+        return;
+    }
+    
+    if(g->Special || g->Comando)
+        return;
+    
+    if (g->team->Joystick < 0) {
+        D(bug("HandleControlled with Joystick < 0!\n"));
+        return;
+    }
+    
+    if(!pl->InGioco) {
+        NoPlayerControl(g);
+        return;
+    }
+    
+    // handling free touch
+    if (joystate & JPF_TOUCH) {
+        player_t *g2 = find_touch_player(g);
+        
+        if ((pl->gioc_palla && pl->gioc_palla->team != g->team) ||
+            (!pl->gioc_palla)) {
+            // we can change the active player to the nearest one...
+            
+            D(bug("Detected free touch change player from %s to %s\n", g->name, g2 ? g2->name : "NONE"));
+            if(g2 != g && g2 != NULL)
+                ChangeControlled(g->team, g2->GNum);
+        }
+        else if (g == pl->gioc_palla && g2 != g)
+            TouchTargetedPass(g, g2);
+    }    
+    
+    // handling fire button
+    
+    if(!need_release[g->team->Joystick])
+    {
+        if(joystate&JPF_BUTTON_RED)
+        {
+            need_release[g->team->Joystick]=TRUE;
+            
+            if(pl->gioc_palla==g)
+            {
+                DoShot(g,joystate);
+                
+                if(CanScore(g) != CS_SI)
+                    pl->velocita -= 3;
+            }
+            else
+                DoSpecials(g);
+            
+            return;
+        }
+        
+        if(joystate&JPF_BUTTON_BLUE)
+        {
+            if(g->FirePressed)
+            {
+                g->TimePress++;
+                
+                if(g->TimePress>20) // this was 8, the value was still at 25 fps logic? Very likely.
+                {
+                    need_release[g->team->Joystick]=TRUE;
+                    
+                    if(pl->gioc_palla==g)
+                    {
+                        g->SpecialData=-1;
+                        
+                        if(CanScore(g)==CS_NO)
+                            DoLongPass(g,joystate);
+                        else
+                            DoCross(g);
+                    }
+                    else {
+                        CheckActive();
+                    }
+                    
+                    g->FirePressed=FALSE;
+                    g->TimePress=0;
+                }
+            }
+            else
+            {
+                g->FirePressed=TRUE;
+                g->TimePress=0;
+            }
+            
+            return;
+        }
+        else if (g->FirePressed)
+        {
+            if(g==pl->gioc_palla)
+            {
+                // Passaggio
+                g->SpecialData=-1;
+                
+                if(joystate&JP_DIRECTION_MASK)
+                    Passaggio2(g,GetJoyDirection(joystate));
+                else
+                    Passaggio2(g,g->dir);
+            }
+            else
+                CheckActive();
+            
+            g->FirePressed=FALSE;
+            g->TimePress=0;
+            
+            return;
+        }
+    }
+    else if(!(joystate&(JPF_BUTTON_RED|JPF_BUTTON_BLUE)))
+        need_release[g->team->Joystick]=FALSE;
+
+    
+    if(g->ActualSpeed==3 && g->AnimFrame!=0 && g==pl->gioc_palla)
+        return;
+    
+    g->AnimType=GIOCATORE_RESPIRA;
+    
+    /* Gestione delle otto direzioni */
+    
+    if( (joystate&JP_DIRECTION_MASK) )
+    {
+        register WORD NewDir=GetJoyDirection(joystate);
+        
+        if(g->dir == opposto[NewDir])
+        {
+            if(g==pl->gioc_palla)
+            {
+                DoSpecialAnim(g,GIOCATORE_INVERSIONE_MARCIA_PALLA);
+            }
+            else
+            {
+                DoSpecialAnim(g,GIOCATORE_INVERSIONE_MARCIA);
+            }
+            
+            g->ActualSpeed=0;
+        }
+        else if(g->dir != NewDir)
+        {
+            if(g->ActualSpeed==3)
+            {
+                WORD tv=abs(g->dir-NewDir);
+                
+                if(tv>4)
+                    tv=8-tv;
+                
+                if(tv>2)
+                {
+                    DoSpecialAnim(g,GIOCATORE_CORSA_PARZIALE);
+                    
+                    if(BestRotation(g->dir,NewDir))
+                    {
+                        NewDir--;
+                        
+                        if(NewDir<0)
+                            NewDir=7;
+                    }
+                    else
+                    {
+                        NewDir++;
+                        
+                        if(NewDir>7)
+                            NewDir=0;
+                    }
+                }
+                else if(tv>1)
+                {
+                    if(BestRotation(g->dir,NewDir))
+                    {
+                        NewDir--;
+                        
+                        if(NewDir<0)
+                            NewDir=7;
+                    }
+                    else
+                    {
+                        NewDir++;
+                        
+                        if(NewDir>7)
+                            NewDir=0;
+                    }
+                    
+                    g->ActualSpeed--;
+                }
+            }
+            else
+            {
+                if(g==pl->gioc_palla)
+                {
+                    WORD tv=abs(g->dir-NewDir);
+                    
+                    if(tv>4)
+                        tv=8-tv;
+                    
+                    tv--;
+                    
+                    if(tv>0)
+                    {
+                        if(BestRotation(g->dir,NewDir))
+                        {
+                            NewDir-=tv;
+                            
+                            if(NewDir<0)
+                                NewDir=7;
+                        }
+                        else
+                        {
+                            NewDir+=tv;
+                            
+                            if(NewDir>7)
+                                NewDir=0;
+                        }
+                    }
+                }
+            }
+            
+            if(!AllowRotation(g,NewDir))
+                g->dir = NewDir;
+        }
+        else
+        {
+            // Dovrebbe essere superfluo, g->AnimType=GIOCATORE_CORSA_LENTA;
+            
+            if(g->ActualSpeed<3)
+            {
+                if(g->ActualSpeed==2)
+                {
+                    if(joystate&JPF_BUTTON_FORWARD)
+                    {
+                        g->WaitForControl++;
+                        
+                        if(g->WaitForControl>20)
+                        {
+                            g->WaitForControl=0;
+                            g->ActualSpeed++;
+                            g->AnimFrame=-1;
+                            g->FrameLen=0;
+                        }
+                    }
+                }
+                else
+                {
+                    g->ActualSpeed++;
+                    g->AnimFrame=-1;
+                    g->FrameLen=0;
+                }
+            }
+        }
+        
+        if(g->ActualSpeed==3 && !(joystate&JPF_BUTTON_FORWARD) && g->AnimFrame==0)
+            g->ActualSpeed--;
+    }
+    else if(g->ActualSpeed>0)
+    {
+        if(g->ActualSpeed==2&&pl->gioc_palla)
+        {
+            g->WaitForControl++;
+            
+            if(g->WaitForControl>18)
+            {
+                g->ActualSpeed--;
+                g->WaitForControl=0;
+            }
+        }
+        else
+        {
+            if(!(joystate&JPF_BUTTON_FORWARD))
+                g->ActualSpeed--;
         }
     }
 }

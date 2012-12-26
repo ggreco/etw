@@ -214,21 +214,22 @@ joy_try_again:
             }
         }
 
-        if(control[p->team[0]->Joystick]==CTRL_JOYPAD ||
+        if (control[p->team[0]->Joystick]==CTRL_TOUCH ) {
+                HandleTeam0=HandleControlledTouch;
+                D(bug("Touch for team 0\n"));
+        }
+        else if(control[p->team[0]->Joystick]==CTRL_JOYPAD ||
             control[p->team[0]->Joystick]==CTRL_KEY_2) {
             HandleTeam0=HandleControlledJoyPad;
             D(bug("Joypad/key2 for team 0\n"));
         }
+        else if(control[p->team[0]->Joystick]==CTRL_JOY2B ||
+                control[p->team[0]->Joystick]==CTRL_KEY_1) {
+            HandleTeam0 = HandleControlledJ2B;
+            D(bug("Joy2b/key1 for team 0\n"));
+        }
         else {
-            if(control[p->team[0]->Joystick]==CTRL_TOUCH ||
-               control[p->team[0]->Joystick]==CTRL_JOY2B || 
-               control[p->team[0]->Joystick]==CTRL_KEY_1) {
-                HandleTeam0 = HandleControlledJ2B;
-                D(bug("Joy2b/key1/Touch for team 0\n"));
-            }
-            else {
-                HandleTeam0=HandleControlled;
-            }
+            HandleTeam0=HandleControlled;
         }
     }
     else {
@@ -276,21 +277,23 @@ joy_try_again:
                 D(bug(" ->Error opening joystick!\n"));
             }
         }
-        if(control[p->team[1]->Joystick]==CTRL_JOYPAD ||
-            control[p->team[1]->Joystick]==CTRL_KEY_2) {
+        
+        if (control[p->team[1]->Joystick]==CTRL_TOUCH ) {
+            HandleTeam1=HandleControlledTouch;
+            D(bug("Touch for team 1\n"));
+        }
+        else if(control[p->team[1]->Joystick]==CTRL_JOYPAD ||
+                control[p->team[1]->Joystick]==CTRL_KEY_2) {
             HandleTeam1=HandleControlledJoyPad;
             D(bug("Joypad/key2 for team 1\n"));
-        }       
+        }
+        else if(control[p->team[1]->Joystick]==CTRL_JOY2B ||
+                control[p->team[1]->Joystick]==CTRL_KEY_1 ) {
+            HandleTeam1=HandleControlledJ2B;
+            D(bug("Joy2b/key1 for team 0\n"));
+        }
         else {
-            if(control[p->team[1]->Joystick]==CTRL_JOY2B ||
-                control[p->team[1]->Joystick]==CTRL_KEY_1 ||
-                control[p->team[1]->Joystick]==CTRL_TOUCH ) {
-                HandleTeam1=HandleControlledJ2B;
-                   D(bug("Joy2b/key1/Touch for team 0\n"));
-            }
-            else {
-                HandleTeam1=HandleControlled;
-            }
+            HandleTeam1=HandleControlled;
         }
     }
     if (use_touch)

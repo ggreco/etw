@@ -65,7 +65,7 @@ extern void DisplayTactic(int, int);
 extern void AddPlayer(struct player_disk *, int);
 extern void AddName(struct player_disk *, int);
 extern void SetPlayerStatus(int, char, char, long);
-extern void StartMatch(BYTE, BYTE);
+extern WORD StartMatch(BYTE, BYTE);
 extern WORD LastMatchResult();
 extern void ScaleGfxObj(gfx_t *, uint8_t *);
 extern void UpdateButtonList(void);
@@ -98,7 +98,7 @@ extern BOOL no_sound, allow_replay, nocpu, saved, wb_game, big, injuries, substi
     menu_music, use_speaker, no_sound, use_crowd, special, random_draw, nopari, make_setup,
     game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams,
     final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
-    audio_to_fast, use_gfx_scaling, tutorial;
+    audio_to_fast, use_gfx_scaling, tutorial, use_touch;
 extern int32_t Pens[256];
 extern int framerate, display_id, framerate, overscan;
 extern long int t_l, situation_time;

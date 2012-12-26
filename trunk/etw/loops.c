@@ -259,7 +259,7 @@ void graphic_frame(void)
 //        if (p->show_panel)
             ShowPanel();
 
-        if (replay_mode)
+        if (replay_mode && !highlight)
             DrawR();
     }
 

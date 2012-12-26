@@ -205,13 +205,12 @@ uint32_t MyReadTouchPort(uint32_t l)
     }
 
     // trigger pause on button_3 press
-    if ((res & TouchControl::BUTTON_3) &&
-        (res & TouchControl::BUTTONUP)) {
-        if (!network_game) {
-            DoPause();
-            return 0;
-        }
-    }
+    if ((res & (TouchControl::BUTTON_3|TouchControl::BUTTONUP)) ==
+        (TouchControl::BUTTON_3|TouchControl::BUTTONUP))
+        mask|=JPF_BUTTON_PLAY;
+    
+    if (res & TouchControl::FAST)
+        mask|=JPF_BUTTON_FORWARD;
 
     if (res & TouchControl::RIGHT)
         mask|=JPF_JOY_RIGHT;

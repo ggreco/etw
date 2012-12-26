@@ -65,6 +65,7 @@ extern uint32_t ReadNetworkPort(uint32_t port);
 extern void ChangeControlled(team_t *, WORD);
 extern void HandleControlled(int);
 extern void HandleControlledJ2B(int);
+extern void HandleControlledTouch(int);
 extern void HandleControlledJoyPad(int);
 extern void HandleCPU(int);
 extern void HandleRealCPU(player_t *);
@@ -287,6 +288,8 @@ BOOL os_audio2fast(void);
 
 void UrgentSpeaker(int);
 void StartSpoken(void);
+
+void free_game();
 
 // achievements
 void add_achievement(const char*, float);
