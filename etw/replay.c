@@ -222,10 +222,6 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
     m->field_x = fread_u16(f);
     m->field_y = fread_u16(f);
     fread_data(&m->need_release, sizeof(m->need_release), f);
-    m->game.corner_sx = fread_u16(f);
-    m->game.corner_sy = fread_u16(f);
-    m->game.corner_ex = fread_u16(f);
-    m->game.corner_ey = fread_u16(f);
 }
 
 static void WriteATeam(FILE *f, team_t *s)
@@ -418,10 +414,6 @@ void WriteMatch(FILE *f, struct MatchStatus *m)
     fwrite_u16(m->field_y, f);
 
     fwrite_data(&m->need_release, sizeof(m->need_release), f);
-    fwrite_u16(m->game.corner_sx, f);
-    fwrite_u16(m->game.corner_sy, f);
-    fwrite_u16(m->game.corner_ex, f);
-    fwrite_u16(m->game.corner_ey, f);
 }
 
 void StopTime(void)

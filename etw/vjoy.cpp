@@ -195,7 +195,12 @@ uint32_t MyReadTouchPort(uint32_t l)
         mask |= JPF_TOUCH;
         r_controls[l^1][counter] = touch->touch_x() | (touch->touch_y() << 16);
     }
-
+    else if (res & TouchControl::FREE_SWIPE) {
+        mask |= JPF_SWIPE;
+        int16_t dx = touch->touch_x(), dy = touch->touch_y();
+        r_controls[l^1][counter] = ((uint16_t)dx) | (((uint16_t)dy) << 16);
+    }
+    
     // at this level we need only the button down event
     if (res & TouchControl::BUTTONDOWN) {
         if (res & TouchControl::BUTTON_1)
