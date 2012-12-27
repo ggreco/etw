@@ -946,7 +946,7 @@ void HandleReferee(void)
                             DisponiSquadra(p->team[0],pl->sector,p->team[0]->Possesso);
                             DisponiSquadra(p->team[1],pl->sector,p->team[1]->Possesso);
 
-                            g1->dir=FindDirection(g1->world_x,g1->world_y, (g1->SNum ? PORTA_E_X : PORTA_O_X) ,PORTA_E_Y);
+                            g1->dir=FindDirection(pl->world_x,pl->world_y, (g1->SNum ? PORTA_E_X : PORTA_O_X) ,PORTA_E_Y);
 
                             PreparaBarriera(g1->SNum^1);
 

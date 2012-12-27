@@ -118,11 +118,11 @@ struct Animazione Animation[]=
         {4,2,InversioneMarcia},
         {6,3,Contrasto},
         {15,4,DopoRimessa},
-        {1,1,&PreparaRimessa}, // this should last 1 frame otherwise we loose events
+        {0,1,&PreparaRimessa}, // this should last 1 frame otherwise we loose events
         {12,2,RecuperaPalla},
         {2,2,CorsaParziale},
     {6,6,RialzaAvanti},
-    {1,1,Fermo}, // BATTUTA
+    {0,1,Fermo}, // BATTUTA
         {2,2,InversioneMarcia},
         {3,5,Caduta2},
     {5,1,&PassaggioF},
