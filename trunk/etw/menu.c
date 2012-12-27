@@ -827,7 +827,7 @@ BOOL DoAction(WORD button)
 
             if (FileRequest(&freq)) {
                 strcpy(career_file, freq.File);
-
+                D(bug("Saving to %s\n", career_file));
                 SaveLeague();
             }
             break;
@@ -946,7 +946,7 @@ BOOL DoAction(WORD button)
 
                 if (FileRequest(&freq)) {
                     strcpy(career_file, freq.File);
-
+                    D(bug("Loading from %s\n", career_file));
                     LoadLeague();
                 }
             } else if (button == 4) {

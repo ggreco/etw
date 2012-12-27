@@ -1,8 +1,6 @@
 #include "os_defs.h"
 
-#if !defined(WINCE) && !defined(MOBILE_VERSION)
 static char szFileName[300];
-#endif
 
 #if defined(WINCE)
 
@@ -223,6 +221,8 @@ BOOL FileRequest(struct MyFileRequest *fr)
 
 BOOL FileRequest(struct MyFileRequest *fr)
 {
-    return FALSE;
+    fr->File = szFileName;
+    snprintf(szFileName, sizeof(szFileName), "%s/savegame", TEMP_DIR);
+    return TRUE;
 }
 #endif                            /* WIN */

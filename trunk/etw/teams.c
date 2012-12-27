@@ -661,8 +661,6 @@ void SaveTeams(char *name)
     FILE *fh;
     int i;
 
-    /* AC: Secondo me l'opzione è sbagliata. Direi che serve wb :) */
-    //if(fh=fopen(name, "rb"))
     if ((fh=fopen(name, "wb"))) {
         campionato.nteams--;
 
@@ -898,6 +896,10 @@ void LoadTeams(char *name)
                         InitTable();
                         UpdateLeagueTable();
                         ChangeMenu(MENU_LEAGUE);
+                    }
+                    else if (competition == MENU_MATCHES) {
+                        ViewEliminazioneDiretta(nteams / 2);
+                        ChangeMenu(MENU_MATCHES);
                     }
                 }
             }
