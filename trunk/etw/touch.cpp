@@ -187,6 +187,32 @@ iteration()
                 else { 
                     bool found = false;
 
+                    
+                    if (FreeTouch *ft = find_touch(e.tfinger.fingerId)) {
+                        found = true;
+                        SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
+                        int x = e.tfinger.x * screen_w_ / t->xres,
+                            y = e.tfinger.y * screen_h_ / t->yres;
+                        
+                        if (abs(ft->start_x - x) < 20 &&
+                            abs(ft->start_y - y) < 20) {
+                            touch_x_ = x;
+                            touch_y_ = y;
+                            result |= FREE_TOUCH;
+                            freetouch_on_screen_ = 25; // show the touch trace for half second
+                            freerect_.x = touch_x_ - freerect_.w / 2;
+                            freerect_.y = touch_y_ - freerect_.h / 2;
+                        }
+                        else {
+                            result |= FREE_SWIPE;
+                            touch_x_ = x - ft->start_x;
+                            touch_y_ = y - ft->start_y;
+                            D(bug("Swipe detected from %d,%d to %d,%d\n", ft->start_x, ft->start_y, x, y));
+                        }
+                        
+                        touches_.erase((int)e.tfinger.touchId);
+                    }
+                    
                     for (BtIt it = buttons_.begin(); it != buttons_.end(); ++it) {
                         if (it->is_pressed && e.tfinger.fingerId == it->finger) {
                             it->is_pressed = false;
@@ -201,13 +227,7 @@ iteration()
                     }
 
                     if (!found) {
-                        SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
-                        touch_x_ = e.tfinger.x * screen_w_ / t->xres;
-                        touch_y_ = e.tfinger.y * screen_h_ / t->yres;
-                        result |= FREE_TOUCH;
-                        freetouch_on_screen_ = 25; // show the touch trace for half second
-                        freerect_.x = touch_x_ - freerect_.w / 2;
-                        freerect_.y = touch_y_ - freerect_.h / 2;
+                        D(bug("Found fingerup for id %d with no previous finger down?\n", e.tfinger.fingerId));
                     }
                 }
                 break;
@@ -245,6 +265,7 @@ iteration()
                     }      
 
                     if (!found) {
+                        add_touch(e.tfinger.fingerId, x, y);
                         touch_x_ = x;
                         touch_y_ = y;
                         result |= FREE_TOUCHDOWN;
@@ -269,6 +290,12 @@ iteration()
                         center_x_ = reference_x_ + (delta_x_ * radius) / distance_;
                         center_y_ = reference_y_ + (delta_y_ * radius) / distance_;
                     }
+                }
+                else if (FreeTouch *f = find_touch(e.tfinger.fingerId)) {
+                    // handle free touch moves
+                    SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
+                    f->move(e.tfinger.x * screen_w_ / t->xres,
+                            e.tfinger.y * screen_h_ / t->yres);
                 }
                 break;
         }

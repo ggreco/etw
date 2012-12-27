@@ -97,6 +97,7 @@ extern unsigned long os_get_timer(void);
 #define JPF_BUTTON_PLAY    (1 << JPB_BUTTON_PLAY)
 #define JP_BUTTON_MASK     (JPF_BUTTON_BLUE|JPF_BUTTON_RED|JPF_BUTTON_YELLOW|JPF_BUTTON_GREEN|JPF_BUTTON_FORWARD|JPF_BUTTON_REVERSE|JPF_BUTTON_PLAY)
 // new flags added for touch compatibility
+#define JPF_SWIPE      (1 << 29)
 #define JPF_TOUCH_DOWN (1 << 30)
 #define JPF_TOUCH      (1 << 31)
 

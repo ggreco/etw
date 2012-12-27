@@ -1073,6 +1073,33 @@ finetiro:
     }
 }
 
+static void after_corner_common(player_t *g)
+{
+    RimuoviComandoSquadra( g->SNum^1 ,STAI_BARRIERA);
+    RimuoviComandoSquadra( g->SNum^1 ,MANTIENI_DISTANZA);
+    
+    {
+        player_t *g2;
+        WORD xs=pl->world_x+(pl->delta_x<<7);
+        WORD ys=pl->world_y+(pl->delta_y<<7);
+        
+        if((g2=FindNearest(g->team,xs,ys))) {
+            g->SpecialData=g2->GNum;
+        }
+    }
+    
+    RestartTime();
+    
+    pl->InGioco=TRUE;
+    p->mantieni_distanza=FALSE;
+    p->doing_shot=FALSE;
+    
+    if(free_kicks) {
+        p->referee.Comando=FISCHIA_PREPUNIZIONE;
+        p->referee.Tick=150;
+    }
+}
+
 void PunizioneCorner(player_t *g)
 {
     if(p->show_panel&0xff00)
@@ -1110,36 +1137,26 @@ void PunizioneCorner(player_t *g)
 
         if (use_touch) {
             uint32_t k = r_controls[g->team->Joystick^1][counter];
-            // start point of the movement
-            if (l & JPF_TOUCH_DOWN) {
-                // reset the end swipe, we need a correct start -> end sequence
-                p->corner_ex = -1;
-                p->corner_sx = k & 0xffff;
-                p->corner_sy = k >> 16;
-                D(bug("Started corner swipe at %d,%d\n", p->corner_sx, p->corner_sy));
-            }
+
             // end point of the movement
             if (l & JPF_TOUCH) {
-                p->corner_ex = k & 0xffff;
-                p->corner_ey = k >> 16;
-                D(bug("Ended corner swipe at %d,%d\n", p->corner_ex, p->corner_ey));
+                player_t *g2 = find_touch_player(g);
+
+                if (g2 && g2 != g) {
+                    show_vjoy();
+                    D(bug("Corner/kick with touch to %s!\n", g2->name));
+                    
+                    TouchTargetedPass(g, g2);
+                    after_corner_common(g);
+                }
             }
-
-            if (p->corner_sx != -1 && p->corner_ex != -1) {            
-                int d;
+            else if (l & JPF_SWIPE) {
+                int16_t dx = k & 0xffff,
+                        dy = k >> 16;
+                
                 show_vjoy();
-
-                pl->dir = FindDirection256(p->corner_sx, p->corner_sy, p->corner_ex, p->corner_ey);
-                g->dir = pl->dir / 32;
-                d = FindDistance(p->corner_sx, p->corner_sy, p->corner_ex, p->corner_ey, pl->dir);
-
-                D(bug("Corner/FreeKick swipe from %d,%d to %d,%d, direction %d, distance %d\n",
-                        p->corner_sx, p->corner_sy, p->corner_ex, p->corner_ey, pl->dir, d));
-
-
-                // clear them before shooting, we clear only the x coordinate since the y is also set
-                // with a valid value if the x is
-                p->corner_sx = p->corner_ex = -1;
+                D(bug("Corner/kick with swipe len: %d,%d\n", dx, dy));
+                
                 goto tirapunizione;
             }
         }
@@ -1176,30 +1193,8 @@ tirapunizione:
             }
 
             Tira(g);
-            RimuoviComandoSquadra( g->SNum^1 ,STAI_BARRIERA);
-            RimuoviComandoSquadra( g->SNum^1 ,MANTIENI_DISTANZA);
 
-
-            {
-                player_t *g2;
-                WORD xs=pl->world_x+(pl->delta_x<<7);
-                WORD ys=pl->world_y+(pl->delta_y<<7);
-
-                if((g2=FindNearest(g->team,xs,ys))) {
-                    g->SpecialData=g2->GNum;
-                }
-            }
-
-            RestartTime();
-
-            pl->InGioco=TRUE;
-            p->mantieni_distanza=FALSE;
-            p->doing_shot=FALSE;
-
-            if(free_kicks) {
-                p->referee.Comando=FISCHIA_PREPUNIZIONE;
-                p->referee.Tick=150;
-            }
+            after_corner_common(g);
             return;
         }
 
