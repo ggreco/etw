@@ -685,7 +685,7 @@ void Passaggio2(player_t *g,char Dir)
 
 void TouchTargetedPass(player_t *g, player_t *d)
 {
-    int direction = FindDirection256(g->world_x, g->world_y, d->world_x, d->world_y) / 32;
+    int direction = (FindDirection256(g->world_x, g->world_y, d->world_x, d->world_y) + 4) / 32;
     PreparaPassaggio(g, d);
 
     if(g->dir!=direction)
@@ -805,8 +805,8 @@ void HandleRimessa(player_t *g)
 
                     D(bug("Doing touch throw in from %s to %s, distance: %d, dir: %d", g->name, dst->name, d, pl->dir));
                     // don't allow throw in too far or too near
-                    if (d > 1500)
-                        d = 1500;
+                    if (d > 1800)
+                        d = 1800;
                     else if (d < 300)
                         d = 300;
 
@@ -1135,7 +1135,7 @@ void PunizioneCorner(player_t *g)
             DaiPalla(g);
         }
 
-        if (use_touch) {
+        if (use_touch) {            
             uint32_t k = r_controls[g->team->Joystick^1][counter];
 
             // end point of the movement
@@ -1145,9 +1145,10 @@ void PunizioneCorner(player_t *g)
                 if (g2 && g2 != g) {
                     show_vjoy();
                     D(bug("Corner/kick with touch to %s!\n", g2->name));
-                    
-                    TouchTargetedPass(g, g2);
+                    PreparaPassaggio(g, g2);
+                    PassaggioB(g);
                     after_corner_common(g);
+                    return;
                 }
             }
             else if (l & JPF_SWIPE) {
@@ -1155,9 +1156,22 @@ void PunizioneCorner(player_t *g)
                         dy = k >> 16;
                 
                 show_vjoy();
-                D(bug("Corner/kick with swipe len: %d,%d\n", dx, dy));
+                pl->velocita = (abs(dx) + abs(dy)) / 10;
                 
-                goto tirapunizione;
+                if (pl->velocita > 30)
+                    pl->velocita = 30;
+                else if (pl->velocita < 8)
+                    pl->velocita = 8;
+                
+                pl->dir = FindDirection256(0, 0, dx, dy);
+                pl->MaxQuota=GetTable() / 2 + g->creativity / 2 + 10;
+                D(bug("Corner/kick with swipe len: %d,%d, dir:%d speed:%d quota:%d\n", dx, dy, pl->dir, pl->velocita, pl->MaxQuota));
+                pl->TipoTiro=TIRO_CORNER;
+
+                Tira(g);
+
+                after_corner_common(g);
+                return;
             }
         }
         else if (l & MYBUTTONMASK) {
@@ -1198,95 +1212,97 @@ tirapunizione:
             return;
         }
 
-        if(l&JPF_JOY_UP) {
-            if(pl->MaxQuota<(MAX_QUOTA-1))
-                pl->MaxQuota++;
-
-        }
-        else if(l&JPF_JOY_DOWN)    {
-            if(pl->MaxQuota>0)
-                pl->MaxQuota--;
-
-        }
-
-        if(l&JPF_JOY_LEFT) {
-            if(g->SpecialData>0)
-                g->SpecialData=-1;
-            else if(g->SpecialData>-16)
-                g->SpecialData--;
-
-            pl->dir+=g->SpecialData;
-        }
-        else if(l&JPF_JOY_RIGHT) {
-            if(g->SpecialData<0)
+        if (!use_touch) {
+            if(l&JPF_JOY_UP) {
+                if(pl->MaxQuota<(MAX_QUOTA-1))
+                    pl->MaxQuota++;
+                
+            }
+            else if(l&JPF_JOY_DOWN)    {
+                if(pl->MaxQuota>0)
+                    pl->MaxQuota--;
+                
+            }
+            
+            if(l&JPF_JOY_LEFT) {
+                if(g->SpecialData>0)
+                    g->SpecialData=-1;
+                else if(g->SpecialData>-16)
+                    g->SpecialData--;
+                
+                pl->dir+=g->SpecialData;
+            }
+            else if(l&JPF_JOY_RIGHT) {
+                if(g->SpecialData<0)
+                    g->SpecialData=1;
+                else if(g->SpecialData<16)
+                    g->SpecialData++;
+                
+                pl->dir+=g->SpecialData;
+            }
+            else
                 g->SpecialData=1;
-            else if(g->SpecialData<16)
-                g->SpecialData++;
-
-            pl->dir+=g->SpecialData;
+            
+            switch(pl->world_x)    {
+                case CORNER_X_NO:
+                    if(pl->dir<64) {
+                        pl->dir=64;
+                    }
+                    else if(pl->dir>135) {
+                        pl->dir=136;
+                    }
+                    break;
+                case CORNER_X_NE:
+                    if(pl->dir<120) {
+                        pl->dir=120;
+                    }
+                    else if(pl->dir>192) {
+                        pl->dir=192;
+                    }
+                    break;
+                case CORNER_X_SO:
+                    if(pl->dir<8)    {
+                        pl->dir=8;
+                    }
+                    else if(pl->dir>64) {
+                        pl->dir=64;
+                    }
+                    break;
+                    
+                case CORNER_X_SE:
+                    if(pl->dir<192) {
+                        pl->dir=192;
+                    }
+                    else if(pl->dir>248) {
+                        pl->dir=248;
+                    }
+                    break;
+                    
+                    // Punizioni:
+                default:
+                    // Non dovrebbe piu' servire...
+                    /*
+                     if(pl->dir>31)
+                     {
+                     pl->dir=0;
+                     }
+                     else if(pl->dir<0)
+                     {
+                     pl->dir=31;
+                     }
+                     */
+                    break;
+            }
+            
+            g->dir=((pl->dir+4)>>5);
+            
+            if(g->dir>7)
+                g->dir-=8;
         }
-        else
-            g->SpecialData=1;
-
-        switch(pl->world_x)    {
-            case CORNER_X_NO:
-                if(pl->dir<64) {
-                    pl->dir=64;
-                }
-                else if(pl->dir>135) {
-                    pl->dir=136;
-                }
-                break;
-            case CORNER_X_NE:
-                if(pl->dir<120) {
-                    pl->dir=120;
-                }
-                else if(pl->dir>192) {
-                    pl->dir=192;
-                }
-                break;
-            case CORNER_X_SO:
-                if(pl->dir<8)    {
-                    pl->dir=8;
-                }
-                else if(pl->dir>64) {
-                    pl->dir=64;
-                }
-                break;
-
-            case CORNER_X_SE:
-                if(pl->dir<192) {
-                    pl->dir=192;
-                }
-                else if(pl->dir>248) {
-                    pl->dir=248;
-                }
-                break;
-
-                // Punizioni:
-            default:
-                // Non dovrebbe piu' servire...
-                /*
-                   if(pl->dir>31)
-                   {
-                   pl->dir=0;
-                   }
-                   else if(pl->dir<0)
-                   {
-                   pl->dir=31;
-                   }
-                 */
-                break;
-        }
-
-        g->dir=((pl->dir+4)>>5);
-
-        if(g->dir>7)
-            g->dir-=8;
-
+        
         g->world_x=pl->world_x-avanzamento_x[g->dir];
         g->world_y=pl->world_y-avanzamento_y[g->dir];
-
+       
         p->doing_shot=TRUE;
     }
     else {

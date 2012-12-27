@@ -637,8 +637,9 @@ void LoadReplay(UBYTE Set)
         p->team[0]      = a[SQ_PTR * 2 + 4];
         p->team[1]      = a[SQ_PTR * 2 + 5];
     
-        p->referee.anim->node.mpNext =
-            p->referee.anim->node.mpPrev = NULL;
+        if (p->referee.anim)
+            p->referee.anim->node.mpNext = p->referee.anim->node.mpPrev = NULL;
+        
         p->ball.anim->node.mpNext =
             p->ball.anim->node.mpPrev = NULL;
         p->extras->node.mpNext =

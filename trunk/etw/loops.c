@@ -499,7 +499,7 @@ void MainLoop(void)
             handle_pause_status();
             continue;
         }
-        
+               
         logic_frame();
 
         if (pause_mode)
