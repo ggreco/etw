@@ -138,7 +138,10 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     localPlayer = [GKLocalPlayer localPlayer];
     [localPlayer authenticateWithCompletionHandler:^(NSError *error)
     {
-        if (localPlayer.isAuthenticated)
+        if (error != nil) {
+            NSLog(@"Error initializing game center: %@", error);
+        }
+        else if (localPlayer.isAuthenticated)
         {
             printf("game center started!\n");
              //[GKNotificationBanner showBannerWithTitle:@"Title" message:@"Message" completionHandler:^{}];
@@ -259,6 +262,8 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
         {
             NSLog(@"Error Message: - %@",[error localizedDescription]);
         }
+         else
+             NSLog(@"Successfully added score");
     } ];
     
     [scoreReporter release];

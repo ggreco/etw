@@ -66,7 +66,7 @@ void HandleScrolling(void)
 
     scroll_tick++;
 
-    if (scroll_tick > 50) {
+    if (scroll_tick > framerate) {
         if (p->team[0]->Possesso) {
             o_limit = WINDOW_WIDTH * 3 / 5;
             e_limit = WINDOW_WIDTH * 4 / 5;
@@ -181,33 +181,6 @@ void HandleScrolling(void)
             field_y = field_y_limit;
         }
     }
-
-    if (!replay_mode) {
-        p->show_time--;
-
-        if (pl->InGioco) {
-            if (p->show_time <= 0) {
-                if (p->show_panel & PANEL_KICKOFF) {
-                    p->show_time = 100;
-                    p->show_panel = PANEL_RESULT | PANEL_TIME;
-                } else
-                    p->show_panel = 0;
-
-            }
-
-            D(if (p->show_panel & 0xff00)
-              bug
-              ("Error, special panel opened during gameplay!\n"));
-        } else if (!p->show_panel) {
-            p->show_panel = PANEL_TIME;
-        } else if (!(p->show_panel & 0xff00))    // Substitutions and tactic change stops the timer.
-        {
-            if (p->show_time <= 0) {
-                p->show_time = 0;
-                p->show_panel &= ~(PANEL_RESULT | PANEL_GOAL);
-            }
-        }
-    }
 }
 
 // added since events after HandleScrolling() may change the position...
@@ -273,40 +246,38 @@ void graphic_frame(void)
 
 static BOOL has_practice_achievement = FALSE;
 
-void logic_frame(void)
-{   
-    if (network_game)
-        HandleNetwork(p->TabCounter, pl->world_x);
-
-    if (!p->flash_mode) {
-        HandleReplay();
-
-        HandleControl();
-
-        HandleScrolling();
-
-        if (arcade)
-            HandleArcade();
-
-        HandleBall();
-
-        HandleReferee();
-
-        if (detail_level & USA_GUARDALINEE)
-            HandleGuardalinee();
-
-        HandleTeam0(0);
-        HandleTeam1(1);
-
-        HandleKeeper(0);
-        HandleKeeper(1);
-
-        HandleExtras();
-        MoveNonControlled();
-        PostHandleBall();
-    } else {
-        p->flash_pos++;
+static void HandlePanels()
+{
+    if (!replay_mode) {
+        p->show_time--;
+        
+        if (pl->InGioco) {
+            if (p->show_time <= 0) {
+                if (p->show_panel & PANEL_KICKOFF) {
+                    p->show_time = 100;
+                    p->show_panel = PANEL_RESULT | PANEL_TIME;
+                } else
+                    p->show_panel = 0;
+                
+            }
+            
+            D(if (p->show_panel & 0xff00)
+              bug
+              ("Error, special panel opened during gameplay!\n"));
+        } else if (!p->show_panel) {
+            p->show_panel = PANEL_TIME;
+        } else if (!(p->show_panel & 0xff00))    // Substitutions and tactic change stops the timer.
+        {
+            if (p->show_time <= 0) {
+                p->show_time = 0;
+                p->show_panel &= ~(PANEL_RESULT | PANEL_GOAL);
+            }
+        }
     }
+}
+
+static void CheckEndGame()
+{
     uint32_t now = Timer();
     if (now > EndTime) {
         if (p->referee.Comando != FISCHIA_FINE
@@ -337,6 +308,46 @@ void logic_frame(void)
              (now - StartGameTime) > 300000) {
         has_practice_achievement = TRUE;
         add_achievement("15_practice", 100.0);
+    }
+}
+
+void logic_frame(void)
+{   
+    if (network_game)
+        HandleNetwork(p->TabCounter, pl->world_x);
+
+    if (!p->flash_mode) {
+        HandleReplay();
+
+        HandleControl();
+
+        HandleScrolling();
+
+        HandlePanels();
+
+        if (arcade)
+            HandleArcade();
+
+        HandleBall();
+
+        HandleReferee();
+
+        if (detail_level & USA_GUARDALINEE)
+            HandleGuardalinee();
+
+        HandleTeam0(0);
+        HandleTeam1(1);
+
+        HandleKeeper(0);
+        HandleKeeper(1);
+
+        HandleExtras();
+        MoveNonControlled();
+        PostHandleBall();
+        
+        CheckEndGame();
+    } else {
+        p->flash_pos++;
     }
 }
 
@@ -494,6 +505,7 @@ void MainLoop(void)
 
         EndTime -= (situation_time * t_l * 60 / 45);
     }
+    
     while (!quit_game) {
         if (pause_mode) {
             handle_pause_status();

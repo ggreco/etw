@@ -6,6 +6,7 @@
 #include "SDL.h"
 
 //#define TESTING_RES_1024
+BOOL prefs_changed = FALSE;
 
 extern void MenuResizing(int, int);
 extern uint8_t joycfg_buttons[2][8];
@@ -764,6 +765,7 @@ BOOL JoyCfg(WORD button)
         RedrawButton(&actual_menu->Button[button * 2],
                      actual_menu->Button[button * 2].Color);
         ScreenSwap();
+        prefs_changed = TRUE;
     }
 
     return TRUE;
@@ -829,14 +831,6 @@ BOOL KeyCfg(WORD button)
         if (button >= 16 && control[0] == CTRL_KEY_1)
             return TRUE;
 
-#ifdef ORIG_METHOD
-        temp = actual_menu->Button[button * 2].Text;
-
-        actual_menu->Button[button * 2].Text = "WAITING BUTTON...";
-
-        RedrawButton(&actual_menu->Button[button * 2],
-                     actual_menu->Button[button * 2].Highlight);
-#else
         /* Alternative method that leaves visible the association of the key during key pressing */
         temp = actual_menu->Button[button * 2 + 1].Text;
 
@@ -844,9 +838,11 @@ BOOL KeyCfg(WORD button)
 
         RedrawButton(&actual_menu->Button[button * 2 + 1],
                      actual_menu->Button[button * 2 + 1].Highlight);
-#endif
 
         ScreenSwap();
+
+        prefs_changed = TRUE;
+
 
         while (!ok)
         {
@@ -919,7 +915,6 @@ BOOL KeyCfg(WORD button)
                         RedrawButton(&actual_menu->Button[button * 2 + 1],
                                      actual_menu->Button[button * 2 + 1].Color);
                     }
-#ifndef ORIG_METHOD
                     else
                     {
                         /* Restore the old button */
@@ -927,14 +922,6 @@ BOOL KeyCfg(WORD button)
                         RedrawButton(&actual_menu->Button[button * 2 + 1],
                                      actual_menu->Button[button * 2 + 1].Color);
                     }
-#endif
-
-#ifdef ORIG_METHOD
-                    actual_menu->Button[button * 2].Text = temp;
-
-                    RedrawButton(&actual_menu->Button[button * 2],
-                                 actual_menu->Button[button * 2].Color);
-#endif
                     ScreenSwap();
                 break;
                 /* ...but exit when the key is released in order to skip this event
@@ -1560,6 +1547,8 @@ BOOL GamePrefs(WORD button)
             return FALSE;
     }
 
+    prefs_changed = TRUE;
+    
     RedrawButton(&actual_menu->Button[button],
                  actual_menu->Button[button].Color);
 
@@ -1632,6 +1621,8 @@ BOOL AudioPrefs(WORD button)
                 PlayMenuMusic();
             break;
     }
+
+    prefs_changed = TRUE;
 
     UpdatePrefs(MENU_AUDIO_PREFS);
 
@@ -1706,6 +1697,7 @@ BOOL SystemPrefs(WORD button)
         case 9:
             break;
     }
+    prefs_changed = TRUE;
 
     UpdatePrefs(MENU_SYSTEM_PREFS);
 
@@ -1779,6 +1771,7 @@ BOOL MobilePrefs(WORD button)
             tutorial = tutorial ? FALSE : TRUE;
             break;
     }
+    prefs_changed = TRUE;
 
     UpdatePrefs(MENU_MOBILE_PREFS);
 
@@ -1952,6 +1945,7 @@ BOOL VideoPrefs(WORD button)
             D(bug("Unknown menu button clicked: %d\n", button));
             break;
     }
+    prefs_changed = TRUE;
 
     UpdatePrefs(MENU_VIDEO_PREFS);
 
@@ -2022,8 +2016,7 @@ void SetupMatches(void)
         case MENU_CHALLENGE:
 
             // Reset the control for all except the team in use...
-            if (turno == 0)
-            {
+            if (turno == 0) {
                 int i;
 
                 cp[6].Text = NULL;
@@ -2070,6 +2063,7 @@ void SetupMatches(void)
                 arcade_score += 500; // Final bonus
 
                 AddScore(*teamarray);
+                add_achievement("13_challenge", 100.0);
                 LoadTeams("teams/arcade"/*-*/);
                 turno = 0;
                 competition = MENU_TEAMS;
@@ -2277,7 +2271,7 @@ static void handle_challenge()
         final = TRUE;
 
     WORD result = StartMatch(*teamarray, arcade_sequence[turno]);
-
+    
     cp[2].Text = teamlist[*teamarray].name;
     cp[3].Text = teamlist[arcade_sequence[turno]].name;
 
@@ -2295,22 +2289,15 @@ static void handle_challenge()
     arcade_score -= ((result >> 8) * 10);
     arcade_score += ((result & 0xff) * 15);
 
-    if ((result & 0xff) > (result >> 8) || turno == 10)
-    {
+    if ((result & 0xff) > (result >> 8) || turno == 10) {
         cb[0].ID = MENU_CHALLENGE;
         arcade_score += turno * 20;
         turno++;
     }
-    else
-    {
-        // we won the challenge mode!
-        if (turno == 10 && (result & 0xff) > (result >> 8)) 
-            add_achievement("13_challenge", 100.0);
-
+    else {
         if (turno > 0) {
+            D(bug("GAME OVER, adding to hall of fame arcade score %d\n", arcade_score));
             AddScore(*teamarray);
-            // for world
-            add_score(arcade_score);
         }
         turno = 0;
         competition = MENU_TEAMS;
@@ -2320,6 +2307,7 @@ static void handle_challenge()
         cp[6].Text = msg_52;
         cb[0].ID = MENU_ARCADE;
     }
+    
     D(bug("Setting destination menu to %d\n", final_menu));
     ChangeMenu(final_menu);
 }

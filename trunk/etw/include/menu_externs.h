@@ -98,9 +98,9 @@ extern BOOL no_sound, allow_replay, nocpu, saved, wb_game, big, injuries, substi
     menu_music, use_speaker, no_sound, use_crowd, special, random_draw, nopari, make_setup,
     game_start, penalties, free_kicks, friendly, arcade_back, arcade_teams,
     final, nointro, killer, savehigh, can_modify, warp, music_playing, golden_gol, newchange, network_game,
-    audio_to_fast, use_gfx_scaling, tutorial, use_touch;
+    audio_to_fast, use_gfx_scaling, tutorial, use_touch, prefs_changed;
 extern int32_t Pens[256];
-extern int framerate, display_id, framerate, overscan;
+extern int framerate;
 extern long int t_l, situation_time;
 extern uint32_t detail_level, ahimode;
 extern struct Match turni[64][32];

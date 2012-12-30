@@ -15,7 +15,7 @@ void DoLongPass(player_t *g, uint32_t joystate)
     if( abs(CambioDirezione[g->dir][(pl->dir>>5)])<2 )
         Tira(g);
     else
-        SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->dir>>5);
+        SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,(pl->dir + 4)>>5);
 }
 
 void DoCross(player_t *g)
@@ -46,17 +46,20 @@ void DoShot(player_t *g, uint32_t joystate)
         pl->TipoTiro=TIRO_ALTO;
     }
 
-    SetShotSpeed(g,IndirizzaTiro(g,joystate));
+    SetShotSpeed(g, IndirizzaTiro(g, joystate));
 
     if(CanScore(g)!=CS_SI)
         pl->velocita-=(1+GetTable());
 
+    if (pl->TipoTiro == TIRO_RASOTERRA)
+        pl->velocita++;
+    
     CheckPortiere(g->SNum^1);
 
-    if( abs(CambioDirezione[g->dir][(pl->dir>>5)])<2 )
+    if( abs(CambioDirezione[g->dir][(pl->dir+4)>>5])<2 )
         Tira(g);
     else
-        SetComando(g,ESEGUI_ROTAZIONE,ESEGUI_TIRO,pl->dir>>5);
+        SetComando(g, ESEGUI_ROTAZIONE, ESEGUI_TIRO, (pl->dir + 4) >> 5);
 }
 
 void HumanShot(player_t *g, uint32_t joystate)
@@ -641,8 +644,7 @@ void HandleControlledTouch(int squadra)
     if (joystate & JPF_TOUCH) {
         player_t *g2 = find_touch_player(g);
         
-        if ((pl->gioc_palla && pl->gioc_palla->team != g->team) ||
-            (!pl->gioc_palla)) {
+        if (!pl->gioc_palla || pl->gioc_palla->team != g->team) {
             // we can change the active player to the nearest one...
             
             D(bug("Detected free touch change player from %s to %s\n", g->name, g2 ? g2->name : "NONE"));

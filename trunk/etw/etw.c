@@ -32,7 +32,7 @@ gfx_t *arcade_gfx[ARCADE_TEAMS + 1];
 uint8_t *back;
 int bitmap_width, bitmap_height;
 struct SoundInfo *music = NULL;
-char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE;
+char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE, *SCORE_FILE;
 
 void PlayMenuMusic(void)
 {
@@ -388,11 +388,12 @@ int main(int argc, char *argv[])
     } 
 
 #if defined(IPHONE)
+    SCORE_FILE = "../Documents/ETWScores";
     TEMP_DIR = "../Documents/";
     HIGH_FILE = "../Documents/high";
     CONFIG_FILE = "../Documents/thismatch";
     RESULT_FILE = "../Documents/result";    
-#elif defined(LINUX) || defined(SOLARIS_X86)
+#elif defined(LINUX) || defined(SOLARIS_X86) || defined(MACOSX)
     /* Find data and temporary directories */
     {
         struct passwd *pwd;
@@ -432,17 +433,21 @@ int main(int argc, char *argv[])
         sprintf(CONFIG_FILE, "%sthismatch", TEMP_DIR);
         RESULT_FILE = malloc(strlen(TEMP_DIR) + strlen("result") + 1);
         sprintf(RESULT_FILE, "%sresult", TEMP_DIR);
+        SCORE_FILE = malloc(strlen(home) + 30);
+        sprintf(SCORE_FILE, "%s/.etw/ETWScores", home);
     }
 #elif defined(AMIGA)
     TEMP_DIR = "t:";
     HIGH_FILE = "t:high";
     CONFIG_FILE = "t:thismatch";
-    RESULT_FILE = "t:result";    
+    SCORE_FILE = "ETWScores";
+    RESULT_FILE = "t:result";
 #else
     TEMP_DIR = "t/";
     HIGH_FILE = "t/high";
     CONFIG_FILE = "t/thismatch";
     RESULT_FILE = "t/result";
+    SCORE_FILE = "ETWScores";
 #endif
     
     read_menu_config();

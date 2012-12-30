@@ -36,6 +36,7 @@ extern char *TEMP_DIR;
 extern char *HIGH_FILE;
 extern char *CONFIG_FILE;
 extern char *RESULT_FILE;
+extern char *SCORE_FILE;
 
 #   define EXEC_DIR        ""
 #   define GAME_DIR        ""

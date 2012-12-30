@@ -171,7 +171,7 @@ WORD LastMatchResult()
 
 WORD StartMatch(BYTE t1,BYTE t2)
 {
-    int t;
+    int t, old_tl;
     match_result = -1;
     team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
     team1 = t1; team2 = t2;
@@ -341,16 +341,14 @@ WORD StartMatch(BYTE t1,BYTE t2)
     if(use_gfx_scaling)
         use_scaling=TRUE;
 
-    t=t_l;
+    old_tl=t_l;
 
     if(arcade&&competition==MENU_CHALLENGE)
-        t=3;
+        t_l = 5;
     else if(training)
-        t=20;
+        t_l = 20;
 
-    t_l=t;
-
-    time_length=t*60;
+    time_length=t_l*60;
 
     if(use_speaker)
     {
@@ -404,7 +402,8 @@ WORD StartMatch(BYTE t1,BYTE t2)
         ChangeMenu(0);
         return 0;
     }
-
+    t_l = old_tl;
+    
     return restore_menus();
 }
 

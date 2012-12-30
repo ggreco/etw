@@ -342,12 +342,8 @@ void LoadScores(void)
     char buffer[100];
     FILE *f;
 
-#ifdef __CODEGUARD__
-    if(access("ETWScores"/*-*/,0) == -1)
-        return;
-#endif
 
-    if ((f=fopen("ETWScores"/*-*/,"r"))) {
+    if ((f=fopen(SCORE_FILE,"r"))) {
         if(fgets(buffer,99,f))
         {
             if(sscanf(buffer,"%d",&score_number)==1)
@@ -380,7 +376,7 @@ void WriteScores(void)
 {
     FILE *f;
 
-    if ((f=fopen("ETWScores"/*-*/,"w")))     {
+    if ((f=fopen(SCORE_FILE, "w")))     {
         int i,j;
 
         fprintf(f, "%d\n", score_number);
@@ -400,13 +396,18 @@ void WriteScores(void)
 
         fclose(f);
     }
+    else {
+        D(bug("Unable to write scores to %s\n", SCORE_FILE));
+    }
 }
 
 void AddScore(UBYTE team)
 {
     char buffer[100];
     int i=0;
-
+    // let's add the score to the "world" rankings
+    add_score(arcade_score);
+    
     if(arcade_score<0)
         return;
 
