@@ -729,7 +729,8 @@ BOOL DoAction(WORD button)
 #ifdef MOBILE_VERSION
             if (button < 2)
                 UpdatePrefs(b->ID);
-            else {
+            else if (prefs_changed) {
+                prefs_changed = FALSE;
                 add_achievement("4_change", 100.0);
                 save_prefs();
             }
@@ -832,7 +833,8 @@ BOOL DoAction(WORD button)
             }
             break;
         case MENU_PREFS:
-            if (button == 5) {
+            if (button == 5 && prefs_changed) {
+                prefs_changed = FALSE;
                 add_achievement("4_change", 100.0);
                 save_prefs();
 

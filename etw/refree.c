@@ -69,6 +69,7 @@ static void check_goal_achievements(int t)
             if (now >= (EndTime - MY_CLOCKS_PER_SEC * 5))
                 zona_cesarini = TRUE;
         }
+        add_achievement("20_goleador", 2.0);
     }
 }
 
@@ -194,8 +195,8 @@ void HandleReferee(void)
                             full_replay=FALSE;
                             if (!arcade && !training) {
                                 
-                                if ((p->team[0]->Joystick >= 0 && p->team[0]->Falli == 0) ||
-                                    (p->team[1]->Joystick >= 0 && p->team[1]->Falli == 0) )
+                                if ((p->team[0]->Joystick >= 0 && p->team[0]->Falli == 0 && p->team[0]->Reti > p->team[1]->Reti) ||
+                                    (p->team[1]->Joystick >= 0 && p->team[1]->Falli == 0 && p->team[1]->Reti > p->team[0]->Reti) )
                                     add_achievement("19_fairplay", 100.0);
                             }
 

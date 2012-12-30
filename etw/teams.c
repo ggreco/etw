@@ -862,7 +862,7 @@ void LoadTeams(char *name)
 
 // Patch per gestire correttamente il caricamento di un campionato con + di uno scontro!
 
-                    while(totale_giornate>=nteams) {
+                    if (totale_giornate>=nteams) {
                         /* AC: Stesso discorso del while precedente */
                         if(nteams != 0)
                             totale_giornate-=(nteams-1);

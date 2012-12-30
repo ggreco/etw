@@ -6,7 +6,7 @@
 
 uint32_t detail_level = 0xffffffff;
 long Colors = 0;
-int WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 50;
+int WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 40;
 extern BOOL free_longpass;
 BOOL use_key0 = FALSE, use_key1 = FALSE, use_touch = FALSE;
 
