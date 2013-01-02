@@ -770,10 +770,13 @@ void DrawR(void)
 
 void ShowFinal(void)
 {
-    team_t *s =
-        (p->team[0]->Reti >
-         p->team[1]->Reti ? p->team[0] : p->team[1]);
+    team_t *s = p->team[0]->Reti > p->team[1]->Reti ? p->team[0] :
+                p->team[1]->Reti > p->team[0]->Reti ? p->team[1] :
+                NULL;
 
+    if (!s)
+         return;
+         
     if (s->Joystick >= 0) {
         uint8_t *mask;
 

@@ -462,6 +462,32 @@ BOOL ChangeMRMenu(WORD button)
     return TRUE;
 }
 
+static BOOL has_human_selection()
+{
+    int i;
+    
+    for (i = 0; i < (TS_RIGHE * TS_COLONNE); ++i) {
+        struct Button *b = &menu[MENU_TEAM_SELECTION].Button[i];
+        
+        if (b->Color != COLOR_UNSELECTED & controllo[-b->ID - 1] >= 0)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+static BOOL has_arcade_human_selection()
+{
+    int i;
+    
+    for (i = 0; i < ARCADE_TEAMS; ++i) {
+        struct Button *b = &menu[MENU_ARCADE_SELECTION].Button[i];
+        
+        if (b->Color != COLOR_UNSELECTED & controllo[b->ID] >= 0)
+            return TRUE;
+    }
+    return FALSE;
+}
+
 BOOL TeamSelection(WORD button)
 {
     static BYTE selected = -1;
@@ -511,6 +537,16 @@ BOOL TeamSelection(WORD button)
 
             controllo[-b->ID - 1] = 0;
 
+#ifdef MOBILE_VERSION
+            if (has_human_selection()) {
+                b->Color = COLOR_COMPUTER;
+                controllo[-b->ID - 1] = -1;
+            }
+            else {
+                controllo[-b->ID - 1] = 1;
+                b->Color = COLOR_TEAM_A;
+            }
+#else
             if (!team1_selected || wanted_number > 2
                 || wanted_number <= 0 || selected_number > 2)
             {
@@ -520,15 +556,11 @@ BOOL TeamSelection(WORD button)
             }
             else
             {
-#ifndef MOBILE_VERSION                
                 b->Color = COLOR_TEAM_B;
                 controllo[-b->ID - 1] = 0;
-#else
-                b->Color = COLOR_COMPUTER;
-                controllo[-b->ID - 1] = -1;
-#endif
                 team2_selected = TRUE;
             }
+#endif
         }
         else if (b->Color == COLOR_COMPUTER) {
             b->Color = COLOR_UNSELECTED;
@@ -1014,6 +1046,19 @@ BOOL ArcadeTeamSelection(WORD button)
 
             controllo[b->ID] = 0;
 
+#ifdef MOBILE_VERSION
+            if (has_arcade_human_selection()) {
+                // max one human team in mobile version!
+                team2_selected = TRUE;
+                b->Color = COLOR_COMPUTER;
+                controllo[b->ID] = -1;
+            }
+            else {
+                team1_selected = TRUE;
+                controllo[b->ID] = 1;
+                b->Color = COLOR_TEAM_A;
+            }
+#else
             if (!team1_selected || wanted_number > 2
                  || wanted_number <= 0 || selected_number > 2)
             {
@@ -1024,15 +1069,10 @@ BOOL ArcadeTeamSelection(WORD button)
             else
             {
                 team2_selected = TRUE;
-// max one human team in mobile version!
-#ifndef MOBILE_VERSION
                 controllo[b->ID] = 0;
                 b->Color = COLOR_TEAM_B;
-#else
-                b->Color = COLOR_COMPUTER;
-                controllo[b->ID] = -1;
-#endif
             }
+#endif
         }
         else if (b->Color == COLOR_COMPUTER)
         {
