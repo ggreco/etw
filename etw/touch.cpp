@@ -252,8 +252,8 @@ iteration()
                             center_y_ = y;
                             joyrect_.x = center_x_ - joyrect_.w / 2;
                             joyrect_.y = center_y_ - joyrect_.h / 2;
-                            if (joyrect_.x < 0)
-                                joyrect_.x = 0;
+                            if (joyrect_.x < 20)
+                                joyrect_.x = 20;
                             if (joyrect_.y < 0)
                                 joyrect_.y = 0;
                             if (joyrect_.y + joyrect_.h > screen_h_)

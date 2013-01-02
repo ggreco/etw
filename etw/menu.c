@@ -11,7 +11,7 @@ void *hwin = NULL;
 void CreateButton(struct Button *b);
 void SelectButton(WORD button);
 void DrawBox(WORD button);
-
+static BOOL new_competition = FALSE;
 struct Button req_bottoni[4];
 BOOL reqqing = FALSE;
 
@@ -582,13 +582,15 @@ BOOL DoAction(WORD button)
             break;
         case MENU_SELECTION_TYPE:
             if (button == 0 && !arcade_teams) {
-                if (!DoWarning((special || competition != MENU_TEAMS))) {
+                if (!DoWarning((special || competition != MENU_TEAMS)&&!new_competition)) {
+                    new_competition = FALSE;
                     LoadTeams("teams/arcade");
                     arcade_teams = TRUE;
                 } else
                     return TRUE;
             } else if (button == 1 && arcade_teams) {
-                if (!DoWarning(competition != MENU_TEAMS)) {
+                if (!DoWarning((competition != MENU_TEAMS) &&!new_competition)) {
+                    new_competition = FALSE;
                     LoadTeams("teams/default");
                     arcade_teams = FALSE;
                 } else
@@ -628,9 +630,10 @@ BOOL DoAction(WORD button)
                 if (!DoWarning(((special || competition != MENU_MATCHES)
                                 && competition != MENU_TEAMS))) {
                     if (competition != MENU_MATCHES) {
+                        new_competition = TRUE;
                         ClearSelection();
                         competition = MENU_MATCHES;
-                        wanted_number = 0;
+                        wanted_number = 8;
                     } else
                         b->ID = MENU_MATCHES;
                 } else
