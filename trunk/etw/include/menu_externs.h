@@ -165,3 +165,6 @@ void show_achievements();
 void add_score(int);
 void reset_achievements();
 void init_game_center();
+
+// tutorial api
+void check_tutorial();

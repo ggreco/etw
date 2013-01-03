@@ -93,7 +93,7 @@
 struct EasyStruct
 {
     int es_Size, es_Flags;
-    char *es_Title, *es_TextFormat, *es_GadgetFormat;
+    const char *es_Title, *es_TextFormat, *es_GadgetFormat;
 };
 
 struct Button

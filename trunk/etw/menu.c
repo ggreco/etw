@@ -20,24 +20,18 @@ struct MyFileRequest freq = { 0 };
 
 BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
 {
+    extern BOOL pause_mode;
     struct GfxMenu *old_menu, fake_menu;
     int i, x, y, width = FixedScaledX(150), button_width =
         FixedScaledX(30), height = FixedScaledY(30), bottoni = 1, linee =
-        1, len = 0, leftedge, topedge;
+        1, len = 0, leftedge, topedge, old_current_menu = current_menu;
     struct myfont *tf;
-    char text[400];
+    char text[1024];
     char buttons[100];
     char *c;
 
     strncpy(text, e->es_TextFormat, sizeof(text) - 1);
     strncpy(buttons, e->es_GadgetFormat, sizeof(buttons) - 1);
-
-    /* AC: Se per qualche motivo i font non sono caricati, li ricarico. */
-    /* Questo succede ad esempio se c'e` un errore ad inizio partita, dopo */
-    /* che e` stata fatta la FreeMenuStuff */
-
-    /*if(bigfont == NULL || smallfont == NULL)
-        InitMenuFonts(); da provare` */
 
     if (WINDOW_WIDTH > 400)
         tf = bigfont;
@@ -46,18 +40,30 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
 
     // Compute how many lines of text there are.
     c = text;
-
+    
     while (*c) {
-        if (*c == '\n') {
+        if (((len + 4) * tf->width) > WINDOW_HEIGHT) {
+            
+            while (*c != ' ' && *c != 0 && len > 1) {
+                c--;
+                len--;
+            }
+            
+            width = max(width, (len + 4) * tf->width);
+            *c = 0;
+            len = 0;
+            linee++;
+        }
+        else if (*c == '\n') {
             linee++;
             width = max(width, (len + 4) * tf->width);
             len = 0;
             *c = 0;
-        } else
+        } else {
             len++;
-
-        *c = toupper(*c);
-
+            *c = toupper(*c);
+        }
+        
         c++;
     }
 
@@ -170,20 +176,18 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
         linee--;
     }
 
-      old_menu = actual_menu;
+    old_menu = actual_menu;
     actual_menu = &fake_menu;
 
     fake_menu.NumeroBottoni = bottoni;
     fake_menu.Button = req_bottoni;
     actual_button = 0;
-
+    current_menu = MENUS;
+    
     D(bug("Creating requester with %d buttons\n", bottoni));
 
-    /* AC: I think that this routine is too specific for menu selection.
-     * In order to work correctly is also necessary to alter the correct
-     * value of current_menu.
-     * I think is better to put directly here the four needed instructions.
-    DrawBox(0);*/
+    DrawBox(0);
+/*
     draw(Pens[P_GIALLO], req_bottoni[0].X1 - 1, req_bottoni[0].Y1 - 1,
         req_bottoni[0].X2 + 1, req_bottoni[0].Y1 - 1);
     draw(Pens[P_GIALLO], req_bottoni[0].X2 + 1, req_bottoni[0].Y1 - 1,
@@ -192,21 +196,21 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
         req_bottoni[0].X1 - 1, req_bottoni[0].Y2 + 1);
     draw(Pens[P_GIALLO], req_bottoni[0].X1 - 1, req_bottoni[0].Y2 + 1,
         req_bottoni[0].X1 - 1, req_bottoni[0].Y1);
-
+*/
     ScreenSwap();
 
     reqqing = TRUE;
-
-// XXX TODO: sistemare gestione loop per questa casistica.
     
     while (HandleMenuIDCMP());
 
     linee = current_button;
     actual_menu = old_menu;
-
+    current_menu = old_current_menu;
+    
     reqqing = FALSE;
 
-    ChangeMenu(current_menu);
+    if (!game_start || pause_mode)
+        ChangeMenu(current_menu);
 
     for (i = 0; i < bottoni; i++)
         free(req_bottoni[i].Text);
@@ -1772,6 +1776,8 @@ BOOL HandleMenuIDCMP(void)
         }
     }
 
+    check_tutorial();
+    
     // no popup request in pause menu
     if (!returncode && !reqqing && current_menu != MENU_PAUSE)
         if (!CheckQuit())

@@ -521,6 +521,9 @@ void MainLoop(void)
 
         logic++;
 
+        if (tutorial && (logic % 120) == 0)
+            check_tutorial();
+        
         if (Timer() < ideal) {
             graphic_frame();
 
