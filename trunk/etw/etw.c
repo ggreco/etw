@@ -493,10 +493,12 @@ int main(int argc, char *argv[])
 
     if (screen) {
         if (LoadMenuStuff()) {
-            D(bug("Starting ChangeMenu...\n"));
 
             os_start_audio();
 
+            init_tutorial();
+            
+            D(bug("Starting ChangeMenu...\n"));
             ChangeMenu(0);
             D(bug("Entering main loop...\n"));
 

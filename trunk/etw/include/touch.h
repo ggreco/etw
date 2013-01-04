@@ -132,6 +132,11 @@ public:
         // if it's already visible we do not hide it since it means the player is
         // keeping is finger pressed on the screen while using another finger to pass
         show_joy_ = val && joybase_ && knob_;
+    
+        if (!val) {
+            visible_ = false;
+            fading_ = 0;
+        }
     }
     
     SDL_Texture *load_bmp(const char*, int&, int&);

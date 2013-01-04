@@ -9,14 +9,18 @@
 extern "C" {
 #include "menu.h"
 #include "etw_locale.h"
-extern BOOL MyEasyRequest(void*, struct EasyStruct *, void*);
+
+    extern BOOL MyEasyRequest(void*, struct EasyStruct *, void*);
+    extern void StopTime();
+    extern void RestartTime();
+    extern void hide_vjoy();
+    extern void show_vjoy();
 }
 
 #include "tutorial.h"
-#include <set>
 
 #define SZ(x) (sizeof(x)/sizeof(x[0]))
-static std::set<int> already_seen;
+
 bool running_tutorial_line = false;
 
 static bool training_session(void)
@@ -45,15 +49,15 @@ static TutorialLine lines[] = {
     {TutorialLine::ByMenuId, (void*)MENU_GAME_START, "Eat the Whistle has two different game modes: Simulation and Arcade.\n\nBefore trying one of them you'll better practice a bit with the controls using the practice option."},
     {TutorialLine::ByMenuId, (void*)MENU_ARCADE, "Arcade mode is an original football variation played in a speedball-like arena, with pickable bonuses, and crazy teams. Try to win the arcade challenge or the whistle cup if you can!"},
     {TutorialLine::ByMenuId, (void*)MENU_SIMULATION, "Simulation mode will offer you an old-style soccer game experience, you can play a league, a cup or a friendly match!"},
-    {TutorialLine::ByMenuId, (void*)MENU_TRAINING, "Now play a training session, this will let you practice with the game controls."},
+    {TutorialLine::ByMenuId, (void*)MENU_TRAINING, "Now play a training session.\n\nThis will let you learn the basics and practice the game controls."},
     {TutorialLine::ByMenuId, (void*)MENU_TEAM_SELECTION, "This menu let you choose the team you want to use, an human team is identified with a blue background and the letter p, a computer controller one with a light gray background and the letter c.\n\nthe number of teams you have to select may vary: 1 for training, 2 for a friendly match, 3+ for a league..."},
     {TutorialLine::ByMenuId, (void*)MENU_ARCADE_SELECTION, "This menu let you choose the arcade team you want to use, an human team is marked with a blue p, a computer controller one with the light gray letter c.\n\nThe number of teams you have to select may vary: 1 for the challenge, 2 for a friendly match, 8 for the whistle tour."},
-    {TutorialLine::ByMenuId, (void*)MENU_TEAM_SETTINGS, "This screen let you change your initial tactic or the 11 initial players before a match."},
+    {TutorialLine::ByMenuId, (void*)MENU_TEAM_SETTINGS, "This screen let you change your team tactic or the 11 initial players before a match.\nThe stars near the player name are a global valutation of the abilities of your players."},
     {TutorialLine::ByMenuId, (void*)MENU_MOBILE_PREFS, "This menu let you change audio-video settings, you can also disable this tutorial if you want."},
     {TutorialLine::ByMenuId, (void*)MENU_HIGHLIGHT, "During a match you can record an highlight using the red circle icon during the replay, through this menu you can view an highlight or remove it."},
     {TutorialLine::ByMenuId, (void*)MENU_CHALLENGE, "The Arcade Challenge is the ultimate Eat The Whistle... challenge, you will have to win against all the arcade teams, except the one you have chosen, and a secret team to complete it."},
     {TutorialLine::BySpecialFunc, (void*)training_session, "Welcome to the Eat The Whistle training session, we will guide you through the basics of the game control system."},
-#ifdef IPHONE
+#ifdef MOBILE_VERSION
     {TutorialLine::BySpecialFunc, (void*)training_session, "You can pause the game, change your tactic or view replay or leave the game in any moment through the pause menu (icon on the top right corner of the touchscreen)"},
     {TutorialLine::BySpecialFunc, (void*)training_session, "You have the control of the player with a blue triangle on his head, you can move it with the virtual joystick that appears as soon as you put a finger on the lower left part of the touchscreen."},
     {TutorialLine::BySpecialFunc, (void*)training_session, "The virtual joystick has two different speed for each direction, if you move the red ball more distant from the center the player will run faster but you'll have a less responsive control if you want to change his direction."},
@@ -67,35 +71,53 @@ static TutorialLine lines[] = {
 
 void tutorial_line(int i)
 {
-    extern void StopTime();
-    extern void StartTime();
+    bool stopped = false;
     extern void *hwin;
-    extern BOOL time_stopped;
+    extern BOOL time_stopped, pause_mode;
     struct EasyStruct easy = {0};
     running_tutorial_line = true;
     easy.es_TextFormat = lines[i].line.c_str();
     easy.es_GadgetFormat = msg_82;
     
-    if (game_start && !time_stopped)
-        StopTime();
+    if (game_start) {
+        if (!time_stopped) {
+            StopTime();
+            stopped = true;
+        }
+        hide_vjoy();
+    }
     
     MyEasyRequest(hwin, &easy, NULL);
     
-    if (game_start && !time_stopped)
-        StartTime();
+    if (game_start && !pause_mode)
+        show_vjoy();
+    
+    if (stopped) {
+        extern uint32_t ideal;
+        RestartTime();
+        ideal = Timer() - 1;
+    }
     
     running_tutorial_line = false;
-    already_seen.insert(i);
+    lines[i].seen = true;
 }
+
+extern "C" void
+init_tutorial()
+{
+    for (int i = 0; i < SZ(lines); ++i)
+        lines[i].seen = false;
+}
+
 
 extern "C" void
 check_tutorial()
 {
-    if (running_tutorial_line || !tutorial)
+    if (running_tutorial_line || reqqing || !tutorial)
         return;
     
     for (int i = 0; i < SZ(lines); ++i) {
-        if (already_seen.find(i) != already_seen.end())
+        if (lines[i].seen)
             continue;
         
         if (lines[i].ActivatedByMenu() &&

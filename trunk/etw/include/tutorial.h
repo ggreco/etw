@@ -17,6 +17,7 @@ struct TutorialLine
     Activation activation;
     void *data;
     std::string line;
+    bool seen;
     bool ActivatedByMenu() const { return activation == ByMenuId; }
     bool SpecialFuncMatch() const {
         if (activation != BySpecialFunc)
