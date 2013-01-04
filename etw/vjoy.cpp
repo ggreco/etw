@@ -27,7 +27,7 @@ void touch_init()
     // only pause key in CPU vs CPU matches and highlights
     if ((p->team[0]->Joystick != -1 ||
          p->team[1]->Joystick != -1) && !highlight) {
-        touch->add_button("mobile/red-normal.bmp", "mobile/red-pressed.bmp", WINDOW_WIDTH - 140, WINDOW_HEIGHT - 80, TouchControl::BUTTON_1);
+        touch->add_button("mobile/red-normal.bmp", "mobile/red-pressed.bmp", WINDOW_WIDTH - 144, WINDOW_HEIGHT - 80, TouchControl::BUTTON_1);
         touch->add_button("mobile/blue-normal.bmp", "mobile/blue-pressed.bmp", WINDOW_WIDTH - 70, WINDOW_HEIGHT - 100, TouchControl::BUTTON_2);
     }
 

@@ -294,4 +294,6 @@ void free_game();
 // achievements
 void add_achievement(const char*, float);
 
+// tutorial
+void check_tutorial();
 #endif

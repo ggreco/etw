@@ -23,13 +23,16 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
     extern BOOL pause_mode;
     struct GfxMenu *old_menu, fake_menu;
     int i, x, y, width = FixedScaledX(150), button_width =
-        FixedScaledX(30), height = FixedScaledY(30), bottoni = 1, linee =
+        FixedScaledX(30), height = FixedScaledY(35), bottoni = 1, linee =
         1, len = 0, leftedge, topedge, old_current_menu = current_menu;
     struct myfont *tf;
     char text[1024];
     char buttons[100];
     char *c;
 
+    rectfill_pattern(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
+                     WINDOW_HEIGHT - 1, 0, bitmap_width);
+    
     strncpy(text, e->es_TextFormat, sizeof(text) - 1);
     strncpy(buttons, e->es_GadgetFormat, sizeof(buttons) - 1);
 
@@ -155,7 +158,7 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
 
     // Write the text
     c = text;
-    y = topedge + FixedScaledY(10);
+    y = topedge + FixedScaledY(13);
 
     setfont(tf);
 

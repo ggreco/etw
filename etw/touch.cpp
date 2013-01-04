@@ -111,7 +111,7 @@ draw()
             SDL_RenderCopy(rend, free_, NULL, &dest);
         }
 
-        if (visible_ || fading_ > 0) {
+        if ((visible_ || fading_ > 0) && show_joy_) {
             if (!visible_)
                 fading_--;
 
