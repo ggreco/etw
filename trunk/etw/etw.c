@@ -22,7 +22,6 @@
 extern SDL_Window *screen;
 extern int Colors;
 int oldwidth = 320, oldheight = 256;
-static int music_channel = -1;
 BOOL quit_game = FALSE, no_sound = FALSE;
 BOOL training = FALSE, firsttime = TRUE, arcade_back =
     FALSE;
@@ -31,47 +30,8 @@ anim_t *logos = NULL, *symbols = NULL;
 gfx_t *arcade_gfx[ARCADE_TEAMS + 1];
 uint8_t *back;
 int bitmap_width, bitmap_height;
-struct SoundInfo *music = NULL;
 char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE, *SCORE_FILE;
 
-void PlayMenuMusic(void)
-{
-    char buffer[120];
-
-    if (!menu_music || music_playing || no_sound)
-        return;
-
-    sprintf(buffer, "+.music/back%d.wav" /*-*/ , RangeRand(NUMERO_LOOPS));
-
-    D(bug("Loading %s as menu music...\n" /*-*/ , buffer));
-
-    if (music) {
-        FreeSound(music);
-        music = NULL;
-    }
-
-    if ((music = LoadSound(buffer))) {
-        music_channel = PlayBackSound(music);
-
-        if (music_channel >= 0)
-            music_playing = TRUE;
-    }
-}
-
-void StopMenuMusic(void)
-{
-    if (music_playing && music_channel >= 0 && !no_sound) {
-        extern struct SoundInfo *busy[];
-
-        D(bug("Stopping menu music on channel %d...\n" /*-*/, music_channel ));
-        SDL_LockAudio();
-        busy[music_channel] = NULL;
-// sblocco il canale            
-        SDL_UnlockAudio();
-        music_playing = FALSE;
-        music_channel = -1;
-    }
-}
 
 BOOL LoadBack(void)
 {
@@ -164,10 +124,7 @@ void FreeMenuStuff(void)
     FreeGraphics();
     D(bug("End: FreeGraphics()!\n"));
 
-    if (music) {
-        FreeSound(music);
-        music = NULL;
-    }
+    FreeMenuMusic();
 }
 
 BOOL LoadMenuStuff(void)

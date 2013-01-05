@@ -2,6 +2,8 @@
 
 #define SOUND_H
 
+#include "SDL_mixer.h"
+
 #ifndef MENU
     #include "suoni.h"
 #endif
@@ -24,22 +26,14 @@ struct BufferInfo
     /* Sound replay information. */
 
 
-
 #define SOUND_NORMAL 1
-#define SOUND_FAST   2
-#define SOUND_DISK   4
 #define SOUND_LOOP   8
-#define SOUND_CONVERTED 16
 
 struct SoundInfo
 {
-    ULONG    Rate, Length, Volume, Flags, Loops; 
-
-    ULONG    Offset;
-    void    *SoundData;
-
-    void    *LeftData, *RightData;
-    long    FileOffset;
+    ULONG     Flags, Loops;
+    LONG      channel;
+    Mix_Chunk *SoundData;
 };
 
 extern void os_start_audio(void);

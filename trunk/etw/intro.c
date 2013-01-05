@@ -26,28 +26,20 @@ void Intro(void)
                     int i;
 
                     fn->fn_Sample=menusound[1];
-                    fn->fn_Rate=menusound[1]->Rate;
-                    fn->fn_Volume=menusound[1]->Volume;
                     fn->fn_Loops=4;
 
                     if((fn=GetFrameNode(a,90))) {
                         fn->fn_Sample=menusound[2];
-                        fn->fn_Rate=menusound[2]->Rate;
-                        fn->fn_Volume=menusound[2]->Volume;
                         fn->fn_Loops=1;
                     }
 
                     if((fn=GetFrameNode(a,100))) {
                         fn->fn_Sample=menusound[1];
-                        fn->fn_Rate=menusound[1]->Rate;
-                        fn->fn_Volume=menusound[1]->Volume/4;
                         fn->fn_Loops=7;
                     }
 
                     if((fn=GetFrameNode(a,300))) {
                         fn->fn_Sample=menusound[1];
-                        fn->fn_Rate=menusound[1]->Rate;
-                        fn->fn_Volume=menusound[1]->Volume;
                         fn->fn_Loops=4;
                     }
 
@@ -70,36 +62,26 @@ void Intro(void)
                             if((fn=GetFrameNode(a,410))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[0];
-                                fn->fn_Rate=menusound[0]->Rate;
-                                fn->fn_Volume=menusound[0]->Volume;
                             }
                             break;
                         case 4:
                             if((fn=GetFrameNode(a,423))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[17];
-                                fn->fn_Rate=menusound[17]->Rate;
-                                fn->fn_Volume=menusound[17]->Volume;
                             }                            
                             if((fn=GetFrameNode(a,429))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[15];
-                                fn->fn_Rate=menusound[15]->Rate;
-                                fn->fn_Volume=menusound[15]->Volume;
                             }                            
                             if((fn=GetFrameNode(a,445))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[16];
-                                fn->fn_Rate=menusound[16]->Rate;
-                                fn->fn_Volume=menusound[16]->Volume;
                             }                            
                             break;
                         case 5:
                             if((fn=GetFrameNode(a,405))) {
                                 fn->fn_Loops=1;
                                 fn->fn_Sample=menusound[14];
-                                fn->fn_Rate=menusound[14]->Rate;
-                                fn->fn_Volume=menusound[14]->Volume;
                             }                            
                             break;
                     }
