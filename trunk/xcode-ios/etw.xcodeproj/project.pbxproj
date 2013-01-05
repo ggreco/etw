@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B2490601694B304004D96AC /* tutorial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B24905E1694B304004D96AC /* tutorial.cpp */; };
 		0B3DE794167BF4F400457D3F /* GameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B3DE793167BF4F400457D3F /* GameCenter.m */; };
 		0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3DE795167BF61100457D3F /* GameKit.framework */; };
+		0B49EB8E169746AD00907F2E /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B49EB8D169746AD00907F2E /* SDL_mixer.framework */; };
+		0B49EBCF1697AAF400907F2E /* vorbis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B49EB90169746BE00907F2E /* vorbis.framework */; };
 		0BAD164C16539DCB0071C986 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAD164B16539DCB0071C986 /* SDL.framework */; };
 		0BAD164E1655361D0071C986 /* iphone-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD164D1655361D0071C986 /* iphone-icon.png */; };
 		0BAD16581656AF290071C986 /* mobile in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD16571656AF290071C986 /* mobile */; };
@@ -93,12 +96,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B24905E1694B304004D96AC /* tutorial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tutorial.cpp; sourceTree = "<group>"; };
+		0B24905F1694B304004D96AC /* tutorial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tutorial.h; path = include/tutorial.h; sourceTree = "<group>"; };
 		0B3DE78F167BF4E100457D3F /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameCenter.h; path = include/GameCenter.h; sourceTree = "<group>"; };
 		0B3DE790167BF4E100457D3F /* player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = player.h; path = include/player.h; sourceTree = "<group>"; };
 		0B3DE791167BF4E100457D3F /* referee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = referee.h; path = include/referee.h; sourceTree = "<group>"; };
 		0B3DE792167BF4E100457D3F /* team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = team.h; path = include/team.h; sourceTree = "<group>"; };
 		0B3DE793167BF4F400457D3F /* GameCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenter.m; sourceTree = "<group>"; };
 		0B3DE795167BF61100457D3F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		0B49EB8D169746AD00907F2E /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = "../../sdl-ios-framework/build/sdl_mixer/SDL_mixer.framework"; sourceTree = "<group>"; };
+		0B49EB90169746BE00907F2E /* vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vorbis.framework; path = "../../sdl-ios-framework/build/tremor/vorbis.framework"; sourceTree = "<group>"; };
 		0BAD164B16539DCB0071C986 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../SDL.framework; sourceTree = "<group>"; };
 		0BAD164D1655361D0071C986 /* iphone-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-icon.png"; sourceTree = "<group>"; };
 		0BAD16571656AF290071C986 /* mobile */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mobile; path = ../data/mobile; sourceTree = "<group>"; };
@@ -226,6 +233,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B49EB8E169746AD00907F2E /* SDL_mixer.framework in Frameworks */,
+				0B49EBCF1697AAF400907F2E /* vorbis.framework in Frameworks */,
 				0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */,
 				0BAD164C16539DCB0071C986 /* SDL.framework in Frameworks */,
 				0BD74ED2165245940045909C /* UIKit.framework in Frameworks */,
@@ -287,6 +296,8 @@
 		0BD74ED0165245940045909C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0B49EB8D169746AD00907F2E /* SDL_mixer.framework */,
+				0B49EB90169746BE00907F2E /* vorbis.framework */,
 				0B3DE795167BF61100457D3F /* GameKit.framework */,
 				0BAD164B16539DCB0071C986 /* SDL.framework */,
 				0BB5CD1216524B3700BF007B /* QuartzCore.framework */,
@@ -354,6 +365,7 @@
 				0BD74F6B1652497D0045909C /* teams.c */,
 				0BD74F6C1652497D0045909C /* teamsetup.c */,
 				0BAD165A1656AFCE0071C986 /* touch.cpp */,
+				0B24905E1694B304004D96AC /* tutorial.cpp */,
 				0BD74F6D1652497D0045909C /* utility.c */,
 				0BAD165C1656B0110071C986 /* vjoy.cpp */,
 				0BD74F6E1652497D0045909C /* wc.c */,
@@ -418,6 +430,7 @@
 				0B3DE792167BF4E100457D3F /* team.h */,
 				0BD74FA7165249980045909C /* teamsetup.h */,
 				0BAD165E1656B37E0071C986 /* touch.h */,
+				0B24905F1694B304004D96AC /* tutorial.h */,
 				0BD74FA8165249980045909C /* version.h */,
 			);
 			name = headers;
@@ -559,6 +572,7 @@
 				0BAD165B1656AFCE0071C986 /* touch.cpp in Sources */,
 				0BAD165D1656B0110071C986 /* vjoy.cpp in Sources */,
 				0B3DE794167BF4F400457D3F /* GameCenter.m in Sources */,
+				0B2490601694B304004D96AC /* tutorial.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -634,6 +648,8 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/../..\"",
+					"\"$(SRCROOT)/../../sdl-ios-framework/build/sdl_mixer\"",
+					"\"$(SRCROOT)/../../sdl-ios-framework/build/tremor\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -643,7 +659,8 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../etw/include\"",
-					"\"$(SRCROOT)/../../SDL.framework/Headers",
+					"\"$(SRCROOT)/../../SDL.framework/Headers\"",
+					"\"$(SRCROOT)/../../SDL_mixer.framework/Headers\"",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/etw-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -664,6 +681,8 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/../..\"",
+					"\"$(SRCROOT)/../../sdl-ios-framework/build/sdl_mixer\"",
+					"\"$(SRCROOT)/../../sdl-ios-framework/build/tremor\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -673,7 +692,8 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../etw/include\"",
-					"\"$(SRCROOT)/../../SDL.framework/Headers",
+					"\"$(SRCROOT)/../../SDL.framework/Headers\"",
+					"\"$(SRCROOT)/../../SDL_mixer.framework/Headers\"",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/etw-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
