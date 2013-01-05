@@ -16,6 +16,7 @@ extern void ChangeMenu(WORD );
 extern void OpenMenuScreen(void);
 extern void PlayMenuMusic(void);
 extern void StopMenuMusic(void);
+extern void FreeMenuMusic(void);
 extern void read_menu_config(void);
 extern void write_config(char *);
 extern BOOL LoadMenuStuff(void);

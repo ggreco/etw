@@ -140,8 +140,6 @@ void DisplayAnim(struct AnimInstData *a)
         l++;
 
         if(fn->fn_Sample) {
-            fn->fn_Sample->Rate=fn->fn_Rate;
-            fn->fn_Sample->Volume=fn->fn_Volume;
             fn->fn_Sample->Loops=fn->fn_Loops;
             PlayBackSound(fn->fn_Sample);
         }

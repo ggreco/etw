@@ -46,9 +46,6 @@ void read_config(void)
     if(use_scaling&&!scaling)
         scaling=malloc(sizeof(struct MyFastScaleArgs));
 
-    if(!no_sound)
-        os_audio2fast();
-
     if(training)
         detail_level&=~(USA_RISULTATO|USA_ARBITRO|USA_GUARDALINEE);
 }

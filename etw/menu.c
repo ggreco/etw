@@ -25,6 +25,9 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
     int i, x, y, width = FixedScaledX(150), button_width =
         FixedScaledX(30), height = FixedScaledY(35), bottoni = 1, linee =
         1, len = 0, leftedge, topedge, old_current_menu = current_menu;
+#ifdef MOBILE_VERSION
+    height += FixedScaledY(10);
+#endif
     struct myfont *tf;
     char text[1024];
     char buttons[100];
@@ -145,6 +148,9 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
         req_bottoni[i].Text = strdup(c);
         req_bottoni[i].Y1 =
             topedge + height - tf->height - FixedScaledY(14);
+#ifdef MOBILE_VERSION
+        req_bottoni[i].Y1 -= FixedScaledY(10);
+#endif
         req_bottoni[i].Y2 = topedge + height - FixedScaledY(6);
 
         CreateButton(&req_bottoni[i]);

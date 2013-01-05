@@ -219,7 +219,6 @@ BOOL make_setup = FALSE, game_start = FALSE, can_modify = TRUE,
 int8_t selected_number = 0, wanted_number = 0, duration = 1,
        field_type = 0, daytime = 0;
 char *enabled = msg_7, *disabled = msg_8;
-extern struct SoundInfo *busy[];
 extern int os_videook(int, int);
 
 BYTE arcade_sequence[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -1008,10 +1007,7 @@ BOOL ArcadeTeamSelection(WORD button)
         if (jingle >= 0 && (selected != button || b->Color == COLOR_COMPUTER))
         {
             D(bug("Interrupt channel %ld\n", jingle));
-            SDL_LockAudio();
-            // code that block the sample.
-            busy[jingle] = NULL;
-            SDL_UnlockAudio();
+            Mix_HaltChannel(jingle);
             jingle = -1;
         }
 
@@ -1123,11 +1119,8 @@ BOOL ArcadeTeamSelection(WORD button)
         {
             if (jingle >= 0)
             {
+                Mix_HaltChannel(jingle);
                 D(bug("Interrupt channel %ld\n", jingle));
-                SDL_LockAudio();
-                // code that block the sample.
-                busy[jingle] = NULL;
-                SDL_UnlockAudio();
                 jingle = -1;
             }
 
@@ -1150,10 +1143,7 @@ BOOL ArcadeTeamSelection(WORD button)
         if (jingle >= 0)
         {
             D(bug("Interrupt channel %ld\n", jingle));
-            SDL_LockAudio();
-            // code that block the sample.
-            busy[jingle] = NULL;
-            SDL_UnlockAudio();
+            Mix_HaltChannel(jingle);
             jingle = -1;
         }
 
@@ -1241,10 +1231,7 @@ friendlymatch:
         if (jingle >= 0)
         {
             D(bug("Interrupt channel %ld\n", jingle));
-            SDL_LockAudio();
-            // code that blocks the sample.
-            busy[jingle] = NULL;
-            SDL_UnlockAudio();
+            Mix_HaltChannel(jingle);
             jingle = -1;
         }
 
@@ -2300,10 +2287,7 @@ static void handle_challenge()
     if (jingle >= 0)
     {
         D(bug("Interrupt channel %ld\n", jingle));
-        SDL_LockAudio();
-        // code that blocks the sample.
-        busy[jingle] = NULL;
-        SDL_UnlockAudio();
+        Mix_HaltChannel(jingle);
         jingle = -1;
     }
     

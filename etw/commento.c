@@ -323,8 +323,8 @@ void free_speaker(void)
    frase = NON_DECISA;
    game_status = S_NON_INIZIATO;
 
-   fondolen = sound[FONDO]->Length;
-   fondobase = sound[FONDO]->SoundData;
+//   fondolen = sound[FONDO]->Length;
+//   fondobase = sound[FONDO]->SoundData;
 
    if (comment_file) 
        free(comment_file);
@@ -361,8 +361,8 @@ struct SoundInfo *handle_speaker(void)
         Length=min(FONDO_CHUNK,Size);
 
         // Qui suono il fondo
-        sound[FONDO]->SoundData = fondobase + FondoOffset;
-        sound[FONDO]->Length = Length;
+//        sound[FONDO]->SoundData = fondobase + FondoOffset;
+//        sound[FONDO]->Length = Length;
         
         FondoOffset += Length;
 
@@ -396,10 +396,10 @@ struct SoundInfo *handle_speaker(void)
 
         // Qui la frase...
 
-        sound[COMMENTO]->Length = Lengths[frase];
+//        sound[COMMENTO]->Length = Lengths[frase];
 
-        sound[COMMENTO]->SoundData = comment_file + Offsets[frase];
-        sound[COMMENTO]->Flags = SOUND_DISK;
+//        sound[COMMENTO]->SoundData = comment_file + Offsets[frase];
+//        sound[COMMENTO]->Flags = SOUND_DISK;
 
         if(special_status != S_NOMESQUADRA)
             frase=NON_DECISA;

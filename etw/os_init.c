@@ -103,18 +103,6 @@ void init_system(void)
     // Abbasso la priorita' in modo che le D(bug()) vengano piazzate nel punto giusto!
 }
 
-BOOL os_audio2fast(void)
-{
-    if (use_speaker && !speaker2memory())
-        return FALSE;
-
-    if (use_crowd && !crowd2memory()) {
-        free_speaker();
-        return FALSE;
-    }
-    return TRUE;        
-}
-
 // Ritarda di s 50esimi di secondo
 
 void os_delay(int s)
