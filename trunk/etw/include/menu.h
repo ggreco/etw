@@ -165,6 +165,7 @@ struct GfxMenu
 #define USA_RISULTATO    32
 #define USA_GUARDALINEE    64
 
+/*
 #ifdef __SASC
     #define min(a,b) __builtin_min(a,b)
     #define max(a,b) __builtin_max(a,b)
@@ -185,6 +186,7 @@ struct GfxMenu
         #define MAX(a,b) max(a,b)
     #endif
 #endif
+*/
 
 #include "menu_externs.h"
 

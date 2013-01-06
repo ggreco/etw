@@ -465,8 +465,6 @@ int main(int argc, char *argv[])
             }
             while (HandleMenuIDCMP());
 
-            DeleteAudio2Fast();
-
             D(bug("Start: FreeMenuStuff...\n" /*-*/ ));
             FreeMenuStuff();
             D(bug("End: FreeMenuStuff()...\n" /*-*/ ));

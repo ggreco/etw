@@ -1627,7 +1627,6 @@ BOOL AudioPrefs(WORD button)
                 use_speaker = FALSE;
                 use_crowd = TRUE;
             }
-            DeleteAudio2Fast();
             break;
         case 5:
             if (use_speaker)
@@ -1637,7 +1636,6 @@ BOOL AudioPrefs(WORD button)
                 use_speaker = TRUE;
                 use_crowd = FALSE;
             }
-            DeleteAudio2Fast();
             break;
         case 7:
             menu_music = menu_music ? FALSE : TRUE;

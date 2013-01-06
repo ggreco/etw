@@ -74,4 +74,11 @@ typedef unsigned int    uint32_t;
 #   define NULL ((void *)0L)
 #endif
 
+static inline int min(int a, int b) {
+    return a < b ? a : b;
+}
+static inline int max(int a, int b) {
+    return a > b ? a : b;
+}
+
 #endif

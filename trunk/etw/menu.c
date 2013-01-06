@@ -1145,8 +1145,6 @@ void blit_scaled_logo()
 void ChangeMenu(WORD m)
 {
     extern WORD restore_w, restore_h;
-
-    static int menu_changes = 0;
     int i;
     
     restore_w = restore_h = 0;
@@ -1154,17 +1152,6 @@ void ChangeMenu(WORD m)
     bltchunkybitmap(back, 0, 0, main_bitmap, 0, 0, WINDOW_WIDTH,
                     WINDOW_HEIGHT, bitmap_width, bitmap_width);
 
-    menu_changes++;
-
-    if (menu_changes > 12) {
-        menu_changes = 0;
-
-        StopMenuMusic();
-
-        os_delay(10);
-
-        PlayMenuMusic();
-    }
     actual_menu = &menu[m];
 
 // This code let me go back to the right menu when using teamselection;

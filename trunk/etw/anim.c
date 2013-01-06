@@ -26,8 +26,6 @@
 #define NewList MyNewList
 #define Remove MyRemove
 
-#define MAX(a,b) max(a,b)
-#define MIN(a,b) min(a,b)
 #define ABS(a) abs(a)
 
 LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn);
@@ -371,8 +369,8 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                               // DumpAnimHeader( aid, (fn -> fn_TimeStamp), (&(fn -> fn_AH)) );
 
                                               /* Check if we have dynamic timing */
-                                              maxreltime = MAX( maxreltime, (fn -> fn_AH . ah_RelTime) );
-                                              minreltime = MIN( minreltime, (fn -> fn_AH . ah_RelTime) );
+                                              maxreltime = max( maxreltime, (fn -> fn_AH . ah_RelTime) );
+                                              minreltime = min( minreltime, (fn -> fn_AH . ah_RelTime) );
 
                                               interleave = (ULONG)(fn -> fn_AH . ah_Interleave);
 
@@ -652,7 +650,7 @@ LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
 
                         worknode -> fn_LoadSize = worknode -> fn_BMSize;
 
-                        buffsize = MAX( buffsize, (worknode -> fn_LoadSize) );
+                        buffsize = max( buffsize, (worknode -> fn_LoadSize) );
                     } while( ((worknode -> fn_BitMap) == NULL) && ((worknode -> fn_TimeStamp) != 0UL) );
 
                     if( ((worknode -> fn_BitMap) == NULL) && ((worknode -> fn_TimeStamp) == 0UL) )
@@ -845,7 +843,7 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
                 /* Don't process the list twice */
                 if( fn == fn2 )
                 {
-                  i = MIN( 1, i );
+                  i = min( 1, i );
 
                   break;
                 }
