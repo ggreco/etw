@@ -18,8 +18,20 @@ int main(int argc, char *argv[])
             if (fread(dest, 1, len, in) == len) {
                 int i;
 
-                for (i = 0; i < len; ++i)
-                    dest[i] = dest[i] ? 0 : 1;
+                if (depth == 1) {
+                    for (i = 0; i < len; ++i)
+                        dest[i] = dest[i] ? 0 : 1;
+                }
+                else {
+                    depth /= 2;
+                    for (i = 0; i < len; ++i) {
+                        if (dest[i] > depth)
+                            dest[i] = 0;
+                        else
+                            dest[i] = 1;
+                    }
+
+                }
 
                 if ((out = fopen(argv[2], "wb"))) {
                     unsigned char c;

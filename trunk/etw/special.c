@@ -131,18 +131,18 @@ void TargetedPass(player_t *g, uint32_t joystate)
     else
         d=g->dir;
 
-    g->world_x+=velocita_x[2][9][d]*80;
-    g->world_y+=velocita_y[2][9][d]*80;
+    g->world_x+=velocita_x[2][9][d]*200;
+    g->world_y+=velocita_y[2][9][d]*200;
 
     g2=FindNearestPlayer(g);
     pl->dir=FindDirection256(old_x,old_y,g2->world_x,g2->world_y);
     d=FindDistance(old_x,old_y,g2->world_x,g2->world_y,pl->dir);
     
-    d=min(d,2500); // poco meno di 350 pixel come lunghezza massima
+    d=min(d,3000); // poco meno di 350 pixel come lunghezza massima
 
-    if(d<300)
+    if(d<1000)
     {
-        d=300;
+        d=1000;
 
         if(g2->ActualSpeed)
         {
@@ -172,7 +172,7 @@ void TargetedPass(player_t *g, uint32_t joystate)
     g->world_x=old_x;
     g->world_y=old_y;
 
-    pl->velocita=(d>>7)+1;
+    pl->velocita=(d>>7)+2;
     pl->TipoTiro=TIRO_PALLONETTO;
     g->SpecialData=g2->GNum;
 }

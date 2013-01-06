@@ -97,7 +97,6 @@ BOOL InitSoundSystem(void)
     }
     
     Mix_AllocateChannels(AVAILABLE_CHANNELS);
-    Mix_VolumeMusic(MIX_MAX_VOLUME/20);
     Mix_ChannelFinished(played_effect);
     sound_started = 1;
     return TRUE;
@@ -124,6 +123,8 @@ void PlayMenuMusic(void)
     }
     else 
         Mix_PlayMusic(mmusic, -1);
+    
+    Mix_VolumeMusic(MIX_MAX_VOLUME/10);
 }
 
 void FreeMenuMusic()
