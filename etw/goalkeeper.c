@@ -270,6 +270,19 @@ void HandleKeeperControlled(keeper_t *g)
 
         l=r_controls[g->team->Joystick][counter];
 
+        
+        // touch users have two buttons, red for the kick, blue for the hand pass
+        if (use_touch) {
+            if (l & JPF_BUTTON_RED) {
+                g->TimePress = 10;
+                goto rinvio;
+            }
+            else if (l & JPF_BUTTON_BLUE) {
+                g->TimePress = 4;
+                goto rinvio;
+            }
+        }
+        
         if(l&MYBUTTONMASK)
         {
             g->FirePressed=TRUE;
@@ -314,7 +327,7 @@ rinvio:
 
             if(g->TimePress<6)
             {
-                            Passaggio((player_t *)g);
+                Passaggio((player_t *)g);
                 pl->MaxQuota+=3;
             }
             else

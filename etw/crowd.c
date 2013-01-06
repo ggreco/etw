@@ -46,6 +46,7 @@ static void change_crowd(void)
 void init_crowd(void)
 {
     Mix_HookMusicFinished(change_crowd);
+    Mix_VolumeMusic(MIX_MAX_VOLUME/15);
 
     change_crowd();
 }

@@ -33,7 +33,9 @@ static bool training_session(void)
     
     time_t now = time(NULL);
     
-    if (now > (last_training_tip + 4)) {
+    // a tutorial every 10 seconds
+    
+    if (now > (last_training_tip + 9)) {
         last_training_tip = now;
         return true;
     }
@@ -85,6 +87,8 @@ void tutorial_line(int i)
             stopped = true;
         }
         hide_vjoy();
+        // remove previous tutorial requester?
+        ScreenSwap();
     }
     
     MyEasyRequest(hwin, &easy, NULL);
