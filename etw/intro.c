@@ -158,17 +158,23 @@ struct Stage stage[]=
     {{NULL,NULL,NULL,NULL,NULL},205},
     {{"SOUND"/*-*/,NULL,"DANIELE CARAMASCHI"/*-*/,"GABRIELE GRECO"/*-*/,NULL},210},
     {{NULL,NULL,NULL,NULL,NULL},255},
-    {"ETW USES SDL"/*-*/,NULL,"WWW.LIBSDL.ORG"/*-*/,"FOR MORE INFO"/*-*/,NULL,260},
-    {NULL,NULL,NULL,NULL,NULL,290},
-    {{"BETATESTING"/*-*/,NULL,"ANDREA CAROLFI"/*-*/,"FRANCESCO DUTTO"/*-*/,"MAURIZIO FAGGIONI"/*-*/},295},
-    {{NULL,NULL,NULL,NULL,NULL},345},
-    {{NULL,"LORENZO MORSELLI"/*-*/,"THOMAS STEIDING"/*-*/,NULL,msg_81},350},
-    {{NULL,NULL,NULL,NULL,NULL},405},
-    {{"SPECIAL THANKS"/*-*/,NULL,"SARA CAPPUCCINI"/*-*/,"DAVIDE CARGIOLLI"/*-*/,"FAUSTO CENDERELLI"/*-*/},410},
-    {{NULL,NULL,NULL,NULL,NULL},450},
-    {{"CLAUDIA CHIARDO"/*-*/,"ELENA FACONTI"/*-*/,"PAOLA FROLA"/*-*/,"GIULIANO GRECO"/*-*/,"ANDREA MENCONI"/*-*/},455},
-    {{NULL,NULL,NULL,NULL,NULL},495},
-    {{"MICHELE PANELLA"/*-*/,"NICOLO' PANELLA"/*-*/,"MATTEO RATTI"/*-*/,"GRAZIANO VIVIANI"/*-*/,"GIANLUIGI ZUNINO"/*-*/},500},
+    {{"MUSIC"/*-*/,NULL,"NOISY TUBE BY HORRORPEN", "BLUEBEAT 1 BY ERH","METALLIC MISTRESS BY FOXSYNERGY"},260},
+    {{NULL,NULL,NULL,NULL,NULL},290},
+    {{"ADDITIONAL CODE", NULL, "ANDREA CAROLFI", NULL, NULL}, 295},
+    {NULL,NULL,NULL,NULL,NULL,320},
+    {"ETW USES SDL"/*-*/,NULL,"WWW.LIBSDL.ORG"/*-*/,"FOR MORE INFO"/*-*/,NULL,325},
+    {NULL,NULL,NULL,NULL,NULL,340},
+    {{"BETATESTING"/*-*/,NULL,"ALEXANDRA BENVENUTI"/*-*/,NULL, NULL},345},
+    {NULL,NULL,NULL,NULL,NULL,360},
+    {{"BETATESTING"/*-*/,NULL,"ANDREA CAROLFI"/*-*/,"FRANCESCO DUTTO"/*-*/,"MAURIZIO FAGGIONI"/*-*/},365},
+    {{NULL,NULL,NULL,NULL,NULL},395},
+    {{NULL,"LORENZO MORSELLI"/*-*/,"THOMAS STEIDING"/*-*/,NULL,msg_81},400},
+    {{NULL,NULL,NULL,NULL,NULL},435},
+    {{"SPECIAL THANKS"/*-*/,NULL,"SARA CAPPUCCINI"/*-*/,"DAVIDE CARGIOLLI"/*-*/,"FAUSTO CENDERELLI"/*-*/},440},
+    {{NULL,NULL,NULL,NULL,NULL},470},
+    {{"CLAUDIA CHIARDO"/*-*/,"ELENA FACONTI"/*-*/,"PAOLA FROLA"/*-*/,"GIULIANO GRECO"/*-*/,"ANDREA MENCONI"/*-*/},475},
+    {{NULL,NULL,NULL,NULL,NULL},505},
+    {{"MICHELE PANELLA"/*-*/,"NICOLO' PANELLA"/*-*/,"MATTEO RATTI"/*-*/,"GRAZIANO VIVIANI"/*-*/,"GIANLUIGI ZUNINO"/*-*/},510},
     {{NULL,NULL,NULL,NULL,NULL},555},
     {{NULL,NULL,NULL,NULL,NULL},ENDCREDITS+2}, // Questo deve sempre rimanere, e' per riferimento
 };
@@ -181,9 +187,7 @@ static BOOL clean=TRUE;
 BOOL credits_iteration()
 {
     int top_x=WINDOW_WIDTH/4-MAXSTRINGLEN*bigfont->width/2,
-    top_y=WINDOW_HEIGHT/2-(bigfont->height+6)*3,
-    width=(MAXSTRINGLEN*bigfont->width)+4,
-    height=(bigfont->height+6)*6+4; // I +4 sono per sicurezza.
+        top_y=WINDOW_HEIGHT/2-(bigfont->height+6)*3;
     
     long int ticks = (os_get_timer() - started) / 100;
     
@@ -207,21 +211,18 @@ BOOL credits_iteration()
         if(ticks > stage[actual].Tick) {
             int i,x,y;
             
-            if(!clean)
-                bltchunkybitmap(back,top_x-2,top_y-2,
-                                main_bitmap,top_x-2,top_y-2,
-                                width,height,bitmap_width,bitmap_width);
-            
-            // I -2 sono per compensare i +4 di prima!
-            
-            clean = TRUE;
+            if(!clean) {
+                bltchunkybitmap(back,0,0,
+                                main_bitmap,0,0,
+                                WINDOW_WIDTH,WINDOW_HEIGHT,bitmap_width,bitmap_width);
+                        
+                clean = TRUE;
+            }
             
             y=top_y+bigfont->height;
             
-            for(i=0;i<5;i++)
-            {
-                if(stage[actual].string[i])
-                {
+            for (i = 0; i < 5; i++) {
+                if (stage[actual].string[i]) {
                     int l=strlen(stage[actual].string[i]);
                     
                     x=top_x+((MAXSTRINGLEN-l)*bigfont->width)/2;

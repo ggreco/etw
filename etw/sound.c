@@ -9,6 +9,7 @@ Routine di controllo dei samples
 
 struct BufferInfo *BufferInfo;
 
+static Mix_Music *mmusic = NULL;
 static int sound_started = 0;
 static int sound_loaded = FALSE;
 
@@ -44,7 +45,7 @@ void SetCrowd(int s)
         }
         else if (s >= 0) {
             Mix_PauseMusic();
-            crowd_channel = Mix_PlayChannel(-1, sound[s]->SoundData, 0);
+            crowd_channel = Mix_PlayChannel(-1, sound[s]->SoundData, sound[s]->Flags & SOUND_LOOP ? -1 : 0);
         }
     }
 }
@@ -102,61 +103,57 @@ BOOL InitSoundSystem(void)
     return TRUE;
 }
 
-Mix_Music *music = NULL;
-
 void PlayMenuMusic(void)
 {
-    Mix_Music *new_music;
-    char buffer[120];
-    
     if (!menu_music || music_playing || no_sound)
         return;
     
-    sprintf(buffer, "music/back%d.wav" /*-*/ , RangeRand(NUMERO_LOOPS));
-    
-    D(bug("Loading %s as menu music...\n" /*-*/ , buffer));
-    
-    if ((new_music = Mix_LoadMUS(buffer))) {
-        if (Mix_PlayMusic(new_music, -1) < 0)
-            D(bug("Error playing music %s: %s\n", buffer, Mix_GetError()));
+    if (!mmusic) {
+        D(bug("Loading menu music...\n"));
         
-        music_playing = TRUE;
-        
-        if (music)
-            Mix_FreeMusic(music);
-        
-        music = new_music;
+        if ((mmusic = Mix_LoadMUS("music/noisytube.ogg"))) {
+            if (Mix_PlayMusic(mmusic, -1) < 0) {
+                D(bug("Error playing menu music: %s\n", Mix_GetError()));
+            }
+            else
+                music_playing = TRUE;
+        }
+        else {
+            D(bug("Error loading menu music: %s\n", Mix_GetError()));
+        }
     }
-    else {
-        D(bug("Error loading music %s: %s\n", buffer, Mix_GetError()));
-    }
+    else 
+        Mix_PlayMusic(mmusic, -1);
 }
 
 void FreeMenuMusic()
 {
-    if (music) {
-        Mix_FreeMusic(music);
-        music = NULL;
-    }
+   if (mmusic) {
+       D(bug("Freeing menu music %lx\n", mmusic));
+        Mix_FreeMusic(mmusic);
+        mmusic = NULL;
+   }
 }
 
 void
 StopMenuMusic(void)
 {
-    if (music_playing && !no_sound) {
-        Mix_HaltMusic();
-        D(bug("Stopping menu music...\n" ));
+    if (music_playing && !no_sound && mmusic) {
+        Mix_PauseMusic();
+        D(bug("Stopping menu music...(%lx)\n", mmusic));
         music_playing = FALSE;
     }
 }
 
 void FreeSoundSystem(void)
 {
+    D(bug("Freeing sound system..."));
     Mix_CloseAudio();
 
     sound_started = 0;
     Mix_ChannelFinished(NULL);
     crowd_channel = -1;
+    Mix_Quit();
     D(bug("Done.\n"));
 }
 
@@ -338,7 +335,6 @@ void LiberaSuoniMenu(void)
 
     if(!sound_loaded)
         return;
-
 
 	while (menu_soundname[i]) {
 		if (menusound[i]) {
