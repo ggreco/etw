@@ -138,7 +138,7 @@ void TargetedPass(player_t *g, uint32_t joystate)
     pl->dir=FindDirection256(old_x,old_y,g2->world_x,g2->world_y);
     d=FindDistance(old_x,old_y,g2->world_x,g2->world_y,pl->dir);
     
-    d=min(d,3000); // poco meno di 350 pixel come lunghezza massima
+    d=min(d,3000); // poco meno di 400 pixel come lunghezza massima
 
     if(d<1000)
     {
@@ -147,8 +147,8 @@ void TargetedPass(player_t *g, uint32_t joystate)
         if(g2->ActualSpeed)
         {
             pl->dir=FindDirection256(old_x,old_y,
-                g2->world_x+(velocita_x[g->ActualSpeed-1][g->speed][g->dir]<<3),
-                g2->world_y+(velocita_y[g->ActualSpeed-1][g->speed][g->dir]<<3));
+                g2->world_x+(velocita_x[g2->ActualSpeed-1][g2->speed][g->dir]<<4),
+                g2->world_y+(velocita_y[g2->ActualSpeed-1][g2->speed][g->dir]<<4));
         }
         else
         {

@@ -124,7 +124,7 @@ void PlayMenuMusic(void)
     else 
         Mix_PlayMusic(mmusic, -1);
     
-    Mix_VolumeMusic(MIX_MAX_VOLUME/10);
+    Mix_VolumeMusic(MIX_MAX_VOLUME/6);
 }
 
 void FreeMenuMusic()
