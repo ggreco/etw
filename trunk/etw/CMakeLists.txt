@@ -4,6 +4,7 @@ project(ETW)
 
 find_package (PkgConfig REQUIRED)
 pkg_check_modules (SDL2 REQUIRED sdl2)
+pkg_check_modules (SDL2_MIXER REQUIRED SDL2_mixer)
 
 if (APPLE)
     add_definitions(-DMACOSX)
@@ -28,15 +29,16 @@ set(sources highdirent.c cpu.c human.c myiff.c specials.c
         	config.c font.c menu_config.c replay.c speed_data.c 
         	connection.c generic_video.c menu_data.c sound.c wc.c 
         	control.c gfx.c menu_font.c special.c network.c 
-        	highsocket.c prefix.c vjoy.cpp touch.cpp world.c)
+        	highsocket.c prefix.c vjoy.cpp touch.cpp world.c
+            tutorial.cpp)
 
 # comment this for release mode        
 set(CMAKE_BUILD_TYPE Debug)
 
-link_directories(${SDL2_LIBRARY_DIRS})
+link_directories(${SDL2_MIXER_LIBRARY_DIRS} ${SDL2_LIBRARY_DIRS})
 add_executable(etw ${sources})
 
-set(LIBS ${LIBS} ${SDL2_LIBRARIES} ${ADDITIONAL_LIBS})
+set(LIBS ${LIBS} ${SDL2_MIXER_LIBRARIES} ${SDL2_LIBRARIES} ${ADDITIONAL_LIBS})
 target_link_libraries(etw ${LIBS})
 
 include_directories("include" ${SDL2_INCLUDE_DIRS} ${ADDITIONAL_HEADERS})
