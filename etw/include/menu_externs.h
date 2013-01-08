@@ -52,6 +52,7 @@ extern BOOL handle_pause(WORD);
 extern BOOL TeamSelection(WORD);
 extern BOOL ArcadeTeamSelection(WORD);
 extern BOOL TeamSettings(WORD);
+extern BOOL TeamSubstitutions(WORD);
 extern BOOL VideoPrefs(WORD);
 extern BOOL SystemPrefs(WORD);
 extern BOOL MobilePrefs(WORD);

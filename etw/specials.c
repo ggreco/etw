@@ -1248,6 +1248,12 @@ friendlymatch:
     return TRUE;
 }
 
+BOOL TeamSubstitutions(WORD button)
+{
+    D(bug("Clicked button %d\n"));
+    return TRUE;
+}
+
 BOOL TeamSettings(WORD button)
 {
     struct Button *b;

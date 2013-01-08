@@ -23,12 +23,19 @@ extern "C" {
 
 bool running_tutorial_line = false;
 
+static bool free_kicks_session() {
+    return (training && game_start && free_kicks);
+}
+static bool penalties_session() {
+    return (training && game_start && penalties);
+}
+
 static bool training_session(void)
 {
     extern BOOL pause_mode;
     static time_t last_training_tip = 0;
     
-    if (!training || !game_start || pause_mode)
+    if (!training || !game_start || pause_mode || free_kicks || penalties)
         return false;
     
     time_t now = time(NULL);
@@ -68,7 +75,9 @@ static TutorialLine lines[] = {
     {TutorialLine::BySpecialFunc, (void*)training_session, "When the ball is in possession of the other team you can change the player you control touching another player, alternatively by tapping the blue button you can activate the nearest player to the ball position."},
     {TutorialLine::BySpecialFunc, (void*)training_session, "Tapping the RED button when the other team has the ball possession will make the active player try to get the ball with a sliding tackle toward the ball, but be careful to not commit a foul!"},
     {TutorialLine::BySpecialFunc, (void*)training_session, "Pressing the RED button when the ball is in no possession will perform a special action that will change depending from the ball height and your position, an head shot, a bicycle kick, a tackle... anything can happens if you tap it with the right timing and in a good position!"},
+    {TutorialLine::BySpecialFunc, (void*)free_kicks_session, "To shoot:\nSwipe from the ball in the direction of your shot, the longer the swipe the stronger the shot.\n\nTo pass:\nTouch the player you want to pass the ball to."},
 #endif
+    {TutorialLine::BySpecialFunc, (void*)penalties_session, "Tap a button when the arrow points to the goal position you want to shoot to, the longer you keep the button pressed the higher the shoot will be."},
 };
 
 void tutorial_line(int i)

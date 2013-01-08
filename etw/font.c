@@ -734,8 +734,6 @@ void ShowPanel(void)
 
 void DrawPause(void)
 {
-    extern void draw_pause_menu();
-
     rectfill_pattern(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
                      WINDOW_HEIGHT - 1, 0, bitmap_width);
 

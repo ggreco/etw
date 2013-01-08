@@ -192,8 +192,9 @@ BOOL handle_pause(WORD button)
 
             pause_mode = FALSE;
             break;
-            // substitutions XXX TODO
         case 2:
+            draw_substitutions_menu();
+            ScreenSwap();
             break;
             // change tactic
         case 3:

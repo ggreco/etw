@@ -1313,6 +1313,26 @@ void set_pause_tactic(int button)
     }
 }
 
+
+void draw_substitutions_menu()
+{
+    int i;
+   // it's important to set current_menu before CreateButton() since createbutton() uses it!
+    actual_menu = &menu[MENU_SUBSTITUTIONS];
+    current_menu = MENU_SUBSTITUTIONS;
+
+    for (i = 0; i < actual_menu->NumeroPannelli; ++i)
+        CreateButton(&actual_menu->Pannello[i]);    
+
+    actual_button = 0;
+
+    while (!actual_menu->Button[actual_button].Text)
+        actual_button++;
+    
+    current_button = actual_button;
+    DrawBox(actual_button);
+}
+
 void draw_pause_menu()
 {
     extern team_t *find_controlled_team();
@@ -1326,7 +1346,7 @@ void draw_pause_menu()
     current_menu = MENU_PAUSE;
     
     // show substitutions only if we the game is stopped (throw in, kick off...)
-    if (pl->InGioco || !c)
+    if (pl->InGioco || !c || arcade || training)
         actual_menu->Button[2].Text = NULL;
     else
         actual_menu->Button[2].Text = "SUBSTITUTIONS";
