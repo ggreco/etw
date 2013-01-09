@@ -26,7 +26,7 @@ struct control_disk *giocatori[64];
 
 struct Match turni[64][32];
 
-char *empty=" "/*-*/;
+const char *empty=" "/*-*/;
 
 void ViewEliminazioneDiretta(int n)
 {
@@ -347,7 +347,8 @@ void MakeLeague(int ns)
 
 }
 
-void AddName(struct player_disk *g, int posizione)
+
+static void AddName(struct player_disk *g, int posizione)
 {
     char namebuffer[60];
     char *c=namebuffer, *d=g->surname;
@@ -383,7 +384,7 @@ void AddName(struct player_disk *g, int posizione)
 
 }
 
-void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
+static void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
 {
     int i;
 
@@ -420,7 +421,7 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
     }
     else
     {
-        pannelli[posizione*3].Text=empty;
+        pannelli[posizione*3].Text=(char *)empty;
     }
 
     if(pannelli[posizione*3+2].Text==NULL ||
@@ -454,7 +455,7 @@ void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, long v)
     }
 }
 
-void AddPlayer(struct player_disk *g, int posizione)
+static void AddPlayer(struct player_disk *g, int posizione)
 {
     char buffer[8];
 
@@ -482,6 +483,236 @@ void AddPlayer(struct player_disk *g, int posizione)
 
     SetPlayerStatus(posizione, g->injury, g->Ammonizioni,
         (((g->Tiro+g->tackle+g->speed*2+g->technique+g->creativity-2*6+3)*10)/7)/6 );
+}
+
+BOOL TeamSettings(WORD button)
+{
+    extern struct GfxMenu *actual_menu;
+    struct Button *b;
+    static int sel1 = -1;
+
+    if (button < 0)
+        return TRUE;
+
+    b = &actual_menu->Button[button];
+
+    if (button == 42)
+    {
+        sel1 = -1;
+
+        if (teamsettings[42].Text == msg_6)
+            ChangeMenu(b->ID);
+        else
+            return FALSE;
+    }
+    else if (button == 43)
+    {
+        // "Default" To develop!
+        D(bug("We shouldn't pass here!"));
+    }
+    else if (controllo[actual_team] >= 0 && can_modify)
+    {
+        if (button < 34)
+        {
+            if (button == 32)
+            {
+                if (teamlist[actual_team].nplayers > 15)
+                {
+                    int i;
+
+                    if (teamlist[actual_team].nplayers > (b->ID - 1))
+                    {
+                        AddPlayer(&teamlist[actual_team].players[b->ID - 1], 16);
+                        b->ID++;
+                    }
+                    else
+                    {
+                        b->ID = 16;
+                        AddPlayer(&teamlist[actual_team].players[14], 16);
+                    }
+
+                    if (sel1 == 16)
+                        sel1 = -1;
+
+                    RedrawButton(&actual_menu->Button[33],
+                                 actual_menu->Button[33].Color);
+
+                    for (i = 0; i < 3; i++)
+                        RedrawButton(&pannelli[48 + i],
+                                     pannelli[48 + i].Color);
+                }
+            }
+            else
+            {
+                struct Button *b2;
+                int pos, selected = button / 2;
+
+                b2 = &actual_menu->Button[selected * 2 + 1];
+
+                if (sel1 >= 0)
+                {
+
+                    if (sel1 == selected)
+                    {
+                        if (!ruolo[actual_team]
+                             || ruolo[actual_team] != selected)
+                            RedrawButton(b2, b2->Color);
+                        else
+                            RedrawButton(b2, P_GIALLO);
+                    }
+                    else
+                    {
+                        struct Button *b3 = &actual_menu->Button[sel1 * 2 + 1];
+                        int i;
+
+                        pos = selected;
+
+                        if ( (pos == 0 && sel1 == 11) || (sel1 == 0 && pos == 11))
+                        {
+                            struct keeper_disk p;
+
+                            p = teamlist[actual_team].keepers[1];
+                            teamlist[actual_team].keepers[1] = teamlist[actual_team].keepers[0];
+                            teamlist[actual_team].keepers[0] = p;
+
+                            AddName((struct player_disk *)&teamlist[actual_team].keepers[0], 0);
+                            SetPlayerStatus(0, teamlist[actual_team].keepers[0].injury, 0,
+                                (((teamlist[actual_team].keepers[0].Parata * 2 + teamlist[actual_team].keepers[0].Attenzione - 2 * 3 + 2) * 10) / 7) / 3);
+                            AddName((struct player_disk *)&teamlist[actual_team].keepers[1], 11);
+
+                            SetPlayerStatus(11, teamlist[actual_team].keepers[1].injury, 0,
+                                (((teamlist[actual_team].keepers[0].Parata * 2 + teamlist[actual_team].keepers[1].Attenzione - 2 * 3 + 2) * 10) / 7) / 3);
+                            RedrawButton(b2, b2->Color);
+
+                            for (i = 0; i < 3; i++)
+                            {
+                                RedrawButton(&pannelli[33 + i],
+                                             pannelli[33 + i].Color);
+                                RedrawButton(&pannelli[i], pannelli[i].Color);
+                            }
+                        }
+                        else if (pos != 0 && pos != 11 &&sel1 != 0 &&sel1 != 11)
+                        {
+                            struct player_disk g;
+
+                            int pos2;
+
+                            if (selected == 16)
+                            {
+                                pos = actual_menu->Button[32].ID - 2;
+                            }
+                            else
+                            {
+                                pos--;
+
+                                if (pos > 10)
+                                    pos--;
+                            }
+
+                            g = teamlist[actual_team].players[pos];
+
+                            if (sel1 == 16)
+                                pos2 = actual_menu->Button[32].ID - 2;
+                            else
+                            {
+                                pos2 = sel1 - 1;
+
+                                if (pos2 > 10)
+                                    pos2--;
+                            }
+
+                            teamlist[actual_team].players[pos] = teamlist[actual_team].players[pos2];
+                            teamlist[actual_team].players[pos2] = g;
+                            AddPlayer(&teamlist[actual_team].players[pos], selected);
+                            AddPlayer(&teamlist[actual_team].players[pos2], sel1);
+
+                            if (!ruolo[actual_team] || ruolo[actual_team] != selected)
+                                RedrawButton(b2, b2->Color);
+                            else
+                                RedrawButton(b2, P_GIALLO);
+
+                            for (i = 0; i < 3; i++)
+                            {
+                                RedrawButton(&pannelli[selected * 3 + i], pannelli[selected * 3 + i].Color);
+                                RedrawButton(&pannelli[sel1 * 3 + i], pannelli[sel1 * 3 + i].Color);
+                            }
+                        }
+
+                        if (!ruolo[actual_team] || ruolo[actual_team] != sel1)
+                            RedrawButton(b3, b3->Color);
+                        else
+                            RedrawButton(b3, P_GIALLO);
+
+                    }
+                    sel1 = -1;
+                }
+                else
+                {
+                    sel1 = selected;
+                    RedrawButton(b2, b2->Highlight);
+                }
+                ScreenSwap();
+            }
+        }
+        else if (button < 40 || button == 41)
+        {
+            if (b->Color != COLOR_TATTICA_SELEZIONATA)
+changetactic:
+            {
+                extern void DrawBox(WORD);
+                int i;
+
+                strcpy(teamlist[actual_team].tactics[0], b->Text);
+                bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
+                    actual_menu->X, actual_menu->Y, 
+                    FixedScaledX(108), FixedScaledY(156), bitmap_width, bitmap_width);
+
+                blit_scaled_logo();
+
+                DisplayTactic(0, 0);
+
+                for (i = 0; i < 9; i++) {
+                    struct Button *t = &teamsettings[34 + i];
+                    if (t == b)
+                        continue;
+                    t->Color = COLOR_TATTICA_NON_SELEZIONATA;
+                    RedrawButton(t, COLOR_TATTICA_NON_SELEZIONATA);
+                }
+
+                b->Color = COLOR_TATTICA_SELEZIONATA;
+
+                RedrawButton(b, COLOR_TATTICA_SELEZIONATA);
+                DrawBox(button);
+                ScreenSwap();
+            }
+        }
+        else if (button == 40)
+        {
+            freq.Title = msg_34;
+            freq.Dir = "tct/"/*-*/;
+
+            if (FileRequest(&freq))
+            {
+                char *c;
+
+                b = &actual_menu->Button[41];
+
+                if (b->Text)
+                    free(b->Text);
+
+                c = freq.File + strlen(freq.File)-1;
+
+                while(*c != '/' && *c != '\\' && c > freq.File)
+                    c--;
+
+                b->Text = strdup(c);
+
+                goto changetactic;
+            }
+        }
+    }
+
+    return TRUE;
 }
 
 void SetTeamSettings(WORD team, BOOL starting)
@@ -581,9 +812,8 @@ void SetTeamSettings(WORD team, BOOL starting)
  */
         if(     pannelli[11*3+1].Text &&
                 pannelli[11*3+1].Text!=empty &&
-                pannelli[11*3+1].Text != msg_141) {
+                pannelli[11*3+1].Text != msg_141) 
             free(pannelli[11*3+1].Text);
-        }
 
         if(pannelli[11*3+2].Text&&pannelli[11*3+2].Text!=empty)
             free(pannelli[11*3+2].Text);
@@ -592,7 +822,13 @@ void SetTeamSettings(WORD team, BOOL starting)
         teamsettings[11*2].Text=teamsettings[11*2+1].Text=NULL;
     }
     else {
+        if(     pannelli[11*3+1].Text &&
+                pannelli[11*3+1].Text!=empty &&
+                pannelli[11*3+1].Text != msg_141) 
+            free(pannelli[11*3+1].Text);
+
         AddName((struct player_disk *)&teamlist[team].keepers[1], 11);
+        pannelli[11*3+1].Text= msg_141;
         SetPlayerStatus(11, teamlist[team].keepers[1].injury, 0,
                         (teamlist[team].keepers[1].Parata*2+teamlist[team].keepers[1].Attenzione+2)/3);
     }

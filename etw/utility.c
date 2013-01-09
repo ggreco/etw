@@ -158,6 +158,17 @@ Si tira anche girati di schiena!
     return CS_NO;
 }
 
+static void save_temp_back()
+{
+    extern uint8_t *back;
+    if (back)
+        free(back);
+    if ((back = malloc(bitmap_height * bitmap_width)))
+        memcpy(back, main_bitmap, bitmap_width * bitmap_height);
+
+}
+
+
 team_t *find_controlled_team()
 {
     int i;
@@ -193,8 +204,26 @@ BOOL handle_pause(WORD button)
             pause_mode = FALSE;
             break;
         case 2:
-            draw_substitutions_menu();
-            ScreenSwap();
+            if (cnt) {
+                extern BOOL HandleMenuIDCMP();
+
+                graphic_frame();
+                os_delay(1);
+                rectfill_pattern(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
+                             WINDOW_HEIGHT - 1, 0, bitmap_width);
+                save_temp_back();
+                ScreenSwap();
+                os_delay(1);
+                SetTeamSubstitutions(cnt);
+                draw_substitutions_menu();
+                ScreenSwap();
+
+                while(HandleMenuIDCMP());
+
+                graphic_frame();
+                os_delay(1);
+                DrawPause();
+            }
             break;
             // change tactic
         case 3:
@@ -237,7 +266,6 @@ BOOL was_stopped=TRUE;
 
 void DoPause(void)
 {
-    extern uint8_t *back;
     extern BOOL time_stopped;
 
     if(!time_stopped) {
@@ -252,13 +280,9 @@ void DoPause(void)
     os_stop_audio();
 
     if (!replay_mode) {
-         DrawPause();
+        DrawPause();
 
-        if (back)
-            free(back);
-        if ((back = malloc(bitmap_height * bitmap_width)))
-            memcpy(back, main_bitmap, bitmap_width * bitmap_height);
-
+        save_temp_back();
         ScreenSwap();
     }
     D(bug("Pause mode\n"));
