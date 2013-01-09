@@ -782,95 +782,18 @@ FILE *OpenTeam(char *name)
     return fh;
 }
 
-void ReadSquadra(FILE *fh, struct team_disk *s)
-{
-    int i;
-
-    s->disponibilita = fread_u32(fh);
-    s->nplayers = fread_u8(fh);
-    s->nkeepers = fread_u8(fh);
-    s->nation = fread_u8(fh);
-    s->Flags = fread_u8(fh);
-
-    for(i = 0; i < 2; i++)
-    {
-        s->jerseys[i].type = fread_u8(fh);
-        s->jerseys[i].color0 = fread_u8(fh);
-        s->jerseys[i].color1 = fread_u8(fh);
-        s->jerseys[i].color2 = fread_u8(fh);
-    }
-
-    for(i = 0; i < 3; i++)
-        fread(&s->tactics[i], sizeof(char), 16, fh);
-
-    fread(s->name, sizeof(char), 52, fh);
-    fread(s->allenatore, sizeof(char), 52, fh);
-
-    for(i = 0; i < s->nkeepers; i++)
-    {
-        fread(s->keepers[i].name, sizeof(char), 20, fh);
-        fread(s->keepers[i].surname, sizeof(char), 20, fh);
-        s->keepers[i].value = fread_u32(fh);
-        s->keepers[i].number = fread_u8(fh);
-        s->keepers[i].speed = fread_u8(fh);
-        s->keepers[i].Parata = fread_u8(fh);
-        s->keepers[i].Attenzione = fread_u8(fh);
-        s->keepers[i].nation = fread_u8(fh);
-        s->keepers[i].Eta = fread_u8(fh);
-        s->keepers[i].injury = fread_u8(fh);
-        s->keepers[i].Flags = fread_u8(fh);
-    }
-
-    for(i = 0; i < s->nplayers; i++)
-    {
-        fread(s->players[i].name, sizeof(char), 20, fh);
-        fread(s->players[i].surname, sizeof(char), 20, fh);
-        s->players[i].value = fread_u32(fh);
-        s->players[i].number = fread_u8(fh);
-        s->players[i].speed = fread_u8(fh);
-        s->players[i].tackle = fread_u8(fh);
-        s->players[i].Tiro = fread_u8(fh);
-        s->players[i].Durata = fread_u8(fh);
-        s->players[i].stamina = fread_u8(fh);
-        s->players[i].quickness = fread_u8(fh);
-        s->players[i].nation = fread_u8(fh);
-        s->players[i].creativity = fread_u8(fh);
-        s->players[i].technique = fread_u8(fh);
-        s->players[i].Eta = fread_u8(fh);
-        s->players[i].injury = fread_u8(fh);
-        s->players[i].Ammonizioni = fread_u8(fh);
-        s->players[i].Posizioni = fread_u8(fh);
-    }
-}
-
 team_t *CreateTeam(int num)
 {
     char path[100];
     team_t *s;
     extern struct team_disk leftteam_dk, rightteam_dk;
     struct team_disk sd;
-#if 0
-    FILE *fh;
-#endif
     size_t i;
 
     if(!(s = calloc(1, sizeof(team_t))))
         return NULL;
 
-#if 0
-    if(!(fh = OpenTeam(name)))
-    {
-        D(bug("Non trovo %s!\n", name));
-        free(s);
-        return NULL;
-    }
-    ReadSquadra(fh, &sd);
-
-    fclose(fh);
-
-#else
     sd = num ? rightteam_dk : leftteam_dk;
-#endif
 
 //    fread(&sd, sizeof(struct team_disk), 1, fh); prima la leggevo cosi'...
 
@@ -1111,6 +1034,8 @@ void patch_anim_datas(void)
     datas_patched = 1;
 }
 
+extern anim_t *symbols;
+
 game_t *SetupSquadre(void)
 {
     int i;
@@ -1285,6 +1210,9 @@ game_t *SetupSquadre(void)
             detail_level &= ~USA_GUARDALINEE;
         }
     }
+
+    symbols = LoadAnimObject("menugfx/simboli.obj" /*-*/ , Pens);
+
     Progress();
 
     result_width = (strlen(p->team[0]->name) + strlen(p->team[1]->name) + 9) * VS_CHAR_X;
@@ -1368,6 +1296,11 @@ void LiberaPartita(game_t *game)
         for(i = 0; i < 2; i++)
             for(j = 0; j < (SECTORS+SPECIALS); j++)
                 portieri[1][i][j].x -= 64;
+    }
+
+    if (symbols) {
+        FreeAnimObj(symbols);
+        symbols = NULL;
     }
 
     RimuoviGuardalinee();

@@ -64,9 +64,6 @@ extern BOOL KeyCfg(WORD);
 
 extern void SetTeamSettings(WORD, BOOL);
 extern void DisplayTactic(int, int);
-extern void AddPlayer(struct player_disk *, int);
-extern void AddName(struct player_disk *, int);
-extern void SetPlayerStatus(int, char, char, long);
 extern WORD StartMatch(BYTE, BYTE);
 extern WORD LastMatchResult();
 extern void ScaleGfxObj(gfx_t *, uint8_t *);

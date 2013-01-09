@@ -478,8 +478,20 @@ void DisplayText(struct Button *b, int xs, int ys, char *text, int len,
     case 11:
     case 12:
         while (*text < 13) {
-            BltAnimObj(symbols, main_bitmap, (uint8_t)*text, xs, ys, bitmap_width);
-            xs += symbols->Widths[(uint8_t)*text];
+            struct scaleAnimObjArgs a;
+            a.src = symbols->Frames[(uint8_t)*text];
+            a.xs = a.ys = 0;
+            a.ws = symbols->Widths[(uint8_t)*text];
+            a.hs = symbols->Heights[(uint8_t)*text];
+            a.xd = xs;
+            a.yd = ys;
+            a.wd = FixedScaledX(symbols->Widths[(uint8_t)*text]);
+            a.hd = min(b->Y2 - b->Y1, FixedScaledY(symbols->Heights[(uint8_t)*text]));
+            a.destmod = bitmap_width;
+            a.dest = main_bitmap;
+            bltanimobjscale(&a);
+//            BltAnimObj(symbols, main_bitmap, (uint8_t)*text, xs, ys, bitmap_width);
+            xs += a.wd;
             text++;
         }
         break;
@@ -489,7 +501,21 @@ void DisplayText(struct Button *b, int xs, int ys, char *text, int len,
     case 13:
     case 14:
     case 15:
-        BltAnimObj(symbols, main_bitmap, (uint8_t)*text, xs, ys, bitmap_width);
+        {
+            struct scaleAnimObjArgs a;
+            a.src = symbols->Frames[(uint8_t)*text];
+            a.xs = a.ys = 0;
+            a.ws = symbols->Widths[(uint8_t)*text];
+            a.hs = symbols->Heights[(uint8_t)*text];
+            a.xd = xs;
+            a.yd = ys;
+            a.wd = FixedScaledX(symbols->Widths[(uint8_t)*text]);
+            a.hd = min(b->Y2 - b->Y1, FixedScaledY(symbols->Heights[(uint8_t)*text]));
+            a.destmod = bitmap_width;
+            a.dest = main_bitmap;
+            bltanimobjscale(&a);
+        //BltAnimObj(symbols, main_bitmap, (uint8_t)*text, xs, ys, bitmap_width);
+        }
         break;
     case 16:
         text++;
@@ -1321,10 +1347,39 @@ void draw_substitutions_menu()
     actual_menu = &menu[MENU_SUBSTITUTIONS];
     current_menu = MENU_SUBSTITUTIONS;
 
+    rectfill(main_bitmap, 0, FixedScaledY(7), WINDOW_WIDTH - 1,
+             FixedScaledY(16), Pens[actual_menu->Color], bitmap_width);
+    rectfill(main_bitmap, 0, FixedScaledY(6), WINDOW_WIDTH - 1,
+             FixedScaledY(7) - 1, Pens[actual_menu->Highlight],
+             bitmap_width);
+
+    if (titlefont && actual_menu->Title) {
+        char *t = actual_menu->Title;
+        int y = FixedScaledY(titlefont->height + 4);
+
+        if (y <= titlefont->height)
+            y = titlefont->height + 1;
+
+        i = strlen(t);
+
+        if (*t != '-') {
+            TextShadow(WINDOW_WIDTH / 2 - i * titlefont->width / 2, y, t,
+                       i);
+        } else {
+            t++;
+            i--;
+
+            TextShadow(FixedScaledX(5), y, t, i);
+        }
+    }
+
     for (i = 0; i < actual_menu->NumeroPannelli; ++i)
         CreateButton(&actual_menu->Pannello[i]);    
 
     actual_button = 0;
+
+    for (i = 0; i < actual_menu->NumeroBottoni; ++i)
+        CreateButton(&actual_menu->Button[i]);
 
     while (!actual_menu->Button[actual_button].Text)
         actual_button++;
@@ -1794,8 +1849,8 @@ BOOL HandleMenuIDCMP(void)
 
     check_tutorial();
     
-    // no popup request in pause menu
-    if (!returncode && !reqqing && current_menu != MENU_PAUSE)
+    // no popup request during the game 
+    if (!returncode && !reqqing && !game_start)
         if (!CheckQuit())
             return TRUE;
 

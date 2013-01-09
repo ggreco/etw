@@ -300,6 +300,6 @@ void check_tutorial();
 // from menus
 extern void draw_pause_menu();
 extern void draw_substitutions_menu();
-
+extern void SetTeamSubstitutions(team_t *s);
 
 #endif
