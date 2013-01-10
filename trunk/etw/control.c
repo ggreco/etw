@@ -431,7 +431,7 @@ skipchange:
                     {
                         // Qui avevo messo degli 0 al posto di p->team[j]->Possesso, chissa' come mai...
 
-                        if(!IsNear(g->world_x,g->world_y,s->tactic->Position[s->Possesso][i][p->ball.sector].x,s->tactic->Position[s->Possesso][i][p->ball.sector].y) || !pl->InGioco)
+                        if(!IsNear(g->world_x,g->world_y,s->tactic->Position[s->Possesso][i][pl->sector].x,s->tactic->Position[s->Possesso][i][pl->sector].y) )
                         {
                             MoveTo(g,s->tactic->Position[s->Possesso][i][pl->sector].x,s->tactic->Position[s->Possesso][i][pl->sector].y);
                         }
