@@ -34,7 +34,7 @@ void CheckInfortuni(player_t *g)
                 p->player_injuried=g;
 
                 if(g->team->Joystick>=0)
-                    p->show_panel=PANEL_INJURIED;
+                    p->show_panel=PANEL_PLAY_INJURIED;
 
                 p->show_time=200;
             }
@@ -614,6 +614,7 @@ skipchange:
                                 g->Comando=STAI_FERMO;
                                 g->ActualSpeed=0;
                                 DoSpecialAnim(g,GIOCATORE_ESPULSO);
+                                g->Ammonito = 2; // this is to "mark" a red card
                                 g->dir=0;
                             }
                             else
@@ -623,16 +624,18 @@ skipchange:
                                  * per il giocatore umano invece in palla.c
                                  *
                                  */
-                                if(g->CA[0]>0)
-                                {
-                                    D(bug("Effettuo la sostutuzione...(s:%ld go:%ld gi:%ld)\n",j,g->number,Riserve[j][g->CA[0]-1].number));                                
-                                    ChangePlayer(&Riserve[j][g->CA[0]-1],g);
+                                if(g->CA[0]>0) {
+                                    extern struct team_disk leftteam_dk, rightteam_dk;                                    
+                                    struct team_disk *sd = (g->SNum && !teams_swapped) ? &rightteam_dk : &leftteam_dk;
+                                    struct player_disk *plr = &sd->players[10 + g->CA[0] - 1];
+                                    D(bug("Changing player...(s:%ld go:%ld gi:%ld)\n",j, g->number, plr->number));                                
+                                    ChangePlayer(plr, g);
 
                                     // Il giocatore sostituito potrebbe essere quello attivo!
                                     if(detail_level&USA_NOMI)
                                         PrintSmall(s->NomeAttivo,s->attivo->surname,s->attivo->NameLen);
+
                                     s->NumeroRiserve--;
-                                    p->player_injuried=NULL;
                                     p->show_panel&=0xff;
                                     p->show_time=50;
                                     g->Comando=NESSUN_COMANDO;
@@ -1090,40 +1093,6 @@ void HandleExtras(void)
             }
             i++;
         }
-    }
-}
-
-void CheckChange(player_t *g)
-{
-    if(substitutions && !arcade && !(p->show_panel&0xff00) )
-    {
-        if(r_controls[g->team->Joystick][counter]&(JPF_JOY_DOWN|JPF_JOY_UP))
-        {
-            g->team->ArcadeCounter++;
-
-            if(g->team->ArcadeCounter>70)
-            {
-                if(r_controls[g->team->Joystick][counter]&JPF_JOY_DOWN)
-                {
-                    if(g->team->NumeroRiserve>0&&g->team->Sostituzioni<3)
-                    {
-                        StopTime();
-                        p->player_injuried=g;
-                        p->RiservaAttuale=-1;
-                        p->show_panel=PANEL_SUBSTITUTION;
-                    }
-                }
-                else
-                {
-                    StopTime();
-                    p->player_injuried=g;
-                    p->RiservaAttuale=0;
-                    p->show_panel=PANEL_CHANGE_TACTIC;
-                }
-                g->team->ArcadeCounter=0;
-            }
-        }
-        else g->team->ArcadeCounter=0;
     }
 }
 

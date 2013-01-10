@@ -480,6 +480,8 @@ void ChangePlayer(struct player_disk *src, player_t *dest)
     MakeName(dest, src);
 
     dest->Posizioni = src->Posizioni;
+    // this will help us to skip him in following iterations
+    src->number = 255;
 }
 
 void ScanTactics(void)

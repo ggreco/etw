@@ -8,6 +8,10 @@
     #define PID2    1.57079632679489661923       /*  PI/2  */
 #endif
 
+player_t *has_player_injuried()
+{
+    return p->player_injuried;
+}
 // char Table[]={4,1,5,0,3,2,5,2,1,4,0,3};
 
 void SetShotSpeed(player_t *g, WORD distance)

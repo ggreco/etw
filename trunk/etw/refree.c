@@ -803,62 +803,62 @@ void HandleReferee(void)
                         team_t *s=g->team;
                         int j=g->SNum;
 
-                        if(s->Joystick<0)
-                        {
+                        if(s->Joystick<0) {
+                            extern struct team_disk leftteam_dk, rightteam_dk;
+                            extern const char *build_name(const char*, const char*);
+                            struct team_disk *sd = (g->SNum && !teams_swapped) ? &rightteam_dk : &leftteam_dk;
+                            int totale_riserve = sd->nplayers - 10;
                             g->Tick=50;
 
-                            if(!g->Comando&!g->Special)
-                            {
+                            if(!g->Comando && !g->Special) {
+
                                 int k;
-                                int best=666;
+                                int best = 666;
+                                char new_plr[80];
 
-// Algoritmo che decide la sostituzione del computer.
-                                if(!replay_mode)
-                                {
-                                    for(k=0;k<TotaleRiserve[j];k++)
-                                    {
-                                        if(Riserve[j][k].Ammonizioni<2&&
-                                            Riserve[j][k].injury<2 && NumeroDiverso(s,Riserve[j][k].number) )
-                                        {
+                                // algorithm to find 
+                                if(!replay_mode) {
+                                    for(k=0;k<totale_riserve;k++) {
+                                        struct player_disk *plr = &sd->players[10 + k];
+                                        // number == 255 means that this player has already been used
+                                        if(plr->number != 255 && plr->Ammonizioni < 2 && plr->injury < 2 && NumeroDiverso(s,plr->number) ) {
                                             char t1=g->Posizioni&(P_DIFESA|P_CENTRO|P_ATTACCO),
-                                                t2=Riserve[j][k].Posizioni&(P_DIFESA|P_CENTRO|P_ATTACCO);
+                                                 t2=plr->Posizioni&(P_DIFESA|P_CENTRO|P_ATTACCO);
 
-                                            if(best==666 || (t1&t2) )
-                                                best=k;
+                                            if(best == 666 || (t1&t2) ) {
+                                                strcpy(new_plr, build_name(plr->name, plr->surname));
+                                                best = k;
+                                            }
                                         }
                                     }
 
-/* questo trucco e' necessario per non perdere la coerenza dei replay!!! Uso il joystick NON usato dal
- * giocatore umano, potrebbe richiedere una modifica quando implementero' la modalita' a 4 giocatori!
- */
-
-// Le if sono dovute al fatto che se si gioca computer contro computer il codice seguente causava un enforcer hit!
-
+                                    // keep coherence in replay mode, we use the not human player register.
                                     if(p->team[j^1]->Joystick>=0)
                                         r_controls[p->team[j^1]->Joystick^1][counter]=best;
                                     else
                                         r_controls[j][counter]=best;
                                 }
-                                else
-                                {
+                                else { // if we are in replay mode the answer is written in the other joystick data
                                     if(p->team[j^1]->Joystick>=0)
                                         best=r_controls[p->team[j^1]->Joystick^1][counter];
                                     else
                                         best=r_controls[j][counter];
                                 }
 
-                                if(best!=666)
-                                {
+                                if(best!=666) {
                                     D(bug("Setto il pannello di sostituzione per il computer\n"));
                                     g->CA[0]=best+1;
-                                    p->show_panel=PANEL_SUBSTITUTION_3;
+                                   
+                                    add_change(s, build_name(g->name, g->surname), new_plr);
+                                    p->show_panel=PANEL_SUBSTITUTION;
                                     p->show_time=300;
+                                    p->player_injuried=NULL;
                                     g->Comando=ESCI_CAMPO;
                                 }
                                 else
                                 {
                                     s->NumeroRiserve=0;
-                                    D(bug("Sostituzione non effettuata per mancanza di riserve!\n"));
+                                    D(bug("Unable to do computer substitution, no player available!\n"));
                                     p->player_injuried=NULL;
                                     g->Comando=NESSUN_COMANDO;
                                 }
