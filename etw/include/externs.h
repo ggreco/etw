@@ -101,7 +101,6 @@ extern void GL_Fuori(int);
 extern void MoveNonControlled(void);
 extern WORD GetJoyDirection(uint32_t);
 extern void NoPlayerControl(player_t *);
-extern void CheckChange(player_t *);
 extern uint32_t (*MyReadPort0)(uint32_t);
 extern uint32_t (*MyReadPort1)(uint32_t);
 extern void UpdatePortStatus(void);
@@ -190,6 +189,7 @@ extern void PrintBottom(char *);
 extern void DrawR(void);
 extern void DrawPause(void);
 extern void ShowFinal(void);
+extern size_t how_many_changes();
 
 // Suoni
 
@@ -301,5 +301,4 @@ void check_tutorial();
 extern void draw_pause_menu();
 extern void draw_substitutions_menu();
 extern void SetTeamSubstitutions(team_t *s);
-
 #endif

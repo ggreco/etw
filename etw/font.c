@@ -19,6 +19,51 @@ struct Stats {
     UBYTE address, len;
 };
 
+typedef struct change_data_
+{
+    struct change_data_ *next;
+    team_t *team;
+    char in[40], out[40];
+} change_data;
+
+static change_data *changes = NULL;
+
+void add_change(team_t *t, const char *out, const char *in)
+{
+    change_data *c = malloc(sizeof(change_data));
+
+    if (!c)
+        return;
+
+    c->team = t;
+    c->next = changes;
+    strcpy(c->in, in + 1);
+    strcpy(c->out, out + 1);
+
+    changes = c;
+} 
+
+size_t how_many_changes()
+{
+    size_t count = 0;
+    change_data *c = changes;
+    while (c) {
+        count++;
+        c = c->next;
+    }
+    return count;
+}
+
+static void free_change_data()
+{
+    change_data *c = changes;
+    while (c) {
+        change_data *next = c->next;
+        free(c);
+        c = next;
+    }
+    changes = NULL;
+}
 #define NUMERO_STATS 9
 
 struct Stats stats[] = {
@@ -354,164 +399,55 @@ void ShowPanel(void)
         TextShadow((WINDOW_WIDTH - (font_width * 6)) / 2, font_height + 2, buffer, 6);
     }
 
-    if (p->player_injuried) {
+    if (!pause_mode ) {
+        if (p->show_panel & PANEL_SUBSTITUTION) {
+            int l = how_many_changes();
+
+            if (l > 0) {
+                change_data *c = changes;
+                int x = (font_width << 1), i, 
+                    y =  WINDOW_HEIGHT - font_height * (l + 2) - font_height * (l - 1) /4;
+
+                rectfill_pattern(main_bitmap, x, y,
+                        WINDOW_WIDTH - 1 - (font_width << 1),
+                        WINDOW_HEIGHT - font_height,
+                        0, // not used anymore
+                        bitmap_width);
+
+                x += font_width;
+                y += font_height;
+                ColorTextShadow(x, y, "OUT:", 4, changes->team->MarkerRed);
+                ColorTextShadow(WINDOW_WIDTH/2 + x, y, "IN:", 3, changes->team->MarkerRed);
+                x += font_width * 5;
+                for (i = 0; i < l; ++i) {
+                    TextShadow(x, y, c->out, strlen(c->out));
+                    TextShadow(WINDOW_WIDTH/2 + x, y, c->in, strlen(c->in));
+                    y += (font_height * 5) / 4;
+                }
+            }
+        }
+        else
+            free_change_data();
+    }
+
+    if ( (p->show_panel & PANEL_PLAY_INJURIED) && p->player_injuried) {
         player_t *g = p->player_injuried;
+        char buffer[80];
+        int x, y, l;
 
-        if (p->show_panel & PANEL_SUBSTITUTION_3) {
-            char buffer[80];
-            int l, x, y;
+        sprintf(buffer, "%s INJURIED.", g->name);
 
-            sprintf(buffer, "OUT: %s", g->surname);
+        l = strlen(buffer);
 
-            l = strlen(buffer);
+        x = WINDOW_WIDTH - l * font_width;
+        x >>= 1;
+        y = (WINDOW_HEIGHT >> 1) - font_height;
 
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-            y = (WINDOW_HEIGHT >> 1) - (font_height << 1);
+        TextShadow(x, y, buffer, l);
 
-            TextShadow(x, y, buffer, l);
-
-            if (g->CA[0] > 0) {
-                y += (font_height << 2);
-
-                sprintf(buffer, "IN: %s",
-                        Riserve[g->SNum][g->CA[0] - 1].surname);
-
-                l = strlen(buffer);
-
-                x = WINDOW_WIDTH - l * font_width;
-                x >>= 1;
-
-                TextShadow(x, y, buffer, l);
-            }
-        }
-
-        if (p->show_panel & PANEL_PLAY_INJURIED) {
-            char buffer[80];
-            int x, y, l;
-
-            sprintf(buffer, "%s INJURIED.", g->name);
-
-            l = strlen(buffer);
-
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-            y = (WINDOW_HEIGHT >> 1) - font_height;
-
-            TextShadow(x, y, buffer, l);
-
-            if (p->show_time < 10) {
-                p->show_panel &= ~PANEL_PLAY_INJURIED;
-                p->player_injuried = NULL;
-            }
-        }
-
-        if (p->show_panel & PANEL_INJURIED) {
-            char buffer[80];
-            int x, y, l;
-
-            sprintf(buffer, "%s INJURIED. SUBSTITUTE HIM:", g->surname);
-
-            l = strlen(buffer);
-
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-            y = (WINDOW_HEIGHT >> 1) - (font_height << 1);
-
-            TextShadow(x, y, buffer, l);
-
-            y += (font_height << 1) + 1;
-
-            x = font_width << 2;
-
-            if (left_sel) {
-                ColorTextShadow(x, y, "YES", 3, g->team->MarkerRed);
-            } else {
-                TextShadow(x, y, "YES", 3);
-            }
-
-            x = WINDOW_WIDTH - font_width * 6;
-
-            if (right_sel) {
-                ColorTextShadow(x, y, "NO", 2, g->team->MarkerRed);
-            } else {
-                TextShadow(x, y, "NO", 2);
-            }
-        } else if (p->show_panel & PANEL_SUBSTITUTION) {
-            char *c = "SELECT THE PLAYER TO SUBSTITUTE";
-            int x, y, l;
-
-            l = strlen(c);
-
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-            y = (WINDOW_HEIGHT >> 1) - (font_height << 1);
-
-            PrintTeamName(g, y);
-
-            TextShadow(x, y, c, l);
-
-            y += (font_height << 1) + 1;
-
-            if (p->RiservaAttuale < 0)
-                c = "NOBODY";
-            else
-                c = g->team->players[p->RiservaAttuale].name;
-
-            l = strlen(c);
-
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-
-            TextShadow(x, y, c, l);
-        } else if (p->show_panel & PANEL_SUBSTITUTION_2) {
-            char *c = "SELECT THE NEW PLAYER";
-            int x, y, l;
-
-            l = strlen(c);
-
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-            y = (WINDOW_HEIGHT >> 1) - (font_height << 1);
-
-            PrintTeamName(g, y);
-
-            TextShadow(x, y, c, l);
-
-            y += (font_height << 1) + 1;
-
-            c = Riserve[g->SNum][p->RiservaAttuale].surname;
-
-            l = strlen(c);
-
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-
-            TextShadow(x, y, c, l);
-        } else if (p->show_panel & PANEL_CHANGE_TACTIC) {
-            char *c = "SELECT THE NEW TACTIC:";
-            int x, y, l;
-
-            l = strlen(c);
-
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-            y = (WINDOW_HEIGHT >> 1) - (font_height << 1);
-
-            PrintTeamName(g, y);
-
-            TextShadow(x, y, c, l);
-
-            y += (font_height << 1) + 1;
-
-            c = tactics[p->RiservaAttuale];
-
-            l = strlen(c);
-
-            x = WINDOW_WIDTH - l * font_width;
-            x >>= 1;
-
-            TextShadow(x, y, c, l);
+        if (p->show_time < 10) {
+            p->show_panel &= ~PANEL_PLAY_INJURIED;
+            p->player_injuried = NULL;
         }
     }
 

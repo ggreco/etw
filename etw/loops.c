@@ -397,6 +397,11 @@ void handle_pause_status()
         if (!was_stopped)
             RestartTime();
         ideal = Timer() - 1;
+
+        if (how_many_changes() > 0) {
+            p->show_panel |= PANEL_SUBSTITUTION;
+            p->show_time = 150;
+        }
     }
 }
 

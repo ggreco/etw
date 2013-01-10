@@ -452,27 +452,6 @@ void CheckKeys(void)
                             }
                         }
                         break;
-                    case SDLK_t:
-                        {
-                            player_t *g = p->team[0]->attivo;
-                            StopTime();
-                            p->player_injuried=g;
-                            p->RiservaAttuale=0;
-                            p->show_panel=PANEL_CHANGE_TACTIC;
-                        }
-                        break;
-                    case SDLK_y:
-                        {
-                            player_t *g = p->team[0]->attivo;
-
-                            if(g->team->NumeroRiserve>0&&g->team->Sostituzioni<3) {
-                                StopTime();
-                                p->player_injuried=g;
-                                p->RiservaAttuale=-1;
-                                p->show_panel=PANEL_SUBSTITUTION;
-                            }
-                        }
-                        break;
                         // W - enables/disables the radar
                     case SDLK_s:
                         if(detail_level&USA_RADAR)

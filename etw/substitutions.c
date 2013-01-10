@@ -7,11 +7,11 @@ extern struct Button panel_substitutions[];
 UBYTE game_colore_team[3]={14, 9, 6};
 UBYTE game_highlight_team[3]={1, 7, 8};
 
-extern struct player_disk Riserve[2][12];
 extern const char *empty;
 extern BOOL teams_swapped;
+extern void add_change(team_t *t, const char *in, const char *out);
 
-static const char *build_name(const char *name, const char *surname)
+const char *build_name(const char *name, const char *surname)
 {
     static char namebuffer[80];
     char *c=namebuffer;
@@ -20,8 +20,11 @@ static const char *build_name(const char *name, const char *surname)
 
     if(*name) {
         if(*surname) {
-            *c++=toupper(*name);
-            *c++='.';
+            // if name and surname are the same we skip this place, otherwise we'll get things like R.Ronaldo for Ronaldo
+            if (strcmp(name, surname)) {
+                *c++=toupper(*name);
+                *c++='.';
+            }
         }
         else while (*name) {
             *c++ =  *name;
@@ -55,37 +58,29 @@ static void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, lon
         panel_substitutions[posizione*3].Text != empty)
         free(panel_substitutions[posizione*3].Text);
 
-    if(infortuni>0)
-    {
-        char t=infortuni;
+    if(infortuni>0) {
+        D(bug("Mark injuried for %ld\n", posizione));
 
-        if(t>3)
-            t=3;
+        panel_substitutions[posizione*3].Text=calloc(2, 1);
 
-        D(bug("Mark %ld injuried for %ld\n", t, posizione));
-
-        panel_substitutions[posizione*3].Text=malloc(2);
-
-        panel_substitutions[posizione*3].Text[0]=12+t;
+        panel_substitutions[posizione*3].Text[0]=13;
         
     }
-    else if(ammonizioni>0)
-    {
-        char t=ammonizioni;
+    else if(ammonizioni == 1) {
+        D(bug("Mark yellow card for %ld\n", posizione));
 
-        if(t>3)
-            t=3;
+        panel_substitutions[posizione*3].Text=calloc(2, 1);
 
-        D(bug("Mark %ld yellow card for %ld\n", t, posizione));
+        panel_substitutions[posizione*3].Text[0]=5;
+    }
+    else if (ammonizioni == 2) {
+        D(bug("Mark red card for %ld\n", posizione));
 
-        panel_substitutions[posizione*3].Text=malloc(2);
-
-        panel_substitutions[posizione*3].Text[0]=4+t;
+        panel_substitutions[posizione*3].Text=calloc(2, 1);
+        panel_substitutions[posizione*3].Text[0]=9;
     }
     else
-    {
         panel_substitutions[posizione*3].Text=(char*)empty;
-    }
 
     if(panel_substitutions[posizione*3+2].Text==NULL ||
         panel_substitutions[posizione*3+2].Text == empty)
@@ -120,6 +115,7 @@ static void SetPlayerStatus(int posizione, char infortuni, char ammonizioni, lon
 
 static void AddPlayer(player_t *g, int posizione)
 {
+    extern player_t *has_player_injuried();
     char buffer[8];
 
     AddName(g->name, g->surname, posizione);
@@ -138,13 +134,33 @@ static void AddPlayer(player_t *g, int posizione)
 
     panel_substitutions[posizione*3+1].Text=strdup(buffer);
 
-    SetPlayerStatus(posizione, FALSE, g->Ammonito ? 1 : 0,
+    SetPlayerStatus(posizione, g == has_player_injuried(), g->Ammonito,
         (((g->Tiro+g->tackle+g->speed*2+g->technique+g->creativity-2*6+3)*10)/7)/6 );
 }
 
 static void AddRiserva(struct player_disk *g, int posizione)
 {
     char buffer[8];
+
+    if(panel_substitutions[posizione*3+1].Text&&panel_substitutions[posizione*3+1].Text!=empty)
+        free(panel_substitutions[posizione*3+1].Text);
+
+    if (g->number == 255) {        
+        if(button_substitutions[posizione*2+1].Text)
+            free(button_substitutions[posizione*2+1].Text);
+
+        if(panel_substitutions[posizione*3].Text!=NULL &&
+            panel_substitutions[posizione*3].Text != empty)
+            free(panel_substitutions[posizione*3].Text);
+        if(panel_substitutions[posizione*3 + 2].Text!=NULL &&
+            panel_substitutions[posizione*3 + 2].Text != empty)
+            free(panel_substitutions[posizione*3 + 2].Text);
+
+        button_substitutions[posizione*2+1].Text=NULL;
+        button_substitutions[posizione*2].Text=NULL;
+        panel_substitutions[posizione*3+1].Text=panel_substitutions[posizione*3].Text=panel_substitutions[posizione*3+2].Text=NULL;
+        return;
+    }
 
     AddName(g->name, g->surname, posizione);
 
@@ -156,9 +172,6 @@ static void AddRiserva(struct player_disk *g, int posizione)
         strcat(buffer, msg_4);
     if(g->Posizioni&P_ATTACCO)
         strcat(buffer, msg_5);
-
-    if(panel_substitutions[posizione*3+1].Text&&panel_substitutions[posizione*3+1].Text!=empty)
-        free(panel_substitutions[posizione*3+1].Text);
 
     panel_substitutions[posizione*3+1].Text=strdup(buffer);
 
@@ -182,6 +195,20 @@ static player_t *has_player(const char *name)
     return NULL;
 }
 
+static struct player_disk *has_substitution(const char *name)
+{
+    int i;
+
+    for (i = 10; i < 16; ++i) {
+        if (sd->players[i].number == 255)
+            continue;
+
+        if (!strcmp(name, build_name(sd->players[i].name, sd->players[i].surname)))
+            return &sd->players[i];
+    }
+
+    return NULL;
+}
 static BOOL perform_substitutions()
 {
     int i;
@@ -194,7 +221,7 @@ static BOOL perform_substitutions()
 
     // to begin we count substitutions to see if we can perform the operation
     // we have substituted the goalkeeper?
-    if (strcmp(build_name(sub_team->keepers.name, sub_team->keepers.surname), actual_menu->Button[1].Text))
+    if (strcmp(build_name(sub_team->keepers.name, sub_team->keepers.surname), bt[1].Text))
         subst++;
 
     for (i = 1; i < 11; ++i) 
@@ -209,10 +236,12 @@ static BOOL perform_substitutions()
         MyEasyRequest(hwin, &easy, NULL);
         return FALSE;
     }
+    D(bug("Preparing to perform %d substitutions\n", subst));
 
     // change the goalkeeper
-    if (strcmp(build_name(sub_team->keepers.name, sub_team->keepers.surname), actual_menu->Button[1].Text)) {
-        D(bug("Changing goalkeeper %s with %s\n", sub_team->keepers.name, actual_menu->Button[1].Text));
+    if (strcmp(build_name(sub_team->keepers.name, sub_team->keepers.surname), bt[1].Text)) {
+        D(bug("Changing goalkeeper %s with %s\n", sub_team->keepers.name, bt[1].Text));
+        add_change(sub_team, build_name(sub_team->keepers.name, sub_team->keepers.surname), bt[1].Text);
         free(sub_team->keepers.name);
         sub_team->keepers.number = sd->keepers[1].number;
         sub_team->keepers.Parata = sd->keepers[1].Parata;
@@ -232,9 +261,8 @@ static BOOL perform_substitutions()
         strcpy(actual_player_name, build_name(sub_team->players[i - 1].name, 
                                               sub_team->players[i - 1].surname));
 
-        // if the new player in that position has a different name of the one there was before
-        if (new_plr) {
-            if (strcmp(new_player_name, actual_player_name)) {
+        // if the new player exists and in that position has a different name of the one there was before
+        if (new_plr && strcmp(new_player_name, actual_player_name)) {
                 player_t *old_plr;
                 // if the player that was in that position is still on the 11...
                 if ((old_plr = has_player(actual_player_name))) {
@@ -247,14 +275,41 @@ static BOOL perform_substitutions()
                     *old_plr = temp;
                     new_plr->GNum = i - 1;
                     old_plr->GNum = temp_gnum;
-                }
-                // if the old player is no more on the pitch, so it's a substitution, and we can take care of it later
+                
             }
-        }
-        else { // the new player was not in the pitch, this mean it's a substitution
         }
     }
 
+    for (i = 1; i < 11; ++i) {
+        char actual_player_name[80], *new_player_name = bt[i * 2 + 1].Text;
+        struct player_disk *new_plr;
+        player_t *old_plr;
+
+        // was already on pitch, it's not in our interest
+        if (has_player(new_player_name))
+            continue;
+
+        new_plr = has_substitution(new_player_name);
+
+        if (!new_plr) {
+            D(bug("ERROR!!!! Player %s is not available in the changes, ignoring transfer!\n", new_player_name));
+            continue;
+        }
+        strcpy(actual_player_name, build_name(sub_team->players[i - 1].name, 
+                                              sub_team->players[i - 1].surname));
+
+        if ((old_plr = has_player(actual_player_name))) {
+            extern void ChangePlayer(struct player_disk *src, player_t *dest);
+             D(bug("New player in: %s out: %s\n", new_player_name, actual_player_name));
+            add_change(sub_team, actual_player_name, new_player_name);
+            ChangePlayer(new_plr, old_plr);
+            new_plr->number = 255;
+        }
+        else {
+            D(bug("ERROR!!!! Player %s to be substituted with %s is not on pitch, ignoring transfer!\n", actual_player_name, new_player_name));
+            continue;
+        }
+    }
     sub_team->Sostituzioni += subst;
     // we return TRUE if the operation can be done
     return TRUE;
@@ -369,7 +424,7 @@ void SetTeamSubstitutions(team_t *s)
     }
 
     for (i = 0; i < nriserve; ++i)
-        AddRiserva(&Riserve[snum][i], 12 + i);
+        AddRiserva(&sd->players[10 + i], 12 + i);
   
     if (nriserve < 5) {
         for (i = 12 + nriserve ; i<17; i++) {
