@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B090F61169F3FB6005B1490 /* substitutions.c in Sources */ = {isa = PBXBuildFile; fileRef = 0B090F60169F3FB6005B1490 /* substitutions.c */; };
 		0B2490601694B304004D96AC /* tutorial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B24905E1694B304004D96AC /* tutorial.cpp */; };
 		0B3DE794167BF4F400457D3F /* GameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B3DE793167BF4F400457D3F /* GameCenter.m */; };
 		0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3DE795167BF61100457D3F /* GameKit.framework */; };
@@ -96,6 +97,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B090F60169F3FB6005B1490 /* substitutions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = substitutions.c; sourceTree = "<group>"; };
 		0B24905E1694B304004D96AC /* tutorial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tutorial.cpp; sourceTree = "<group>"; };
 		0B24905F1694B304004D96AC /* tutorial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tutorial.h; path = include/tutorial.h; sourceTree = "<group>"; };
 		0B3DE78F167BF4E100457D3F /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameCenter.h; path = include/GameCenter.h; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 		0BD74ED7165245940045909C /* sources */ = {
 			isa = PBXGroup;
 			children = (
+				0B090F60169F3FB6005B1490 /* substitutions.c */,
 				0BD74F22165246760045909C /* anim.c */,
 				0BD74F23165246760045909C /* arcade.c */,
 				0BB5CD1E1652646A00BF007B /* ball.c */,
@@ -573,6 +576,7 @@
 				0BAD165D1656B0110071C986 /* vjoy.cpp in Sources */,
 				0B3DE794167BF4F400457D3F /* GameCenter.m in Sources */,
 				0B2490601694B304004D96AC /* tutorial.cpp in Sources */,
+				0B090F61169F3FB6005B1490 /* substitutions.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

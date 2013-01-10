@@ -177,6 +177,7 @@ extern void RimbalzoCasuale(void);
 
 // Fonts
 
+extern void add_change(team_t *t, const char *in, const char *out);
 extern void PrintNames(void);
 extern void PrintSmall(uint8_t *, char *, char );
 extern void PrintVerySmall(uint8_t *, char *, char,int );

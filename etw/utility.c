@@ -209,6 +209,7 @@ BOOL handle_pause(WORD button)
             break;
         case 2:
             if (cnt) {
+                extern void graphic_frame();
                 extern BOOL HandleMenuIDCMP();
 
                 graphic_frame();

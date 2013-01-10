@@ -229,6 +229,7 @@ static BOOL perform_substitutions()
             subst++;
     
     if ((subst + sub_team->Sostituzioni) > 3) {
+        extern void MyEasyRequest(void*, struct EasyStruct *, void *);
         extern void *hwin;
         struct EasyStruct easy = {0};
         easy.es_TextFormat = "YOU CAN PERFORM MAX 3 SUBSTITUTIONS IN A MATCH";
@@ -240,6 +241,7 @@ static BOOL perform_substitutions()
 
     // change the goalkeeper
     if (strcmp(build_name(sub_team->keepers.name, sub_team->keepers.surname), bt[1].Text)) {
+        extern void MakeName(player_t *, struct player_disk *);
         D(bug("Changing goalkeeper %s with %s\n", sub_team->keepers.name, bt[1].Text));
         add_change(sub_team, build_name(sub_team->keepers.name, sub_team->keepers.surname), bt[1].Text);
         free(sub_team->keepers.name);
