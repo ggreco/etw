@@ -45,6 +45,9 @@
 #define MANTIENI_DISTANZA 10
 #define ESCI_CAMPO     11
 #define ASPETTA_PALLA    12
+#define ENTRA_CAMPO    13
+// argomenti
+#define ARG_ESPULSIONE 99
 
 // Comandi per l'arbitro 
 
@@ -79,7 +82,6 @@
 
 #define P_VERDE0 0
 #define P_BIANCO 1
-#define P_VERDE1 2
 #define P_VERDE2 3
 #define P_NERO  4
 #define P_ARANCIO1 5
@@ -90,8 +92,12 @@
 #define P_ROSSO2 10
 #define P_ARANCIO0 11
 #define P_GIALLO 12
+// let's support the load of this header in menu sources
+#ifndef P_VERDE1
+#define P_VERDE1 2
 #define P_GRIGIO1 13
 #define P_GRIGIO0 14
+#endif
 #define P_BLU0 15
 
 #define COLOR_STANDARD_MAGLIE P_ROSSO1

@@ -3,6 +3,8 @@
 
 #include "highdirent.h"
 
+extern struct team_disk leftteam_dk, rightteam_dk;
+
 void ReadTeam(FILE *fh, struct team_disk *s)
 {
     int i;
@@ -134,12 +136,10 @@ char team_name[2][16] = { { '\0' }, { '\0' } };
 int result_width, scivolate_modificate = 0;
 linesman_t *linesman;
 
-uint8_t cols[2][4], NumeroTattiche = 0, TotaleRiserve[2];
+uint8_t cols[2][4], NumeroTattiche = 0;
 BOOL teams_swapped = FALSE, has_black[2] = { FALSE, FALSE };
 WORD swaps = 0;
 char *tactics[32];
-
-struct player_disk Riserve[2][12];
 
 anim_t *players[2] = { NULL, NULL }, *keepers = NULL, *ports, *arcade_anim;
 anim_t *g_neri[2] = { NULL, NULL };
@@ -255,6 +255,7 @@ void SwapTeams(void)
 {
     extern UBYTE ReplaySet;
     extern char golrig[2];
+    struct team_disk td;
     char c;
     team_t *s;
     int i, j;
@@ -299,19 +300,9 @@ void SwapTeams(void)
     golrig[0] = golrig[1];
     golrig[1] = c;
 
-    for(i = 0; i < 12; i++)
-    {
-        struct player_disk temp;
-
-        temp = Riserve[0][i];
-        Riserve[0][i] = Riserve[1][i];
-
-        Riserve[1][i] = temp;
-    }
-
-    tmp = TotaleRiserve[0];
-    TotaleRiserve[0] = TotaleRiserve[1];
-    TotaleRiserve[1] = tmp;
+    td = rightteam_dk;
+    rightteam_dk = leftteam_dk;
+    leftteam_dk = td;
 
     teams_swapped ^= 1;
 }
@@ -788,7 +779,6 @@ team_t *CreateTeam(int num)
 {
     char path[100];
     team_t *s;
-    extern struct team_disk leftteam_dk, rightteam_dk;
     struct team_disk sd;
     size_t i;
 
@@ -944,21 +934,7 @@ team_t *CreateTeam(int num)
         s->players[i].team = s;
     }
 
-    TotaleRiserve[snum] = s->NumeroRiserve = sd.nplayers - 10;
-
-    for(i = 10; i < sd.nplayers; i++)
-    {
-        int k = 0;
-
-        Riserve[snum][i - 10] = sd.players[i];
-
-        while(Riserve[snum][i - 10].surname[k])
-        {
-            Riserve[snum][i - 10].surname[k] = toupper(Riserve[snum][i - 10].surname[k]);
-            k++;
-        }
-    }
-
+    s->NumeroRiserve = sd.nplayers - 10;
     s->keepers.anim = keepers;
     s->keepers.SNum = snum;
     s->keepers.otype = TIPO_PORTIERE;

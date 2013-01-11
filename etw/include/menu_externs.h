@@ -63,7 +63,7 @@ extern BOOL JoyCfg(WORD);
 extern BOOL KeyCfg(WORD);
 
 extern void SetTeamSettings(WORD, BOOL);
-extern void DisplayTactic(int, int);
+extern void DisplayTactic(const char*, int, int, const char *n[], int);
 extern WORD StartMatch(BYTE, BYTE);
 extern WORD LastMatchResult();
 extern void ScaleGfxObj(gfx_t *, uint8_t *);
@@ -127,6 +127,7 @@ extern struct EasyStruct easy;
 extern UBYTE colore_team[3], highlight_team[3];
 extern struct SoundInfo *menusound[];
 extern struct championship_disk campionato;
+extern const char *numbers[100];
 
 // from os_video
 void os_set_color(int, int, int , int);
@@ -156,6 +157,7 @@ extern int os_get_joy_button(int);
 extern char network_server[];
 extern void initialize_menus();
 extern void free_menus();
+extern void update_menu_tactic();
 
 // achievement api
 void add_achievement(const char *, float);

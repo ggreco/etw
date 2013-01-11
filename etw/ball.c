@@ -21,6 +21,10 @@ void RimbalzoVerticale(void)
     UpdateBallSpeed();
 }
 
+BOOL CheckBall(player_t *plr)
+{
+    return pl->gioc_palla == plr;
+}
 void RimbalzoOrizzontale(void)
 {
     pl->dir-=128;

@@ -85,6 +85,20 @@ struct pos portieri[2][2][SECTORS+SPECIALS]=
     }
 };
 
+
+void check_keeper_sub(keeper_t *g)
+{
+    if (g->SpecialData == ENTRA_CAMPO) {
+        g->TimePress--;
+        if (g->TimePress <= 0) {
+            D(bug("Completed gk substitution, new gk: %s\n", g->name));
+            p->show_panel &= 0xff;
+            g->SpecialData = 0;
+            p->team[g->SNum]->Sostituzioni++;
+        }
+    }
+}
+
 void CheckPortiere(int n)
 {
     keeper_t *g=&p->team[n]->keepers;
@@ -127,8 +141,10 @@ void CheckPortiere(int n)
 
 void HandleGoalKick(keeper_t *g)
 {
-    if(p->show_panel & 0xff00)
+    if(p->show_panel & 0xff00) {
+        check_keeper_sub(g);
         return;
+    }
 
     if(g->team->Joystick >= 0)
     {
@@ -256,8 +272,10 @@ rinviocomputer:
 
 void HandleKeeperControlled(keeper_t *g)
 {
-    if(p->show_panel & 0xff00)
+    if(p->show_panel & 0xff00) {
+        check_keeper_sub(g);
         return;
+    }
 
     if(g->team->Joystick >= 0)
     {
@@ -428,8 +446,10 @@ rinvioliberocomputer:
 void HandleKeeper(int num)
 {
     BOOL near_porta;
-
     register keeper_t *g=&p->team[num]->keepers;
+
+    if (p->show_panel & 0xff00) 
+        check_keeper_sub(g);
 
     g->Tick--;
 

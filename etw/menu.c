@@ -14,13 +14,13 @@ void DrawBox(WORD button);
 static BOOL new_competition = FALSE;
 struct Button req_bottoni[4];
 BOOL reqqing = FALSE;
+extern BOOL pause_mode;
 
 struct MyFileRequest freq = { 0 };
 
 
 BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
 {
-    extern BOOL pause_mode;
     struct GfxMenu *old_menu, fake_menu;
     int i, x, y, width = FixedScaledX(150), button_width =
         FixedScaledX(30), height = FixedScaledY(35), bottoni = 1, linee =
@@ -235,8 +235,8 @@ BOOL CheckQuit(void)
     easy.es_TextFormat = msg_65;
     easy.es_GadgetFormat = msg_62;
 
-    if (current_menu == MENU_TEAM_SETTINGS ||
-        current_menu == MENU_MATCH_RESULT)
+    if (!game_start && (current_menu == MENU_TEAM_SETTINGS ||
+                        current_menu == MENU_MATCH_RESULT))
         return TRUE;
 
     if (MyEasyRequest(hwin, &easy, NULL))
@@ -1269,7 +1269,7 @@ void ChangeMenu(WORD m)
     actual_button = 0;
 
     if (m == MENU_TEAM_SETTINGS) {
-        DisplayTactic(0, 0);
+        update_menu_tactic();
 
         if (ruolo[actual_team] && controllo[actual_team] >= 0) {
             UBYTE oldpen;
@@ -1339,10 +1339,14 @@ void set_pause_tactic(int button)
     }
 }
 
+extern team_t *find_controlled_team();
+extern BOOL using_tactic(team_t *, const char *);
 
 void draw_substitutions_menu()
 {
     int i;
+    team_t *c = find_controlled_team();
+
    // it's important to set current_menu before CreateButton() since createbutton() uses it!
     actual_menu = &menu[MENU_SUBSTITUTIONS];
     current_menu = MENU_SUBSTITUTIONS;
@@ -1378,21 +1382,44 @@ void draw_substitutions_menu()
 
     actual_button = 0;
 
+    for (i = 0; i < 6; ++i) {
+        struct Button *b = &actual_menu->Button[34 + i];
+
+        if (c && using_tactic(c, b->Text)) { 
+            const char *nums[PLAYERS];
+
+            for (i = 0; i < PLAYERS; ++i) { 
+                if (c->players[i].Ammonito & 2)
+                    nums[i] = NULL;
+                else
+                    nums[i] = numbers[c->players[i].number];                
+            }
+
+            b->Color = 9;
+            DisplayTactic(b->Text, actual_menu->X,  actual_menu->Y, nums, c->Joystick);
+        }
+        else 
+            b->Color = 14;
+    }    
+
     for (i = 0; i < actual_menu->NumeroBottoni; ++i)
         CreateButton(&actual_menu->Button[i]);
 
+ 
+    
     while (!actual_menu->Button[actual_button].Text)
         actual_button++;
+      
     
+
     current_button = actual_button;
     DrawBox(actual_button);
 }
 
 void draw_pause_menu()
 {
-    extern team_t *find_controlled_team();
+;
     extern ball_t *pl;
-    extern BOOL using_tactic(team_t *, const char *);
     int i;
     team_t *c = find_controlled_team();
 
@@ -1765,6 +1792,12 @@ BOOL HandleMenuIDCMP(void)
             break;
         case SDL_KEYUP:
             switch (e.key.keysym.sym) {
+            case SDLK_p:
+                if (pause_mode && game_start) {
+                    pause_mode = FALSE;
+                    return TRUE;
+                }
+                break;
             case SDLK_UP:
                 returncode = HandleJoy(JPF_JOY_UP);
                 break;

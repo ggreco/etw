@@ -401,6 +401,47 @@ void CheckKeys(void)
                     case SDLK_3:
                         PlayBackSound(sound[BOOU]);
                         break;
+                    case SDLK_4:
+                    case SDLK_5:
+                    case SDLK_6:
+                        if (pl->gioc_palla) {
+                            player_t *g = pl->gioc_palla;
+                            pl->InGioco=FALSE;
+                            FermaPalla();
+                            p->referee.Comando=FISCHIA_FALLO;
+                            TogliPalla();
+                      
+                            if (e.key.keysym.sym == SDLK_6) {
+                                DoSpecialAnim(g,GIOCATORE_INFORTUNIO);
+                                g->Ammonito |= 4;
+                                g->ActualSpeed=0;
+
+                                if(injuries) {
+                                    StopTime();
+
+                                    p->player_injuried=g;
+
+                                    if(g->team->Joystick>=0)
+                                        p->show_panel=PANEL_PLAY_INJURIED;
+
+                                    p->show_time=200;
+                                }
+                                break;
+                            }
+                            else if (e.key.keysym.sym == SDLK_4) {
+                                p->team[g->SNum]->Ammonizioni++;
+                                p->referee.Comando=AMMONIZIONE;
+                            }
+                            else if (e.key.keysym.sym == SDLK_5) {
+                                p->referee.Comando=ESPULSIONE;
+                                p->team[g->SNum]->Espulsioni++;
+                            }               
+
+                            p->referee.Tick=-50;
+                            p->show_panel|=PANEL_TIME|PANEL_CARD;
+                            p->referee.Argomento=g->GNum+g->SNum*10;
+                        }
+                        break;
                     case SDLK_w:
                         // W - end time!
                         EndTime=Timer();
@@ -544,10 +585,26 @@ void CheckKeys(void)
                         // Q - quit game
                     case SDLK_ESCAPE:
                     case SDLK_q:
-                        SetResult("break");
-                        final = FALSE;
+                        {
+                            extern BOOL CheckQuit();
+                            BOOL stop_time = FALSE;
 
-                        quit_game=TRUE;
+                            if (!time_stopped) {
+                                StopTime();
+                                stop_time = TRUE;
+                            }
+                            if (CheckQuit()) {
+                                SetResult("break");
+                                final = FALSE;
+
+                                quit_game=TRUE;
+                            }
+
+                            if (stop_time) {
+                                RestartTime();
+                                ideal = Timer() - 1;
+                            }
+                        }
                         break;
 
                         // BARRA - change visual
