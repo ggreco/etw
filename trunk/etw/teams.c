@@ -175,39 +175,33 @@ BOOL LoadMenuTactic(char *name, tactic_t *t)
     return TRUE;
 }
 
-void DisplayTactic(int xs, int ys)
+void DisplayTactic(const char* tct, int xs, int ys, const char *pos[], int team_type)
 {
 // Pitch is 108*156, tactics 10240, 4352
-
     char buffer[120];
     tactic_t t;
 
-    if(actual_team<0)
-        return;
+    team_type += 17; // i use this value for the symbol color
 
-    sprintf(buffer, "tct/%s", teamlist[actual_team].tactics[0]);
-
-    ys+=menu[MENU_TEAM_SETTINGS].Y;
-    xs+=menu[MENU_TEAM_SETTINGS].X;
+    sprintf(buffer, "tct/%s", tct);
 
     setfont(smallfont);
 
     if (LoadMenuTactic(buffer, &t)) {
-         int i, x, y, l;
+         int i;
 
-        for(i=0; i<PLAYERS; i++) {
-            if(i<8)
-                l=1;
-            else l=2;
+         for(i=0; i<PLAYERS; i++) {
+             if (pos[i]) {
+                 int y = FixedScaledY(110-t.Position[0][i][GOALKICK].x*156/10240),
+                     x = FixedScaledX(t.Position[0][i][GOALKICK].y*100/4352-15);
+                 int l = strlen(pos[i]);
 
-            y=FixedScaledY(110-t.Position[0][i][GOALKICK].x*156/10240);
-            x=FixedScaledX(t.Position[0][i][GOALKICK].y*100/4352-15);
+                 BltAnimObj(symbols, main_bitmap, team_type, x+xs, y+ys, bitmap_width);
 
-            BltAnimObj(symbols, main_bitmap, 17+controllo[actual_team], x+xs, y+ys, bitmap_width);
-
-            TextShadow(x+xs+(10-l*smallfont->width)/2+2-l,
-                y+ys+smallfont->height+1, numero[i+1], l);
-        }
+                 TextShadow(x+xs+(10-l*smallfont->width)/2+2-l,
+                         y+ys+smallfont->height+1, pos[i], l);
+             }
+         }
     }
 }
 
@@ -479,15 +473,37 @@ static void AddPlayer(struct player_disk *g, int posizione)
     if(pannelli[posizione*3+1].Text&&pannelli[posizione*3+1].Text!=empty)
         free(pannelli[posizione*3+1].Text);
 
-    pannelli[posizione*3+1].Text=strdup(buffer);
+    pannelli[posizione*3+1].Text = strdup(buffer);
+    teamsettings[posizione*2].Text   = (char*) numbers[g->number];
 
     SetPlayerStatus(posizione, g->injury, g->Ammonizioni,
         (((g->Tiro+g->tackle+g->speed*2+g->technique+g->creativity-2*6+3)*10)/7)/6 );
 }
 
+extern struct GfxMenu *actual_menu;
+
+void update_menu_tactic()
+{
+    const char *nums[PLAYERS];
+    int i;
+
+    bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
+            actual_menu->X, actual_menu->Y, 
+            FixedScaledX(108), FixedScaledY(156), bitmap_width, bitmap_width);
+
+    blit_scaled_logo();
+    for (i = 0; i < PLAYERS; ++i) {
+        if (teamlist[actual_team].players[i].Ammonizioni < 3)
+            nums[i] = numbers[teamlist[actual_team].players[i].number];
+        else
+            nums[i] = NULL;
+    }
+
+    DisplayTactic(teamlist[actual_team].tactics[0], actual_menu->X,  actual_menu->Y, nums, controllo[actual_team]);
+}
+
 BOOL TeamSettings(WORD button)
 {
-    extern struct GfxMenu *actual_menu;
     struct Button *b;
     static int sel1 = -1;
 
@@ -530,6 +546,8 @@ BOOL TeamSettings(WORD button)
                         b->ID = 16;
                         AddPlayer(&teamlist[actual_team].players[14], 16);
                     }
+
+                    teamsettings[button].Text = "..";
 
                     if (sel1 == 16)
                         sel1 = -1;
@@ -584,6 +602,12 @@ BOOL TeamSettings(WORD button)
                                 (((teamlist[actual_team].keepers[0].Parata * 2 + teamlist[actual_team].keepers[1].Attenzione - 2 * 3 + 2) * 10) / 7) / 3);
                             RedrawButton(b2, b2->Color);
 
+
+                            teamsettings[0].Text = (char*)numbers[teamlist[actual_team].keepers[0].number];
+                            teamsettings[22].Text = (char*)numbers[teamlist[actual_team].keepers[1].number];
+                            RedrawButton(b2 - 1, b2->Color);
+                            RedrawButton(b - 1, b->Color);
+
                             for (i = 0; i < 3; i++)
                             {
                                 RedrawButton(&pannelli[33 + i],
@@ -631,11 +655,15 @@ BOOL TeamSettings(WORD button)
                             else
                                 RedrawButton(b2, P_GIALLO);
 
+                            RedrawButton(b2 - 1, b2->Color);
+                            RedrawButton(b3 - 1, b3->Color);
+
                             for (i = 0; i < 3; i++)
                             {
                                 RedrawButton(&pannelli[selected * 3 + i], pannelli[selected * 3 + i].Color);
                                 RedrawButton(&pannelli[sel1 * 3 + i], pannelli[sel1 * 3 + i].Color);
                             }
+                            update_menu_tactic();
                         }
 
                         if (!ruolo[actual_team] || ruolo[actual_team] != sel1)
@@ -661,15 +689,9 @@ changetactic:
             {
                 extern void DrawBox(WORD);
                 int i;
-
                 strcpy(teamlist[actual_team].tactics[0], b->Text);
-                bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
-                    actual_menu->X, actual_menu->Y, 
-                    FixedScaledX(108), FixedScaledY(156), bitmap_width, bitmap_width);
 
-                blit_scaled_logo();
-
-                DisplayTactic(0, 0);
+                update_menu_tactic();
 
                 for (i = 0; i < 9; i++) {
                     struct Button *t = &teamsettings[34 + i];
@@ -750,7 +772,6 @@ void SetTeamSettings(WORD team, BOOL starting)
 
     for(i=0; i<min(17, teamlist[team].nplayers+teamlist[team].nkeepers); i++)
     {
-        teamsettings[i*2].Text=numero[i];
         teamsettings[i*2].ID=i;
 //        pannelli[i*3].Text=empty;
     }
@@ -791,7 +812,8 @@ void SetTeamSettings(WORD team, BOOL starting)
 
     AddName((struct player_disk *)&teamlist[team].keepers[0], 0);
     SetPlayerStatus(0, teamlist[team].keepers[0].injury, 0, (((teamlist[team].keepers[0].Parata*2+teamlist[team].keepers[0].Attenzione-2*3+2)*10)/7)/3);
-    
+    teamsettings[0].Text = (char*)numbers[teamlist[actual_team].keepers[0].number];
+   
     if(teamlist[team].nkeepers<2)
     {
         D(bug("if(teamlist[team].nkeepers<2)"));
@@ -831,13 +853,17 @@ void SetTeamSettings(WORD team, BOOL starting)
         pannelli[11*3+1].Text= msg_141;
         SetPlayerStatus(11, teamlist[team].keepers[1].injury, 0,
                         (teamlist[team].keepers[1].Parata*2+teamlist[team].keepers[1].Attenzione+2)/3);
+       teamsettings[22].Text = (char*) numbers[teamlist[actual_team].keepers[1].number];
     }
 
     if (starting) 
         teamsettings[42].Text = msg_0;
     else
         teamsettings[42].Text = msg_6;
-        
+
+    if (teamsettings[16 * 2 + 1].Text)
+        teamsettings[16 * 2].Text = "..";
+    
     D(bug("SetTeamSettings for %d (%d) ok\n", team, starting));
 }
 

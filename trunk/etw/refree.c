@@ -648,6 +648,8 @@ void HandleReferee(void)
                                 v->Special=FALSE;
                                 DoAnim(v,GIOCATORE_RESPIRA);
                                 v->Comando=ESCI_CAMPO;
+                                v->CA[1] = ARG_ESPULSIONE;
+                                v->Ammonito=2;
                             }
                             else 
                             {
@@ -655,7 +657,7 @@ void HandleReferee(void)
                                     UrgentSpeaker(S_AMMONIZIONE);
 
                                 v->Comando=NESSUN_COMANDO;
-                                v->Ammonito=TRUE;
+                                v->Ammonito=1;
                             }
 
                             g->Comando=BATTI_FALLO;
@@ -806,7 +808,7 @@ void HandleReferee(void)
                         if(s->Joystick<0) {
                             extern struct team_disk leftteam_dk, rightteam_dk;
                             extern const char *build_name(const char*, const char*);
-                            struct team_disk *sd = (g->SNum && !teams_swapped) ? &rightteam_dk : &leftteam_dk;
+                            struct team_disk *sd = g->SNum ? &rightteam_dk : &leftteam_dk;
                             int totale_riserve = sd->nplayers - 10;
                             g->Tick=50;
 
@@ -848,7 +850,8 @@ void HandleReferee(void)
                                 if(best!=666) {
                                     D(bug("Setto il pannello di sostituzione per il computer\n"));
                                     g->CA[0]=best+1;
-                                   
+                                    g->CA[1] = 0;
+ 
                                     add_change(s, build_name(g->name, g->surname), new_plr);
                                     p->show_panel=PANEL_SUBSTITUTION;
                                     p->show_time=300;
@@ -1215,7 +1218,6 @@ void HandleReferee(void)
                                 g2->world_y=CENTROCAMPO_Y+40;
                                 g1->dir=D_SUD;
                                 g2->dir=D_NORD;
-                                DoAnim(g2,GIOCATORE_RESPIRA);
 /*
                                 g1->dir=FindDirection(g1->world_x,g1->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));
                                 g2->dir=FindDirection(g2->world_x,g2->world_y,G2P_X(pl->world_x),G2P_Y(pl->world_y));

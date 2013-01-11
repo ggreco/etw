@@ -97,3 +97,25 @@ void InvertTactic(tactic_t *t)
         }
     }
 }
+
+BOOL change_tactic(team_t *cnt, const char *newname)
+{
+    char path[128];
+    tactic_t *oldtct=cnt->tactic;
+
+    sprintf(path, "tct/%s", newname);
+    if(!(cnt->tactic=LoadTactic(path))) {
+        D(bug("Unable to find new tactic! (%s)\n",path));
+        cnt->tactic=oldtct;
+    }
+    else {
+        D(bug("Changing tactic for %s from %s to %s\n", cnt->name, oldtct->Name, newname));
+
+        FreeTactic(oldtct);
+        if (cnt == p->team[0])
+            InvertTactic(cnt->tactic);
+
+        return TRUE;
+    }
+    return FALSE;
+}

@@ -6,8 +6,7 @@
 
 #define GA_SIZE 48
 
-extern struct player_disk Riserve[2][12];
-extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,team_b,TotaleRiserve[2],NumeroTattiche;
+extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,team_b,NumeroTattiche;
 extern char team_name[2][16],fieldname[24],palette[24],shirt[2][24];
 extern object_t *pezzi_porte[4],*bonus[MAX_ARCADE_ON_FIELD];
 extern int8_t need_release[MAX_PLAYERS], arcade_team[2], starting_team;
@@ -18,7 +17,7 @@ extern BOOL quit_game,no_sound,soft_scroll,pause_mode,final,full_replay,killer,
     substitutions,bookings,injuries,window_opened,screen_opened,nopari,free_longpass,
     no_record,penalties,free_kicks,arcade_teams,first_half,extratime,left_sel,right_sel,
     friendly,golden_gol,use_key0,use_key1,joyonly,use_offside, use_touch,
-    network_game, game_start, tutorial;
+    network_game, game_start, tutorial, time_stopped;
 extern uint8_t control[4], tipo_porta;
 extern char *controls[CONTROLS], spk_basename[64];
 extern int32_t Pens[256];
@@ -52,11 +51,13 @@ extern anim_t *ports,*replay,*arcade_anim,*goal_banner;
 extern linesman_t *linesman;
 extern struct MyFastScaleArgs *scaling;
 extern int font_width,font_height,result_width,FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
+extern const char *numbers[100];
 
 extern void MakeRef(uint8_t *,int, int);
 extern tactic_t *LoadTactic(char *);
 extern void FreeTactic(tactic_t *);
 extern void InvertTactic(tactic_t *);
+extern BOOL change_tactic(team_t*, const char*);
 extern game_t *SetupSquadre(void);
 extern void LiberaPartita(game_t *);
 extern WORD FindDirection(WORD,WORD,WORD,WORD);

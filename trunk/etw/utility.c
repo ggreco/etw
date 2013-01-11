@@ -114,6 +114,24 @@ void SetComando(player_t *g, BYTE cmd, BYTE dopo, BYTE arg)
             g->Comando=VAI_PALLA;
             g->CA[0]=dopo;
             break;
+        case ENTRA_CAMPO:
+            if (g->Comando == STAI_FERMO) {
+                g->CA[3] = STAI_FERMO;
+            }
+            else
+                g->CA[3] = 0;
+
+            g->Comando=ENTRA_CAMPO;
+            g->CA[0] = ENTRA_CAMPO;
+            g->WaitForControl = arg;
+
+            if (g->Special) {
+                g->CA[2] = g->AnimType;
+                g->Special = FALSE;
+            }
+            else
+                g->CA[2] = 0;
+            break;
         default:
             D(bug("Comando non implementato!\n"));
     }
@@ -237,27 +255,9 @@ BOOL handle_pause(WORD button)
         case 6:
         case 7:
         case 8:
-            if (cnt) {
-                char path[128];
-                tactic_t *oldtct=cnt->tactic;
-                const char *newname = get_tactic_name(button);
-
-                sprintf(path, "tct/%s", newname);
-                if(!(cnt->tactic=LoadTactic(path))) {
-                    D(bug("Unable to find new tactic! (%s)\n",path));
-                    cnt->tactic=oldtct;
-                }
-                else {
-                    D(bug("Changing tactic for %s from %s to %s\n", cnt->name, oldtct->Name, newname));
-
-                    FreeTactic(oldtct);
-                    if (cnt == p->team[0])
-                        InvertTactic(cnt->tactic);
-
-                    set_pause_tactic(button);
-
-                    ScreenSwap();
-                }
+            if (cnt && change_tactic(cnt, get_tactic_name(button))) {
+                set_pause_tactic(button);
+                ScreenSwap();
             }
             break;
             // abandon game
@@ -271,8 +271,6 @@ BOOL was_stopped=TRUE;
 
 void DoPause(void)
 {
-    extern BOOL time_stopped;
-
     if(!time_stopped) {
         StopTime();
         was_stopped = FALSE;
@@ -957,6 +955,16 @@ void EseguiDopoComando(player_t *g)
 {
     switch(g->CA[0])
     {
+        case ENTRA_CAMPO:
+            g->Comando = NESSUN_COMANDO;
+            if (g->CA[3]) 
+                g->Comando = g->CA[3];
+
+            if (g->CA[2]) {
+                g->Special = TRUE;
+                g->AnimType = g->CA[2];
+            }
+            break;
         case ESEGUI_TIRO:
             g->Comando=NESSUN_COMANDO;
             pl->TipoTiro=g->CA[1];

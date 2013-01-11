@@ -369,8 +369,6 @@ void ShowPanel(void)
         if (first_kickoff) {
             mins = secs = 0;
         } else {
-            extern BOOL time_stopped;
-
             if (time_stopped) {
                 extern mytimer StopTimeVal;
 

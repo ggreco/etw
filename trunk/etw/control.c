@@ -11,8 +11,7 @@ void CheckInfortuni(player_t *g)
 
         g->stamina--;
 
-        if(GetTable()>g->stamina || killer)
-        {
+        if(GetTable()>g->stamina || killer) {
             g->stamina=0;
 
             TogliPalla();
@@ -24,6 +23,8 @@ void CheckInfortuni(player_t *g)
             g->creativity=max(1,t);
 
             g->ActualSpeed=0;
+            // we use flag bit 3 as injury marker
+            g->Ammonito |= 4;
 
             DoSpecialAnim(g,GIOCATORE_INFORTUNIO);
 
@@ -204,13 +205,11 @@ void MoveNonControlled(void)
                                     {
                                         if(GetTable()>((11-p->referee.cattiveria)>>1))
                                         {
-                                            if(!g->Ammonito)
-                                            {
+                                            if(!(g->Ammonito & 1)) {
                                                 p->team[g->SNum]->Ammonizioni++;
                                                 p->referee.Comando=AMMONIZIONE;
                                             }
-                                            else
-                                            {
+                                            else {
                                                 p->team[g->SNum]->Espulsioni++;
                                                 p->referee.Comando=ESPULSIONE;
                                             }
@@ -586,6 +585,22 @@ skipchange:
                             }
                         }
                         break;
+                    case ENTRA_CAMPO:
+                        g->WaitForControl--;
+
+                        if (g->WaitForControl < 0) {
+                              if(detail_level&USA_NOMI)
+                                  PrintSmall(s->NomeAttivo,s->attivo->surname,s->attivo->NameLen);                        
+                              D(bug("Completed not visual substitution of %s\n", g->name));
+
+                              s->NumeroRiserve--;
+                              p->show_panel&=0xff;
+                              p->show_time=50;
+                              if (s->Joystick < 0)
+                                  s->Sostituzioni++;
+                              EseguiDopoComando(g);
+                        }
+                        break;
                     case ESCI_CAMPO:
                         g->WaitForControl--;
 
@@ -608,7 +623,7 @@ skipchange:
                                     g->ActualSpeed=1;
                                 }
                             }
-                            else if(p->player_injuried!=g) // It's a red card
+                            else if(g->CA[1] == ARG_ESPULSIONE) // It's a red card
                             {
                                 //                            D(bug("Fine ESCI_CAMPO, giocatore a destinazione!\n"));
                                 g->Comando=STAI_FERMO;
@@ -626,7 +641,7 @@ skipchange:
                                  */
                                 if(g->CA[0]>0) {
                                     extern struct team_disk leftteam_dk, rightteam_dk;                                    
-                                    struct team_disk *sd = (g->SNum && !teams_swapped) ? &rightteam_dk : &leftteam_dk;
+                                    struct team_disk *sd = g->SNum ? &rightteam_dk : &leftteam_dk;
                                     struct player_disk *plr = &sd->players[10 + g->CA[0] - 1];
                                     D(bug("Changing player...(s:%ld go:%ld gi:%ld)\n",j, g->number, plr->number));                                
                                     ChangePlayer(plr, g);
@@ -639,7 +654,9 @@ skipchange:
                                     p->show_panel&=0xff;
                                     p->show_time=50;
                                     g->Comando=NESSUN_COMANDO;
-                                    s->Sostituzioni++;
+
+                                    if (s->Joystick < 0)
+                                        s->Sostituzioni++;
                                 }
                             }
                         }
