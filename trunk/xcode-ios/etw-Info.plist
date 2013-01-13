@@ -15,6 +15,12 @@
 			<key>CFBundleIconFiles</key>
 			<array>
 				<string>iphone-icon.png</string>
+				<string>Ball-icon copy.png</string>
+				<string>Ball-icon copy 2.png</string>
+				<string>Ball-icon.png</string>
+				<string>icon-retina.png</string>
+				<string>icon-ipad.png</string>
+				<string>icon-ipad-retina.png</string>
 			</array>
 		</dict>
 	</dict>
