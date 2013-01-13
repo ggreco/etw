@@ -171,6 +171,7 @@ extern void init_speaker(void);
 extern void free_speaker(void);
 extern struct SoundInfo *handle_crowd(void);
 extern struct SoundInfo *handle_speaker(void);
+extern struct team_disk *find_disk_team(team_t *);
 
 // Rimbalzi
 

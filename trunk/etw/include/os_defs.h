@@ -45,19 +45,15 @@ extern char *SCORE_FILE;
 #   define TCT_DIR         "tct/"
 #   define TEAMS_DIR       "teams/"
 #   define NEWGFX_DIR      "newgfx/"
-#   define KEY_BLUE_FILE   EXEC_DIR "key_blue"
-#   define KEY_RED_FILE    EXEC_DIR "key_red"
-#   define GAME_FONT       NEWGFX_DIR "game.font"
-#   define SMALLGAME_FONT  NEWGFX_DIR "smallgame.font"
 #else
 #   define TCT_DIR         "TCT/"
 #   define TEAMS_DIR       "TEAMS/"
 #   define NEWGFX_DIR      EXEC_DIR "newgfx/"
-#   define KEY_BLUE_FILE   EXEC_DIR "key_blue"
-#   define KEY_RED_FILE    EXEC_DIR "key_red"
-#   define GAME_FONT       NEWGFX_DIR "game.font"
-#   define SMALLGAME_FONT  NEWGFX_DIR "smallgame.font"
 #endif
+
+#define KEY_BLUE_FILE   EXEC_DIR "key_blue"
+#define KEY_RED_FILE    EXEC_DIR "key_red"
+#define SMALLGAME_FONT  NEWGFX_DIR "smallgame.font"
 
 #ifdef WIN
 #   if !defined( __GNUC__)

@@ -640,8 +640,7 @@ skipchange:
                                  *
                                  */
                                 if(g->CA[0]>0) {
-                                    extern struct team_disk leftteam_dk, rightteam_dk;                                    
-                                    struct team_disk *sd = g->SNum ? &rightteam_dk : &leftteam_dk;
+                                    struct team_disk *sd = find_disk_team(g->team);
                                     struct player_disk *plr = &sd->players[10 + g->CA[0] - 1];
                                     D(bug("Changing player...(s:%ld go:%ld gi:%ld)\n",j, g->number, plr->number));                                
                                     ChangePlayer(plr, g);

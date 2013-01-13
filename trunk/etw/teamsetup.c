@@ -255,7 +255,7 @@ void SwapTeams(void)
 {
     extern UBYTE ReplaySet;
     extern char golrig[2];
-    struct team_disk td;
+//    struct team_disk td;
     char c;
     team_t *s;
     int i, j;
@@ -299,11 +299,11 @@ void SwapTeams(void)
     c = golrig[0];
     golrig[0] = golrig[1];
     golrig[1] = c;
-
+/*
     td = rightteam_dk;
     rightteam_dk = leftteam_dk;
     leftteam_dk = td;
-
+*/
     teams_swapped ^= 1;
 }
 

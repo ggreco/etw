@@ -256,8 +256,8 @@ iteration()
                                 joyrect_.x = 20;
                             if (joyrect_.y < 0)
                                 joyrect_.y = 0;
-                            if (joyrect_.y + joyrect_.h > screen_h_)
-                                joyrect_.y = screen_h_ - joyrect_.h;
+                            if (joyrect_.y + joyrect_.h > (screen_h_ - 15))
+                                joyrect_.y = screen_h_ - joyrect_.h - 15;
 
                             reference_x_ = center_x_;
                             reference_y_ = center_y_;

@@ -10,9 +10,11 @@ UBYTE game_highlight_team[3]={1, 7, 8};
 #include "defines.h"
 
 extern const char *empty;
-extern BOOL teams_swapped;
+extern WORD swaps;
 extern void add_change(team_t *t, const char *in, const char *out);
 extern void SetComando(player_t *g, BYTE cmd, BYTE dopo, BYTE arg);
+extern BOOL using_tactic(team_t *, const char *);
+extern struct team_disk *find_disk_team(team_t *);
 
 const char *build_name(const char *name, const char *surname)
 {
@@ -384,7 +386,7 @@ static void redraw_tactic(struct Button *b)
 
     bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
             actual_menu->X, actual_menu->Y, 
-            FixedScaledX(108), FixedScaledY(156), bitmap_width, bitmap_width);
+            FixedScaledX(108), FixedScaledY(108), bitmap_width, bitmap_width);
     DisplayTactic(b ? b->Text : sub_team->tactic->Name, actual_menu->X, actual_menu->Y, nums, sub_team->Joystick);
 
     for (i = 0; i < 6; i++) {
@@ -488,11 +490,9 @@ BOOL TeamSubstitutions(WORD button)
 }
 void SetTeamSubstitutions(team_t *s)
 {
-    extern struct team_disk leftteam_dk, rightteam_dk;
     int i;
     int nriserve = min(5, s->NumeroRiserve);
-    int snum = s->players[0].SNum;
-    sd = snum ? &rightteam_dk : &leftteam_dk;
+    sd = find_disk_team(s);
 
     sub_team = s;
 
