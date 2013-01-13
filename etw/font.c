@@ -97,15 +97,17 @@ void PrintTeamName(player_t * g, int y)
 
 BOOL InitFonts(void)
 {
+    extern struct myfont *titlefont;
+    
     if (!(gsmallfont = LoadGfxObject("gfx/smallfont", Pens, NULL)))
         return FALSE;
 
     if (!(verysmallfont = LoadGfxObject("gfx/verysmallfont", Pens, NULL)))
             return FALSE;
 
-    if ((gtf = openfont(GAME_FONT))) {
+    if (titlefont) {
+        gtf = titlefont;
         setfont(gtf);
-        D(bug("Font opened.\n"));
     } else {
         printf("Unable to open the ETW font!\n");
         return FALSE;
@@ -115,10 +117,7 @@ BOOL InitFonts(void)
 
 void FreeFonts(void)
 {
-    if (gtf) {
-        closefont(gtf);
-        gtf = NULL;
-    }
+    gtf = NULL;
 
     if (gsmallfont) {
         FreeGfxObj(gsmallfont);

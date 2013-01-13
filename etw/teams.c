@@ -489,7 +489,7 @@ void update_menu_tactic()
 
     bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
             actual_menu->X, actual_menu->Y, 
-            FixedScaledX(108), FixedScaledY(156), bitmap_width, bitmap_width);
+            FixedScaledX(108), FixedScaledY(108), bitmap_width, bitmap_width);
 
     blit_scaled_logo();
     for (i = 0; i < PLAYERS; ++i) {

@@ -51,7 +51,7 @@ static bool training_session(void)
 }
 
 static TutorialLine lines[] = {
-    {TutorialLine::ByMenuId, (void*)MENU_MAIN_MENU, "Welcome to the Eat The Whistle Tutorial!\n\nWe'll guide you to discover the game features and mechanics.\n\nYou can deactivate this tutorial in any moment through the audio video settings."},
+    {TutorialLine::ByMenuId, (void*)MENU_MAIN_MENU, "Welcome to the Eat The Whistle Tutorial!\n\nWe'll guide you to discover the game features and mechanics.\n\nYou can deactivate this tutorial in any time through the audio video settings, in the preferences menu."},
 #ifdef IPHONE
     {TutorialLine::ByMenuId, (void*)MENU_SCORES, "Eat the whistle supports Game Center for achievements and scores. Please remember that you need to log in to Game Center in order to record your achievements and compete with your friends."},
 #endif

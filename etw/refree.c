@@ -806,9 +806,8 @@ void HandleReferee(void)
                         int j=g->SNum;
 
                         if(s->Joystick<0) {
-                            extern struct team_disk leftteam_dk, rightteam_dk;
                             extern const char *build_name(const char*, const char*);
-                            struct team_disk *sd = g->SNum ? &rightteam_dk : &leftteam_dk;
+                            struct team_disk *sd = find_disk_team(s);
                             int totale_riserve = sd->nplayers - 10;
                             g->Tick=50;
 

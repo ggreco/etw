@@ -30,7 +30,7 @@ void Intro(void)
 
                     if((fn=GetFrameNode(a,90))) {
                         fn->fn_Sample=menusound[2];
-                        fn->fn_Loops=1;
+                        fn->fn_Loops=0;
                     }
 
                     if((fn=GetFrameNode(a,100))) {
@@ -60,27 +60,27 @@ void Intro(void)
                             break;
                         case 2:
                             if((fn=GetFrameNode(a,410))) {
-                                fn->fn_Loops=1;
+                                fn->fn_Loops=0;
                                 fn->fn_Sample=menusound[0];
                             }
                             break;
                         case 4:
                             if((fn=GetFrameNode(a,423))) {
-                                fn->fn_Loops=1;
+                                fn->fn_Loops=0;
                                 fn->fn_Sample=menusound[17];
                             }                            
                             if((fn=GetFrameNode(a,429))) {
-                                fn->fn_Loops=1;
+                                fn->fn_Loops=0;
                                 fn->fn_Sample=menusound[15];
                             }                            
                             if((fn=GetFrameNode(a,445))) {
-                                fn->fn_Loops=1;
+                                fn->fn_Loops=0;
                                 fn->fn_Sample=menusound[16];
                             }                            
                             break;
                         case 5:
                             if((fn=GetFrameNode(a,405))) {
-                                fn->fn_Loops=1;
+                                fn->fn_Loops=0;
                                 fn->fn_Sample=menusound[14];
                             }                            
                             break;
@@ -158,7 +158,7 @@ struct Stage stage[]=
     {{NULL,NULL,NULL,NULL,NULL},205},
     {{"SOUND"/*-*/,NULL,"DANIELE CARAMASCHI"/*-*/,"GABRIELE GRECO"/*-*/,NULL},210},
     {{NULL,NULL,NULL,NULL,NULL},255},
-    {{"MUSIC"/*-*/,NULL,"NOISY TUBE BY HORRORPEN", "BLUEBEAT 1 BY ERH","METALLIC MISTRESS BY FOXSYNERGY"},260},
+    {{"MUSIC"/*-*/,NULL,"NOISY TUBE BY HORRORPEN", "BLUEBEAT 1 BY ERH", NULL},260},
     {{NULL,NULL,NULL,NULL,NULL},290},
     {{"ADDITIONAL CODE", NULL, "ANDREA CAROLFI", NULL, NULL}, 295},
     {NULL,NULL,NULL,NULL,NULL,320},

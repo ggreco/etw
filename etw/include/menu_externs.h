@@ -45,7 +45,7 @@ extern void AddScore(UBYTE);
 extern BOOL FileRequest(struct MyFileRequest *);
 
 extern void CheckCheat(UBYTE);
-
+extern void DrawBox(WORD);
 // Procedure speciali dei menu...
 
 extern BOOL handle_pause(WORD);

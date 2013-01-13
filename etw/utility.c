@@ -206,6 +206,17 @@ BOOL using_tactic(team_t *t, const char *tct)
     return !strcmp(t->tactic->Name, tct);
 }
 
+struct team_disk *find_disk_team(team_t *s)
+{
+    extern struct team_disk leftteam_dk, rightteam_dk;
+    
+    int snum = s->players[0].SNum;
+    if ((snum && !(swaps & 1)) ||
+        (!snum && (swaps & 1)) )
+        return &rightteam_dk;
+    else
+        return &leftteam_dk;
+}
 BOOL handle_pause(WORD button)
 {
     D(bug("Clicked button %d in handle_pause\n", button));
