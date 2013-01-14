@@ -118,7 +118,6 @@ int os_get_joy_button(int i)
         BOOL ok=FALSE;
         SDL_Event e;
 
-
         while(SDL_PollEvent(&e));
 
         while(!ok)

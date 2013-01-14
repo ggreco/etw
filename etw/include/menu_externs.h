@@ -154,6 +154,7 @@ void bitmapFastScale(struct MyFastScaleArgs *);
 extern BOOL os_check_joy(int);
 extern void init_joy_config(void);
 extern int os_get_joy_button(int);
+extern void os_flush_events();
 extern char network_server[];
 extern void initialize_menus();
 extern void free_menus();

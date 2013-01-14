@@ -263,10 +263,7 @@ void ShowCredits(void)
     if(o) {
         setfont(bigfont);
         
-        SDL_Event e;
-        
-        // empty event queue
-        while (SDL_PollEvent(&e));
+        os_flush_events();
         
         ScaleGfxObj(o, back);
         FreeGfxObj(o);
@@ -279,6 +276,8 @@ void ShowCredits(void)
 
         while (credits_iteration()) 
             os_delay(5);
+
+        os_flush_events();
     }
 }
 

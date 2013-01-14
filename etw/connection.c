@@ -427,13 +427,8 @@ WORD restore_menus()
     }
     
 
-    // clear event queue
-    {
-        SDL_Event e;
-        
-        while(SDL_PollEvent(&e));
-    }
-    
+    os_flush_events();
+
     game_start = FALSE;
     
     snprintf(buf, 1024, "%sthismatch", TEMP_DIR);
