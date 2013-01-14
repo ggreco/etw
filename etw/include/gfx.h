@@ -116,8 +116,8 @@ extern int bitmap_width,bitmap_height;
 extern void FreeGfxObj(gfx_t *);
 extern void FreeGraphics(void);
 extern void DrawObject(gfx_t *, WORD, WORD);
-extern gfx_t *LoadGfxObject(char *, int32_t *, uint8_t *);
-extern anim_t *LoadAnimObject(char *, int32_t *);
+extern gfx_t *LoadGfxObject(const char *, int32_t *, uint8_t *);
+extern anim_t *LoadAnimObject(const char *, int32_t *);
 extern void RemapAnimObjColor(anim_t *, UBYTE, UBYTE);
 extern void ClearAnimObj(void);
 extern void SortDrawList(void);
@@ -135,8 +135,7 @@ extern void RemapColor(uint8_t *, uint8_t, uint8_t, int);
 extern void RemapColors(uint8_t *, int32_t *, int);
 extern anim_t *CloneAnimObj(anim_t *);
 extern anim_t *CopyAnimObj(anim_t *);
-extern int RemapIFFPalette(char *, int32_t *);
 extern void FreeIFFPalette(void);
-extern void LoadGfxObjPalette(char *);
+extern void LoadGfxObjPalette(const char *);
 #endif
 

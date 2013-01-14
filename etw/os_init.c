@@ -201,10 +201,10 @@ void os_free_timer(void)
 #endif
 #undef fopen
 
-FILE *os_open(char *name, char *mode)
+FILE *os_open(const char *name, const char *mode)
 {
-    char buf[2048];
-    char dir[120], *fn;
+    char buf[2048], dir[512];
+    const char *fn;
     struct dirent *e;
     FILE *f;
     DIR *d;
@@ -236,12 +236,9 @@ FILE *os_open(char *name, char *mode)
     if (!*dir)
         strcpy(dir, "./");
 
-    D(bug
-      ("open on %s failed, trying case insensitive... (%s in %s)\n",
-       name, fn, dir));
+    D(bug("open on %s failed, trying case insensitive... (%s in %s)\n", name, fn, dir));
 
-    d = opendir(dir);
-    if (!d)
+    if (!(d = opendir(dir)))
         return NULL;
 
     while ((e = readdir(d))) {

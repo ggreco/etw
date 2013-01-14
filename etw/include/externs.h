@@ -47,7 +47,7 @@ extern struct Rect ingombri[];
 extern struct DOggetto peoples[];
 extern gfx_t *last_obj,*pause_gfx;
 extern mytimer StartGameTime,EndTime,ideal;
-extern anim_t *ports,*replay,*arcade_anim,*goal_banner;
+extern anim_t *ports,*replay,*arcade_anim,*goal_banner, *logos;
 extern linesman_t *linesman;
 extern struct MyFastScaleArgs *scaling;
 extern int font_width,font_height,result_width,FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
