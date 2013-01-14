@@ -103,6 +103,13 @@ void init_system(void)
     // Abbasso la priorita' in modo che le D(bug()) vengano piazzate nel punto giusto!
 }
 
+
+void os_flush_events()
+{
+    SDL_Event e;
+
+    while (SDL_PollEvent(&e));
+}
 // Ritarda di s 50esimi di secondo
 
 void os_delay(int s)

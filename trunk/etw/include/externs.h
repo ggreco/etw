@@ -278,6 +278,7 @@ void hide_vjoy();
 void set_controls(void);
 void free_joyports(void);
 void os_getevent(void);
+void os_flush_events(void);
 
 // Da os_init.c
 
