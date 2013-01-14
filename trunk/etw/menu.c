@@ -1145,6 +1145,18 @@ void blit_scaled_logo()
 {
     struct scaleAnimObjArgs a;
 
+    if (!logos) {
+        if (!(logos = LoadAnimObject("menugfx/clips.obj" /*-*/ , Pens))) {
+            D(bug("Unable to load logos images clips.obj!\n"));
+            return;
+        }
+    }
+
+    if (actual_menu->Immagine == -1) {
+        D(bug("Ignored blit_scaled_logo with NO image!\n"));
+        return;
+    }
+
     a.src = logos->Frames[actual_menu->Immagine];
     a.dest = main_bitmap;
     a.destmod = bitmap_width;
@@ -1394,7 +1406,7 @@ void draw_substitutions_menu()
                 else
                     nums[i] = numbers[c->players[i].number];                
             }
-
+            blit_scaled_logo();
             b->Color = 9;
             DisplayTactic(b->Text, actual_menu->X,  actual_menu->Y, nums, c->Joystick);
         }

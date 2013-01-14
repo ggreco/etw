@@ -21,7 +21,7 @@
 #endif
 
 #if defined(LINUX) || defined(IPHONE) 
-    extern FILE *os_open(char *, char *);
+    extern FILE *os_open(const char *, const char *);
 #   define fopen os_open
 #endif
 

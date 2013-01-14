@@ -206,7 +206,7 @@ struct Button score_bottoni[]=
     {20,67,150,80,MENU_VIEW_SCORES,8,15,msg_97},  // Scores
     {20,93,150,106,-1,8,15,"WORLD"},
     {20,119,150,132,-1,8,15,"ACHIEVEMENTS"},
-    {20,145,150,169,-1,8,15,msg_118},
+    {20,145,150,158,-1,8,15,msg_118},
     {72,210,246,222,MENU_MAIN_MENU,14,13,msg_95},
 #else
     {20,47,150,70,MENU_VIEW_SCORES,8,15,msg_97},  // Scores

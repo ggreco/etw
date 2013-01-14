@@ -398,6 +398,11 @@ void FreeStuff(void)
 {
     extern BOOL was_using_nosound;
 
+    if (logos) {
+        FreeAnimObj(logos);
+        logos = NULL;
+    }
+
     LiberaPartita(p);
 
     VuotaCLista();

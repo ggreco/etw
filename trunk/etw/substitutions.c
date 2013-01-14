@@ -373,6 +373,7 @@ static BOOL not_red_card_substitution(int p1, int p2)
 
 static void redraw_tactic(struct Button *b)
 {
+    extern void blit_scaled_logo();
     int i;
     const char *nums[PLAYERS];
 
@@ -387,6 +388,8 @@ static void redraw_tactic(struct Button *b)
     bltchunkybitmap(back, actual_menu->X, actual_menu->Y, main_bitmap,
             actual_menu->X, actual_menu->Y, 
             FixedScaledX(108), FixedScaledY(108), bitmap_width, bitmap_width);
+    blit_scaled_logo();
+
     DisplayTactic(b ? b->Text : sub_team->tactic->Name, actual_menu->X, actual_menu->Y, nums, sub_team->Joystick);
 
     for (i = 0; i < 6; i++) {

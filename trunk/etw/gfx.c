@@ -9,17 +9,12 @@ static void AddNode(struct MyList *l, APTR ptr, BYTE type);
 
 int ClipX = 0, ClipY = 0;
 
-/* Switch gestiti dal sistema, in seguito potrebbero essere inseriti
-    come tags della chiamata InitAnimSystem
- */
+/* Attributes handled by the system */
+BOOL use_window = FALSE, save_back = FALSE, use_scaling = FALSE, use_clipping = FALSE;
 
-BOOL use_window = FALSE;
-BOOL save_back = FALSE, use_scaling = FALSE, use_clipping = FALSE;
-
+/* Lists used in object handling */
 struct MyList GfxList, DrawList, TempList;
 
-
-/* Liste necessarie per la gestione degli oggetti */
 
 BOOL InitAnimSystem(void)
 {
@@ -293,9 +288,7 @@ void SortDrawList(void)
 
 
 
-/* Remove all anim_t from the display */
-
-
+/* Remove all anim_t from the display, use this only together with save_back */
 void ClearAnimObj(void)
 {
     register anim_t *obj;
@@ -312,7 +305,7 @@ void ClearAnimObj(void)
     }
 }
 
-gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
+gfx_t *LoadGfxObject(const char *_name, int32_t * pens, uint8_t * dest)
 {
     char name[1024];
     gfx_t *obj;
@@ -405,50 +398,19 @@ gfx_t *LoadGfxObject(char *_name, int32_t * pens, uint8_t * dest)
     return NULL;
 }
 
-anim_t *LoadAnimObject(char *name, int32_t * pens)
+anim_t *LoadAnimObject(const char *name, int32_t * pens)
 {
     char buffer[4];
     anim_t *obj;
-    FILE *fh, *fo = NULL;
-    BOOL convert = FALSE;
+    FILE *fh;
     int i;
 
     obj = calloc(1, sizeof(anim_t));
     if(!obj)
         return NULL;
 
-// Routine che cambia dir/name.obj in newgfx/name.objc e vede se esiste gia'
-// l'oggetto convertito.
-
-    {
-        char bb[100], *c;
-
-        c = name + strlen(name) - 1;
-
-        while (*(c - 1) != '/')
-            c--;
-
-        sprintf(bb, NEWGFX_DIR "%s", c);
-
-        bb[strlen(bb) - 1] = 'c';
-
-        if (!(fh = fopen(bb, "rb"))) {
-            D(bug("chunky animobj %s not found...\n",  bb));
-
-            if ((fh = fopen(name, "rb"))) {
-                convert = TRUE;
-
-#if !defined(WINCE) && !defined(IPHONE)
-                if (!(fo = fopen(bb, "wb")))
-                    D(bug("*** Unable to write to %s\n", bb));
-#endif
-            }
-        }
-    }
-
-    if(!fh)
-    {
-        D(bug("Unable to open file...\n"));
+    if(!(fh = fopen(name, "rb"))) {
+        D(bug("Unable to open %s for reading...\n", name));
         free(obj);
         return NULL;
     }
@@ -464,25 +426,13 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
         return NULL;
     }
 
-    if(fo)
-        fwrite("GOBC", 4, 1, fo);
-
     obj->nframes = fread_u16(fh);
     obj->max_width = fread_u16(fh);
     obj->max_height = fread_u16(fh);
     obj->real_depth = fread_u16(fh);
-    if (fo)
-    {
-        fwrite_u16(obj->nframes, fo);
-        fwrite_u16(obj->max_width, fo);
-        fwrite_u16(obj->max_height, fo);
-        fwrite_u16(obj->real_depth, fo);
-    }
-
     obj->bg = NULL;
 
-    if (save_back)
-    {
+    if (save_back) {
         obj->bg = malloc(obj->max_width * obj->max_height);
         if(!obj->bg)
         {
@@ -493,20 +443,8 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
         }
     }
 
-    if (!fo)
-        fseek(fh, (1 << obj->real_depth) * 3, SEEK_CUR);
-    else {
-        char *c = malloc((1 << obj->real_depth) * 3);
-
-        if (c) {
-            fread(c, sizeof(char) * 3, (1 << obj->real_depth),
-                  fh);
-            if (fo)
-                fwrite(c, sizeof(char) * 3,
-                       (1 << obj->real_depth), fo);
-            free(c);
-        }
-    }
+    // we ignore the palette
+    fseek(fh, (1 << obj->real_depth) * 3, SEEK_CUR);
 
     if ((obj->Frames = calloc(obj->nframes, sizeof(APTR))))
     {
@@ -524,43 +462,22 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
 
                 for (i = 0; i < obj->nframes; i++) {
                     obj->Widths[i] = fread_u16(fh);
-                    if (fo)
-                        fwrite_u16(obj->Widths[i], fo);
-
                     obj->Heights[i] = fread_u16(fh);
-                    if (fo)
-                        fwrite_u16(obj->Heights[i], fo);
 
-                    if (convert) {
-//                        D(bug("Conversion to mchunky of %s/%d...", name, i));
-                        if (!
+//                  D(bug("Conversion to mchunky of %s/%d...", name, i));
+                    if (!
                             (obj->Frames[i] =
-                             convert_mchunky(fh, fo,
-                                             obj->Widths[i],
-                                             obj->Heights[i],
-                                             obj->real_depth,
-                                             obj->pens))) {
-                            ok = FALSE;
-                            D(bug
-                              ("Non c'e' memoria per le bitmap!\n"));
-                            break;
-                        }
-//                                D(bug("OK\n"));
-                    } else {
-                        if (!
-                            (obj->Frames[i] =
-                             load_mchunky(fh, obj->Heights[i],
-                                          obj->pens))) {
-                            ok = FALSE;
-                            D(bug
-                              ("Non c'e' memoria per le bitmap!\n"));
-                            break;
-                        }
+                             convert_mchunky(fh, NULL,
+                                 obj->Widths[i],
+                                 obj->Heights[i],
+                                 obj->real_depth,
+                                 obj->pens))) {
+                        ok = FALSE;
+                        D(bug("Not enough memory for animobj bitmap!\n"));
+                        break;
                     }
+//                  D(bug("OK\n"));
                 }
-
-                if (fo)
-                    fclose(fo);
 
                 fclose(fh);
 
@@ -591,9 +508,6 @@ anim_t *LoadAnimObject(char *name, int32_t * pens)
     } else {
         D(bug("Non c'e' memoria per obj->Frames.\n"));
     }
-
-    if (fo)
-        fclose(fo);
 
     fclose(fh);
 
@@ -828,7 +742,6 @@ anim_t *CloneAnimObj(anim_t * obj)
 
         AddNode(&GfxList, o, TYPE_ANIMOBJ);
         return o;
-
     }
 
     return NULL;
@@ -845,16 +758,13 @@ anim_t *CopyAnimObj(anim_t * obj)
         memcpy(o, obj, sizeof(anim_t));
         o->node.mpNext = o->node.mpPrev = NULL;
 
-
 // XXX this is a problem on pocketpc, still have to understand why
         o->Flags = AOBJ_COPIED | AOBJ_SHAREPENS;
                         
         o->pens = NULL;
         o->Palette = NULL;
 
-        if (!
-            (o->Frames =
-             malloc(o->nframes * sizeof(struct MChunky *)))) {
+        if (!(o->Frames = malloc(o->nframes * sizeof(struct MChunky *)))) {
             free(o);
             return NULL;
         }
@@ -895,7 +805,7 @@ anim_t *CopyAnimObj(anim_t * obj)
     return NULL;
 }
 
-void LoadGfxObjPalette(char *name)
+void LoadGfxObjPalette(const char *name)
 {
     uint32_t palette[256 * 3 + 2];
     FILE *fh;
