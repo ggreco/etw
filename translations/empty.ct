@@ -1,0 +1,716 @@
+## version $VER: XX.catalog XX.XX (XX.XX.XX)
+## codeset X
+## language X
+;
+msg_0
+
+; CONTINUE
+;
+msg_1
+
+; CHALLENGE
+;
+msg_2
+
+; RANDOM
+;
+msg_3
+
+; D
+;
+msg_4
+
+; M
+;
+msg_5
+
+; A
+;
+msg_6
+
+; PARENT MENU
+;
+msg_7
+
+; ON
+;
+msg_8
+
+; OFF
+;
+msg_9
+
+; DAY
+;
+msg_10
+
+; NIGHT
+;
+msg_11
+
+; BIG TOPLEFT
+;
+msg_12
+
+; BIG TOP
+;
+msg_13
+
+; BIG TOPRIGHT
+;
+msg_14
+
+; BIG BOTTOMLEFT
+;
+msg_15
+
+; BIG BOTTOM
+;
+msg_16
+
+; BIG BOTTOMRIGHT
+;
+msg_17
+
+; SMALL TOPLEFT
+;
+msg_18
+
+; SMALL TOP
+;
+msg_19
+
+; SMALL TOPRRIGHT
+;
+msg_20
+
+; SMALL BOTTOMLEFT
+;
+msg_21
+
+; SMALL BOTTOM
+;
+msg_22
+
+; SMALL BOTTOMRIGHT
+;
+msg_23
+
+; NORMAL
+;
+msg_24
+
+; DRY
+;
+msg_25
+
+; HARD
+;
+msg_26
+
+; SOFT
+;
+msg_27
+
+; FROZEN
+;
+msg_28
+
+; MUDDY
+;
+msg_29
+
+; WET
+;
+msg_30
+
+; SNOW
+;
+msg_31
+
+; VIEW SELECTED
+;
+msg_32
+
+; ETW CUP
+;
+msg_33
+
+; THE WHISTLE TOUR
+;
+msg_34
+
+; Load tactic...
+;
+msg_35
+
+; PITCH TYPE
+;
+msg_36
+
+; TARGETED
+;
+msg_37
+
+; FREE
+;
+msg_38
+
+; Spoken comment available\nonly in the CD version!
+;
+msg_39
+
+; Menu music available\nonly in the CD version!
+;
+msg_40
+
+; ASK
+;
+msg_41
+
+; ARCADE CHALLENGE
+;
+msg_42
+
+; THE FINAL MATCH
+;
+msg_43
+
+; CUP FIXTURES
+;
+msg_44
+
+; LEAGUE FIXTURES
+;
+msg_45
+
+; WORLD CUP: FIRST MATCH
+;
+msg_46
+
+; WORLD CUP: SECOND MATCH
+;
+msg_47
+
+; WORLD CUP: THIRD MATCH
+;
+msg_48
+
+; WORLD CUP: PHASE 2
+;
+msg_49
+
+; WORLD CUP FINALS
+;
+msg_50
+
+; FINAL
+;
+msg_51
+
+; THIRD PLACE
+;
+msg_52
+
+; GAME OVER
+;
+msg_53
+
+; THE WHISTLE TOUR RESULTS
+;
+msg_54
+
+; CUP RESULTS
+;
+msg_55
+
+; LEAGUE RESULTS
+;
+msg_56
+
+; RESULTS
+;
+msg_57
+
+; Eat The Whistle Request
+;
+msg_58
+
+; Ok
+;
+msg_59
+
+; A competition is already in progress.\nStarting a new one will delete\nthe previous one!
+;
+msg_60
+
+; Proceed|Cancel
+;
+msg_61
+
+; Warning a career/tournament\nis already in progress,\ndatas will be lost!
+;
+msg_62
+
+; Ok|Cancel
+;
+msg_63
+
+; VIEW HIGHLIGHTS
+;
+msg_64
+
+; SAVE HIGHLIGHTS
+;
+msg_65
+
+; Are you sure?
+;
+msg_66
+
+; Continue|Cancel
+;
+msg_67
+
+; Arcade competitions can't be saved!
+;
+msg_68
+
+; Save the competition...
+;
+msg_69
+
+; Unable to save ETW settings!\nNeither in PROGDIR: neither in ENVARC:!
+;
+msg_70
+
+; Settings saved.
+;
+msg_71
+
+; Load teams...
+;
+msg_72
+
+; Save current teams...
+;
+msg_73
+
+; Actually you have to use\nThe MUI editor available\nin Aminet!
+;
+msg_74
+
+; Load highlight...
+;
+msg_75
+
+; Sorry, this feature is\nnot yet implemented.\nwill be available in ETW 98-99
+;
+msg_76
+
+; Load a career...
+;
+msg_77
+
+; Load a league/cup
+;
+msg_78
+
+; Save a career...
+;
+msg_79
+
+; Save a league/cup
+;
+msg_80
+
+; COACH ;
+;
+msg_81
+
+; (ALPHABETICAL ORDER)
+;
+msg_82
+
+; Continue
+;
+msg_83
+
+; Abort
+;
+msg_84
+
+; Warning!\nAn error has occurred,\nmaybe there is not enough free\nmemory or you may not have\ncorrecly installed the game.
+;
+msg_85
+
+; GAME_START
+;
+msg_86
+
+; PREFERENCES
+;
+msg_87
+
+; TEAMS
+;
+msg_88
+
+; HIGHLIGHTS
+;
+msg_89
+
+; SCORES
+;
+msg_90
+
+; CREDITS
+;
+msg_91
+
+; EXIT TO DOS
+;
+msg_92
+
+; GAME
+;
+msg_93
+
+; VIDEO
+;
+msg_94
+
+; AUDIO
+;
+msg_95
+
+; BACK TO MAIN MENU
+;
+msg_96
+
+; SAVE SETTINGS
+;
+msg_97
+
+; VIEW
+;
+msg_98
+
+; SAVE
+;
+msg_99
+
+; LOAD
+;
+msg_100
+
+; EDIT
+;
+msg_101
+
+; DEFAULT
+;
+msg_102
+
+; ARCADE
+;
+msg_103
+
+; SIMULATION
+;
+msg_104
+
+; CAREER
+;
+msg_105
+
+; PRACTICE
+;
+msg_106
+
+; SINGLE MATCH
+;
+msg_107
+
+; WHISTLE TOUR
+;
+msg_108
+
+; BACK TO PREVIOUS MENU
+;
+msg_109
+
+; FRIENDLY
+;
+msg_110
+
+; LEAGUE
+;
+msg_111
+
+; CUP
+;
+msg_112
+
+; MENAGE ONLY
+;
+msg_113
+
+; MENAGE AND PLAY
+;
+msg_114
+
+; ROLE MODE
+;
+msg_115
+
+; PLAY SESSION
+;
+msg_116
+
+; FREE KICKS
+;
+msg_117
+
+; PENALTIES
+;
+msg_118
+
+; RESET
+;
+msg_119
+
+; DURATION
+;
+msg_120
+
+; PITCH CONDITION
+;
+msg_121
+
+; REFREE STRICTNESS
+;
+msg_122
+
+; INJURIES
+;
+msg_123
+
+; SUBSTITUTIONS
+;
+msg_124
+
+; BOOKINGS
+;
+msg_125
+
+; AUTO REPLAY
+;
+msg_126
+
+; LONG PASS
+;
+msg_127
+
+; JOY PORT (BLUE)
+;
+msg_128
+
+; MOUSE PORT (RED)
+;
+msg_129
+
+; DAYTIME
+;
+msg_130
+
+; SCREEN MODE
+;
+msg_131
+
+; RADAR
+;
+msg_132
+
+; STATUS BAR
+;
+msg_133
+
+; REFREE
+;
+msg_134
+
+; PEOPLE
+;
+msg_135
+
+; PLAYER NAMES
+;
+msg_136
+
+; CROWD
+;
+msg_137
+
+; SPEAKER
+;
+msg_138
+
+; MENU MUSIC
+;
+msg_139
+
+; ARCADE TEAMS
+;
+msg_140
+
+; NORMAL TEAMS
+;
+msg_141
+
+; G
+;
+msg_142
+
+; GROUP A
+;
+msg_143
+
+; PL
+;
+msg_144
+
+; PT
+;
+msg_145
+
+; G+
+;
+msg_146
+
+; G-
+;
+msg_147
+
+; GROUP B
+;
+msg_148
+
+; GROUP C
+;
+msg_149
+
+; GROUP D
+;
+msg_150
+
+; GROUP E
+;
+msg_151
+
+; GROUP F
+;
+msg_152
+
+; GROUP G
+;
+msg_153
+
+; GROUP H
+;
+msg_154
+
+; TEAM NAME
+;
+msg_155
+
+; PLD
+;
+msg_156
+
+; PTS
+;
+msg_157
+
+; WIN
+;
+msg_158
+
+; DRW
+;
+msg_159
+
+; LST
+;
+msg_160
+
+; WINNER
+;
+msg_161
+
+; RUNNER-UP
+;
+msg_162
+
+; THIRD
+;
+msg_163
+
+; FORTH
+;
+msg_164
+
+; MAIN MENU
+;
+msg_165
+
+; GAME START
+;
+msg_166
+
+; TRAINING
+;
+msg_167
+
+; TEAM SELECTION
+;
+msg_168
+
+; GAME OPTIONS
+;
+msg_169
+
+; VIDEO OPTIONS
+;
+msg_170
+
+; AUDIO OPTIONS
+;
+msg_171
+
+; WORLD CUP
+;
+msg_172
+
+; LEAGUE TABLE
+;
+msg_173
+
+; TEAM TYPE SELECTION
+;
+msg_174
+
+; ARCADE TEAM SELECTION
+;
+msg_175
+
+; WORLD CUP RESULT
+;
+msg_176
+
+; MATCH RESULT
+;
+msg_177
+
+; HIGHSCORE
+;
