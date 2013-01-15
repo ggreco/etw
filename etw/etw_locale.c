@@ -413,10 +413,6 @@ struct {void *Prev;int Cat_ID;char Str[(100)+1];} __LTool__190 = {&__LTool__189,
 #endif
 #include <string.h>
 
-struct LocaleBase *LocaleBase;
-
-#ifndef AMIGA
-
 #include "os_defs.h"
 #include "mydebug.h"
 
@@ -530,7 +526,7 @@ void AddCtgString(struct MyCatalog *cat,long id,long offset,long len)
     }
 }
 
-void * OpenCatalog(char *catalog)
+static void * OpenCatalog(char *catalog)
 {
     char buffer[100],*lang=GetLanguage(); // debug, dovrebbe essere la lingua di sistema
     FILE *f;
@@ -639,7 +635,7 @@ fallback:
     }
 }
 
-void CloseCatalog(void * ctg)
+static void CloseCatalog(void * ctg)
 {
     if(ctg)    {
         struct MyCatalog *c=ctg;
@@ -660,7 +656,7 @@ void CloseCatalog(void * ctg)
     }
 }
 
-char *GetCatalogStr(void *Ctg, long num, char *def)
+static char *GetCatalogStr(void *Ctg, long num, char *def)
 {
     struct MyCatalog *cat=(struct MyCatalog *)Ctg;
 
@@ -687,36 +683,13 @@ char *GetCatalogStr(void *Ctg, long num, char *def)
     }
     return def;
 }
-#endif
-
-#ifdef AMIGA
-#if defined(__SASC) || defined(AROS)
-#include <proto/exec.h>
-#include <proto/locale.h>
-#else
-#include <inline/exec.h>
-#include <inline/locale.h>
-
-extern struct ExecBase *SysBase;
-#endif
-
-#include <libraries/locale.h>
-#endif
 
 void InitStrings(void)
 {
    void * Catalog;
    struct __LString *lstr=(struct __LString *)STR_BEGIN_ENTRY;
 
-#ifdef AMIGA
-   if ((LocaleBase = (struct LocaleBase *) OpenLibrary("locale.library",38))) {
-      Catalog  = OpenCatalog(NULL,"etw.catalog",
-                             OC_BuiltInLanguage,"english",
-                             OC_Version,0,
-                             TAG_DONE);
-#else
    Catalog  = OpenCatalog("etw.catalog");
-#endif
 
    while(lstr) {
          const char *str = GetCatalogStr(Catalog,lstr->CatalogID,NULL);
@@ -726,10 +699,6 @@ void InitStrings(void)
          lstr=lstr->Next;
    }
    CloseCatalog(Catalog);
-#ifdef AMIGA
-      CloseLibrary((struct Library *)LocaleBase);
-   }
-#endif
 }
 
 
