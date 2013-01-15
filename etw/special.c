@@ -1136,7 +1136,7 @@ void PunizioneCorner(player_t *g)
         }
 
         if (use_touch) {            
-            uint32_t k = r_controls[g->team->Joystick^1][counter];
+            uint32_t k = r_args[g->team->Joystick][counter];
 
             // end point of the movement
             if (l & JPF_TOUCH) {

@@ -188,17 +188,17 @@ uint32_t MyReadTouchPort(uint32_t l)
     // and use the other player controller struct as additional data,
     if (res & TouchControl::FREE_TOUCHDOWN) {
         mask |= JPF_TOUCH_DOWN;
-        r_controls[l^1][counter] = touch->touch_x() | (touch->touch_y() << 16);
+        r_args[l][counter] = touch->touch_x() | (touch->touch_y() << 16);
     }
     // this will allow us to keep the coherence of replays.
     if (res & TouchControl::FREE_TOUCH) {
         mask |= JPF_TOUCH;
-        r_controls[l^1][counter] = touch->touch_x() | (touch->touch_y() << 16);
+        r_args[l][counter] = touch->touch_x() | (touch->touch_y() << 16);
     }
     else if (res & TouchControl::FREE_SWIPE) {
         mask |= JPF_SWIPE;
         int16_t dx = touch->touch_x(), dy = touch->touch_y();
-        r_controls[l^1][counter] = ((uint16_t)dx) | (((uint16_t)dy) << 16);
+        r_args[l][counter] = ((uint16_t)dx) | (((uint16_t)dy) << 16);
     }
     
     // at this level we need only the button down event
