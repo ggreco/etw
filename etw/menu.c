@@ -17,6 +17,7 @@ BOOL reqqing = FALSE;
 extern BOOL pause_mode;
 
 struct MyFileRequest freq = { 0 };
+static const char *teamsel_message = NULL;
 
 
 BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
@@ -660,11 +661,13 @@ BOOL DoAction(WORD button)
             training = FALSE;
 
             if (button == 0) {
+                teamsel_message = "SELECT TWO TEAMS";                
                 friendly = TRUE;
                 ClearSelection();
                 wanted_number = 2;
             } else if (button == 1)    // Whistle tour
             {
+                teamsel_message = "SELECT EIGHT TEAMS";
                 friendly = FALSE;
                 if (!DoWarning(((special || competition != MENU_MATCHES)
                                 && competition != MENU_TEAMS))) {
@@ -679,6 +682,7 @@ BOOL DoAction(WORD button)
                     return TRUE;
             } else if (button == 2)    // Challenge
             {
+                teamsel_message = "SELECT YOUR TEAM";
                 friendly = FALSE;
 
                 if (!DoWarning(((special || competition != MENU_CHALLENGE)
@@ -733,6 +737,7 @@ BOOL DoAction(WORD button)
                 else
                     return TRUE;
             } else if (button == 1) {
+                teamsel_message = "SELECT TWO TEAMS";                
                 friendly = TRUE;
                 ClearSelection();
                 wanted_number = 2;
@@ -740,6 +745,7 @@ BOOL DoAction(WORD button)
                 if (!DoWarning(((special || competition != MENU_LEAGUE)
                                 && competition != MENU_TEAMS))) {
                     if (competition != MENU_LEAGUE) {
+                        teamsel_message = "SELECT THREE OR MORE TEAMS FOR THE LEAGUE";                
                         ppv = 3;
                         ppp = 1;
                         pps = 0;
@@ -757,6 +763,7 @@ BOOL DoAction(WORD button)
                 if (!DoWarning(((special || competition != MENU_MATCHES)
                                 && competition != MENU_TEAMS))) {
                     if (competition != MENU_MATCHES) {
+                        teamsel_message = "SELECT 2, 4, 8, 16 OR 32 TEAMS";                
                         ClearSelection();
                         competition = MENU_MATCHES;
                         b->ID = MENU_TEAM_SELECTION;
@@ -794,6 +801,8 @@ BOOL DoAction(WORD button)
         case MENU_TRAINING:
             arcade = FALSE;
             training = TRUE;
+
+            teamsel_message = "SELECT YOUR TEAM";                
 
             if (arcade_teams && button < 3) {
                 LoadTeams("teams/default");
@@ -1222,6 +1231,16 @@ void ChangeMenu(WORD m)
 
     if (actual_menu->Immagine >= 0) 
         blit_scaled_logo();
+
+    if (m == MENU_TEAM_SELECTION && teamsel_message) {
+        TextShadow(FixedScaledX(8), FixedScaledY(20) + titlefont->height, 
+                   teamsel_message, strlen(teamsel_message));
+    }
+    else if (m == MENU_ARCADE_SELECTION && teamsel_message) {
+        int x = (WINDOW_WIDTH - titlefont->width * strlen(teamsel_message)) / 2,
+            y = FixedScaledY(124) + titlefont->height;
+        TextShadow(x, y, teamsel_message, strlen(teamsel_message));
+    }
 
     if (current_menu == MENU_TEAM_SETTINGS) {
         char *c = msg_80;
