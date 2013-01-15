@@ -1150,14 +1150,14 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
 
         case acmpXORILBM: /*  1  */
         {
-            D(bug( "\adlta: acmpXORILBM disabled, call author immediately\n" ));
+            D(bug( "dlta: acmpXORILBM disabled, call author immediately\n" ));
             return( ERROR_NOT_IMPLEMENTED );
         }
 
         case acmpAnimJ:   /* 'J' */
         {
             /* unpack ANIM-J  */
-            D(bug( "\adlta: acmpanimjdelta disabled, call author immediately\n" ));
+            D(bug( "dlta: acmpanimjdelta disabled, call author immediately\n" ));
             return( ERROR_NOT_IMPLEMENTED );
 //            return( unpackanimjdelta( dlta, dltasize, prevbm, bm ) );
         }
@@ -1204,7 +1204,7 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
         case acmpLongDelta:         /* 2 */
         {
 //            error = unpacklongdelta( unpackbm, dlta, dltasize );
-            D(bug( "\adlta: acmpanim2 disabled, call author immediately\n" ));
+            D(bug( "dlta: acmpanim2 disabled, call author immediately\n" ));
             return( ERROR_NOT_IMPLEMENTED );
         }
     break;
@@ -1212,7 +1212,7 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
         case acmpShortDelta:        /* 3 */
         {
 //          error = unpackshortdelta( unpackbm, dlta, dltasize );
-            D(bug( "\adlta: acmpanim3 disabled, call author immediately\n" ));
+            D(bug( "dlta: acmpanim3 disabled, call author immediately\n" ));
             return( ERROR_NOT_IMPLEMENTED );
         }
             break;
@@ -1229,7 +1229,7 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
               error = unpackanim4worddelta( unpackbm, dlta, dltasize, (ah -> ah_Flags) );
             }
 #else
-            D(bug( "\adlta: acmpDelta disabled, call author (gisburn@w-specht.rhein-ruhr.de)\n"
+            D(bug( "dlta: acmpDelta disabled, call author (gisburn@w-specht.rhein-ruhr.de)\n"
                                    "immediately. If you are this FIRST user who send me a VALID IFF ANIM-4 compressed animation\n"
                                    "you'll get $10 US-Dollar !!\n THIS IS NO JOKE !!\n" ));
             error = ERROR_NOT_IMPLEMENTED;
@@ -1265,13 +1265,13 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
             if( (ah -> ah_Flags) & ahfLongData )
             {
 //              error = unpackanim8longdelta( unpackbm, dlta, dltasize );
-            D(bug( "\adlta: acmpanim8long disabled, call author immediately\n" ));
+            D(bug( "dlta: acmpanim8long disabled, call author immediately\n" ));
             return( ERROR_NOT_IMPLEMENTED );
             }
             else
             {
 //              error = unpackanim8worddelta( unpackbm, dlta, dltasize );
-            D(bug( "\adlta: acmpanim8word disabled, call author immediately\n" ));
+            D(bug( "dlta: acmpanim8word disabled, call author immediately\n" ));
             return( ERROR_NOT_IMPLEMENTED );
             }
         }
@@ -1279,7 +1279,7 @@ static LONG DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct Bi
 
         default:                    /* 'l' */
         {
-            D(bug( "\adlta: anim compression %ld not implemented yet\n", (long)(ah -> ah_Operation) ));
+            D(bug( "dlta: anim compression %ld not implemented yet\n", (long)(ah -> ah_Operation) ));
 
             error = ERROR_NOT_IMPLEMENTED;
         }

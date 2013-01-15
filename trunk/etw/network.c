@@ -292,8 +292,7 @@ player *connect_server(char *ip,int team)
     if ((p=calloc(sizeof(player),1))) {
         if((p->socket=socket(AF_INET,SOCK_STREAM,0))<0) {
             free(p);
-            /* AC: Pu˜ fallire anche qui. */
-            request("Unable to connect to server.");
+            request("Unable to create socket.");
             return NULL;
         }
 
