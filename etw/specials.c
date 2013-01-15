@@ -1766,7 +1766,9 @@ void UpdatePrefs(BYTE set)
         m->Button[11].Text = daytimes[daytime];
         m->Button[12].Text = (field < 7) ? msg_35 : NULL;
         m->Button[13].Text = (field < 7) ? field_types[field_type] : NULL;
+#ifndef MOBILE_VERSION
         m->Button[15].Text = newchange ? "ETW" : "CLASSIC";
+#endif
         break;
     case MENU_MOBILE_PREFS:
         m->Button[1].Text = (detail_level & USA_RADAR)
