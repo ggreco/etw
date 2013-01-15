@@ -37,6 +37,8 @@ void HandleControl(void)
         i = p->team[0]->Joystick;
         j = p->team[1]->Joystick;
 
+        r_args[0][counter] = r_args[1][counter] = 0;
+
         if (i == 0 || j == 0)
             r_controls[0][counter] = MyReadPort0(0);
 

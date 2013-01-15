@@ -136,6 +136,7 @@ public:
         if (!val) {
             visible_ = false;
             fading_ = 0;
+            joyfinger_ = -1;
         }
     }
     

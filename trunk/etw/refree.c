@@ -835,15 +835,15 @@ void HandleReferee(void)
 
                                     // keep coherence in replay mode, we use the not human player register.
                                     if(p->team[j^1]->Joystick>=0)
-                                        r_controls[p->team[j^1]->Joystick^1][counter]=best;
+                                        r_args[p->team[j^1]->Joystick^1][counter]=best;
                                     else
-                                        r_controls[j][counter]=best;
+                                        r_args[j][counter]=best;
                                 }
                                 else { // if we are in replay mode the answer is written in the other joystick data
                                     if(p->team[j^1]->Joystick>=0)
-                                        best=r_controls[p->team[j^1]->Joystick^1][counter];
+                                        best=r_args[p->team[j^1]->Joystick^1][counter];
                                     else
-                                        best=r_controls[j][counter];
+                                        best=r_args[j][counter];
                                 }
 
                                 if(best!=666) {

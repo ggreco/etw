@@ -345,8 +345,8 @@ void HandleControlled(int squadra)
 
 player_t *find_touch_player(player_t *g)
 {
-    int x = r_controls[g->team->Joystick ^ 1][counter] & 0xffff,
-        y = r_controls[g->team->Joystick ^ 1][counter] >> 16;
+    int x = r_args[g->team->Joystick][counter] & 0xffff,
+        y = r_args[g->team->Joystick][counter] >> 16;
 
     return FindNearest(g->team, (x + field_x) << 3, (y + field_y) << 3);
 }

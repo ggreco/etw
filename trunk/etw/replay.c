@@ -2,7 +2,7 @@
 #include "files.h"
 
 uint32_t *r_controls[MAX_PLAYERS];
-// UWORD actual_control[MAX_PLAYERS];
+uint32_t *r_args[MAX_PLAYERS];
 
 void EndReplay(void);
 
@@ -978,10 +978,13 @@ void SaveReplay(void)
 
     WriteMatch(f, m);
 
-    for (i = 0; i < MAX_PLAYERS; i++) 
-        for (j = 0; j < highsize; j++) 
+    for (i = 0; i < MAX_PLAYERS; i++) {
+        for (j = 0; j < highsize; j++) {
             fwrite_u32(r_controls[i][m->ReplayCounter + j], f);
-        
+            fwrite_u32(r_args[i][m->ReplayCounter + j], f);
+        }
+
+    }
     PlayBackSound(sound[DOG]);
 
     free(m);
@@ -1010,10 +1013,13 @@ BOOL AllocReplayBuffers(void)
     CounterLimit = (UWORD)(size * 256 - 1);
     SetLimit = size - 1;
 
-    for(i = 0; i < MAX_PLAYERS; i++)
-    {
+    for(i = 0; i < MAX_PLAYERS; i++) {
         if(!(r_controls[i] = malloc(size * 256 * sizeof(LONG)))) {
             D(bug("No memory to allocate r_controls buffers!\n"));
+            return FALSE;
+        }
+        if(!(r_args[i] = malloc(size * 256 * sizeof(LONG)))) {
+            D(bug("No memory to allocate r_args buffers!\n"));
             return FALSE;
         }
     }
@@ -1047,9 +1053,12 @@ void FreeReplayBuffers(void)
 {
     int i;
 
-    for(i = 0; i < MAX_PLAYERS; i++)
+    for(i = 0; i < MAX_PLAYERS; i++) {
         if(r_controls[i])
             free(r_controls[i]);
+        if(r_args[i])
+            free(r_args[i]);
+    }
 
     if(match)
         free(match);
@@ -1078,9 +1087,10 @@ void LoadHighlight(void)
     ReadMatch(fh, &match[0]);
 
     for(i = 0; i < MAX_PLAYERS; i++) 
-        for (j = 0; j < highlight_size; j++) 
+        for (j = 0; j < highlight_size; j++) { 
             r_controls[i][j] = fread_u32(fh);
-
+            r_args[i][j] = fread_u32(fh);
+        }
     fclose(fh);
 
     j = lswaps; // swapteams() change the swaps value!

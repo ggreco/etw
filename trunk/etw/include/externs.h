@@ -42,7 +42,7 @@ extern object_t *object_list[];
 extern struct DOggetto *c_list[];
 extern int totale_lista,totale_lista_c;
 extern struct SignalSemaphore listsem;
-extern uint32_t detail_level, *r_controls[MAX_PLAYERS], ahimode;
+extern uint32_t detail_level, *r_controls[MAX_PLAYERS], *r_args[MAX_PLAYERS];
 extern struct Rect ingombri[];
 extern struct DOggetto peoples[];
 extern gfx_t *last_obj,*pause_gfx;
