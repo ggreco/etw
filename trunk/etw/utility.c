@@ -288,7 +288,9 @@ void DoPause(void)
     }
     else
         was_stopped = TRUE;
-
+    
+    hide_vjoy();
+    
     pause_mode=TRUE;
 
     os_stop_audio();

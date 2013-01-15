@@ -394,6 +394,7 @@ void handle_pause_status()
             free(back);
             back = NULL;
         }
+        show_vjoy();
         os_start_audio();
         
         if (!was_stopped)
