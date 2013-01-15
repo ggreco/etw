@@ -137,6 +137,7 @@ public:
             visible_ = false;
             fading_ = 0;
             joyfinger_ = -1;
+            delta_x_ = delta_y_ = distance_ = 0.0;
         }
     }
     
