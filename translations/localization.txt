@@ -21,4 +21,11 @@ Here are the steps:
   etw_locale.cd, etw_locale.c, etw_locale.h
 
 - Use flexcat (flexcat.sourceforge.org) to create an empty catalog to translate ETW in
-  additional languages
+  additional languages:
+  flexcat etw_locale.cd NEWCTFILE=francois.ct
+
+- Or use flexcat to update an existing catalog:
+  flexcat etw_locale.cd italiano.ct NEWCTFILE=italiano.ct
+
+- Compile the .ct file:
+  flexcat etw_locale.cd italiano.ct CATALOG=italian.catalog
