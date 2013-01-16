@@ -661,13 +661,13 @@ BOOL DoAction(WORD button)
             training = FALSE;
 
             if (button == 0) {
-                teamsel_message = "SELECT TWO TEAMS";                
+                teamsel_message = msg_222;                
                 friendly = TRUE;
                 ClearSelection();
                 wanted_number = 2;
             } else if (button == 1)    // Whistle tour
             {
-                teamsel_message = "SELECT EIGHT TEAMS";
+                teamsel_message = msg_220;
                 friendly = FALSE;
                 if (!DoWarning(((special || competition != MENU_MATCHES)
                                 && competition != MENU_TEAMS))) {
@@ -682,7 +682,7 @@ BOOL DoAction(WORD button)
                     return TRUE;
             } else if (button == 2)    // Challenge
             {
-                teamsel_message = "SELECT YOUR TEAM";
+                teamsel_message = msg_223;
                 friendly = FALSE;
 
                 if (!DoWarning(((special || competition != MENU_CHALLENGE)
@@ -737,7 +737,7 @@ BOOL DoAction(WORD button)
                 else
                     return TRUE;
             } else if (button == 1) {
-                teamsel_message = "SELECT TWO TEAMS";                
+                teamsel_message = msg_222;                
                 friendly = TRUE;
                 ClearSelection();
                 wanted_number = 2;
@@ -745,7 +745,7 @@ BOOL DoAction(WORD button)
                 if (!DoWarning(((special || competition != MENU_LEAGUE)
                                 && competition != MENU_TEAMS))) {
                     if (competition != MENU_LEAGUE) {
-                        teamsel_message = "SELECT THREE OR MORE TEAMS FOR THE LEAGUE";                
+                        teamsel_message = msg_221;                
                         ppv = 3;
                         ppp = 1;
                         pps = 0;
@@ -763,7 +763,7 @@ BOOL DoAction(WORD button)
                 if (!DoWarning(((special || competition != MENU_MATCHES)
                                 && competition != MENU_TEAMS))) {
                     if (competition != MENU_MATCHES) {
-                        teamsel_message = "SELECT 2, 4, 8, 16 OR 32 TEAMS";                
+                        teamsel_message = msg_219;                
                         ClearSelection();
                         competition = MENU_MATCHES;
                         b->ID = MENU_TEAM_SELECTION;
@@ -802,7 +802,7 @@ BOOL DoAction(WORD button)
             arcade = FALSE;
             training = TRUE;
 
-            teamsel_message = "SELECT YOUR TEAM";                
+            teamsel_message = msg_223;                
 
             if (arcade_teams && button < 3) {
                 LoadTeams("teams/default"/*-*/);
@@ -875,7 +875,7 @@ BOOL DoAction(WORD button)
             freq.Dir = "saves"/*-*/;
             freq.Title = msg_68;
             freq.Save = TRUE;
-            freq.Filter = "Career files|*.car";
+            freq.Filter = msg_201;
 
             if (FileRequest(&freq)) {
                 strcpy(career_file, freq.File);
@@ -995,7 +995,7 @@ BOOL DoAction(WORD button)
 
                 freq.Title = current_menu == MENU_CAREER ? msg_76 : msg_77;
                 freq.Dir = "saves/" /*-*/ ;
-                freq.Filter = "Career files|*.car";
+                freq.Filter = msg_201;
 
                 if (FileRequest(&freq)) {
                     strcpy(career_file, freq.File);
@@ -1019,7 +1019,7 @@ BOOL DoAction(WORD button)
                     freq.Title =
                         current_menu == MENU_CAREER ? msg_78 : msg_79;
                     freq.Dir = "saves/" /*-*/ ;
-                    freq.Filter = "Career files|*.car";
+                    freq.Filter = msg_201;
                     freq.Save = TRUE;
 
                     if (FileRequest(&freq)) {

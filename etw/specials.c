@@ -16,19 +16,19 @@ int actual_joystick = 0;
 
 char *buttons[] =
 {
-    "BUTTON 1",
-    "BUTTON 2",
-    "BUTTON 3",
-    "BUTTON 4",
-    "BUTTON 5",
-    "BUTTON 6",
-    "BUTTON 7",
-    "BUTTON 8",
-    "BUTTON 9",
-    "BUTTON 10",
-    "BUTTON 11",
-    "BUTTON 12",
-    "BUTTON 13",
+    msg_185,
+    msg_190,
+    msg_191,
+    msg_192,
+    msg_193,
+    msg_194,
+    msg_195,
+    msg_196,
+    msg_197,
+    msg_186,
+    msg_187,
+    msg_188,
+    msg_189,
 };
 
 /* Space for the names of the configured keys */
@@ -520,7 +520,7 @@ BOOL TeamSelection(WORD button)
                 if (b3->Text)
                     free(b3->Text);
 
-                sprintf(buffer, "VIEW %s", b->Text);
+                sprintf(buffer, msg_231, b->Text);
                 b3->Text = strdup(buffer);
                 RedrawButton(b3, b3->Color);
             }
@@ -774,7 +774,7 @@ BOOL JoyCfg(WORD button)
 
         temp = actual_menu->Button[button * 2].Text;
 
-        actual_menu->Button[button * 2].Text = "WAITING BUTTON...";
+        actual_menu->Button[button * 2].Text = msg_232;
 
         RedrawButton(&actual_menu->Button[button * 2],
                      actual_menu->Button[button * 2].Highlight);
@@ -865,7 +865,7 @@ BOOL KeyCfg(WORD button)
         /* Alternative method that leaves visible the association of the key during key pressing */
         temp = actual_menu->Button[button * 2 + 1].Text;
 
-        actual_menu->Button[button * 2 + 1].Text = "WAITING BUTTON...";
+        actual_menu->Button[button * 2 + 1].Text = msg_232;
 
         RedrawButton(&actual_menu->Button[button * 2 + 1],
                      actual_menu->Button[button * 2 + 1].Highlight);
@@ -973,7 +973,7 @@ BOOL KeyCfg(WORD button)
         /* Signal the user he has pressed a reserved key */
         if (k == -2)
         {
-            easy.es_TextFormat = "SORRY, SELECTED KEY IS RESERVED";
+            easy.es_TextFormat = msg_226;
             easy.es_GadgetFormat = msg_58;
 
             MyEasyRequest(hwin, &easy, NULL);
@@ -1025,7 +1025,7 @@ BOOL ArcadeTeamSelection(WORD button)
         if (b->Color != COLOR_COMPUTER) {
             if (!b3->Text) {
                 char buffer[128];
-                sprintf(buffer, "VIEW %s", teamlist[b->ID].name);
+                sprintf(buffer, msg_231, teamlist[b->ID].name);
                 b3->Text = strdup(buffer);
                 RedrawButton(b3, b3->Color);
             }
@@ -1338,7 +1338,7 @@ BOOL GamePrefs(WORD button)
             break;
         case 15:
             newchange = !newchange;
-            actual_menu->Button[button].Text = newchange ? "ETW"/*-*/ : "CLASSIC";
+            actual_menu->Button[button].Text = newchange ? "ETW"/*-*/ : msg_200;
             break;
         default:
             D(bug("Error, option (%ld) not previewed!\n"/*-*/, button));
@@ -1449,7 +1449,7 @@ BOOL SystemPrefs(WORD button)
         {
             if (!os_check_joy(0))
             {
-                request("NO JOYSTICK FOUND");
+                request(msg_213);
                 return TRUE;
             }
             else UpdateJoyCfg(actual_joystick);
@@ -1676,7 +1676,7 @@ BOOL VideoPrefs(WORD button)
             {
                 if (wb_game)
                 {
-                    actual_menu->Button[18].Text = "SCALING RES";
+                    actual_menu->Button[18].Text = msg_218;
                     actual_menu->Button[19].Text = scaling_resolutions[current_scaling];
                     RedrawButton(&actual_menu->Button[19],
                                  actual_menu->Button[1].Color);
@@ -1685,7 +1685,7 @@ BOOL VideoPrefs(WORD button)
                     use_gfx_scaling = TRUE;
                 }
                 else
-                    request("You can enable scaling only\nif you play in a window!");
+                    request(msg_234);
             }
             else
             {
@@ -1767,7 +1767,7 @@ void UpdatePrefs(BYTE set)
         m->Button[12].Text = (field < 7) ? msg_35 : NULL;
         m->Button[13].Text = (field < 7) ? field_types[field_type] : NULL;
 #ifndef MOBILE_VERSION
-        m->Button[15].Text = newchange ? "ETW" : "CLASSIC";
+        m->Button[15].Text = newchange ? "ETW"/*-*/ : msg_200;
 #endif
         break;
     case MENU_MOBILE_PREFS:
@@ -1792,7 +1792,7 @@ void UpdatePrefs(BYTE set)
         m->Button[13].Text = nointro ? enabled : disabled;
 
         m->Button[17].Text = use_gfx_scaling ? enabled : disabled;
-        m->Button[18].Text = use_gfx_scaling ? "SCALING RES" : NULL;
+        m->Button[18].Text = use_gfx_scaling ? msg_218 : NULL;
         m->Button[19].Text = use_gfx_scaling
                            ? scaling_resolutions[current_scaling] : NULL;
         m->Button[21].Text = resolutions[current_resolution];
@@ -2415,7 +2415,7 @@ BOOL HighSelection(WORD button)
             {
                 ssize_t l;
 
-                freq.Title = "Save highlight...";
+                freq.Title = msg_228;
                 freq.Save = TRUE;
 
                 if (FileRequest(&freq))

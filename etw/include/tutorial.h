@@ -9,14 +9,12 @@
 #ifndef __etw__tutorial__
 #define __etw__tutorial__
 
-#include <string>
-
 struct TutorialLine
 {
     enum Activation {ByMenuId, BySpecialFunc};
     Activation activation;
     void *data;
-    std::string line;
+    const char*line;
     bool seen;
     bool ActivatedByMenu() const { return activation == ByMenuId; }
     bool SpecialFuncMatch() const {
