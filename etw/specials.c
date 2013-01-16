@@ -228,14 +228,14 @@ BYTE current_resolution = 0, current_scaling = 0;
 
 char *resolutions[] =
 {
-    "320x200",
-    "320X240",
-    "400X300",
-    "640x400",
-    "640X480",
-    "800X600",
+    "320x200"/*-*/,
+    "320X240"/*-*/,
+    "400X300"/*-*/,
+    "640x400"/*-*/,
+    "640X480"/*-*/,
+    "800X600"/*-*/,
 #ifdef TESTING_RES_1024
-    "1024X768",
+    "1024X768"/*-*/,
 #endif
     NULL
 };
@@ -254,12 +254,12 @@ void init_joy_config(void)
 
 char *scaling_resolutions[] =
 {
-    "320X240",
-    "320X256",
-    "356X288",
-    "400X300",
+    "320X240"/*-*/,
+    "320X256"/*-*/,
+    "356X288"/*-*/,
+    "400X300"/*-*/,
 #ifdef TESTING_RES_1024
-    "512X384",
+    "512X384"/*-*/,
 #endif
     NULL
 };
@@ -1861,7 +1861,7 @@ void SetupMatches(void)
                 arcade_score += 500; // Final bonus
 
                 AddScore(*teamarray);
-                add_achievement("13_challenge", 100.0);
+                add_achievement("13_challenge"/*-*/, 100.0);
                 LoadTeams("teams/arcade"/*-*/);
                 turno = 0;
                 competition = MENU_TEAMS;
@@ -2232,7 +2232,7 @@ static void handle_league()
         if (scontri < 2)
         {
             if (controllo[league_pos[0]] >= 0 && nteams >= 8)
-                add_achievement("12_league", 100.0);
+                add_achievement("12_league"/*-*/, 100.0);
             lb[0].ID = MENU_LEAGUE;
             competition = MENU_TEAMS;
         }
@@ -2323,7 +2323,7 @@ static void handle_worldcup()
             }
             
             if (controllo[teamarray[0]] >= 0)
-                add_achievement("13_worldcup", 100.0);
+                add_achievement("13_worldcup"/*-*/, 100.0);
             
             turno = 0;
             competition = MENU_TEAMS;
@@ -2398,7 +2398,7 @@ BOOL HighSelection(WORD button)
     {
         char buffer[1024];
 
-        snprintf(buffer, 1024, "%sreplay.%s", TEMP_DIR, b->Text);
+        snprintf(buffer, 1024, "%sreplay.%s"/*-*/, TEMP_DIR, b->Text);
 
         if (!savehigh)
         {
@@ -2411,7 +2411,7 @@ BOOL HighSelection(WORD button)
 #ifndef MOBILE_VERSION
             FILE *fh;
 
-            if ((fh = fopen(buffer, "rb")))
+            if ((fh = fopen(buffer, "rb"/*-*/)))
             {
                 ssize_t l;
 
@@ -2433,7 +2433,7 @@ BOOL HighSelection(WORD button)
 
                         fread(a, 1, l, fh);
 
-                        if ((f2 = fopen(buffer, "wb")))
+                        if ((f2 = fopen(buffer, "wb"/*-*/)))
                         {
                             fwrite(a, 1, l, f2);
                             fclose(f2);

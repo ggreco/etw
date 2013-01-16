@@ -380,32 +380,14 @@ struct {void *Prev;int Cat_ID;char Str[(30)+1];} __LTool__177 = {&__LTool__176,1
 struct {void *Prev;int Cat_ID;char Str[(198)+1];} __LTool__178 = {&__LTool__177,178,"Warning:\nActually ETW support leagues with up\nto 20 teams,"
 " so addictional teams\nwill be ignored."
 };
-struct {void *Prev;int Cat_ID;char Str[(44)+1];} __LTool__179 = {&__LTool__178,179,"Select a mode and rate"
+struct {void *Prev;int Cat_ID;char Str[(100)+1];} __LTool__179 = {&__LTool__178,179,"Warning, the competition\nin progress will be lost."
 };
 struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__180 = {&__LTool__179,180,"RESET CURRENT"
 };
-struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__181 = {&__LTool__180,181,"GOLDEN GOAL"
-};
-struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__182 = {&__LTool__181,182,"INTRO"
-};
-struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__183 = {&__LTool__182,183,"FORCE SBUFFER"
-};
-struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__184 = {&__LTool__183,184,"LINESMEN"
-};
-struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__185 = {&__LTool__184,185,"AUDIO TO FAST"
-};
-struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__186 = {&__LTool__185,186,"AHI"
-};
-struct {void *Prev;int Cat_ID;char Str[(120)+1];} __LTool__187 = {&__LTool__186,187,"Unable to create needed assigns, tct/ or teams/ not found!\n"
-};
-struct {void *Prev;int Cat_ID;char Str[(74)+1];} __LTool__188 = {&__LTool__187,188,"Unable to find ETW datas directory!\n"
-};
-struct {void *Prev;int Cat_ID;char Str[(78)+1];} __LTool__189 = {&__LTool__188,189,"Unable to find the 'game' executable!\n"
-};
-struct {void *Prev;int Cat_ID;char Str[(100)+1];} __LTool__190 = {&__LTool__189,190,"Warning, the competition\nin progress will be lost."
+struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__181 = {&__LTool__180,181,"INTRO"
 };
 
-#define STR_BEGIN_ENTRY &__LTool__190
+#define STR_BEGIN_ENTRY &__LTool__181
 #include <stdio.h>
 
 #ifndef CROSSCOMPILER
