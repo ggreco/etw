@@ -617,10 +617,10 @@ msg_204
 PASSAGGIO FILTRANTE
 ; FILTERING PASS
 msg_205
-CONFIG. JOYSTICK
+CONFIGURAZIONE JOYSTICK
 ; JOYSTICK CONFIGURATION
 msg_206
-CONFIG. TASTIERA
+CONFIGURAZIONE TASTIERA
 ; KEYBOARD CONFIG
 msg_207
 CONFIGURAZIONE TASTIERA
@@ -707,74 +707,74 @@ msg_234
 Puoi abilitare la scalatura solo\nnella modalita' a finestra!
 ; You can enable scaling only\nif you play in a window!
 msg_235
-
+La modalita' arcade e' un'originale variante del calcio che si gioca in un'arena in stile speedball. Durante la partita controllerai delle fantasiose squadre e potrai usufruire di bonus e power up!
 ; Arcade mode is an original football variation played in a speedball-like arena, with pickable bonuses, and crazy teams. Try to win the arcade challenge or the whistle cup if you can!
 msg_236
-
+Durante una partita puoi registrare un'azione utilizzando l'icona con il cerchio rosso durante il replay, tramite questo menu puoi rivedere le azioni registrate o rimuoverle.
 ; During a match you can record an highlight using the red circle icon during the replay, through this menu you can view an highlight or remove it.
 msg_237
-
+Eat the Whistle ha due different modalita' di gioco: simulazione e arcade.\n\nPrima di provare l'una o l'altra ti consiglio di prendere confidenza con i controlli tramite la modalita' allenamento.
 ; Eat the Whistle has two different game modes: Simulation and Arcade.\n\nBefore trying one of them you'll better practice a bit with the controls using the practice option.
 msg_238
-
+Eat The Whistle supporta Game Center per i trofei e i punteggi. Ricorda che devi essere connesso a Game Center se vuoi ricevere i trofei o confrontare i tuoi punteggi con gli amici.
 ; Eat the whistle supports Game Center for achievements and scores. Please remember that you need to log in to Game Center in order to record your achievements and compete with your friends.
 msg_239
-
+Stai giocando una sessione di allenamento.\n\nQuesta modalita' ti permettera' di imparare le basi del gioco e impratichirti con il sistema di controllo.
 ; Now play a training session.\n\nThis will let you learn the basics and practice the game controls.
 msg_240
-
+Premendo il pulsante rosso quando la palla e' in movimento eseguirai un'azione particolare che variera' a seconda della posiziona e dell'altezza del pallone. Una rovesciata, un tuffo di testa, un tackle... sono solo alcune delle possibilita' se utilizzerai il giusto tempismo.
 ; Pressing the RED button when the ball is in no possession will perform a special action that will change depending from the ball height and your position, an head shot, a bicycle kick, a tackle... anything can happens if you tap it with the right timing and in a good position!
 msg_241
-
+La modalita' simulazione ti offre l'esperienza del gioco di calcio vecchio stile, puoi giocare un campionato, una coppa o un'amichevole.
 ; Simulation mode will offer you an old-style soccer game experience, you can play a league, a cup or a friendly match!
 msg_242
-
+Premi il tasto rosso quando la freccia punta nell'angolo della porta in cui vuoi tirare, piu' a lungo tieni premuto il pulsante piu' alto sara' il tiro.
 ; Tap a button when the arrow points to the goal position you want to shoot to, the longer you keep the button pressed the higher the shoot will be.
 msg_243
-
+Con una breve pressione del tasto ROSSO quando l'altra squadra ha la palla potrai tentare un tackle nella direzione del portatore di palla, stai attento a non commettere un fallo pero'!
 ; Tapping the RED button when the other team has the ball possession will make the active player try to get the ball with a sliding tackle toward the ball, but be careful to not commit a foul!
 msg_244
-
+La Competizione ARCADE e' la sfida finale di Eat The Whistle, dovrai vincere contro tutte le squadre, piu' una squadra segreta per vincere la competizione. Ogni incontro avra' una difficolta' crescente.
 ; The Arcade Challenge is the ultimate Eat The Whistle... challenge, you will have to win against all the arcade teams, except the one you have chosen, and a secret team to complete it.
 msg_245
-
+Il joystick virtuale pemette due diverse velocita' per ognuna delle otto direzioni, se sposti la leva rossa piu' lontana dalla base del joystick il giocatore si muovera' piu' velocemente, ma sara' piu' lento a cambiare direzione.
 ; The virtual joystick has two different speed for each direction, if you move the red ball more distant from the center the player will run faster but you'll have a less responsive control if you want to change his direction.
 msg_246
-
+Questo menu' permette di cambiare le impostazioni audio-video, tra le altre cose ti permette di disabilitare questo tutorial.
 ; This menu let you change audio-video settings, you can also disable this tutorial if you want.
 msg_247
-
+Questo menu' permette di scegliere la squadra arcade che vuoi utilizzare, la squadra che scegli verra' evidenziata da una P blu, una squadra controllata dal computer da una C grigia.\n\nIl numero di squadre che devi selezionare puo' variare: 1 per la sfida arcade, 2 per un'amichevole, 8 per il whistle tour.
 ; This menu let you choose the arcade team you want to use, an human team is marked with a blue p, a computer controller one with the light gray letter c.\n\nThe number of teams you have to select may vary: 1 for the challenge, 2 for a friendly match, 8 for the whistle tour.
 msg_248
-
+Questo menu' ti permette di scegliere la squadra che vuoi utilizzare, la squadra con cui vuoi giocare andra' selezionata con la lettera P e lo sfondo blu, quelle controllate dal computer con la lettera C su sfondo grigio chiaro.\n\nIl numero di squadre da selezionare puo' variare: 1 per l'allenamento, 2 per le amichevoli, 3 o piu' per il campionato...
 ; This menu let you choose the team you want to use, an human team is identified with a blue background and the letter p, a computer controller one with a light gray background and the letter c.\n\nthe number of teams you have to select may vary: 1 for training, 2 for a friendly match, 3+ for a league...
 msg_249
-
+Questa schermata ti permette di cambiare la tattica o gli 11 giocatori che schierai inzialmente.\nLe stelle a destra del nome del giocatore sono una valutazione media delle abilita' del giocatore.
 ; This screen let you change your team tactic or the 11 initial players before a match.\nThe stars near the player name are a global valutation of the abilities of your players.
 msg_250
-
+Per tirare:\nScorri il dito dalla posizione della palla nella direzione in cui vuoi tirare, piu' lungo e' il percorso piu' forte sara' il tiro.\n\nPer passare:Tocca con un dito il giocatore destinazione del passaggio.
 ; To shoot:\nSwipe from the ball in the direction of your shot, the longer the swipe the stronger the shot.\n\nTo pass:\nTouch the player you want to pass the ball to.
 msg_251
-Benvenuto alla modalita' tutorial di Eat The Whistle!\n\nCon un po' di pazienza, ti guideremo alla scoperta delle caratteristiche del gioco\n\nPuoi disabilitare questo tutorial in qualunque momento attraverso le impostazioni audio-video all'interno del menu' impostazioni.
+Benvenuto alla modalita' tutorial di Eat The Whistle!\n\nSe avrai un po' di pazienza, ti guideremo alla scoperta delle caratteristiche del gioco.\n\nPuoi disabilitare questo tutorial in qualunque momento attraverso le impostazioni audio-video all'interno del menu' impostazioni.
 ; Welcome to the Eat The Whistle Tutorial!\n\nWe'll guide you to discover the game features and mechanics.\n\nYou can deactivate this tutorial in any time through the audio video settings, in the preferences menu.
 msg_252
 Benvenuto alla sessione di allenamento di Eat The Whistle, ti guideremo attraverso le nozioni principali del sistema di controllo del gioco.
 ; Welcome to the Eat The Whistle training session, we will guide you through the basics of the game control system.
 msg_253
-
+Quando la palla e' in possesso dell'altra squadra puoi cambiare il giocatore che controlli con un tocco con un dito su un altro tuo giocatore, alternativamente con una pressione breve del pulsante blu verra' attivato il giocatore piu' vicino alla palla.
 ; When the ball is in possession of the other team you can change the player you control touching another player, alternatively by tapping the blue button you can activate the nearest player to the ball position.
 msg_254
-
+Quando la palla e' in possesso della tua squadra una pressione breve del pulsante blu eseguira' un passaggio breve, una pressione piu' prolungata un passaggio lungo, alternativamente puoi anche toccare un giocatore col dito per eseguire un passaggio breve in quella direzione.
 ; When the ball is in possession of your team you can use the BLUE button to pass the ball, tap it for a short pass, keep it pressed for a long pass. You can also pass the ball simply touching with a finger the man you want to pass to!
 msg_255
-
+Stai giocando una partita senza mai aver giocato una sessione di allenamento, ti consiglio fortemente di iniziare con una sessione di allenamento per imparare le basi del sistema di controllo.
 ; You are playing a match without having played a training session, it's strongly suggested to start with a training session to learn the basics of Eat The Whistle control system.
 msg_256
-
+Puoi mettere il gioco in pausa in qualunque momento tramite l'icona in alto a destra, tramite il menu poi potrai cambiare la tattica, eseguire sostituzioni, vedere un replay o abbandonare la partita.
 ; You can pause the game, change your tactic or view replay or leave the game in any moment through the pause menu (icon on the top right corner of the touchscreen)
 msg_257
-
+Per tirare premi il tasto ROSSO. La posizione del joystick rispetto alla porta avversaria al rilascio del tasto determina la direzione e il tipo di tiro, prova le varie posizioni del joystick in una sessione di allenamento per sperimentare i vari tiri possibili!
 ; You can shoot with the RED button, the joystick position when you RELEASE the button will decide the direction and the type of shot, experiment various joystick positions in a training session to find all of them!
 msg_258
-
+Il giocatore che controlli e' quello con il triangolo BLU sulla testa, puoi muoverlo con il joystick virtuale che appare ogni volta che poggi un dito nella parte inferiore sinistra dello schermo.
 ; You have the control of the player with a blue triangle on his head, you can move it with the virtual joystick that appears as soon as you put a finger on the lower left part of the touchscreen.
