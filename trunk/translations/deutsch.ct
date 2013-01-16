@@ -1,0 +1,780 @@
+## version $VER: etw.catalog 1.0 (XX.XX.XX)
+## codeset X
+## language X
+msg_0
+WEITER
+; CONTINUE
+msg_1
+CHALLENGE
+; CHALLENGE
+msg_2
+ZUFALL
+; RANDOM
+msg_3
+D
+; D
+msg_4
+M
+; M
+msg_5
+A
+; A
+msg_6
+VORIGES MENUE
+; PARENT MENU
+msg_7
+AN
+; ON
+msg_8
+AUS
+; OFF
+msg_9
+TAG
+; DAY
+msg_10
+NACHT
+; NIGHT
+msg_11
+GROSS OBEN LINKS
+; BIG TOPLEFT
+msg_12
+GROSS OBEN
+; BIG TOP
+msg_13
+GROSS OBEN RECHTS
+; BIG TOPRIGHT
+msg_14
+GROSS UNTEN LINKS
+; BIG BOTTOMLEFT
+msg_15
+GROSS UNTEN
+; BIG BOTTOM
+msg_16
+GROSS UNTEN RECHTS
+; BIG BOTTOMRIGHT
+msg_17
+KLEIN OBEN LINKS
+; SMALL TOPLEFT
+msg_18
+KLEIN OBEN
+; SMALL TOP
+msg_19
+KLEIN OBEN RECHTS
+; SMALL TOPRRIGHT
+msg_20
+KLEIN UNTEN LINKS
+; SMALL BOTTOMLEFT
+msg_21
+KLEIN UNTEN 
+; SMALL BOTTOM
+msg_22
+KLEIN UNTEN RECHTS
+; SMALL BOTTOMRIGHT
+msg_23
+NORMAL
+; NORMAL
+msg_24
+TROCKEN
+; DRY
+msg_25
+HART
+; HARD
+msg_26
+WEICH
+; SOFT
+msg_27
+GEFROREN
+; FROZEN
+msg_28
+SCHLAMMIG
+; MUDDY
+msg_29
+NASS
+; WET
+msg_30
+SCHNEE
+; SNOW
+msg_31
+GEWAEHLTE ANSEHEN
+; VIEW SELECTED
+msg_32
+ETW POKAL
+; ETW CUP
+msg_33
+WHISTLE TOUR
+; THE WHISTLE TOUR
+msg_34
+Lade Taktik....
+; Load tactic...
+msg_35
+PLATZVERHAELTNISSE
+; PITCH TYPE
+msg_36
+GEZIELT
+; TARGETED
+msg_37
+FREI
+; FREE
+msg_38
+Gesprochene Kommentare nur\nin der CD Version!
+; Spoken comment available\nonly in the CD version!
+msg_39
+Menue Musik nur\n in der CD Version!
+; Menu music available\nonly in the CD version!
+msg_40
+ASK
+; ASK
+msg_41
+ARCADE CHALLENGE
+; ARCADE CHALLENGE
+msg_42
+FINALE
+; THE FINAL MATCH
+msg_43
+POKAL BEGEGNUNGEN
+; CUP FIXTURES
+msg_44
+LIGASPIELE
+; LEAGUE FIXTURES
+msg_45
+WORLD CUP: ERSTES SPIEL
+; WORLD CUP: FIRST MATCH
+msg_46
+WORLD CUP: ZWEITES SPIEL
+; WORLD CUP: SECOND MATCH
+msg_47
+WORLD CUP: DRITTES SPIEL
+; WORLD CUP: THIRD MATCH
+msg_48
+WORLD CUP: AUSCHEIDUNGSSPIELE
+; WORLD CUP: PHASE 2
+msg_49
+WORLD CUP: FINALRUNDE
+; WORLD CUP FINALS
+msg_50
+FINALE
+; FINAL
+msg_51
+DRITTER PLATZ
+; THIRD PLACE
+msg_52
+GAME OVER
+; GAME OVER
+msg_53
+ERGEBNISSE DER WHISTLE TOUR
+; THE WHISTLE TOUR RESULTS
+msg_54
+POKALERGEBNISSE
+; CUP RESULTS
+msg_55
+LIGAERGEBNISSE
+; LEAGUE RESULTS
+msg_56
+RESULTATE
+; RESULTS
+msg_57
+EAT THE WHISTLE Anfrage
+; Eat The Whistle Request
+msg_58
+OK
+; Ok
+msg_59
+Ein Wettbewerb ist gerade im Gang.\n Einen neuen beginnen bedeutet\nden alten zu verlieren!
+; A competition is already in progress.\nStarting a new one will delete\nthe previous one!
+msg_60
+Weiter|Cancel
+; Proceed|Cancel
+msg_61
+Warnung! Ein Turnier wird gerade\ngespielt,alle Daten werden\nverloren!
+; Warning a career/tournament\nis already in progress,\ndatas will be lost!
+msg_62
+Ok|Cancel
+; Ok|Cancel
+msg_63
+HIGHLIGHTS BETRACHTEN
+; VIEW HIGHLIGHTS
+msg_64
+HIGHLIGHTS SPEICHERN
+; SAVE HIGHLIGHTS
+msg_65
+Sind Sie sicher?
+; Are you sure?
+msg_66
+Weiter|Cancel
+; Continue|Cancel
+msg_67
+Arcadewettbewerbe können nicht gespeichert werden!
+; Arcade competitions can't be saved!
+msg_68
+Speichere Wettbewerb
+; Save the competition...
+msg_69
+Kann ETW Settings nicht speichern.\nWeder in PROGDIR noch in ENVARC!
+; Unable to save ETW settings!\nNeither in PROGDIR: neither in ENVARC:!
+msg_70
+Settings gespeichert
+; Settings saved.
+msg_71
+Lade Teams...
+; Load teams...
+msg_72
+Speichere aktuelle Teams
+; Save current teams...
+msg_73
+Sie müssen dazu den MUI Editor\naus dem Aminet benutzen
+; Actually you have to use\nThe MUI editor available\nin Aminet!
+msg_74
+Lade Highlight...
+; Load highlight...
+msg_75
+Sorry, dieses Feature ist\nerst bei ETW 98/99\neingebaut!
+; Sorry, this feature is\nnot yet implemented.\nwill be available in ETW 98-99
+msg_76
+Lade Karriere...
+; Load a career...
+msg_77
+Lade Liga/Pokal
+; Load a league/cup
+msg_78
+Speichere Karriere...
+; Save a career...
+msg_79
+Speichere Liga/Pokal
+; Save a league/cup
+msg_80
+TRAINER
+; COACH 
+msg_81
+ALPHABETISCHE REIHENFOLGE
+; (ALPHABETICAL ORDER)
+msg_82
+Weiter
+; Continue
+msg_83
+Abbruch
+; Abort
+msg_84
+Warnung!\nEin Fehler ist aufgetreten,\nvielleicht haben Sie nicht genung\nSpeicher oder haben das Spiel\nnicht korrekt installiert!
+; Warning!\nAn error has occurred,\nmaybe there is not enough free\nmemory or you may not have\ncorrecly installed the game.
+msg_85
+SPIELSTART
+; GAME_START
+msg_86
+VOREINSTELLUNGEN
+; PREFERENCES
+msg_87
+TEAMS
+; TEAMS
+msg_88
+HIGHLIGHTS
+; HIGHLIGHTS
+msg_89
+ERGEBNISSE
+; SCORES
+msg_90
+CREDITS
+; CREDITS
+msg_91
+ZURUCK ZUM DOS
+; EXIT TO DOS
+msg_92
+SPIEL
+; GAME
+msg_93
+VIDEO
+; VIDEO
+msg_94
+AUDIO
+; AUDIO
+msg_95
+ZURUECK INS HAUPTMENUE
+; BACK TO MAIN MENU
+msg_96
+SPEICHERE SETTINGS
+; SAVE SETTINGS
+msg_97
+ANSEHEN
+; VIEW
+msg_98
+SPEICHERN
+; SAVE
+msg_99
+LADEN
+; LOAD
+msg_100
+EDITIREN
+; EDIT
+msg_101
+DEFAULT
+; DEFAULT
+msg_102
+ARCADE
+; ARCADE
+msg_103
+SIMULATION
+; SIMULATION
+msg_104
+KARRIERE
+; CAREER
+msg_105
+TRAINING
+; PRACTICE
+msg_106
+EINZELSPIEL
+; SINGLE MATCH
+msg_107
+WHISTLE TOUR
+; WHISTLE TOUR
+msg_108
+ZURUECK ZU VORIGEM MENUE
+; BACK TO PREVIOUS MENU
+msg_109
+FREUNDSCHAFTSSPIEL
+; FRIENDLY
+msg_110
+LIGA
+; LEAGUE
+msg_111
+POKAL
+; CUP
+msg_112
+NUR MANAGEN
+; MENAGE ONLY
+msg_113
+MANAGEN UND SPIELEN
+; MENAGE AND PLAY
+msg_114
+ROLLENSPIEL
+; ROLE MODE
+msg_115
+
+; PLAY SESSION
+msg_116
+FREISTOESSE
+; FREE KICKS
+msg_117
+ELFMETER
+; PENALTIES
+msg_118
+RESET
+; RESET
+msg_119
+SPIELDAUER
+; DURATION
+msg_120
+PLATZVERHAELTNIS
+; PITCH CONDITION
+msg_121
+SCHIEDSRICHTER
+; REFREE STRICTNESS
+msg_122
+VERLETZUNGEN
+; INJURIES
+msg_123
+AUSWECHSLUNGEN
+; SUBSTITUTIONS
+msg_124
+GELBE KARTEN
+; BOOKINGS
+msg_125
+AUTOMATISCHES REPLAY
+; AUTO REPLAY
+msg_126
+LANGER PASS
+; LONG PASS
+msg_127
+JOYSTICKPORT (BLAU)
+; JOY PORT (BLUE)
+msg_128
+MAUSPORT (ROT)
+; MOUSE PORT (RED)
+msg_129
+TAGESZEIT
+; DAYTIME
+msg_130
+SCREENMODUS
+; SCREEN MODE
+msg_131
+RADAR
+; RADAR
+msg_132
+STATUSANZEIGE
+; STATUS BAR
+msg_133
+SCHIEDSRICHTER
+; REFREE
+msg_134
+LEUTE
+; PEOPLE
+msg_135
+SPIELERNAMEN
+; PLAYER NAMES
+msg_136
+ZUSCHAUER
+; CROWD
+msg_137
+SPRECHER
+; SPEAKER
+msg_138
+MENUEMUSIK
+; MENU MUSIC
+msg_139
+ARCADE TEAMS
+; ARCADE TEAMS
+msg_140
+NORMALE TEAMS
+; NORMAL TEAMS
+msg_141
+G
+; G
+msg_142
+GRUPPE A
+; GROUP A
+msg_143
+PL
+; PL
+msg_144
+PT
+; PT
+msg_145
+G+
+; G+
+msg_146
+G-
+; G-
+msg_147
+GRUPPE B
+; GROUP B
+msg_148
+GRUPPE C
+; GROUP C
+msg_149
+GRUPPE D
+; GROUP D
+msg_150
+GRUPPE E
+; GROUP E
+msg_151
+GRUPPE F
+; GROUP F
+msg_152
+GRUPPE G
+; GROUP G
+msg_153
+GRUPPE H
+; GROUP H
+msg_154
+MANNSCHAFTSNAME
+; TEAM NAME
+msg_155
+PLD
+; PLD
+msg_156
+PKT
+; PTS
+msg_157
+SIE
+; WIN
+msg_158
+UNT
+; DRW
+msg_159
+VER
+; LST
+msg_160
+SIEGER
+; WINNER
+msg_161
+ZWEITER
+; RUNNER-UP
+msg_162
+DRITTER
+; THIRD
+msg_163
+VIERTER
+; FORTH
+msg_164
+HAUPTMENUE
+; MAIN MENU
+msg_165
+SPIELBEGINN
+; GAME START
+msg_166
+TRAINING
+; TRAINING
+msg_167
+TEAMAUSWAHL
+; TEAM SELECTION
+msg_168
+SPIELOPTIONEN
+; GAME OPTIONS
+msg_169
+VIDEOOPTIONEN
+; VIDEO OPTIONS
+msg_170
+AUDIOOPTIONEN
+; AUDIO OPTIONS
+msg_171
+WORLD CUP
+; WORLD CUP
+msg_172
+LIGATABELLE
+; LEAGUE TABLE
+msg_173
+MANNSCHAFTSTYP AUSWAHL
+; TEAM TYPE SELECTION
+msg_174
+ARCADE TEAM AUSWAHL
+; ARCADE TEAM SELECTION
+msg_175
+WORLD CUP ERGEBNIS
+; WORLD CUP RESULT
+msg_176
+SPIELERGEBNIS
+; MATCH RESULT
+msg_177
+HIGHSCORE
+; HIGHSCORE
+msg_178
+
+; Warning:\nActually ETW support leagues with up\nto 20 teams, so addictional teams\nwill be ignored.
+msg_179
+
+; Warning, the competition\nin progress will be lost.
+msg_180
+
+; RESET CURRENT
+msg_181
+
+; INTRO
+msg_182
+
+; ABANDON MATCH
+msg_183
+
+; ACHIEVEMENTS
+msg_184
+
+; AUDIO VIDEO
+msg_185
+
+; BUTTON 1
+msg_186
+
+; BUTTON 10
+msg_187
+
+; BUTTON 11
+msg_188
+
+; BUTTON 12
+msg_189
+
+; BUTTON 13
+msg_190
+
+; BUTTON 2
+msg_191
+
+; BUTTON 3
+msg_192
+
+; BUTTON 4
+msg_193
+
+; BUTTON 5
+msg_194
+
+; BUTTON 6
+msg_195
+
+; BUTTON 7
+msg_196
+
+; BUTTON 8
+msg_197
+
+; BUTTON 9
+msg_198
+
+; CANCEL
+msg_199
+
+; CHANGE ACTIVE
+msg_200
+
+; CLASSIC
+msg_201
+
+; Career files|*.car
+msg_202
+
+; DELETE
+msg_203
+
+; FAST RUN
+msg_204
+
+; FILTERING PASS
+msg_205
+
+; JOYSTICK CONFIGURATION
+msg_206
+
+; KEYBOARD CONFIG
+msg_207
+
+; KEYBOARD CONFIGURATION
+msg_208
+
+; MOVE DOWN
+msg_209
+
+; MOVE LEFT
+msg_210
+
+; MOVE RIGHT
+msg_211
+
+; MOVE UP
+msg_212
+
+; NETWORK PLAY
+msg_213
+
+; NO JOYSTICK FOUND
+msg_214
+
+; PAUSE
+msg_215
+
+; REPLAY
+msg_216
+
+; RESOLUTION
+msg_217
+
+; SCALING
+msg_218
+
+; SCALING RES
+msg_219
+
+; SELECT 2, 4, 8, 16 OR 32 TEAMS
+msg_220
+
+; SELECT EIGHT TEAMS
+msg_221
+
+; SELECT THREE OR MORE TEAMS FOR THE LEAGUE
+msg_222
+
+; SELECT TWO TEAMS
+msg_223
+
+; SELECT YOUR TEAM
+msg_224
+
+; SHORT PASS
+msg_225
+
+; SHOT
+msg_226
+
+; SORRY, SELECTED KEY IS RESERVED
+msg_227
+
+; SYSTEM
+msg_228
+
+; Save highlight...
+msg_229
+
+; TACTICS
+msg_230
+
+; TUTORIAL
+msg_231
+
+; VIEW %s
+msg_232
+
+; WAITING BUTTON...
+msg_233
+
+; WORLD
+msg_234
+
+; You can enable scaling only\nif you play in a window!
+msg_235
+
+; Arcade mode is an original football variation played in a speedball-like arena, with pickable bonuses, and crazy teams. Try to win the arcade challenge or the whistle cup if you can!
+msg_236
+
+; During a match you can record an highlight using the red circle icon during the replay, through this menu you can view an highlight or remove it.
+msg_237
+
+; Eat the Whistle has two different game modes: Simulation and Arcade.\n\nBefore trying one of them you'll better practice a bit with the controls using the practice option.
+msg_238
+
+; Eat the whistle supports Game Center for achievements and scores. Please remember that you need to log in to Game Center in order to record your achievements and compete with your friends.
+msg_239
+
+; Now play a training session.\n\nThis will let you learn the basics and practice the game controls.
+msg_240
+
+; Pressing the RED button when the ball is in no possession will perform a special action that will change depending from the ball height and your position, an head shot, a bicycle kick, a tackle... anything can happens if you tap it with the right timing and in a good position!
+msg_241
+
+; Simulation mode will offer you an old-style soccer game experience, you can play a league, a cup or a friendly match!
+msg_242
+
+; Tap a button when the arrow points to the goal position you want to shoot to, the longer you keep the button pressed the higher the shoot will be.
+msg_243
+
+; Tapping the RED button when the other team has the ball possession will make the active player try to get the ball with a sliding tackle toward the ball, but be careful to not commit a foul!
+msg_244
+
+; The Arcade Challenge is the ultimate Eat The Whistle... challenge, you will have to win against all the arcade teams, except the one you have chosen, and a secret team to complete it.
+msg_245
+
+; The virtual joystick has two different speed for each direction, if you move the red ball more distant from the center the player will run faster but you'll have a less responsive control if you want to change his direction.
+msg_246
+
+; This menu let you change audio-video settings, you can also disable this tutorial if you want.
+msg_247
+
+; This menu let you choose the arcade team you want to use, an human team is marked with a blue p, a computer controller one with the light gray letter c.\n\nThe number of teams you have to select may vary: 1 for the challenge, 2 for a friendly match, 8 for the whistle tour.
+msg_248
+
+; This menu let you choose the team you want to use, an human team is identified with a blue background and the letter p, a computer controller one with a light gray background and the letter c.\n\nthe number of teams you have to select may vary: 1 for training, 2 for a friendly match, 3+ for a league...
+msg_249
+
+; This screen let you change your team tactic or the 11 initial players before a match.\nThe stars near the player name are a global valutation of the abilities of your players.
+msg_250
+
+; To shoot:\nSwipe from the ball in the direction of your shot, the longer the swipe the stronger the shot.\n\nTo pass:\nTouch the player you want to pass the ball to.
+msg_251
+
+; Welcome to the Eat The Whistle Tutorial!\n\nWe'll guide you to discover the game features and mechanics.\n\nYou can deactivate this tutorial in any time through the audio video settings, in the preferences menu.
+msg_252
+
+; Welcome to the Eat The Whistle training session, we will guide you through the basics of the game control system.
+msg_253
+
+; When the ball is in possession of the other team you can change the player you control touching another player, alternatively by tapping the blue button you can activate the nearest player to the ball position.
+msg_254
+
+; When the ball is in possession of your team you can use the BLUE button to pass the ball, tap it for a short pass, keep it pressed for a long pass. You can also pass the ball simply touching with a finger the man you want to pass to!
+msg_255
+
+; You are playing a match without having played a training session, it's strongly suggested to start with a training session to learn the basics of Eat The Whistle control system.
+msg_256
+
+; You can pause the game, change your tactic or view replay or leave the game in any moment through the pause menu (icon on the top right corner of the touchscreen)
+msg_257
+
+; You can shoot with the RED button, the joystick position when you RELEASE the button will decide the direction and the type of shot, experiment various joystick positions in a training session to find all of them!
+msg_258
+
+; You have the control of the player with a blue triangle on his head, you can move it with the virtual joystick that appears as soon as you put a finger on the lower left part of the touchscreen.
