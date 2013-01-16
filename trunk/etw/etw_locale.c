@@ -386,8 +386,86 @@ struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__180 = {&__LTool__179,1
 };
 struct {void *Prev;int Cat_ID;char Str[(20)+1];} __LTool__181 = {&__LTool__180,181,"INTRO"
 };
+struct {void *Prev;int Cat_ID;char Str[(41)+1];} __LTool__182 = {&__LTool__181,182,"ABANDON MATCH"};
+struct {void *Prev;int Cat_ID;char Str[(39)+1];} __LTool__183 = {&__LTool__182,183,"ACHIEVEMENTS"};
+struct {void *Prev;int Cat_ID;char Str[(37)+1];} __LTool__184 = {&__LTool__183,184,"AUDIO VIDEO"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__185 = {&__LTool__184,185,"BUTTON 1"};
+struct {void *Prev;int Cat_ID;char Str[(33)+1];} __LTool__186 = {&__LTool__185,186,"BUTTON 10"};
+struct {void *Prev;int Cat_ID;char Str[(33)+1];} __LTool__187 = {&__LTool__186,187,"BUTTON 11"};
+struct {void *Prev;int Cat_ID;char Str[(33)+1];} __LTool__188 = {&__LTool__187,188,"BUTTON 12"};
+struct {void *Prev;int Cat_ID;char Str[(33)+1];} __LTool__189 = {&__LTool__188,189,"BUTTON 13"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__190 = {&__LTool__189,190,"BUTTON 2"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__191 = {&__LTool__190,191,"BUTTON 3"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__192 = {&__LTool__191,192,"BUTTON 4"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__193 = {&__LTool__192,193,"BUTTON 5"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__194 = {&__LTool__193,194,"BUTTON 6"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__195 = {&__LTool__194,195,"BUTTON 7"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__196 = {&__LTool__195,196,"BUTTON 8"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__197 = {&__LTool__196,197,"BUTTON 9"};
+struct {void *Prev;int Cat_ID;char Str[(27)+1];} __LTool__198 = {&__LTool__197,198,"CANCEL"};
+struct {void *Prev;int Cat_ID;char Str[(41)+1];} __LTool__199 = {&__LTool__198,199,"CHANGE ACTIVE"};
+struct {void *Prev;int Cat_ID;char Str[(29)+1];} __LTool__200 = {&__LTool__199,200,"CLASSIC"};
+struct {void *Prev;int Cat_ID;char Str[(51)+1];} __LTool__201 = {&__LTool__200,201,"Career files|*.car"};
+struct {void *Prev;int Cat_ID;char Str[(27)+1];} __LTool__202 = {&__LTool__201,202,"DELETE"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__203 = {&__LTool__202,203,"FAST RUN"};
+struct {void *Prev;int Cat_ID;char Str[(43)+1];} __LTool__204 = {&__LTool__203,204,"FILTERING PASS"};
+struct {void *Prev;int Cat_ID;char Str[(59)+1];} __LTool__205 = {&__LTool__204,205,"JOYSTICK CONFIGURATION"};
+struct {void *Prev;int Cat_ID;char Str[(45)+1];} __LTool__206 = {&__LTool__205,206,"KEYBOARD CONFIG"};
+struct {void *Prev;int Cat_ID;char Str[(59)+1];} __LTool__207 = {&__LTool__206,207,"KEYBOARD CONFIGURATION"};
+struct {void *Prev;int Cat_ID;char Str[(33)+1];} __LTool__208 = {&__LTool__207,208,"MOVE DOWN"};
+struct {void *Prev;int Cat_ID;char Str[(33)+1];} __LTool__209 = {&__LTool__208,209,"MOVE LEFT"};
+struct {void *Prev;int Cat_ID;char Str[(35)+1];} __LTool__210 = {&__LTool__209,210,"MOVE RIGHT"};
+struct {void *Prev;int Cat_ID;char Str[(29)+1];} __LTool__211 = {&__LTool__210,211,"MOVE UP"};
+struct {void *Prev;int Cat_ID;char Str[(39)+1];} __LTool__212 = {&__LTool__211,212,"NETWORK PLAY"};
+struct {void *Prev;int Cat_ID;char Str[(49)+1];} __LTool__213 = {&__LTool__212,213,"NO JOYSTICK FOUND"};
+struct {void *Prev;int Cat_ID;char Str[(25)+1];} __LTool__214 = {&__LTool__213,214,"PAUSE"};
+struct {void *Prev;int Cat_ID;char Str[(27)+1];} __LTool__215 = {&__LTool__214,215,"REPLAY"};
+struct {void *Prev;int Cat_ID;char Str[(35)+1];} __LTool__216 = {&__LTool__215,216,"RESOLUTION"};
+struct {void *Prev;int Cat_ID;char Str[(29)+1];} __LTool__217 = {&__LTool__216,217,"SCALING"};
+struct {void *Prev;int Cat_ID;char Str[(37)+1];} __LTool__218 = {&__LTool__217,218,"SCALING RES"};
+struct {void *Prev;int Cat_ID;char Str[(75)+1];} __LTool__219 = {&__LTool__218,219,"SELECT 2, 4, 8, 16 OR 32 TEAMS"};
+struct {void *Prev;int Cat_ID;char Str[(51)+1];} __LTool__220 = {&__LTool__219,220,"SELECT EIGHT TEAMS"};
+struct {void *Prev;int Cat_ID;char Str[(97)+1];} __LTool__221 = {&__LTool__220,221,"SELECT THREE OR MORE TEAMS FOR THE LEAGUE"};
+struct {void *Prev;int Cat_ID;char Str[(47)+1];} __LTool__222 = {&__LTool__221,222,"SELECT TWO TEAMS"};
+struct {void *Prev;int Cat_ID;char Str[(47)+1];} __LTool__223 = {&__LTool__222,223,"SELECT YOUR TEAM"};
+struct {void *Prev;int Cat_ID;char Str[(35)+1];} __LTool__224 = {&__LTool__223,224,"SHORT PASS"};
+struct {void *Prev;int Cat_ID;char Str[(23)+1];} __LTool__225 = {&__LTool__224,225,"SHOT"};
+struct {void *Prev;int Cat_ID;char Str[(77)+1];} __LTool__226 = {&__LTool__225,226,"SORRY, SELECTED KEY IS RESERVED"};
+struct {void *Prev;int Cat_ID;char Str[(27)+1];} __LTool__227 = {&__LTool__226,227,"SYSTEM"};
+struct {void *Prev;int Cat_ID;char Str[(49)+1];} __LTool__228 = {&__LTool__227,228,"Save highlight..."};
+struct {void *Prev;int Cat_ID;char Str[(29)+1];} __LTool__229 = {&__LTool__228,229,"TACTICS"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__230 = {&__LTool__229,230,"TUTORIAL"};
+struct {void *Prev;int Cat_ID;char Str[(29)+1];} __LTool__231 = {&__LTool__230,231,"VIEW %s"};
+struct {void *Prev;int Cat_ID;char Str[(49)+1];} __LTool__232 = {&__LTool__231,232,"WAITING BUTTON..."};
+struct {void *Prev;int Cat_ID;char Str[(25)+1];} __LTool__233 = {&__LTool__232,233,"WORLD"};
+struct {void *Prev;int Cat_ID;char Str[(121)+1];} __LTool__234 = {&__LTool__233,234,"You can enable scaling only\nif you play in a window!"};
+struct {void *Prev;int Cat_ID;char Str[(379)+1];} __LTool__235 = {&__LTool__234,235,"Arcade mode is an original football variation played in a speedball-like arena, with pickable bonuses, and crazy teams. Try to win the arcade challenge or the whistle cup if you can!"};
+struct {void *Prev;int Cat_ID;char Str[(305)+1];} __LTool__236 = {&__LTool__235,236,"During a match you can record an highlight using the red circle icon during the replay, through this menu you can view an highlight or remove it."};
+struct {void *Prev;int Cat_ID;char Str[(357)+1];} __LTool__237 = {&__LTool__236,237,"Eat the Whistle has two different game modes: Simulation and Arcade.\n\nBefore trying one of them you'll better practice a bit with the controls using the practice option."};
+struct {void *Prev;int Cat_ID;char Str[(391)+1];} __LTool__238 = {&__LTool__237,238,"Eat the whistle supports Game Center for achievements and scores. Please remember that you need to log in to Game Center in order to record your achievements and compete with your friends."};
+struct {void *Prev;int Cat_ID;char Str[(211)+1];} __LTool__239 = {&__LTool__238,239,"Now play a training session.\n\nThis will let you learn the basics and practice the game controls."};
+struct {void *Prev;int Cat_ID;char Str[(569)+1];} __LTool__240 = {&__LTool__239,240,"Pressing the RED button when the ball is in no possession will perform a special action that will change depending from the ball height and your position, an head shot, a bicycle kick, a tackle... anything can happens if you tap it with the right timing and in a good position!"};
+struct {void *Prev;int Cat_ID;char Str[(249)+1];} __LTool__241 = {&__LTool__240,241,"Simulation mode will offer you an old-style soccer game experience, you can play a league, a cup or a friendly match!"};
+struct {void *Prev;int Cat_ID;char Str[(307)+1];} __LTool__242 = {&__LTool__241,242,"Tap a button when the arrow points to the goal position you want to shoot to, the longer you keep the button pressed the higher the shoot will be."};
+struct {void *Prev;int Cat_ID;char Str[(395)+1];} __LTool__243 = {&__LTool__242,243,"Tapping the RED button when the other team has the ball possession will make the active player try to get the ball with a sliding tackle toward the ball, but be careful to not commit a foul!"};
+struct {void *Prev;int Cat_ID;char Str[(381)+1];} __LTool__244 = {&__LTool__243,244,"The Arcade Challenge is the ultimate Eat The Whistle... challenge, you will have to win against all the arcade teams, except the one you have chosen, and a secret team to complete it."};
+struct {void *Prev;int Cat_ID;char Str[(463)+1];} __LTool__245 = {&__LTool__244,245,"The virtual joystick has two different speed for each direction, if you move the red ball more distant from the center the player will run faster but you'll have a less responsive control if you want to change his direction."};
+struct {void *Prev;int Cat_ID;char Str[(203)+1];} __LTool__246 = {&__LTool__245,246,"This menu let you change audio-video settings, you can also disable this tutorial if you want."};
+struct {void *Prev;int Cat_ID;char Str[(561)+1];} __LTool__247 = {&__LTool__246,247,"This menu let you choose the arcade team you want to use, an human team is marked with a blue p, a computer controller one with the light gray letter c.\n\nThe number of teams you have to select may vary: 1 for the challenge, 2 for a friendly match, 8 for the whistle tour."};
+struct {void *Prev;int Cat_ID;char Str[(621)+1];} __LTool__248 = {&__LTool__247,248,"This menu let you choose the team you want to use, an human team is identified with a blue background and the letter p, a computer controller one with a light gray background and the letter c.\n\nthe number of teams you have to select may vary: 1 for training, 2 for a friendly match, 3+ for a league..."};
+struct {void *Prev;int Cat_ID;char Str[(365)+1];} __LTool__249 = {&__LTool__248,249,"This screen let you change your team tactic or the 11 initial players before a match.\nThe stars near the player name are a global valutation of the abilities of your players."};
+struct {void *Prev;int Cat_ID;char Str[(345)+1];} __LTool__250 = {&__LTool__249,250,"To shoot:\nSwipe from the ball in the direction of your shot, the longer the swipe the stronger the shot.\n\nTo pass:\nTouch the player you want to pass the ball to."};
+struct {void *Prev;int Cat_ID;char Str[(437)+1];} __LTool__251 = {&__LTool__250,251,"Welcome to the Eat The Whistle Tutorial!\n\nWe'll guide you to discover the game features and mechanics.\n\nYou can deactivate this tutorial in any time through the audio video settings, in the preferences menu."};
+struct {void *Prev;int Cat_ID;char Str[(241)+1];} __LTool__252 = {&__LTool__251,252,"Welcome to the Eat The Whistle training session, we will guide you through the basics of the game control system."};
+struct {void *Prev;int Cat_ID;char Str[(435)+1];} __LTool__253 = {&__LTool__252,253,"When the ball is in possession of the other team you can change the player you control touching another player, alternatively by tapping the blue button you can activate the nearest player to the ball position."};
+struct {void *Prev;int Cat_ID;char Str[(481)+1];} __LTool__254 = {&__LTool__253,254,"When the ball is in possession of your team you can use the BLUE button to pass the ball, tap it for a short pass, keep it pressed for a long pass. You can also pass the ball simply touching with a finger the man you want to pass to!"};
+struct {void *Prev;int Cat_ID;char Str[(369)+1];} __LTool__255 = {&__LTool__254,255,"You are playing a match without having played a training session, it's strongly suggested to start with a training session to learn the basics of Eat The Whistle control system."};
+struct {void *Prev;int Cat_ID;char Str[(339)+1];} __LTool__256 = {&__LTool__255,256,"You can pause the game, change your tactic or view replay or leave the game in any moment through the pause menu (icon on the top right corner of the touchscreen)"};
+struct {void *Prev;int Cat_ID;char Str[(441)+1];} __LTool__257 = {&__LTool__256,257,"You can shoot with the RED button, the joystick position when you RELEASE the button will decide the direction and the type of shot, experiment various joystick positions in a training session to find all of them!"};
+struct {void *Prev;int Cat_ID;char Str[(403)+1];} __LTool__258 = {&__LTool__257,258,"You have the control of the player with a blue triangle on his head, you can move it with the virtual joystick that appears as soon as you put a finger on the lower left part of the touchscreen."};
 
-#define STR_BEGIN_ENTRY &__LTool__181
+
+#define STR_BEGIN_ENTRY &__LTool__258
 #include <stdio.h>
 
 #ifndef CROSSCOMPILER
@@ -462,6 +540,21 @@ char *GetLanguage(void)
     else
         return L10N_ENGLISH;
 }
+#elif defined(IPHONE)
+char *GetLanguage(void)
+{
+    extern const char *get_lang_id();
+    const char *lang;
+    if((lang = get_lang_id()) != NULL)
+    {
+        if(strstr(lang,"it"))
+            return L10N_ITALIAN;
+        else if(strstr(lang,"de"))
+            return L10N_GERMAN;
+    }
+        
+    return L10N_ENGLISH;
+}
 #else
 char *GetLanguage(void)
 {
@@ -472,11 +565,9 @@ char *GetLanguage(void)
             return L10N_ITALIAN;
         else if(strstr(lang,"de"))
             return L10N_GERMAN;
-        else
-            return L10N_ENGLISH;
     }
-    else
-        return L10N_ENGLISH;
+        
+    return L10N_ENGLISH;
 }
 
 #endif
@@ -666,8 +757,16 @@ static char *GetCatalogStr(void *Ctg, long num, char *def)
     return def;
 }
 
+
+// this function can be used to recover old .ct files
+//#define CREATE_CATALOG
+
 void InitStrings(void)
 {
+#ifdef CREATE_CATALOG
+   extern void ct_insert(int, const char*, const char*);
+   extern void ct_flush();
+#endif
    void * Catalog;
    struct __LString *lstr=(struct __LString *)STR_BEGIN_ENTRY;
 
@@ -676,10 +775,15 @@ void InitStrings(void)
    while(lstr) {
          const char *str = GetCatalogStr(Catalog,lstr->CatalogID,NULL);
          /* We get NULL, if there is no translation ^^*/
-
-         if(str) strcpy(lstr->Str,str); /* override builtin string */
+#ifdef CREATE_CATALOG
+         ct_insert(lstr->CatalogID, str, lstr->Str);
+#endif
+         if (str) strcpy(lstr->Str,str); /* override builtin string */
          lstr=lstr->Next;
    }
+#ifdef CREATE_CATALOG
+   ct_flush();
+#endif
    CloseCatalog(Catalog);
 }
 

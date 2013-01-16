@@ -12,6 +12,13 @@ static UIViewController *gViewColtroller = NULL;
 static UIWindow *gWindow = NULL;
 static UIView *gView = NULL;
 
+const char *get_lang_id()
+{
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+
+    return [language UTF8String];
+}
+
 void show_world_scores()
 {
     [[GameCenter getInstance] showHighScores:@"arcade_results"];
