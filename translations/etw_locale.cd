@@ -540,3 +540,247 @@ MATCH RESULT
 msg_177 (177//30)
 HIGHSCORE
 ;
+msg_178 (178//198)
+Warning:\nActually ETW support leagues with up\nto 20 teams, \
+so addictional teams\nwill be ignored
+;
+msg_179 (179//100)
+Warning, the competition\nin progress will be lost.
+;
+msg_180 (180//20)
+RESET CURRENT
+;
+msg_181 (181//20)
+INTRO
+;
+msg_182 (182//41)
+ABANDON MATCH
+;
+msg_183 (183//39)
+ACHIEVEMENTS
+;
+msg_184 (184//37)
+AUDIO VIDEO
+;
+msg_185 (185//31)
+BUTTON 1
+;
+msg_186 (186//33)
+BUTTON 10
+;
+msg_187 (187//33)
+BUTTON 11
+;
+msg_188 (188//33)
+BUTTON 12
+;
+msg_189 (189//33)
+BUTTON 13
+;
+msg_190 (190//31)
+BUTTON 2
+;
+msg_191 (191//31)
+BUTTON 3
+;
+msg_192 (192//31)
+BUTTON 4
+;
+msg_193 (193//31)
+BUTTON 5
+;
+msg_194 (194//31)
+BUTTON 6
+;
+msg_195 (195//31)
+BUTTON 7
+;
+msg_196 (196//31)
+BUTTON 8
+;
+msg_197 (197//31)
+BUTTON 9
+;
+msg_198 (198//27)
+CANCEL
+;
+msg_199 (199//41)
+CHANGE ACTIVE
+;
+msg_200 (200//29)
+CLASSIC
+;
+msg_201 (201//51)
+Career files|*.car
+;
+msg_202 (202//27)
+DELETE
+;
+msg_203 (203//31)
+FAST RUN
+;
+msg_204 (204//43)
+FILTERING PASS
+;
+msg_205 (205//59)
+JOYSTICK CONFIGURATION
+;
+msg_206 (206//45)
+KEYBOARD CONFIG
+;
+msg_207 (207//59)
+KEYBOARD CONFIGURATION
+;
+msg_208 (208//33)
+MOVE DOWN
+;
+msg_209 (209//33)
+MOVE LEFT
+;
+msg_210 (210//35)
+MOVE RIGHT
+;
+msg_211 (211//29)
+MOVE UP
+;
+msg_212 (212//39)
+NETWORK PLAY
+;
+msg_213 (213//49)
+NO JOYSTICK FOUND
+;
+msg_214 (214//25)
+PAUSE
+;
+msg_215 (215//27)
+REPLAY
+;
+msg_216 (216//35)
+RESOLUTION
+;
+msg_217 (217//29)
+SCALING
+;
+msg_218 (218//37)
+SCALING RES
+;
+msg_219 (219//75)
+SELECT 2, 4, 8, 16 OR 32 TEAMS
+;
+msg_220 (220//51)
+SELECT EIGHT TEAMS
+;
+msg_221 (221//97)
+SELECT THREE OR MORE TEAMS FOR THE LEAGUE
+;
+msg_222 (222//47)
+SELECT TWO TEAMS
+;
+msg_223 (223//47)
+SELECT YOUR TEAM
+;
+msg_224 (224//35)
+SHORT PASS
+;
+msg_225 (225//23)
+SHOT
+;
+msg_226 (226//77)
+SORRY, SELECTED KEY IS RESERVED
+;
+msg_227 (227//27)
+SYSTEM
+;
+msg_228 (228//49)
+Save highlight...
+;
+msg_229 (229//29)
+TACTICS
+;
+msg_230 (230//31)
+TUTORIAL
+;
+msg_231 (231//29)
+VIEW %s
+;
+msg_232 (232//49)
+WAITING BUTTON...
+;
+msg_233 (233//25)
+WORLD
+;
+msg_234 (234//121)
+You can enable scaling only\nif you play in a window!
+;
+msg_235 (235//379)
+Arcade mode is an original football variation played in a speedball-like arena, with pickable bonuses, and crazy teams. Try to win the arcade challenge or the whistle cup if you can!
+;
+msg_236 (236//305)
+During a match you can record an highlight using the red circle icon during the replay, through this menu you can view an highlight or remove it.
+;
+msg_237 (237//357)
+Eat the Whistle has two different game modes: Simulation and Arcade.\n\nBefore trying one of them you'll better practice a bit with the controls using the practice option.
+;
+msg_238 (238//391)
+Eat the whistle supports Game Center for achievements and scores. Please remember that you need to log in to Game Center in order to record your achievements and compete with your friends.
+;
+msg_239 (239//211)
+Now play a training session.\n\nThis will let you learn the basics and practice the game controls.
+;
+msg_240 (240//569)
+Pressing the RED button when the ball is in no possession will perform a special action that will change depending from the ball height and your position, an head shot, a bicycle kick, a tackle... anything can happens if you tap it with the right timing and in a good position!
+;
+msg_241 (241//249)
+Simulation mode will offer you an old-style soccer game experience, you can play a league, a cup or a friendly match!
+;
+msg_242 (242//307)
+Tap a button when the arrow points to the goal position you want to shoot to, the longer you keep the button pressed the higher the shoot will be.
+;
+msg_243 (243//395)
+Tapping the RED button when the other team has the ball possession will make the active player try to get the ball with a sliding tackle toward the ball, but be careful to not commit a foul!
+;
+msg_244 (244//381)
+The Arcade Challenge is the ultimate Eat The Whistle... challenge, you will have to win against all the arcade teams, except the one you have chosen, and a secret team to complete it.
+;
+msg_245 (245//463)
+The virtual joystick has two different speed for each direction, if you move the red ball more distant from the center the player will run faster but you'll have a less responsive control if you want to change his direction.
+;
+msg_246 (246//203)
+This menu let you change audio-video settings, you can also disable this tutorial if you want.
+;
+msg_247 (247//561)
+This menu let you choose the arcade team you want to use, an human team is marked with a blue p, a computer controller one with the light gray letter c.\n\nThe number of teams you have to select may vary: 1 for the challenge, 2 for a friendly match, 8 for the whistle tour.
+;
+msg_248 (248//621)
+This menu let you choose the team you want to use, an human team is identified with a blue background and the letter p, a computer controller one with a light gray background and the letter c.\n\nthe number of teams you have to select may vary: 1 for training, 2 for a friendly match, 3+ for a league...
+;
+msg_249 (249//365)
+This screen let you change your team tactic or the 11 initial players before a match.\nThe stars near the player name are a global valutation of the abilities of your players.
+;
+msg_250 (250//345)
+To shoot:\nSwipe from the ball in the direction of your shot, the longer the swipe the stronger the shot.\n\nTo pass:\nTouch the player you want to pass the ball to.
+;
+msg_251 (251//437)
+Welcome to the Eat The Whistle Tutorial!\n\nWe'll guide you to discover the game features and mechanics.\n\nYou can deactivate this tutorial in any time through the audio video settings, in the preferences menu.
+;
+msg_252 (252//241)
+Welcome to the Eat The Whistle training session, we will guide you through the basics of the game control system.
+;
+msg_253 (253//435)
+When the ball is in possession of the other team you can change the player you control touching another player, alternatively by tapping the blue button you can activate the nearest player to the ball position.
+;
+msg_254 (254//481)
+When the ball is in possession of your team you can use the BLUE button to pass the ball, tap it for a short pass, keep it pressed for a long pass. You can also pass the ball simply touching with a finger the man you want to pass to!
+;
+msg_255 (255//369)
+You are playing a match without having played a training session, it's strongly suggested to start with a training session to learn the basics of Eat The Whistle control system.
+;
+msg_256 (256//339)
+You can pause the game, change your tactic or view replay or leave the game in any moment through the pause menu (icon on the top right corner of the touchscreen)
+;
+msg_257 (257//441)
+You can shoot with the RED button, the joystick position when you RELEASE the button will decide the direction and the type of shot, experiment various joystick positions in a training session to find all of them!
+;
+msg_258 (258//403)
+You have the control of the player with a blue triangle on his head, you can move it with the virtual joystick that appears as soon as you put a finger on the lower left part of the touchscreen.
+;
