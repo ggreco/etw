@@ -463,9 +463,29 @@ struct {void *Prev;int Cat_ID;char Str[(369)+1];} __LTool__255 = {&__LTool__254,
 struct {void *Prev;int Cat_ID;char Str[(339)+1];} __LTool__256 = {&__LTool__255,256,"You can pause the game, change your tactic or view replay or leave the game in any moment through the pause menu (icon on the top right corner of the touchscreen)"};
 struct {void *Prev;int Cat_ID;char Str[(441)+1];} __LTool__257 = {&__LTool__256,257,"You can shoot with the RED button, the joystick position when you RELEASE the button will decide the direction and the type of shot, experiment various joystick positions in a training session to find all of them!"};
 struct {void *Prev;int Cat_ID;char Str[(403)+1];} __LTool__258 = {&__LTool__257,258,"You have the control of the player with a blue triangle on his head, you can move it with the virtual joystick that appears as soon as you put a finger on the lower left part of the touchscreen."};
+struct {void *Prev;int Cat_ID;char Str[(39)+1];} __LTool__259 = {&__LTool__258,259,"%s INJURIED."};
+struct {void *Prev;int Cat_ID;char Str[(27)+1];} __LTool__260 = {&__LTool__259,260,"CORNER"};
+struct {void *Prev;int Cat_ID;char Str[(25)+1];} __LTool__261 = {&__LTool__260,261,"FOULS"};
+struct {void *Prev;int Cat_ID;char Str[(29)+1];} __LTool__262 = {&__LTool__261,262,"G O A L"};
+struct {void *Prev;int Cat_ID;char Str[(25)+1];} __LTool__263 = {&__LTool__262,263,"GOALS"};
+struct {void *Prev;int Cat_ID;char Str[(45)+1];} __LTool__264 = {&__LTool__263,264,"HIGHLIGHT SAVED"};
+struct {void *Prev;int Cat_ID;char Str[(21)+1];} __LTool__265 = {&__LTool__264,265,"IN:"};
+struct {void *Prev;int Cat_ID;char Str[(31)+1];} __LTool__266 = {&__LTool__265,266,"KICK OFF"};
+struct {void *Prev;int Cat_ID;char Str[(41)+1];} __LTool__267 = {&__LTool__266,267,"O F F S I D E"};
+struct {void *Prev;int Cat_ID;char Str[(23)+1];} __LTool__268 = {&__LTool__267,268,"OUT:"};
+struct {void *Prev;int Cat_ID;char Str[(27)+1];} __LTool__269 = {&__LTool__268,269,"PAUSED"};
+struct {void *Prev;int Cat_ID;char Str[(35)+1];} __LTool__270 = {&__LTool__269,270,"POSSESSION"};
+struct {void *Prev;int Cat_ID;char Str[(57)+1];} __LTool__271 = {&__LTool__270,271,"PRESS P TO PLAY AGAIN"};
+struct {void *Prev;int Cat_ID;char Str[(71)+1];} __LTool__272 = {&__LTool__271,272,"PRESS R TO REPLAY THE PERIOD"};
+struct {void *Prev;int Cat_ID;char Str[(33)+1];} __LTool__273 = {&__LTool__272,273,"RED CARDS"};
+struct {void *Prev;int Cat_ID;char Str[(25)+1];} __LTool__274 = {&__LTool__273,274,"SHOTS"};
+struct {void *Prev;int Cat_ID;char Str[(37)+1];} __LTool__275 = {&__LTool__274,275,"SLOW MOTION"};
+struct {void *Prev;int Cat_ID;char Str[(77)+1];} __LTool__276 = {&__LTool__275,276,"SWIPE TO SHOOT OR TOUCH TO PASS"};
+struct {void *Prev;int Cat_ID;char Str[(81)+1];} __LTool__277 = {&__LTool__276,277,"TOUCH A PLAYER TO THROW IN TO HIM"};
+struct {void *Prev;int Cat_ID;char Str[(39)+1];} __LTool__278 = {&__LTool__277,278,"YELLOW CARDS"};
 
 
-#define STR_BEGIN_ENTRY &__LTool__258
+#define STR_BEGIN_ENTRY &__LTool__278
 #include <stdio.h>
 
 #ifndef CROSSCOMPILER

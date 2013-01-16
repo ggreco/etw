@@ -784,3 +784,63 @@ You can shoot with the RED button, the joystick position when you RELEASE the bu
 msg_258 (258//403)
 You have the control of the player with a blue triangle on his head, you can move it with the virtual joystick that appears as soon as you put a finger on the lower left part of the touchscreen.
 ;
+msg_259 (259//39)
+%s INJURIED.
+;
+msg_260 (260//27)
+CORNER
+;
+msg_261 (261//25)
+FOULS
+;
+msg_262 (262//29)
+G O A L
+;
+msg_263 (263//25)
+GOALS
+;
+msg_264 (264//45)
+HIGHLIGHT SAVED
+;
+msg_265 (265//21)
+IN:
+;
+msg_266 (266//31)
+KICK OFF
+;
+msg_267 (267//41)
+O F F S I D E
+;
+msg_268 (268//23)
+OUT:
+;
+msg_269 (269//27)
+PAUSED
+;
+msg_270 (270//35)
+POSSESSION
+;
+msg_271 (271//57)
+PRESS P TO PLAY AGAIN
+;
+msg_272 (272//71)
+PRESS R TO REPLAY THE PERIOD
+;
+msg_273 (273//33)
+RED CARDS
+;
+msg_274 (274//25)
+SHOTS
+;
+msg_275 (275//37)
+SLOW MOTION
+;
+msg_276 (276//77)
+SWIPE TO SHOOT OR TOUCH TO PASS
+;
+msg_277 (277//81)
+TOUCH A PLAYER TO THROW IN TO HIM
+;
+msg_278 (278//39)
+YELLOW CARDS
+;

@@ -91,7 +91,8 @@ void check_cpuvscpu_touch()
     int res = touch->iteration();
     
     // trigger pause on button_3 press
-    if (res & TouchControl::BUTTON_3) {
+    if ((res & TouchControl::BUTTON_3) &&
+        (res & TouchControl::BUTTONUP)) {
         if (!network_game) {
             DoPause();
             return;

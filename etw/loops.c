@@ -358,6 +358,7 @@ void handle_pause_status()
     extern BOOL HandleMenuIDCMP();
 
     if (replay_mode) {
+        os_delay(5);
         if (use_touch) {
             if (!check_replay_touch())
                 pause_mode = FALSE;
@@ -368,6 +369,7 @@ void handle_pause_status()
         // it's necessary to screenswap here?
     }
     else {
+        SDL_WaitEvent(NULL);
         if(!HandleMenuIDCMP()) {
             quit_game=TRUE;
             pause_mode = FALSE;
