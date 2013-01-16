@@ -529,6 +529,47 @@ extern struct __LString __LTool__257;
 #define msg_257 __LTool__257.Str
 extern struct __LString __LTool__258;
 #define msg_258 __LTool__258.Str
+extern struct __LString __LTool__259;
+#define msg_259 __LTool__259.Str
+extern struct __LString __LTool__260;
+#define msg_260 __LTool__260.Str
+extern struct __LString __LTool__261;
+#define msg_261 __LTool__261.Str
+extern struct __LString __LTool__262;
+#define msg_262 __LTool__262.Str
+extern struct __LString __LTool__263;
+#define msg_263 __LTool__263.Str
+extern struct __LString __LTool__264;
+#define msg_264 __LTool__264.Str
+extern struct __LString __LTool__265;
+#define msg_265 __LTool__265.Str
+extern struct __LString __LTool__266;
+#define msg_266 __LTool__266.Str
+extern struct __LString __LTool__267;
+#define msg_267 __LTool__267.Str
+extern struct __LString __LTool__268;
+#define msg_268 __LTool__268.Str
+extern struct __LString __LTool__269;
+#define msg_269 __LTool__269.Str
+extern struct __LString __LTool__270;
+#define msg_270 __LTool__270.Str
+extern struct __LString __LTool__271;
+#define msg_271 __LTool__271.Str
+extern struct __LString __LTool__272;
+#define msg_272 __LTool__272.Str
+extern struct __LString __LTool__273;
+#define msg_273 __LTool__273.Str
+extern struct __LString __LTool__274;
+#define msg_274 __LTool__274.Str
+extern struct __LString __LTool__275;
+#define msg_275 __LTool__275.Str
+extern struct __LString __LTool__276;
+#define msg_276 __LTool__276.Str
+extern struct __LString __LTool__277;
+#define msg_277 __LTool__277.Str
+extern struct __LString __LTool__278;
+#define msg_278 __LTool__278.Str
+
 #ifdef __cplusplus
 }
 #endif

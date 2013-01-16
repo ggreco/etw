@@ -69,15 +69,15 @@ static void free_change_data()
 #define NUMERO_STATS 9
 
 struct Stats stats[] = {
-    {"GOALS", 1, 5},
-    {"SHOTS", 5, 5},
-    {"FOULS", 2, 5},
-    {"PENALTIES", 6, 9},
-    {"YELLOW CARDS", 3, 12},
-    {"RED CARDS", 4, 9},
+    {msg_263, 1, 5},
+    {msg_274, 5, 5},
+    {msg_261, 2, 5},
+    {msg_117, 6, 9},
+    {msg_278, 3, 12},
+    {msg_273, 4, 9},
     {msg_123, 8, 13},
-    {"CORNER", 7, 6},
-    {"POSSESSION", 0, 10},
+    {msg_260, 7, 6},
+    {msg_270, 0, 10},
 };
 
 BOOL draw_r, replay_done;
@@ -265,13 +265,13 @@ void ShowPanel(void)
 
     if (replay_mode) {
         if (slow_motion) {
-            const char *txt = "SLOW MOTION";
+            const char *txt = msg_275;
             int l = strlen(txt);
             int x = (WINDOW_WIDTH - l * font_width) >> 1;                
             TextShadow(x, font_height + 2, txt, l);
         }
         if (p->show_panel & PANEL_HIGHSAVE) {
-            const char *txt =  "HIGHLIGHT SAVED";
+            const char *txt =  msg_264;
             int l = strlen(txt);
             int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;
@@ -350,7 +350,7 @@ void ShowPanel(void)
 
     if (p->show_panel & PANEL_OFFSIDE) {
         int x, y, l;
-        const char *sp = "O F F S I D E";
+        const char *sp = msg_267;
 
         l = strlen(sp);
 
@@ -415,8 +415,8 @@ void ShowPanel(void)
 
                 x += font_width * 2;
                 y += font_height * 3;
-                ColorTextShadow(x, y, "OUT:", 4, changes->team->MarkerRed);
-                ColorTextShadow(x2, y, "IN:", 3, changes->team->MarkerRed);
+                ColorTextShadow(x, y, msg_268, 4, changes->team->MarkerRed);
+                ColorTextShadow(x2, y, msg_265, 3, changes->team->MarkerRed);
                 x += font_width * 5;
                 x2 += font_width * 5;
                 
@@ -437,7 +437,7 @@ void ShowPanel(void)
         char buffer[80];
         int x, y, l;
 
-        sprintf(buffer, "%s INJURIED.", g->name);
+        sprintf(buffer, msg_259, g->name);
 
         l = strlen(buffer);
 
@@ -455,7 +455,7 @@ void ShowPanel(void)
 
 #ifndef MOBILE_VERSION
     if (p->show_panel & PANEL_REPLAY) {
-        char *c = "PRESS R TO REPLAY THE PERIOD";
+        char *c = msg_272;
         int x, y, l = strlen(c);
 
         x = WINDOW_WIDTH - l * font_width;
@@ -468,7 +468,7 @@ void ShowPanel(void)
         TextShadow(x, y, c, l);
 
         if (friendly && !first_half) {
-            c = "PRESS P TO PLAY AGAIN";
+            c = msg_271;
             l = strlen(c);
 
             y += (font_height << 1);
@@ -482,7 +482,7 @@ void ShowPanel(void)
     
     // new panels used only in the mobile version
     if (p->show_panel & PANEL_THROW_IN) {
-        const char *txt =  "TOUCH A PLAYER TO THROW IN TO HIM";
+        const char *txt =  msg_277;
         int l = strlen(txt);
         int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;
@@ -490,7 +490,7 @@ void ShowPanel(void)
     }
 
     if (p->show_panel & PANEL_CORNER) {
-        const char *txt =  "SWIPE TO SHOOT OR TOUCH TO PASS";
+        const char *txt =  msg_276;
         int l = strlen(txt);
         int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;
@@ -629,7 +629,7 @@ void ShowPanel(void)
                              7 ? Pens[P_VERDE2] : Pens[P_GRIGIO1],
                              bitmap_width);
 
-            drawtext("G O A L", 7, (WINDOW_WIDTH - 7 * font_width) >> 1,
+            drawtext(msg_262, 7, (WINDOW_WIDTH - 7 * font_width) >> 1,
                      (WINDOW_HEIGHT - font_height) >> 1, Pens[P_BIANCO]);
         }
     } else if (goal_onscreen) {
@@ -649,7 +649,7 @@ void ShowPanel(void)
 
         x = (WINDOW_WIDTH - 8 * font_width) >> 1;
         y = (WINDOW_HEIGHT - font_height) >> 1;
-        TextShadow(x, y, "KICK OFF", 8);
+        TextShadow(x, y, msg_266, 8);
     }
 
 /*
@@ -663,7 +663,7 @@ void ShowPanel(void)
         }
         else
         {
-            drawtext("PAUSED",6,(WINDOW_WIDTH-6*font_width)/2,WINDOW_HEIGHT/2,Pens[P_BIANCO]);
+            drawtext(msg_269,6,(WINDOW_WIDTH-6*font_width)/2,WINDOW_HEIGHT/2,Pens[P_BIANCO]);
         }
         p->show_panel&=~PANEL_PAUSE;
     }
@@ -681,7 +681,7 @@ void DrawPause(void)
                   pause_gfx->height,
                   pause_gfx->width, pause_gfx->height, bitmap_width);
     } else {
-        drawtext("PAUSED", 6, (WINDOW_WIDTH - 6 * font_width) / 2,
+        drawtext(msg_269, 6, (WINDOW_WIDTH - 6 * font_width) / 2,
                  10, Pens[P_BIANCO]);
     }
 
