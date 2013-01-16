@@ -15,7 +15,7 @@ char teamfile[128];
 BOOL saved=TRUE, random_draw=FALSE, special=FALSE;
 char division=0, scontri=0, i_scontri=0;
 
-char career_file[128]="\0";
+char career_file[128]={0};
 
 struct championship_disk campionato;
 struct team_disk *teamlist=NULL;
@@ -156,7 +156,7 @@ BOOL LoadMenuTactic(char *name, tactic_t *t)
     int i, j, k;
     FILE *fh;
 
-    if(!(fh=fopen(name, "rb")))
+    if(!(fh=fopen(name, "rb"/*-*/)))
         return FALSE;
 
     fread(&t->NameLen, 1, sizeof(char), fh);
@@ -183,7 +183,7 @@ void DisplayTactic(const char* tct, int xs, int ys, const char *pos[], int team_
 
     team_type += 17; // i use this value for the symbol color
 
-    sprintf(buffer, "tct/%s", tct);
+    sprintf(buffer, "tct/%s"/*-*/, tct);
 
     setfont(smallfont);
 
@@ -547,7 +547,7 @@ BOOL TeamSettings(WORD button)
                         AddPlayer(&teamlist[actual_team].players[14], 16);
                     }
 
-                    teamsettings[button].Text = "..";
+                    teamsettings[button].Text = ".."/*-*/;
 
                     if (sel1 == 16)
                         sel1 = -1;
@@ -862,7 +862,7 @@ void SetTeamSettings(WORD team, BOOL starting)
         teamsettings[42].Text = msg_6;
 
     if (teamsettings[16 * 2 + 1].Text)
-        teamsettings[16 * 2].Text = "..";
+        teamsettings[16 * 2].Text = ".."/*-*/;
     
     D(bug("SetTeamSettings for %d (%d) ok\n", team, starting));
 }
@@ -923,7 +923,7 @@ void SaveTeams(char *name)
     FILE *fh;
     int i;
 
-    if ((fh=fopen(name, "wb"))) {
+    if ((fh=fopen(name, "wb"/*-*/))) {
         campionato.nteams--;
 
         fwrite(&campionato, sizeof(struct championship_disk), 1, fh);
@@ -1002,7 +1002,7 @@ void LoadTeams(char *name)
 
     temp=campionato;
 
-    if ((fh=fopen(name, "rb"))) {
+    if ((fh=fopen(name, "rb"/*-*/))) {
         BOOL ok=FALSE;
 
         D(bug("Loading teams from %s...\n", name));
@@ -1172,5 +1172,7 @@ void LoadTeams(char *name)
 
         fclose(fh);
     }
-    D(else bug("Non posso caricare %s!\n", name));
+    else {
+        D(bug("Unable to load %s!\n", name));
+    }
 }

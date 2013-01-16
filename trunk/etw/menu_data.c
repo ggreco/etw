@@ -115,7 +115,7 @@ struct Button start_bottoni[]=
 
 struct Button pause_buttons[] = 
 {
-    {20,30,140,55, MENU_ARCADE,9,11,"CONTINUE"},  // Continue playing
+    {20,30,140,55, MENU_ARCADE,9,11,msg_0},  // Continue playing
     {20,85,140,110,MENU_ARCADE,9,11,"REPLAY"},  // Replay last action
     {20,140,140,165,MENU_SUBSTITUTIONS,9,11,NULL},  // Change player
     {160,100,205,115,-100,14,13,"4-4-2"/*-*/},{215,100,260,115,-101,14,13,"4-3-3"/*-*/},{270,100,315,115,-102,14,13,"3-4-3"/*-*/},
@@ -249,7 +249,7 @@ struct Button sprefs_bottoni[]=
 struct Button mprefs_buttons[] =
 {
     {10,37,100,60,-1,0,3,msg_131},{102,37,184,60,-1,3,0,NULL},
-    {10,73,100,96,-1,0,3,msg_182},{102,73,184,96,-1,3,0,NULL},
+    {10,73,100,96,-1,0,3,msg_181},{102,73,184,96,-1,3,0,NULL},
     {10,109,100,132,-1,0,3,msg_94},{102,109,184,132,-1,3,0,NULL},
     {10,145,100,168,-1,0,3,msg_138},{102,145,184,168,-1,3,0,NULL},
     {10,181,100,204,-1,0,3,"TUTORIAL"},{102,181,184,204,-1,3,0,NULL},
@@ -265,7 +265,7 @@ struct Button vprefs_bottoni[]=
     {10,97,100,104,-1,0,3,NULL},{101,97,184,104,-1,3,0,NULL}, // refree always visible
     {10,108,100,115,-1,0,3,NULL},{101,108,184,115,-1,3,0,NULL}, // player names always visible
     {10,119,100,126,-1,0,3,NULL},{101,119,184,126,-1,3,0,NULL}, // policemen and photographers always visible
-    {10,86,100,93,-1,0,3,msg_182},{101,86,184,93,-1,3,0,NULL},
+    {10,86,100,93,-1,0,3,msg_181},{101,86,184,93,-1,3,0,NULL},
     {10,141,100,148,-1,0,3,NULL},{101,141,184,148,-1,3,0,NULL}, // lineskeeper always visible
     {10,97,100,104,-1,0,3,"SCALING"},{101,97,184,104,-1,3,0,NULL},
     {10,108,100,115,-1,0,3,NULL},{101,108,184,115,-1,3,0,NULL},
@@ -585,7 +585,7 @@ struct Button keycfg_bottoni[]=
     {10,57,80,64,-1,7,9,"MOVE LEFT"},{81,57,154,64,-1,9,11,NULL},
     {10,68,80,75,-1,7,9,"SHOT"},{81,68,154,75,-1,9,11,NULL},
     {10,79,80,86,-1,7,9,"SHORT PASS"},{81,79,154,86,-1,9,11,NULL},
-    {170,24,240,31,-1,7,9,"LONG PASS"},{241,24,311,31,-1,9,11,NULL},
+    {170,24,240,31,-1,7,9,msg_126},{241,24,311,31,-1,9,11,NULL},
     {170,35,240,42,-1,7,9,"FILTERING PASS"},{241,35,311,42,-1,9,11,NULL},
     {170,46,240,53,-1,7,9,"CHANGE ACTIVE"},{241,46,311,53,-1,9,11,NULL},
     {170,57,240,64,-1,7,9,"FAST RUN"},{241,57,311,64,-1,9,11,NULL},
@@ -598,7 +598,7 @@ struct Button keycfg_bottoni[]=
     {10,168,80,175,-1,8,15,"MOVE LEFT"},{81,168,154,175,-1,6,8,NULL},
     {10,179,80,186,-1,8,15,"SHOT"},{81,179,154,186,-1,6,8,NULL},
     {10,190,80,197,-1,8,15,"SHORT PASS"},{81,190,154,197,-1,6,8,NULL},
-    {170,157,240,164,-1,8,15,"LONG PASS"},{241,157,311,164,-1,6,8,NULL},
+    {170,157,240,164,-1,8,15,msg_126},{241,157,311,164,-1,6,8,NULL},
     {170,168,240,175,-1,8,15,"FILTERING PASS"},{241,168,311,175,-1,6,8,NULL},
     {170,179,240,186,-1,8,15,"CHANGE ACTIVE"},{241,179,311,186,-1,6,8,NULL},
     {170,190,240,197,-1,8,15,"FAST RUN"},{241,190,311,197,-1,6,8,NULL},
@@ -869,6 +869,6 @@ struct GfxMenu menu[]=
     {"JOYSTICK CONFIGURATION",joycfg_bottoni,NULL,15,0,-1,190,38,0,3,0,(void *)JoyCfg},
     {NULL, pause_buttons, pause_panels, SZ(pause_buttons), SZ(pause_panels), -1,0,0,-1,3,0, (void*)handle_pause},
     {"AUDIO VIDEO", mprefs_buttons, NULL, SZ(mprefs_buttons), 0, -1,190,38,0,3,0, (void*)MobilePrefs},
-    {"SUBSTITUTIONS",button_substitutions,panel_substitutions,SZ(button_substitutions),SZ(panel_substitutions),-1,202,31,5,6,8,(void *)TeamSubstitutions},
+    {msg_123,button_substitutions,panel_substitutions,SZ(button_substitutions),SZ(panel_substitutions),-1,202,31,5,6,8,(void *)TeamSubstitutions},
 };
 

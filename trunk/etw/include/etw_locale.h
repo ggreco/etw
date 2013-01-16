@@ -6,7 +6,7 @@ extern "C" {
 struct __LString {
    struct __LString *Next;
    int CatalogID;
-   char Str[1];
+   char Str[0];
 };
 
 void InitStrings(void);
@@ -375,23 +375,6 @@ extern struct __LString __LTool__180;
 extern struct __LString __LTool__181;
 #define msg_181 __LTool__181.Str
 extern struct __LString __LTool__182;
-#define msg_182 __LTool__182.Str
-extern struct __LString __LTool__183;
-#define msg_183 __LTool__183.Str
-extern struct __LString __LTool__184;
-#define msg_184 __LTool__184.Str
-extern struct __LString __LTool__185;
-#define msg_185 __LTool__185.Str
-extern struct __LString __LTool__186;
-#define msg_186 __LTool__186.Str
-extern struct __LString __LTool__187;
-#define msg_187 __LTool__187.Str
-extern struct __LString __LTool__188;
-#define msg_188 __LTool__188.Str
-extern struct __LString __LTool__189;
-#define msg_189 __LTool__189.Str
-extern struct __LString __LTool__190;
-#define msg_190 __LTool__190.Str
 #ifdef __cplusplus
 }
 #endif

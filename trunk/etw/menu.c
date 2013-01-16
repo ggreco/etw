@@ -79,7 +79,7 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
     height += (tf->height + FixedScaledY(3)) * linee;
 
     if (WINDOW_WIDTH <= width) {
-        D(bug("Error in width calculation!\n"));
+        D(bug("Error in width calculation!\n"/*-*/));
         return TRUE;
     }
 //   calcolo quanti bottoni ci sono...
@@ -194,7 +194,7 @@ BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
     actual_button = 0;
     current_menu = MENUS;
     
-    D(bug("Creating requester with %d buttons\n", bottoni));
+    D(bug("Creating requester with %d buttons\n"/*-*/, bottoni));
 
     DrawBox(0);
 /*
@@ -294,7 +294,7 @@ void StoreButtonList(void)
             k += 2;
     }
 
-    D(bug("Allocated %ld words for default menu datas.\n", k));
+    D(bug("Allocated %ld words for default menu datas.\n"/*-*/, k));
 
     if (!(menubase = malloc(k * sizeof(WORD))))
         return;
@@ -555,10 +555,10 @@ void save_prefs()
 {
     FILE *f;
 
-    if (!(f = fopen("etw.cfg" /*-*/ , "w"))) {
+    if (!(f = fopen("etw.cfg" /*-*/ , "w"/*-*/))) {
         char buf[1024];
-        snprintf(buf, 1024, "%setw.cfg", TEMP_DIR);
-        if (!(f = fopen(buf, "w"))) {
+        snprintf(buf, 1024, "%setw.cfg"/*-*/, TEMP_DIR);
+        if (!(f = fopen(buf, "w"/*-*/))) {
             easy.es_TextFormat = msg_69;
             easy.es_GadgetFormat = msg_58;
 
@@ -624,14 +624,14 @@ BOOL DoAction(WORD button)
             if (button == 0 && !arcade_teams) {
                 if (!DoWarning((special || competition != MENU_TEAMS)&&!new_competition)) {
                     new_competition = FALSE;
-                    LoadTeams("teams/arcade");
+                    LoadTeams("teams/arcade"/*-*/);
                     arcade_teams = TRUE;
                 } else
                     return TRUE;
             } else if (button == 1 && arcade_teams) {
                 if (!DoWarning((competition != MENU_TEAMS) &&!new_competition)) {
                     new_competition = FALSE;
-                    LoadTeams("teams/default");
+                    LoadTeams("teams/default"/*-*/);
                     arcade_teams = FALSE;
                 } else
                     return TRUE;
@@ -725,7 +725,7 @@ BOOL DoAction(WORD button)
                 if (!DoWarning
                     ((competition == MENU_MATCHES
                       || competition == MENU_CHALLENGE))) {
-                    LoadTeams("teams/default");
+                    LoadTeams("teams/default"/*-*/);
                     arcade_teams = FALSE;
                 } else
                     return TRUE;
@@ -780,7 +780,7 @@ BOOL DoAction(WORD button)
                 UpdatePrefs(b->ID);
             else if (prefs_changed) {
                 prefs_changed = FALSE;
-                add_achievement("4_change", 100.0);
+                add_achievement("4_change"/*-*/, 100.0);
                 save_prefs();
             }
 #else
@@ -805,7 +805,7 @@ BOOL DoAction(WORD button)
             teamsel_message = "SELECT YOUR TEAM";                
 
             if (arcade_teams && button < 3) {
-                LoadTeams("teams/default");
+                LoadTeams("teams/default"/*-*/);
                 arcade_teams = FALSE;
             }
 
@@ -872,7 +872,7 @@ BOOL DoAction(WORD button)
                 break;
             }
 
-            freq.Dir = "saves";
+            freq.Dir = "saves"/*-*/;
             freq.Title = msg_68;
             freq.Save = TRUE;
             freq.Filter = "Career files|*.car";
@@ -886,7 +886,7 @@ BOOL DoAction(WORD button)
         case MENU_PREFS:
             if (button == 5 && prefs_changed) {
                 prefs_changed = FALSE;
-                add_achievement("4_change", 100.0);
+                add_achievement("4_change"/*-*/, 100.0);
                 save_prefs();
 
                 easy.es_TextFormat = msg_70;
@@ -909,7 +909,7 @@ BOOL DoAction(WORD button)
                 }
 
                 freq.Title = msg_71;
-                freq.Dir = "teams/";
+                freq.Dir = "teams/"/*-*/;
 
                 if (FileRequest(&freq)) {
                     strcpy(buffer, freq.File);
@@ -925,7 +925,7 @@ BOOL DoAction(WORD button)
 
                 freq.Title = msg_72;
                 freq.Save = TRUE;
-                freq.Dir = "teams/";
+                freq.Dir = "teams/"/*-*/;
 
                 if (FileRequest(&freq)) {
                     strcpy(buffer, freq.File);
@@ -1007,7 +1007,7 @@ BOOL DoAction(WORD button)
                     if (competition == MENU_TEAMS)
                         break;
 
-                    easy.es_TextFormat = msg_190;
+                    easy.es_TextFormat = msg_179;
                     easy.es_GadgetFormat = msg_60;
 
                     if (MyEasyRequest(hwin, &easy, NULL)) {
@@ -1462,7 +1462,7 @@ void draw_pause_menu()
     if (pl->InGioco || !c || arcade || training)
         actual_menu->Button[2].Text = NULL;
     else
-        actual_menu->Button[2].Text = "SUBSTITUTIONS";
+        actual_menu->Button[2].Text = msg_123;
 
     for (i = 0; i < actual_menu->NumeroBottoni; ++i) {
         struct Button *b = &actual_menu->Button[i];
@@ -1481,7 +1481,6 @@ void draw_pause_menu()
         CreateButton(&actual_menu->Pannello[i]);    
 
     actual_button = 0;
-
 
     while (!actual_menu->Button[actual_button].Text)
         actual_button++;
