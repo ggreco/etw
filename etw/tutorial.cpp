@@ -43,8 +43,11 @@ static bool match_without_training()
     return true;
 }
 
+//#define CREATE_CATALOG
+
 #ifdef CREATE_CATALOG
 
+#include <string>
 #include <map>
 std::string strip_cr(const char*src)
 {
