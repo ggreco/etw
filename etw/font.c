@@ -1,6 +1,8 @@
 #include "eat.h"
 #include "network.h"
 
+#include "etw_locale.h"
+
 #define TextShadow(x,y,text,len) drawtext(text,len,x+1,y+1,Pens[P_NERO]);drawtext(text,len,x,y,Pens[P_BIANCO]);
 
 #define ColorTextShadow(x,y,text,len,c) drawtext(text,len,x+1,y+1,Pens[P_NERO]);drawtext(text,len,x,y,c);
@@ -73,7 +75,7 @@ struct Stats stats[] = {
     {"PENALTIES", 6, 9},
     {"YELLOW CARDS", 3, 12},
     {"RED CARDS", 4, 9},
-    {"SUBSTITUTIONS", 8, 13},
+    {msg_123, 8, 13},
     {"CORNER", 7, 6},
     {"POSSESSION", 0, 10},
 };
@@ -99,17 +101,17 @@ BOOL InitFonts(void)
 {
     extern struct myfont *titlefont;
     
-    if (!(gsmallfont = LoadGfxObject("gfx/smallfont", Pens, NULL)))
+    if (!(gsmallfont = LoadGfxObject("gfx/smallfont"/*-*/, Pens, NULL)))
         return FALSE;
 
-    if (!(verysmallfont = LoadGfxObject("gfx/verysmallfont", Pens, NULL)))
+    if (!(verysmallfont = LoadGfxObject("gfx/verysmallfont"/*-*/, Pens, NULL)))
             return FALSE;
 
     if (titlefont) {
         gtf = titlefont;
         setfont(gtf);
     } else {
-        printf("Unable to open the ETW font!\n");
+        printf("Unable to open the ETW font!\n"/*-*/);
         return FALSE;
     }
     return TRUE;
@@ -391,7 +393,7 @@ void ShowPanel(void)
         } else if (!first_half)
             mins += 45;
 
-        sprintf(buffer, "%3ld:%02d", mins + situation_time, (int) secs);
+        sprintf(buffer, "%3ld:%02d"/*-*/, mins + situation_time, (int) secs);
         // center the timer, it was in the right corner where we have the pause button now
         TextShadow((WINDOW_WIDTH - (font_width * 6)) / 2, font_height + 2, buffer, 6);
     }
@@ -539,14 +541,14 @@ void ShowPanel(void)
             c = *((char *) (((char *) (p->team[0])) +
                             stats[t].address));
 
-            l = sprintf(buffer, "%d", (int) c);
+            l = sprintf(buffer, "%d"/*-*/, (int) c);
 
             TextShadow(xs, y, buffer, l);
 
             c = *((char *) (((char *) (p->team[1])) +
                             stats[t].address));
 
-            l = sprintf(buffer, "%d", (int) c);
+            l = sprintf(buffer, "%d"/*-*/, (int) c);
 
             x = WINDOW_WIDTH - (l + 3) * font_width;
 
@@ -582,7 +584,7 @@ void ShowPanel(void)
         y = WINDOW_HEIGHT - (font_height << 3) + (font_height << 1) +
             font_height;
 
-        l = sprintf(temp, "%d", p->team[0]->Reti);
+        l = sprintf(temp, "%d"/*-*/, p->team[0]->Reti);
 
         TextShadow(x, y, temp, l);
 
@@ -597,7 +599,7 @@ void ShowPanel(void)
             x = WINDOW_WIDTH - (font_width << 2) - font_width;
             y = WINDOW_HEIGHT - (font_height << 2) + font_height;
 
-            l = sprintf(temp, "%d", p->team[1]->Reti);
+            l = sprintf(temp, "%d"/*-*/, p->team[1]->Reti);
             TextShadow(x, y, temp, l);
         }
     }
@@ -695,7 +697,7 @@ void DrawR(void)
             if (!replay_onscreen) 
                 AddAnimObj(replay, 2, 2, 0);
         } else { 
-            drawtext("R", 1, 2, font_height + 2, Pens[P_NERO]);
+            drawtext("R"/*-*/, 1, 2, font_height + 2, Pens[P_NERO]);
         }
     } else if (replay_onscreen) {
         RemAnimObj(replay);
@@ -745,7 +747,7 @@ void ShowFinal(void)
             if (teams_swapped)
                 i ^= 1;
 
-            sprintf(buffer, "gfx/finis%lc%lc.gfx",
+            sprintf(buffer, "gfx/finis%lc%lc.gfx"/*-*/,
                     (current_field == 7 ? 's' : 'h'), cols[i][3]);
 
             if ((o = LoadGfxObject(buffer, Pens, NULL))) {
