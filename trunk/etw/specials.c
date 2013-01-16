@@ -1338,7 +1338,7 @@ BOOL GamePrefs(WORD button)
             break;
         case 15:
             newchange = !newchange;
-            actual_menu->Button[button].Text = newchange ? "ETW" : "CLASSIC";
+            actual_menu->Button[button].Text = newchange ? "ETW"/*-*/ : "CLASSIC";
             break;
         default:
             D(bug("Error, option (%ld) not previewed!\n"/*-*/, button));
