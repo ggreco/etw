@@ -82,7 +82,7 @@ extern WORD ComputerMatch(BYTE, BYTE);
 extern WORD PlayMatch(BYTE, BYTE);
 char *ElaboraRisultato(int8_t, int8_t, uint16_t);
 extern BOOL GroupsClear(void);
-extern void request(char *);
+extern void request(const char *);
 extern void ViewEliminazioneDiretta(int);
 extern BOOL HandleMenuIDCMP(void);
 extern void LoadHigh(char *);

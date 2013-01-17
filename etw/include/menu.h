@@ -93,7 +93,6 @@
 
 struct EasyStruct
 {
-    int es_Size, es_Flags;
     const char *es_Title, *es_TextFormat, *es_GadgetFormat;
 };
 

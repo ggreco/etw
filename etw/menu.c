@@ -7,7 +7,6 @@
 
 int current_menu = 0, current_button = NO_BUTTON, actual_button = 0;
 struct GfxMenu *actual_menu = &menu[0];
-void *hwin = NULL;
 void CreateButton(struct Button *b);
 void SelectButton(WORD button);
 void DrawBox(WORD button);
@@ -20,7 +19,7 @@ struct MyFileRequest freq = { 0 };
 static const char *teamsel_message = NULL;
 
 
-BOOL MyEasyRequest(void *w, struct EasyStruct *e, void *unused)
+BOOL MyEasyRequest(struct EasyStruct *e)
 {
     struct GfxMenu *old_menu, fake_menu;
     int i, x, y, width = FixedScaledX(150), button_width =
@@ -240,24 +239,20 @@ BOOL CheckQuit(void)
                         current_menu == MENU_MATCH_RESULT))
         return TRUE;
 
-    if (MyEasyRequest(hwin, &easy, NULL))
+    if (MyEasyRequest(&easy))
         return TRUE;
     else
         return FALSE;
 }
 
-struct EasyStruct easy = { sizeof(struct EasyStruct), 0L,
-    msg_57,
-    NULL,
-    NULL
-};
+struct EasyStruct easy = {  msg_57, NULL,  NULL };
 
-void request(char *t)
+void request(const char *t)
 {
     easy.es_TextFormat = t;
     easy.es_GadgetFormat = msg_58;
 
-    MyEasyRequest(hwin, &easy, NULL);
+    MyEasyRequest(&easy);
 }
 
 BOOL DoWarning(int a)
@@ -266,7 +261,7 @@ BOOL DoWarning(int a)
         easy.es_TextFormat = msg_59;
         easy.es_GadgetFormat = msg_60;
 
-        if (MyEasyRequest(hwin, &easy, NULL)) {
+        if (MyEasyRequest(&easy)) {
             turno = 0;
             special = FALSE;
             competition = MENU_TEAMS;
@@ -562,7 +557,7 @@ void save_prefs()
             easy.es_TextFormat = msg_69;
             easy.es_GadgetFormat = msg_58;
 
-            MyEasyRequest(hwin, &easy, NULL);
+            MyEasyRequest(&easy);
             return;
         } else {
             fclose(f);
@@ -587,7 +582,7 @@ BOOL DoAction(WORD button)
         easy.es_TextFormat = msg_61;
         easy.es_GadgetFormat = msg_62;
 
-        if (!MyEasyRequest(hwin, &easy, NULL))
+        if (!MyEasyRequest(&easy))
             return TRUE;
 
         competition = MENU_TEAMS;
@@ -847,7 +842,7 @@ BOOL DoAction(WORD button)
                         easy.es_TextFormat = msg_65;
                         easy.es_GadgetFormat = msg_66;
                         
-                        if (MyEasyRequest(hwin, &easy, NULL))
+                        if (MyEasyRequest(&easy))
                             ClearScores();
                         break;
                     case 1:
@@ -868,7 +863,7 @@ BOOL DoAction(WORD button)
                 easy.es_TextFormat = msg_67;
                 easy.es_GadgetFormat = msg_58;
 
-                MyEasyRequest(hwin, &easy, NULL);
+                MyEasyRequest(&easy);
                 break;
             }
 
@@ -889,11 +884,7 @@ BOOL DoAction(WORD button)
                 add_achievement("4_change"/*-*/, 100.0);
                 save_prefs();
 
-                easy.es_TextFormat = msg_70;
-                easy.es_GadgetFormat = msg_58;
-
-                MyEasyRequest(hwin, &easy, NULL);
-
+                request(msg_70);
             }
             break;
         case MENU_TEAMS:
@@ -904,7 +895,7 @@ BOOL DoAction(WORD button)
                     easy.es_TextFormat = msg_61;
                     easy.es_GadgetFormat = msg_62;
 
-                    if (!MyEasyRequest(hwin, &easy, NULL))
+                    if (!MyEasyRequest(&easy))
                         break;
                 }
 
@@ -943,7 +934,7 @@ BOOL DoAction(WORD button)
                     easy.es_TextFormat = msg_61;
                     easy.es_GadgetFormat = msg_62;
 
-                    if (!MyEasyRequest(hwin, &easy, NULL))
+                    if (!MyEasyRequest(&easy))
                         break;
                 }
 
@@ -952,12 +943,8 @@ BOOL DoAction(WORD button)
                 special = 0;
 
                 LoadTeams(teamfile);
-            } else {
-                easy.es_TextFormat = msg_73;
-                easy.es_GadgetFormat = msg_58;
-
-                MyEasyRequest(hwin, &easy, NULL);
-            }
+            } else 
+                request(msg_73);
             break;
         case MENU_HIGHLIGHT:
             if (button == 2) {
@@ -989,7 +976,7 @@ BOOL DoAction(WORD button)
                 if (*career_file) {
                     easy.es_TextFormat = msg_61;
                     easy.es_GadgetFormat = msg_62;
-                    if (!MyEasyRequest(hwin, &easy, NULL))
+                    if (!MyEasyRequest(&easy))
                         break;
                 }
 
@@ -1010,7 +997,7 @@ BOOL DoAction(WORD button)
                     easy.es_TextFormat = msg_179;
                     easy.es_GadgetFormat = msg_60;
 
-                    if (MyEasyRequest(hwin, &easy, NULL)) {
+                    if (MyEasyRequest(&easy)) {
                         turno = 0;
                         special = FALSE;
                         competition = MENU_TEAMS;

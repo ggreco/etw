@@ -10,7 +10,7 @@ extern "C" {
 #include "menu.h"
 #include "etw_locale.h"
 
-    extern BOOL MyEasyRequest(void*, struct EasyStruct *, void*);
+    extern BOOL MyEasyRequest(struct EasyStruct *);
     extern void StopTime();
     extern void RestartTime();
     extern void hide_vjoy();
@@ -147,7 +147,6 @@ static TutorialLine lines[] = {
 void tutorial_line(int i)
 {
     bool stopped = false;
-    extern void *hwin;
     extern BOOL time_stopped, pause_mode;
     struct EasyStruct easy = {0};
     running_tutorial_line = true;
@@ -164,7 +163,7 @@ void tutorial_line(int i)
         ScreenSwap();
     }
     
-    MyEasyRequest(hwin, &easy, NULL);
+    MyEasyRequest(&easy);
     
     if (game_start && !pause_mode)
         show_vjoy();
