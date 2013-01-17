@@ -18,7 +18,7 @@ BOOL left_sel, right_sel;
 
 struct Stats {
     char *name;
-    UBYTE address, len;
+    UBYTE address;
 };
 
 typedef struct change_data_
@@ -69,15 +69,15 @@ static void free_change_data()
 #define NUMERO_STATS 9
 
 struct Stats stats[] = {
-    {msg_263, 1, 5},
-    {msg_274, 5, 5},
-    {msg_261, 2, 5},
-    {msg_117, 6, 9},
-    {msg_278, 3, 12},
-    {msg_273, 4, 9},
-    {msg_123, 8, 13},
-    {msg_260, 7, 6},
-    {msg_270, 0, 10},
+    {msg_263, 1},
+    {msg_274, 5},
+    {msg_261, 2},
+    {msg_117, 6},
+    {msg_278, 3},
+    {msg_273, 4},
+    {msg_123, 8},
+    {msg_260, 7},
+    {msg_270, 0},
 };
 
 BOOL draw_r, replay_done;
@@ -404,7 +404,7 @@ void ShowPanel(void)
 
             if (l > 0) {
                 change_data *c = changes;
-                int x = (font_width << 1), x2 = WINDOW_WIDTH/2, i,
+                int x = (font_width << 1), x2 = WINDOW_WIDTH/2, i, l,
                     y =  WINDOW_HEIGHT - font_height * (l + 5) - font_height * (l - 1);
 
                 rectfill_pattern(main_bitmap, x, y,
@@ -415,10 +415,11 @@ void ShowPanel(void)
 
                 x += font_width * 2;
                 y += font_height * 3;
-                ColorTextShadow(x, y, msg_268, 4, changes->team->MarkerRed);
-                ColorTextShadow(x2, y, msg_265, 3, changes->team->MarkerRed);
-                x += font_width * 5;
-                x2 += font_width * 5;
+                ColorTextShadow(x, y, msg_268, strlen(msg_268), changes->team->MarkerRed);
+                ColorTextShadow(x2, y, msg_265, strlen(msg_265), changes->team->MarkerRed);
+                l = max(strlen(msg_268), strlen(msg_265)) + 1;
+                x += font_width * l;
+                x2 += font_width * l;
                 
                 for (i = 0; i < l; ++i) {
                     TextShadow(x, y, c->out, strlen(c->out));
@@ -534,9 +535,10 @@ void ShowPanel(void)
         y += (font_height * 2);
 
         for (t = 0; t < NUMERO_STATS; t++) {
-            x = (WINDOW_WIDTH - stats[t].len * font_width) >> 1;
+            int len = strlen(stats[t].name);
+            x = (WINDOW_WIDTH - len * font_width) >> 1;
 
-            TextShadow(x, y, stats[t].name, stats[t].len);
+            TextShadow(x, y, stats[t].name, len);
 
             c = *((char *) (((char *) (p->team[0])) +
                             stats[t].address));
@@ -638,18 +640,19 @@ void ShowPanel(void)
 
     if (p->show_panel & PANEL_KICKOFF) {
         int x, y;
-
-        rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - 80,
+        int l = strlen(msg_266);
+        int delta = max(80, l * font_width * 2 / 3);
+        rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - delta,
                          (WINDOW_HEIGHT >> 1) - 40,
-                         (WINDOW_WIDTH >> 1) + 79,
+                         (WINDOW_WIDTH >> 1) + delta,
                          (WINDOW_HEIGHT >> 1) + 29,
                          current_field !=
                          7 ? Pens[P_VERDE2] : Pens[P_GRIGIO1],
                          bitmap_width);
 
-        x = (WINDOW_WIDTH - 8 * font_width) >> 1;
+        x = (WINDOW_WIDTH - l * font_width) >> 1;
         y = (WINDOW_HEIGHT - font_height) >> 1;
-        TextShadow(x, y, msg_266, 8);
+        TextShadow(x, y, msg_266, l);
     }
 
 /*
@@ -681,7 +684,7 @@ void DrawPause(void)
                   pause_gfx->height,
                   pause_gfx->width, pause_gfx->height, bitmap_width);
     } else {
-        drawtext(msg_269, 6, (WINDOW_WIDTH - 6 * font_width) / 2,
+        drawtext(msg_269, strlen(msg_269), (WINDOW_WIDTH - 6 * font_width) / 2,
                  10, Pens[P_BIANCO]);
     }
 

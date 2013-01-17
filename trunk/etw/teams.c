@@ -916,6 +916,7 @@ void SaveLeague(void)
     SaveTeams(career_file);
 
     saved=TRUE;
+    request(msg_279);
 }
 
 void SaveTeams(char *name)

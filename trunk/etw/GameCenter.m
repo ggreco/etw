@@ -52,8 +52,9 @@ void add_achievement(const char *id, float percent)
         if (isnew)
             [[GameCenter getInstance].achievementCache setObject:achievement forKey:nid];
     }
-    else
-        NSLog(@"Not submitting already earned achievement %@", nid);
+    else {
+        D(NSLog(@"Not submitting already earned achievement %@", nid));
+    }
 }
 
 void add_score(int value)
@@ -162,12 +163,12 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
                          // work with achievement here, store it in your cache or smith
                          [self.achievementCache setObject: achievement forKey:achievement.identifier];
                      }
-                     NSLog(@"Obtained %d achievements, partially/totally completed", [scores count]);
+                     D(NSLog(@"Obtained %d achievements, partially/totally completed", [scores count]));
                  }
              }];
         }
         
-        NSLog(@"Player Authenticated %d", localPlayer.isAuthenticated);
+        D(NSLog(@"Player Authenticated %d", localPlayer.isAuthenticated));
     }
     ];
 }
@@ -258,19 +259,19 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
 
 - (void) saveScore: (int) score withIdentifier:(NSString *) identifier
 {
-    NSLog(@"Logging score %d with id %@", score, identifier);
+    D(NSLog(@"Logging score %d with id %@", score, identifier));
     
     GKScore *scoreReporter = [[[GKScore alloc] initWithCategory:identifier] autorelease];
     scoreReporter.value = score;
     
     [scoreReporter reportScoreWithCompletionHandler:^(NSError *error)
      {
-        if (error != nil)
-        {
-            NSLog(@"Error Message: - %@",[error localizedDescription]);
+        if (error != nil) {
+            D(NSLog(@"Error Message: - %@",[error localizedDescription]));
         }
-         else
-             NSLog(@"Successfully added score");
+        else {
+             D(NSLog(@"Successfully added score"));
+        }
     } ];
     
     [scoreReporter release];
@@ -298,10 +299,10 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
          dispatch_async(dispatch_get_main_queue(), ^(void)
                         {
                             if (error == NULL) {
-                                NSLog(@"Successfully sent archievement %@!", achievement.description);
+                                D(NSLog(@"Successfully sent archievement %@!", achievement.description));
                             } else {
-                                NSLog(@"Achievement %@ failed to send... will try again \
-                                      later.  Reason: %@", achievement.description, error.localizedDescription);
+                                D(NSLog(@"Achievement %@ failed to send... will try again \
+                                      later.  Reason: %@", achievement.description, error.localizedDescription));
                             }
                         });
      }];
@@ -364,7 +365,7 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     
     for (UIView *subview in subviews) {
         
-        NSLog(@"%@", subview);
+        D(NSLog(@"%@", subview));
         
         // List the subviews of subview
         [self listSubviewsOfView:subview];

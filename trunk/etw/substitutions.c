@@ -239,12 +239,7 @@ static BOOL perform_substitutions()
             subst++;
     
     if ((subst + sub_team->Sostituzioni) > 3) {
-        extern void MyEasyRequest(void*, struct EasyStruct *, void *);
-        extern void *hwin;
-        struct EasyStruct easy = {0};
-        easy.es_TextFormat = "YOU CAN PERFORM MAX 3 SUBSTITUTIONS IN A MATCH";
-        easy.es_GadgetFormat = msg_58;
-        MyEasyRequest(hwin, &easy, NULL);
+        request(msg_280);
         return FALSE;
     }
     D(bug("Preparing to perform %d substitutions\n", subst));

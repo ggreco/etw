@@ -804,9 +804,6 @@ BOOL JoyCfg(WORD button)
 
 BOOL KeyCfg(WORD button)
 {
-    extern void *hwin;
-    extern BOOL MyEasyRequest(void *, struct EasyStruct *, void *);
-
     /* AC: 27/05/04 - First rudimental keyboard configuration */
     if (button>=(actual_menu->NumeroBottoni - 3)
          && actual_menu->Button[button].ID >= 0)
@@ -821,21 +818,15 @@ BOOL KeyCfg(WORD button)
             case 0:
                 SaveKeyDef(0, KEY_RED_FILE);
 
-                easy.es_TextFormat = msg_70;
-                easy.es_GadgetFormat = msg_58;
-
-                MyEasyRequest(hwin, &easy, NULL);
-            break;
+                request(msg_70);
+                break;
 
             /* Save BLUE keyboard configuration */
             case 1:
                 SaveKeyDef(1, KEY_BLUE_FILE);
 
-                easy.es_TextFormat = msg_70;
-                easy.es_GadgetFormat = msg_58;
-
-                MyEasyRequest(hwin, &easy, NULL);
-            break;
+                request(msg_70);
+                break;
 
             /* Go back to previuos menu */
             default:
@@ -971,12 +962,8 @@ BOOL KeyCfg(WORD button)
         while(SDL_PollEvent(&e)); */
 
         /* Signal the user he has pressed a reserved key */
-        if (k == -2)
-        {
-            easy.es_TextFormat = msg_226;
-            easy.es_GadgetFormat = msg_58;
-
-            MyEasyRequest(hwin, &easy, NULL);
+        if (k == -2) {
+            request(msg_226);
         }
     }
     return TRUE;
