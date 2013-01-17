@@ -75,6 +75,9 @@ void PlayIfNotPlaying(int s)
     int i;
     struct SoundInfo *si = sound[s];
 
+    if (no_sound)
+        return;
+
     for (i = 0; i < AVAILABLE_CHANNELS; i++)
         if (Mix_GetChunk(i) == si->SoundData)
             return;
