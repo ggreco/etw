@@ -141,7 +141,7 @@
 		0BB5CD2D1652651300BF007B /* t */ = {isa = PBXFileReference; lastKnownFileType = folder; name = t; path = ../data/t; sourceTree = "<group>"; };
 		0BB5CD2E1652651300BF007B /* tct */ = {isa = PBXFileReference; lastKnownFileType = folder; name = tct; path = ../data/tct; sourceTree = "<group>"; };
 		0BB5CD2F1652651300BF007B /* teams */ = {isa = PBXFileReference; lastKnownFileType = folder; name = teams; path = ../data/teams; sourceTree = "<group>"; };
-		0BD74ECD165245940045909C /* etw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = etw.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0BD74ECD165245940045909C /* ETW.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ETW.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BD74ED1165245940045909C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0BD74ED3165245940045909C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0BD74ED5165245940045909C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -296,7 +296,7 @@
 		0BD74ECE165245940045909C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0BD74ECD165245940045909C /* etw.app */,
+				0BD74ECD165245940045909C /* ETW.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -466,7 +466,7 @@
 			);
 			name = etw;
 			productName = etw;
-			productReference = 0BD74ECD165245940045909C /* etw.app */;
+			productReference = 0BD74ECD165245940045909C /* ETW.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
