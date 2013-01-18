@@ -124,7 +124,7 @@ public:
             if (it->id == id) {
                 it->visible = val;
                 if (!val)
-                    it->pressed = false;
+                    it->is_pressed = false;
             }
     }
     
