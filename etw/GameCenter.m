@@ -7,6 +7,7 @@
 //
 
 #import "GameCenter.h"
+#include "mydebug.h"
 
 static UIViewController *gViewColtroller = NULL;
 static UIWindow *gWindow = NULL;

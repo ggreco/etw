@@ -404,7 +404,7 @@ void ShowPanel(void)
 
             if (l > 0) {
                 change_data *c = changes;
-                int x = (font_width << 1), x2 = WINDOW_WIDTH/2, i, l,
+                int x = (font_width << 1), x2 = WINDOW_WIDTH/2, i, len,
                     y =  WINDOW_HEIGHT - font_height * (l + 5) - font_height * (l - 1);
 
                 rectfill_pattern(main_bitmap, x, y,
@@ -417,9 +417,9 @@ void ShowPanel(void)
                 y += font_height * 3;
                 ColorTextShadow(x, y, msg_268, strlen(msg_268), changes->team->MarkerRed);
                 ColorTextShadow(x2, y, msg_265, strlen(msg_265), changes->team->MarkerRed);
-                l = max(strlen(msg_268), strlen(msg_265)) + 1;
-                x += font_width * l;
-                x2 += font_width * l;
+                len = max(strlen(msg_268), strlen(msg_265)) + 1;
+                x += font_width * len;
+                x2 += font_width * len;
                 
                 for (i = 0; i < l; ++i) {
                     TextShadow(x, y, c->out, strlen(c->out));
