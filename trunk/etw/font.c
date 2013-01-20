@@ -654,6 +654,38 @@ void ShowPanel(void)
         y = (WINDOW_HEIGHT - font_height) >> 1;
         TextShadow(x, y, msg_266, l);
     }
+    if (p->show_panel & PANEL_PENALTIES) {
+        int x, y;
+        int l = strlen(msg_282);
+        int delta = max(80, l * font_width * 2 / 3);
+        rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - delta,
+                         (WINDOW_HEIGHT >> 1) - 40,
+                         (WINDOW_WIDTH >> 1) + delta,
+                         (WINDOW_HEIGHT >> 1) + 29,
+                         current_field !=
+                         7 ? Pens[P_VERDE2] : Pens[P_GRIGIO1],
+                         bitmap_width);
+        
+        x = (WINDOW_WIDTH - l * font_width) >> 1;
+        y = (WINDOW_HEIGHT - font_height) >> 1;
+        TextShadow(x, y, msg_282, l);
+    }
+    if (p->show_panel & PANEL_EXTRATIME) {
+        int x, y;
+        int l = strlen(msg_281);
+        int delta = max(80, l * font_width * 2 / 3);
+        rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - delta,
+                         (WINDOW_HEIGHT >> 1) - 40,
+                         (WINDOW_WIDTH >> 1) + delta,
+                         (WINDOW_HEIGHT >> 1) + 29,
+                         current_field !=
+                         7 ? Pens[P_VERDE2] : Pens[P_GRIGIO1],
+                         bitmap_width);
+        
+        x = (WINDOW_WIDTH - l * font_width) >> 1;
+        y = (WINDOW_HEIGHT - font_height) >> 1;
+        TextShadow(x, y, msg_281, l);
+    }
 
 /*
 // it's no more a panel
@@ -709,8 +741,8 @@ void DrawR(void)
 
 void ShowFinal(void)
 {
-    team_t *s = p->team[0]->Reti > p->team[1]->Reti ? p->team[0] :
-                p->team[1]->Reti > p->team[0]->Reti ? p->team[1] :
+    team_t *s = p->team[0]->Reti > p->team[1]->Reti || (p->team[0]->Reti == p->team[1]->Reti && golrig[0] > golrig[1] ) ? p->team[0] :
+                p->team[1]->Reti > p->team[0]->Reti || (p->team[0]->Reti == p->team[1]->Reti && golrig[1] > golrig[0] ) ? p->team[1] :
                 NULL;
 
     if (!s)

@@ -6,6 +6,7 @@
 
 #define GA_SIZE 48
 
+extern char golrig[2];
 extern UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE],team_a,team_b,NumeroTattiche;
 extern char team_name[2][16],fieldname[24],palette[24],shirt[2][24];
 extern object_t *pezzi_porte[4],*bonus[MAX_ARCADE_ON_FIELD];

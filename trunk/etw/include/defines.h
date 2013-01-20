@@ -274,7 +274,8 @@
 #define PANEL_THROW_IN (1<<20)
 #define PANEL_CORNER (1<<21)
 #define PANEL_HIGHSAVE (1<<22)
-
+#define PANEL_PENALTIES (1<<23)
+#define PANEL_EXTRATIME (1<<24)
 // Il numero di frames che dura il pannello del gol!
 
 #define GOAL_TIME 50

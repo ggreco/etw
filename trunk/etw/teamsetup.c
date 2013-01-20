@@ -254,7 +254,6 @@ void ChangeImmagine(player_t *g, anim_t *o)
 void SwapTeams(void)
 {
     extern UBYTE ReplaySet;
-    extern char golrig[2];
 //    struct team_disk td;
     char c;
     team_t *s;
@@ -1254,6 +1253,7 @@ game_t *SetupSquadre(void)
     DisponiSquadra(p->team[0], KICKOFF, TRUE);
     DisponiSquadra(p->team[1], KICKOFF, FALSE);
 */
+    golrig[0] = golrig[1] = 0;
     D(bug("GK 0: P:%ld A:%ld\nGK 1: P:%ld A:%ld\n",
         p->team[0]->keepers.Parata,    p->team[0]->keepers.Attenzione,
         p->team[1]->keepers.Parata,    p->team[1]->keepers.Attenzione));
