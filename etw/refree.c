@@ -185,12 +185,15 @@ void HandleReferee(void)
                             
                             p->show_panel=PANEL_REPLAY;
                             full_replay=TRUE;
-                            g->Tick=150;
+                            if (!use_touch)
+                                g->Tick=150;
+                            else
+                                g->Tick = 15;
 
                         }
                         else if( (!nopari) || (p->team[0]->Reti!=p->team[1]->Reti) )
                         {
-                            g->Comando=0;
+                            g->Comando=0;                            
                             quit_game=TRUE;
                             full_replay=FALSE;
                             if (!arcade && !training) {
@@ -209,6 +212,7 @@ void HandleReferee(void)
                         else if(!extratime)
                         {
                             g->Tick=0;
+                            p->show_time = 75;
                             first_half=TRUE;
 
                             extratime=TRUE;
@@ -236,8 +240,10 @@ void HandleReferee(void)
                             StartGameTime=Timer();
                             EndTime=60*40*MY_CLOCKS_PER_SEC+StartGameTime; // do 40 minuti per finire i rigori...
                             g->Comando=FISCHIA_PREPUNIZIONE;
-                            p->show_panel=PANEL_RESULT;
+
                             g->Tick=200;
+                            p->show_panel=PANEL_PENALTIES;
+                            p->show_time = 200;
                         }
                     }
                     break;
@@ -684,11 +690,10 @@ void HandleReferee(void)
                     {
                         SwapTeams();
 
-                        if( (    p->team[1]->Falli>=5 &&
-                            p->team[0]->Reti!=p->team[1]->Reti &&
-                            p->team[0]->Falli==p->team[1]->Falli) ||
-                                p->team[1]->Reti>(p->team[0]->Reti+5-p->team[0]->Falli) ||
-                            p->team[0]->Reti>(p->team[1]->Reti+5-p->team[1]->Falli)
+                        if( (p->team[1]->Falli == p->team[0]->Falli &&
+                             p->team[1]->Falli >=5 && p->team[0]->Reti != p->team[1]->Reti) ||
+                             p->team[1]->Reti> (p->team[0]->Reti+5-p->team[0]->Falli) ||
+                             p->team[0]->Reti> (p->team[1]->Reti+5-p->team[1]->Falli)
                             )
                         {
                             g->Comando=FISCHIA_FINE;
@@ -1183,7 +1188,11 @@ void HandleReferee(void)
 
                             replay_done=FALSE;
 
-                            p->show_panel=PANEL_KICKOFF|PANEL_TIME;
+                            if (!extratime)
+                                p->show_panel=PANEL_KICKOFF|PANEL_TIME;
+                            else
+                                p->show_panel = PANEL_EXTRATIME;
+                            
                             p->show_time=100;
 
                             DisponiSquadra(p->team[0],KICKOFF,p->team[0]->Possesso);

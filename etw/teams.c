@@ -1071,6 +1071,8 @@ void LoadTeams(char *name)
                 }
 
                 if(competition!=MENU_TEAMS)    {
+                    extern struct Button mrb[];
+                    training = FALSE;
                     if(fread(DatiCampionato, sizeof(struct teamstats_disk)*campionato.nteams, 1, fh)==sizeof(struct teamstats_disk)*campionato.nteams) {
                         for(i=0; i<campionato.nteams; i++)
                         {
@@ -1157,11 +1159,15 @@ void LoadTeams(char *name)
                         fread(league_pos, sizeof(league_pos), 1, fh);
 
                         InitTable();
+                        mb[0].ID = MENU_LEAGUE;
+                        mrb[0].ID = MENU_MATCHES;
                         UpdateLeagueTable();
                         ChangeMenu(MENU_LEAGUE);
                     }
                     else if (competition == MENU_MATCHES) {
                         ViewEliminazioneDiretta(nteams / 2);
+                        mb[0].ID = MENU_MATCHES;
+                        mrb[0].ID = MENU_MATCHES;
                         ChangeMenu(MENU_MATCHES);
                     }
                 }
