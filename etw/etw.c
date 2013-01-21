@@ -166,6 +166,8 @@ BOOL LoadMenuStuff(void)
 #else
     LoadPLogo("gfx/etwmobile" /*-*/ );
 #endif
+    ScreenSwap();
+    
     D(bug("Sound system initialization...\n" /*-*/ ));
 
     if (!no_sound) {
@@ -196,6 +198,7 @@ BOOL LoadMenuStuff(void)
         D(bug("Loading intro...\n" /*-*/ ));
 
         if (!nointro) {
+            os_delay(50); // a second of delay before the intro
             os_start_audio();
             Intro();
         }
