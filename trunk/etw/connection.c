@@ -380,10 +380,10 @@ WORD StartMatch(BYTE t1,BYTE t2)
         final = TRUE;
         training = FALSE;
 
-        if(network_player->num)
-            controllo[team1]=controllo[team2]^1;
-        else
+        if (controllo[team1] >= 0)
             controllo[team2]=controllo[team1]^1;
+        else
+            controllo[team1]=controllo[team2]^1;
     }
 
     player_type[0]=controllo[team1];

@@ -64,7 +64,7 @@ void init_system(void)
    
     D(if (network_game) bug("Network play, net player: %d\n", network_player->num));
     
-    if (network_game && player_type[network_player->num] == 1) {
+    if (network_game && network_player->num == 1) {
         MyReadPort0 = ReadNetworkPort;
         D(bug("Assign MyReadPort0: NET\n"));
     }
@@ -81,7 +81,7 @@ void init_system(void)
         D(bug("Assign MyReadPort0: JOYSTICK\n"));
     }
 
-    if (network_game && player_type[network_player->num] == 0) {
+    if (network_game && network_player->num == 0) {
         MyReadPort1 = ReadNetworkPort;
         D(bug("Assign MyReadPort1: NET\n"));
     }

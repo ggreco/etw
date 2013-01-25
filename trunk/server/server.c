@@ -126,7 +126,6 @@ void process_player(player *p,int length)
 					simplemsg *configmsg=(simplemsg *)config_buffer;
 
 					p->pingtime=gettime()-((statusmsg *)msg)->joypos;
-					p->pingtime*=1000/MY_CLOCKS_PER_SEC;
 					printf("Ping delay for %s is %ld msec\n",p->playername,p->pingtime);
 					p->match->pingtime=max(p->pingtime,p->match->pingtime);
 					p->status=PLR_CONFIG;
@@ -220,7 +219,6 @@ void process_player(player *p,int length)
 				}
 				else if(msg->type==MSG_PONG) {
 					p->pingtime=gettime()-((statusmsg *)msg)->joypos;
-					p->pingtime*=1000/MY_CLOCKS_PER_SEC;
 					printf("Ping delay for %s is %ld msec\n",p->playername,p->pingtime);
 				}
 				else {
@@ -361,21 +359,21 @@ int process_input(player *p,time_t now)
 	return l;
 }
 
-void free_match(match *m)
+void free_match(match *m, player *p)
 {
 	match *t;
 
 	printf("Aborted match %s vs %s...\n",m->players[0]->playername,m->players[1]->playername);
 
 // XXX da vedere se devo metterci condizioni particolari nel caso la partita finisca!
-	if(m->players[0]) {
+	if(m->players[0] && m->players[0] != p) {
 		m->players[0]->match=NULL;
         quitmsg.subtype=SUB_OPPONENT_QUIT;
         SockWrite(m->players[0]->socket, &quitmsg, sizeof(quitmsg));
         close_socket(m->players[0]);
     }
     
-	if(m->players[1]) {
+	if(m->players[1] && m->players[1] != p) {
 		m->players[1]->match=NULL;
         quitmsg.subtype=SUB_OPPONENT_QUIT;
         SockWrite(m->players[1]->socket, &quitmsg, sizeof(quitmsg));
@@ -408,7 +406,7 @@ void close_socket(player *p)
 		quitmsg.subtype=SUB_OPPONENT_LOST;
 		SockWrite(t->socket,&quitmsg,sizeof(simplemsg));
 
-		free_match(p->match);
+		free_match(p->match, p);
 	}
 
 	if(playerlist==p)
@@ -426,7 +424,8 @@ void new_descriptor(int s)
 {
 	struct sockaddr_in isa;
 	struct hostent *from;
-	int i, t;
+	int t;
+    socklen_t i;
 	unsigned long l;
 	player *p,*p2;
 	
@@ -561,11 +560,11 @@ void server_loop(void)
 
             if(reset_timeout) {
     			timeout.tv_sec=0;
-	    		timeout.tv_usec=40000-lastdelay; // un po' meno che 1/25esimo...
+	    		timeout.tv_usec=20000-lastdelay; // un po' meno che 1/50esimo...
             }
             
             if (timeout.tv_usec < 0 ||
-                    timeout.tv_usec > 40000)
+                    timeout.tv_usec > 20000)
                 timeout.tv_usec = 10000;
 
 			while(new_match[i]) {
@@ -581,12 +580,12 @@ void server_loop(void)
 // questo ciclo crea un po' di ritardo a seconda del tempo di ping dei giocatori.
 
 				while(j<totaldelay) {
-					update_match(new_match[i]);
-					j+=40;
+				    update_match(new_match[i]);
+					j+=20;
 				}
 
 				printf("Entering game loop at %ld!\n",gettime());
-				expected_clock=gettime()+CLOCKS_PER_40MS;
+				expected_clock=gettime() + 20;
 				
 
 				new_match[i]=NULL;
@@ -602,7 +601,7 @@ void server_loop(void)
 		actual_clock=gettime();
 
 		if(matchlist && expected_clock<actual_clock) {
-			expected_clock+=CLOCKS_PER_40MS;
+			expected_clock += 20;
 			update_matches();
 			lastdelay=0;
 
@@ -610,14 +609,14 @@ void server_loop(void)
             
 //			printf("clock %ld, expected %ld\n",actual_clock,expected_clock);
 			while(expected_clock<actual_clock) {
-				lastdelay=((actual_clock-expected_clock)*1000000/MY_CLOCKS_PER_SEC);
+				lastdelay=(actual_clock-expected_clock) * 1000;
 
-				if(lastdelay>40000) {
+				if(lastdelay>20000) {
 					printf("Skipped frame\n");
 					lastdelay=0;
 					update_matches();
                     fprintf(stderr, "o");
-					expected_clock+=CLOCKS_PER_40MS;
+					expected_clock += 20;
 				}
 				else
 					break;
