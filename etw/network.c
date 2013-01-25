@@ -371,28 +371,6 @@ void free_network(void)
     network_player=NULL;
 }
 
-typedef struct
-{
-    simplemsg hdr;
-    unsigned long joypos;
-}
-statusmsg;
-
-typedef struct
-{
-    simplemsg hdr;
-    unsigned long joypos[2];
-}
-replystatusmsg;
-
-typedef struct
-{
-    simplemsg hdr;
-    unsigned long frame;
-    char counter;
-}
-syncmsg;
-
 statusmsg mystatusmsg={{SERVER_HDR,MSG_EVENT,0,0},0};
 
 unsigned long NetJoyPos[2]={0,0};
@@ -454,7 +432,7 @@ void HandleNetwork(unsigned char counter, signed short pallax)
     if((frames%2)!=0)
         return;
 
-/* ogni 16 frame mando il mio stato.    
+/* ogni 25 frame mando il mio stato.    
  * lo stato contiene il contatore del generatore di numeri casuali
  * e la posizione X della palla, utilizzando questo numero si controlla
  * che le due partite non abbiano perso coerenza, in tal caso viene
@@ -462,7 +440,7 @@ void HandleNetwork(unsigned char counter, signed short pallax)
  * su qualcosa di simile alla gestione del replay.
  */
 
-    if((frames%16) == 0) {
+    if((frames%25) == 0) {
         syncmsg sync={{SERVER_HDR,MSG_SYNC,0,0}, 0, 0};
         
         sync.frame = htonl(frames);
@@ -539,6 +517,7 @@ int send_netstart(void)
 
     mystatusmsg.hdr.size=htons(sizeof(statusmsg)-sizeof(simplemsg));
     actual_frame=network_frame=0;
+    frames = 0;
 
     D(bug("NET: Client pronto... avviso il server.\n"));
     SockWrite(network_player->socket,&netstart,sizeof(netstart));

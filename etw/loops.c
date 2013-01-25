@@ -506,8 +506,8 @@ void MainLoop(void)
 // When we play a "scenario" we set the starting minute
 
     D(bug
-      ("Start: %ld, End: %ld, Current:%ld, CPS: %ld\n", start, EndTime,
-       Timer(), MY_CLOCKS_PER_SEC));
+      ("Start: %ld, End: %ld, Current:%ld, s0:%d s1:%d np:%d\n", start, EndTime,
+       Timer(), p->team[0]->Joystick, p->team[1]->Joystick, network_game ? network_player->num : -1));
 
     if (situation) {
         if (situation_time > 45)

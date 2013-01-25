@@ -29,6 +29,8 @@
 #define SUB_ENDGAME 'M'
 #define SUB_LOCAL_QUIT 'Q'
 
+#pragma push(pack, 2)
+
 typedef struct {
     char hdr[4];
     unsigned char type,subtype;
@@ -43,6 +45,30 @@ typedef struct _player {
     char playername[40];
     char packetbuffer[SOCKETBUFFERSIZE];
 } player;
+
+typedef struct
+{
+    simplemsg hdr;
+    unsigned long joypos;
+}
+statusmsg;
+
+typedef struct
+{
+    simplemsg hdr;
+    unsigned long joypos[2];
+}
+replystatusmsg;
+
+typedef struct
+{
+    simplemsg hdr;
+    unsigned long frame;
+    char counter;
+}
+syncmsg;
+
+#pragma pop(pack)
 
 void free_network(void);
 player *connect_server(char *,int );

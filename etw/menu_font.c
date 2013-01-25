@@ -3,7 +3,7 @@
 
 struct myfont *bigfont,*smallfont,*titlefont;
 
-WORD restore_x,restore_y,restore_w=0,restore_h=0;
+static WORD restore_x = 0,restore_y = 0, restore_w=0, restore_h=0;
 
 BOOL InitMenuFonts(void)
 {
@@ -58,18 +58,23 @@ void PrintShadow(int x, int y, char *t, int l, struct myfont *tf)
 
     TextShadow(x,y+tf->height,t,l);
 
-    restore_x=x;
-    restore_y=y;
-    restore_w=l*tf->width+1;
-    restore_h=tf->height+1;
+    restore_x = x - 1;
+    restore_y = y - 1;
+    restore_w = l*tf->width + 2;
+    restore_h = tf->height + 2;
 }
 
 void MyRestoreBack(void)
 {
+    int x,y;
+
     if(!restore_w||!restore_h)
         return;
+    x = max(restore_x, 0);
+    y = max(restore_y, 0);
 
-     bltchunkybitmap(back,restore_x,restore_y,main_bitmap,
-        restore_x,restore_y,
-        restore_w,restore_h,bitmap_width,bitmap_width);
+    bltchunkybitmap(back, x, y, main_bitmap, x, y,
+                     min(restore_w, bitmap_width - x - 1),
+                     min(restore_h, bitmap_height - y - 1),
+                     bitmap_width, bitmap_width);
 }

@@ -1178,11 +1178,8 @@ void blit_scaled_logo()
 
 void ChangeMenu(WORD m)
 {
-    extern WORD restore_w, restore_h;
     int i;
     
-    restore_w = restore_h = 0;
-
     bltchunkybitmap(back, 0, 0, main_bitmap, 0, 0, WINDOW_WIDTH,
                     WINDOW_HEIGHT, bitmap_width, bitmap_width);
 

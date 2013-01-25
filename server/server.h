@@ -26,6 +26,8 @@
 #define SUB_ENDGAME 'M'
 #define SUB_LOCAL_QUIT 'Q'
 
+#pragma pack(push, 2)
+
 typedef struct {
 	char hdr[4];
 	char type,subtype;
@@ -51,6 +53,8 @@ typedef struct
     char counter;
 }
 syncmsg;
+
+#pragma pack(pop)
 
 #define MAX_SYNCS 4
 

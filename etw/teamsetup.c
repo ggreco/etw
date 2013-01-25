@@ -1239,7 +1239,10 @@ game_t *SetupSquadre(void)
 
         pl->sector = KICKOFF;
 
-        starting_team = MyRangeRand(2);
+        if (!network_game)
+            starting_team = MyRangeRand(2);
+        else
+            starting_team = 0; 
 
         pl->sq_palla = p->team[starting_team];
         p->team[starting_team]->Possesso = 1;
