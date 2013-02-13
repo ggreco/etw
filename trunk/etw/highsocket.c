@@ -8,16 +8,19 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(SOLARIS_X86) || defined(IPHONE)
+#if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(SOLARIS_X86) || defined(IPHONE) || defined(ANDROID)
 #include <unistd.h>
-#if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(IPHONE)
+#if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(IPHONE) || defined(ANDROID)
 #include <fcntl.h>
 #elif defined(SOLARIS_X86)
-#define FNDELAY O_NDELAY 
 #include <sys/fcntl.h>
 #endif
 #include <assert.h>
 #endif /* !WIN32 */
+
+#if defined(ANDROID) ||  defined(SOLARIS_X86)
+#define FNDELAY O_NDELAY 
+#endif
 
 #if defined(AROS)
 // per ora non definisco nulla

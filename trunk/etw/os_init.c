@@ -124,6 +124,9 @@ int os_avail_mem(void)
     return (int) 10000000;
 }
 
+#ifdef ANDROID
+#include <android/log.h>
+#endif
 
 #if !defined(DEBUG_DISABLED) && !defined(MORPHOS) && !defined(AMIGA)
 
@@ -139,6 +142,12 @@ void kprintf(const char *fmt, ...)
     va_start(ap, fmt);
     vsprintf(temp, fmt, ap);
     OutputDebugString(temp);
+    va_end(ap);
+#elif defined(ANDROID)
+    char temp[500];
+    va_start(ap, fmt);
+    vsprintf(temp, fmt, ap);
+    __android_log_write(ANDROID_LOG_INFO, "ETW", temp);
     va_end(ap);
 #   else
     va_start(ap, fmt);
@@ -200,8 +209,12 @@ void os_free_timer(void)
 {
 }
 
-#if defined(LINUX) || defined(SOLARIS_X86) || defined (IPHONE)
-#if defined(LINUX) && !defined(SOLARIS_X86)
+#ifdef ANDROID
+#include <android/asset_manager.h>
+#endif
+
+#if defined(LINUX) || defined(SOLARIS_X86) || defined (IPHONE) || defined(ANDROID)
+#if defined(LINUX) && !defined(SOLARIS_X86) 
 #   include <sys/dir.h>
 #else
 #   include <dirent.h>
@@ -211,6 +224,7 @@ void os_free_timer(void)
 FILE *os_open(const char *name, const char *mode)
 {
     char buf[2048], dir[512];
+    const char *orig_name = name;
     const char *fn;
     struct dirent *e;
     FILE *f;
@@ -218,7 +232,11 @@ FILE *os_open(const char *name, const char *mode)
 
     if(name[0] != '/')
     {
+#ifndef ANDROID
         sprintf(buf, GAME_DIR "%s", name);
+#else
+        sprintf(buf, "%s/%s", TEMP_DIR, name);
+#endif
         name = buf;
     }
 
@@ -245,21 +263,85 @@ FILE *os_open(const char *name, const char *mode)
 
     D(bug("open on %s failed, trying case insensitive... (%s in %s)\n", name, fn, dir));
 
-    if (!(d = opendir(dir)))
-        return NULL;
+    if (!(d = opendir(dir))) {
+#ifdef ANDROID
+        if (dir[strlen(dir) - 1] == '/')
+            dir[strlen(dir) - 1] = 0;
 
-    while ((e = readdir(d))) {
-        if (!stricmp(fn, e->d_name)) {
-            strcat(dir, e->d_name);
+        D(bug("directory %s not found, creating it\n", dir)); 
+        if (mkdir(dir, 0777)) {
+            char parent[512], *c;
+            strcpy(parent, dir);
+            if ((c = strrchr(parent, '/'))) {
+                *c = 0;
+                D(bug("Unable to create directory, trying to create parent %s\n", parent));
 
-            D(bug(" FOUND, opening: %s\n", dir));
-            closedir(d);
-
-            return fopen(dir, mode);
+                if (!mkdir(parent, 0777)) {
+                    if (mkdir(dir, 0777)) {
+                        D(bug("Unable to create directory %s\n", dir));
+                        return NULL;
+                    }
+                }
+                else {
+                    D(bug("Unable to create directory %s\n", parent));
+                    return NULL;
+                }
+            }
         }
+#else
+        return NULL;
+#endif
     }
-    closedir(d);
+    else {
+        while ((e = readdir(d))) {
+            if (!stricmp(fn, e->d_name)) {
+                strcat(dir, e->d_name);
 
+                D(bug(" FOUND, opening: %s\n", dir));
+                closedir(d);
+
+                return fopen(dir, mode);
+            }
+        }
+
+        closedir(d);
+    }
+
+#ifdef ANDROID
+    D(bug("File %s not found, loading it from assets manager...\n", orig_name));
+    {
+        extern AAssetManager* asset_mgr;
+        AAsset* asset;
+        long size;
+        char *buffer;
+        
+        if (!asset_mgr) {
+            D(bug("Asset Manager not available!\n"));
+            return NULL;
+        }
+
+        if (!(asset = AAssetManager_open(asset_mgr, orig_name, AASSET_MODE_STREAMING))) {
+            D(bug("Asset %s not found!", orig_name));
+            return NULL;
+        }
+        size = AAsset_getLength(asset);
+        if ((buffer = (char*) malloc (sizeof(char)*size))) {
+            FILE *out;
+            AAsset_read (asset,buffer,size);
+            if ((out = fopen(name, "wb"))) {
+                fwrite(buffer, 1, size, out);
+                fclose(out);
+
+                return fopen(name, mode);
+            }
+            else
+                D(bug("Unable to open %s for writing asset of %d bytes.\n", name, size));
+
+            free(buffer);
+        }
+        AAsset_close(asset);
+    }
+#endif
     return NULL;
 }
 

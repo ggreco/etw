@@ -278,7 +278,7 @@ BOOL LoadMenuStuff(void)
 int errno;
 #endif
 
-#ifdef linux
+#ifdef LINUX
 #include "prefix.h"
 #endif
 
@@ -288,9 +288,11 @@ int main(int argc, char *argv[])
     extern void LoadKeyDef(int, char *);
     
 
+    D(bug("ETW main\n"));
+
     /* LINUX programs aren't relocatable, except with this trick
      */
-#if defined(linux)
+#if defined(LINUX)
     DIR *l;
 
     if ((l = opendir("newgfx"))) {
@@ -334,25 +336,25 @@ int main(int argc, char *argv[])
 #endif
     srand(time(NULL));
     
-    InitStrings();
-
-/* Fix of an old language catalog bug... */
-
-    {
-        int i;
-
-        for (i = 0; i < 8; i++) {
-            if (wcp[32 * 5 + 1 + i * 5].Text == NULL)
-                wcp[32 * 5 + 1 + i * 5].Text = "GC" /*-*/ ;
-        }
-    } 
-
 #if defined(IPHONE)
     SCORE_FILE = "../Documents/ETWScores";
     TEMP_DIR = "../Documents/";
     HIGH_FILE = "../Documents/high";
     CONFIG_FILE = "../Documents/thismatch";
     RESULT_FILE = "../Documents/result";    
+#elif defined(ANDROID)
+    {
+        TEMP_DIR = (char*)SDL_AndroidGetInternalStoragePath();
+        D(bug("Set storage path to <%s>\n", TEMP_DIR));
+        HIGH_FILE = malloc(strlen(TEMP_DIR) + strlen("high") + 2);
+        sprintf(HIGH_FILE, "%s/high", TEMP_DIR);
+        CONFIG_FILE = malloc(strlen(TEMP_DIR) + strlen("thismatch") + 2);
+        sprintf(CONFIG_FILE, "%s/thismatch", TEMP_DIR);
+        RESULT_FILE = malloc(strlen(TEMP_DIR) + strlen("result") + 2);
+        sprintf(RESULT_FILE, "%s/result", TEMP_DIR);
+        SCORE_FILE = malloc(strlen(TEMP_DIR) + strlen("ETWScores") + 2);
+        sprintf(SCORE_FILE, "%s/ETWScores", TEMP_DIR);
+    }
 #elif defined(LINUX) || defined(SOLARIS_X86) || defined(MACOSX)
     /* Find data and temporary directories */
     {
@@ -410,6 +412,19 @@ int main(int argc, char *argv[])
     SCORE_FILE = "ETWScores";
 #endif
     
+    InitStrings();
+
+/* Fix of an old language catalog bug... */
+
+    {
+        int i;
+
+        for (i = 0; i < 8; i++) {
+            if (wcp[32 * 5 + 1 + i * 5].Text == NULL)
+                wcp[32 * 5 + 1 + i * 5].Text = "GC" /*-*/ ;
+        }
+    } 
+
     read_menu_config();
 
     LoadTeams(TEAMS_DIR "default" /*-*/ );

@@ -124,9 +124,40 @@ void set_resolution()
             }
         }
     }
-    D(bug("Unable to find a valid iOS resolution!"));
+    D(bug("Unable to find a valid iOS resolution!\n"));
+}
+#elif defined(ANDROID)
+
+typedef struct ResInfo {
+    int wm, w, hm, h;
+} ResInfo;
+static ResInfo ressize[2] = {
+    {320, 568, 256, 320},
+    {800, 1280, 480, 768}
+};
+void set_resolution()
+{
+    int i, j, n = SDL_GetNumDisplayModes(0);
+    
+    for (i = 0; i < n; ++i) {
+        SDL_DisplayMode mode;
+        SDL_GetDisplayMode(0, i, &mode);
+        D(bug("%d) %dx%d\n", i, mode.w, mode.h));
+        for (j = 0; j < 2; ++j) {
+            if (mode.w <= ressize[j].w && mode.w >= ressize[j].wm &&
+                mode.h <= ressize[j].h && mode.h >= ressize[j].hm) {
+                D(bug("Android resolution set to: %dx%d\n", mode.w, mode.h));
+                WINDOW_WIDTH = mode.w;
+                WINDOW_HEIGHT = mode.h;
+                return;
+            }
+        }
+    }
+    D(bug("Unable to find a valid Android resolution!\n"));
 }
 #endif
+
+
 
 
 void ResizeWindow(int w, int h)
@@ -234,7 +265,7 @@ void SetTitle(const char *title)
 
 void OpenTheScreen(void)
 {
-#ifdef IPHONE
+#ifdef MOBILE_VERSION
     // ios devices only permit touch controls
     control[0] = CTRL_TOUCH; 
     control[1] = CTRL_TOUCH; 
@@ -252,10 +283,17 @@ void OpenTheScreen(void)
         screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
 #endif
 
-    if (WINDOW_WIDTH > 800 ||
-        WINDOW_HEIGHT > 600) {
+#ifdef ANDROID
+    {
+        extern double display_width_inches;
+        D(bug("Display width in inches: %g", display_width_inches));
+    }
+#endif
+
+    if (WINDOW_WIDTH > 640 ||
+        WINDOW_HEIGHT > 480) {
         
-        D(bug("Too high display resolution, going to: %dx%d", WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
+        D(bug("Too high display resolution, going to: %dx%d\n", WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
         WINDOW_WIDTH /= 2;
         WINDOW_HEIGHT /= 2;
     }
