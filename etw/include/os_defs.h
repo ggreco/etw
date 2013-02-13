@@ -16,11 +16,11 @@
 #define MOBILE_VERSION
 #endif
 /* set the default arch to Linux */
-#if !defined(WIN) && !defined(IPHONE) && !defined(LINUX) && !defined(MACOSX) && !defined(AMIGA)
+#if !defined(WIN) && !defined(IPHONE) && !defined(LINUX) && !defined(MACOSX) && !defined(AMIGA) && !defined(ANDROID)
 #   define LINUX
 #endif
 
-#if defined(LINUX) || defined(IPHONE) 
+#if defined(LINUX) || defined(IPHONE) || defined(ANDROID) 
     extern FILE *os_open(const char *, const char *);
 #   define fopen os_open
 #endif
@@ -61,7 +61,7 @@ extern char *SCORE_FILE;
 #   endif
 //#   define USE_LOGFILE
 
-#elif defined(LINUX) || defined (MACOSX) || defined(IPHONE)
+#elif defined(LINUX) || defined (MACOSX) || defined(IPHONE) || defined(ANDROID)
 #   define stricmp strcasecmp
 #   define strnicmp strncasecmp
 
