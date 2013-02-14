@@ -55,7 +55,7 @@ public class SDLActivity extends Activity {
     private static EGLConfig   mEGLConfig;
     private static int mGLMajor, mGLMinor;
     private static native void load(AssetManager mgr);
-    private static native void setInches(float inches);
+    private static native void setInches(float w, float h);
     private static AssetManager mgr;
     
     // Load the .so
@@ -94,8 +94,7 @@ public class SDLActivity extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         
-        float width_inches = dm.widthPixels/dm.xdpi;
-        setInches(width_inches);
+        setInches(dm.widthPixels/dm.xdpi, dm.heightPixels/dm.ydpi);
     }
 
     // Events

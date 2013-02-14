@@ -285,8 +285,8 @@ void OpenTheScreen(void)
 
 #ifdef ANDROID
     {
-        extern double display_width_inches;
-        D(bug("Display width in inches: %g", display_width_inches));
+        extern double display_width_inches, display_height_inches;
+        D(bug("Display size in inches: %gx%g\n", display_width_inches, display_height_inches));
     }
 #endif
 
