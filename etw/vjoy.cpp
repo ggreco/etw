@@ -12,7 +12,17 @@ void touch_init()
 {
     extern struct SDL_Window *screen;
     int w, h;
-    
+    double scaling = 1.0;
+    int button_w = 64, button_h = 64;
+#ifdef ANDROID
+    extern double display_width_inches, display_height_inches;
+    scaling = 2.0 / display_height_inches;
+    button_w = (double)button_w * scaling;
+    button_h = (double)button_h * scaling;
+
+    D(bug("Display of %g x %g inches, using scaling %g and button %dx%d\n",
+          display_width_inches, display_height_inches, scaling, button_w, button_h));
+#endif 
     if (touch)
         delete touch;
     if (replay_touch)
@@ -22,7 +32,7 @@ void touch_init()
 
     D(bug("Starting touch interface for window size %dx%d\n", w, h));
     
-    touch = new TouchControl(screen, "mobile/knob.bmp", "mobile/joystick-base.bmp", "mobile/free-touch.bmp");
+    touch = new TouchControl(screen, "mobile/knob.bmp", "mobile/joystick-base.bmp", "mobile/free-touch.bmp", scaling);
 
     // only pause key in CPU vs CPU matches and highlights
     if ((p->team[0]->Joystick != -1 ||

@@ -284,12 +284,25 @@ void OpenTheScreen(void)
 #endif
 
 #ifdef ANDROID
-    {
+    if (WINDOW_WIDTH > 640 ||
+        WINDOW_HEIGHT > 480) {
         extern double display_width_inches, display_height_inches;
-        D(bug("Display size in inches: %gx%g\n", display_width_inches, display_height_inches));
+        // we need linear on Android since we don't use a multiple of resolution
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+        if (display_height_inches <= 3.0) {
+            WINDOW_WIDTH = 320 * WINDOW_WIDTH / WINDOW_HEIGHT;
+            WINDOW_HEIGHT = 320;            
+        }
+        else {
+            WINDOW_WIDTH = 480 * WINDOW_WIDTH / WINDOW_HEIGHT;
+            WINDOW_HEIGHT = 480;
+        }
+        WINDOW_WIDTH -= (WINDOW_WIDTH % 4);
+        D(bug("Display size in inches: %gx%g, software destination size: %dx%d\n", 
+                    display_width_inches, display_height_inches, WINDOW_WIDTH, WINDOW_HEIGHT));
     }
-#endif
-
+#else
+// this is enough in iOS
     if (WINDOW_WIDTH > 640 ||
         WINDOW_HEIGHT > 480) {
         
@@ -297,6 +310,8 @@ void OpenTheScreen(void)
         WINDOW_WIDTH /= 2;
         WINDOW_HEIGHT /= 2;
     }
+#endif
+
     if(screen) {
         renderer = SDL_CreateRenderer(screen, -1, 0);
         

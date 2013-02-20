@@ -127,7 +127,12 @@ void PlayMenuMusic(void)
     else 
         Mix_PlayMusic(mmusic, -1);
     
+#ifndef ANDROID
     Mix_VolumeMusic(MIX_MAX_VOLUME/6);
+#else
+    // in android the menu music is too low as volume
+    Mix_VolumeMusic(MIX_MAX_VOLUME/2);
+#endif
 }
 
 void FreeMenuMusic()

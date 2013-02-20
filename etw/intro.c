@@ -7,7 +7,7 @@ void Intro(void)
 {
     FILE *fh;
 
-    if ((fh = fopen("intro/intro.anim"/*-*/, "rb"))) {
+    if ((fh = os_open("intro/intro.anim"/*-*/, "rb"))) {
         char buffer[80];
         FILE *fh2;
         int t = RangeRand(NUMERO_INTRO);
@@ -16,7 +16,7 @@ void Intro(void)
 
         sprintf(buffer,"intro/intro%lc.anim"/*-*/,'a'+t);
 
-        if ((fh2 = fopen(buffer, "rb"))) {
+        if ((fh2 = os_open(buffer, "rb"))) {
             struct AnimInstData *a;
             unsigned int id;
 
@@ -110,7 +110,7 @@ void Outro(void)
 
     StopMenuMusic();
 
-    if ((fh = fopen("intro/outro.anim"/*-*/, "rb"))) {
+    if ((fh = os_open("intro/outro.anim"/*-*/, "rb"))) {
         struct AnimInstData *a;
         unsigned int i;
 

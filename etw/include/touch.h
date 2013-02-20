@@ -21,7 +21,7 @@ class TouchControl
     TouchMap touches_;
     
     struct button {
-        int x, y, w, h;
+        int x, y, w, h, ow, oh;
         uint32_t id;
         SDL_Texture *img, *pressed;
         bool is_pressed;
@@ -35,7 +35,7 @@ class TouchControl
     BtVec buttons_;
     SDL_Window *screen_;
     SDL_Texture *knob_, *joybase_, *free_;
-    int knob_w_, knob_h_;
+    int knob_w_, knob_h_, knob_orig_w_, knob_orig_h_, joyrect_orig_w_, joyrect_orig_h_;
     bool visible_;
     int joyfinger_;
     int fading_;
@@ -106,7 +106,7 @@ public:
         FREE_SWIPE = 0x80000,
         QUIT = 0xf00000};
     
-    TouchControl(SDL_Window *screen, const char *knob = NULL, const char *base = NULL, const char *touch = NULL);
+    TouchControl(SDL_Window *screen, const char *knob = NULL, const char *base = NULL, const char *touch = NULL, double scaling = 1.0);
     ~TouchControl();
     void activation(int x, int y, int w, int h) {
         activation_.x = x; activation_.y = y;
@@ -114,7 +114,7 @@ public:
     }
     int touch_x() const { return touch_x_; }
     int touch_y() const { return touch_y_; }
-    void add_button(const char *normal, const char *pressed, int x, int y, uint32_t id);
+    void add_button(const char *normal, const char *pressed, int x, int y, uint32_t id, int wanted_width = -1, int wanted_height = -1);
     int iteration();
     void draw();
     

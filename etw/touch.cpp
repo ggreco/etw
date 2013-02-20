@@ -21,18 +21,23 @@ load_bmp(const char *name, int &w, int &h)
 }
 
 void TouchControl::
-add_button(const char *normal, const char *pressed, int x, int y, uint32_t id)
+add_button(const char *normal, const char *pressed, int x, int y, uint32_t id, int wanted_width, int wanted_height)
 {
     button b;
-    if (!(b.img = load_bmp(normal, b.w, b.h))) {
+    if (!(b.img = load_bmp(normal, b.ow, b.oh))) {
         D(bug("Unable to create button %d, image %s not found\n", id, normal));
         return;
     }
-    if (!(b.pressed = load_bmp(pressed, b.w, b.h))) { 
+    if (!(b.pressed = load_bmp(pressed, b.ow, b.oh))) { 
         D(bug("Unable to create button %d, selected image %s not found\n", id, pressed));
         SDL_DestroyTexture(b.img);
         return;
     }
+
+    if (wanted_width <= 0)
+        b.w = b.ow;
+    if (wanted_height <= 0)
+        b.h = b.oh;
 
     b.id = id;
     b.x = x;
@@ -45,17 +50,31 @@ add_button(const char *normal, const char *pressed, int x, int y, uint32_t id)
 
        
 TouchControl::
-TouchControl(SDL_Window *screen, const char *knob, const char *base, const char *freetouch) :
+TouchControl(SDL_Window *screen, const char *knob, const char *base, const char *freetouch, double scaling) :
     screen_(screen), knob_(NULL), joybase_(NULL), free_(NULL),
     visible_(false), fading_(0), freetouch_on_screen_(0),
     distance_(0.0), delta_x_(0.0), delta_y_(0.0)
 {
     if (knob)
-        knob_ = load_bmp(knob, knob_w_, knob_h_);
+        knob_ = load_bmp(knob, knob_orig_w_, knob_orig_h_);
     if (base)
-        joybase_ = load_bmp(base, joyrect_.w, joyrect_.h);
+        joybase_ = load_bmp(base, joyrect_orig_w_, joyrect_orig_h_);
     if (freetouch)
         free_ = load_bmp(freetouch, freerect_.w, freerect_.h);
+
+    // we scale only if really needed
+    if (scaling < 0.95 || scaling > 1.05) {
+        joyrect_.w = (double)joyrect_orig_w_ * scaling;
+        joyrect_.h = (double)joyrect_orig_h_ * scaling;
+        knob_w_ = (double)knob_orig_w_ * scaling;
+        knob_h_ = (double)knob_orig_h_ * scaling;
+    }
+    else {
+        joyrect_.w = joyrect_orig_w_;
+        joyrect_.h = joyrect_orig_h_;
+        knob_w_ = knob_orig_w_;
+        knob_h_ = knob_orig_h_;
+    }
 
     SDL_RenderGetLogicalSize(SDL_GetRenderer(screen), &screen_w_, &screen_h_);
 
@@ -115,13 +134,14 @@ draw()
             if (!visible_)
                 fading_--;
 
-            SDL_Rect r = {0, 0, knob_w_, knob_h_}, 
+            SDL_Rect r = {0, 0, knob_orig_w_, knob_orig_h_}, 
                      dest = {center_x_ - knob_w_ / 2, 
                              center_y_ - knob_h_ / 2,
                              knob_w_, knob_h_};
 
             SDL_RenderCopy(rend, joybase_, NULL, &joyrect_);
 
+#if 0
             if (dest.x < 0) {
                 r.x += -dest.x;
                 r.w += dest.x;
@@ -140,8 +160,9 @@ draw()
                     dest.h = r.h;
                 }
                 
-                SDL_RenderCopy(rend, knob_, &r, &dest);
             }
+#endif
+            SDL_RenderCopy(rend, knob_, &r, &dest);
         }
 
         for (BtIt it = buttons_.begin(); it != buttons_.end(); ++it) {
