@@ -94,11 +94,13 @@ public class SDLActivity extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         
-        setInches(dm.widthPixels/dm.xdpi, dm.heightPixels/dm.ydpi);
+        Log.v("ETW", "before setInches");
+        setInches((float)dm.widthPixels/(float)dm.xdpi, (float)dm.heightPixels/(float)dm.ydpi);
     }
 
     // Events
-    /*protected void onPause() {
+    /*
+    protected void onPause() {
         Log.v("SDL", "onPause()");
         super.onPause();
         // Don't call SDLActivity.nativePause(); here, it will be called by SDLSurface::surfaceDestroyed
