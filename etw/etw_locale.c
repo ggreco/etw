@@ -563,7 +563,7 @@ char *GetLanguage(void)
     else
         return L10N_ENGLISH;
 }
-#elif defined(IPHONE)
+#elif defined(MOBILE_VERSION)
 char *GetLanguage(void)
 {
     extern const char *get_lang_id();

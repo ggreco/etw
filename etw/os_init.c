@@ -144,10 +144,8 @@ void kprintf(const char *fmt, ...)
     OutputDebugString(temp);
     va_end(ap);
 #elif defined(ANDROID)
-    char temp[500];
     va_start(ap, fmt);
-    vsprintf(temp, fmt, ap);
-    __android_log_write(ANDROID_LOG_INFO, "ETW", temp);
+    __android_log_vprint(ANDROID_LOG_INFO, "ETW", fmt, ap);
     va_end(ap);
 #   else
     va_start(ap, fmt);
