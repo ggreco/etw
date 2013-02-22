@@ -9,5 +9,14 @@
     android:layout_height="wrap_content" 
     android:text="Hello World, SDLActivity"
     />
+<com.google.ads.AdView
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    android:id="@+id/adView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    ads:adSize="BANNER"
+    ads:adUnitId="f048b8abe5da43c7"
+/>
+
 </LinearLayout>
 

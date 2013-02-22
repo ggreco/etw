@@ -13,7 +13,9 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+//import android.widget.TextView;
 import android.widget.AbsoluteLayout;
+import android.widget.RelativeLayout;
 import android.os.*;
 import android.util.Log;
 import android.graphics.*;
@@ -26,7 +28,8 @@ import android.content.*;
 import java.lang.*;
 import android.content.res.AssetManager;
 import android.util.DisplayMetrics;
-
+import com.google.ads.*;
+import org.ggsoft.etw.util.*;
 /**
     SDL Activity
 */
@@ -47,6 +50,9 @@ public class SDLActivity extends Activity {
     // Audio
     private static Thread mAudioThread;
     private static AudioTrack mAudioTrack;
+    private static AdView adview = null;
+    
+    static final String SKU_FULL_VERSION = "full_version";
 
     // EGL private objects
     private static EGLContext  mEGLContext;
@@ -57,6 +63,9 @@ public class SDLActivity extends Activity {
     private static native void load(AssetManager mgr);
     private static native void setInches(float w, float h);
     private static AssetManager mgr;
+    private static Handler uiHandler;
+    private static boolean full_version = false;
+    private static IabHelper mHelper;
     
     // Load the .so
     static {
@@ -80,21 +89,32 @@ public class SDLActivity extends Activity {
 
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
-
-        mLayout = new AbsoluteLayout(this);
-        mLayout.addView(mSurface);
-
-        setContentView(mLayout);
-
-//        SurfaceHolder holder = mSurface.getHolder();
-        
-        mgr = getResources().getAssets();
-        load(mgr);
-        
+        uiHandler = new Handler();
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        
-        Log.v("ETW", "before setInches");
+        mHelper = new IabHelper(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnwdMlRY6RLi0B0u0XKF6vMW3Oiysc8tkvRQ/EJOAGN8ZMyNtn9dssVHkJ/U559WmX1z9OpOa6MYIpsB/JyKrE+5SSGvAi2wEoSZaX2EcOGcVKReRzmfdXQPUQVj57Jkch3pri2z+olDmqjaAA1WeWmhTgyESwZqcXY0nU8Z9MuRwKiygmWKFArquvfj0IX+A7T6Pe92kVAZrKRQTsBb6J6kGxqdGbPS4tKXLdgau85937y8K+/yFv2ZKZabpUDA3HxxY/MNdJOUWQGwgaL+0N7OSpElD9dP3ZFUSr5nkinZpY3uezAnUnA41xBkJqeGhU9lIKvIuPkABoC/nT5K9WwIDAQAB");
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    // Oh noes, there was a problem.
+                    Log.e("ETW", "Problem setting up In-app Billing: " + result);
+                }            
+                else {
+                    // Hooray, IAB is fully set up!  
+                    Log.v("ETW", "App billing setup OK, querying inventory.");
+                    mHelper.queryInventoryAsync(mGotInventoryListener);
+               }
+            }
+        });
+
+        mLayout = new RelativeLayout(this);
+        mSurface.setId(1);
+        mLayout.addView(mSurface);
+        setContentView(mLayout);
+
+        mgr = getResources().getAssets();
+        load(mgr);
+      
         setInches((float)dm.widthPixels/(float)dm.xdpi, (float)dm.heightPixels/(float)dm.ydpi);
     }
 
@@ -112,9 +132,42 @@ public class SDLActivity extends Activity {
         // Don't call SDLActivity.nativeResume(); here, it will be called via SDLSurface::surfaceChanged->SDLActivity::startApp
     }*/
 
+    // Listener that's called when we finish querying the items and subscriptions we own
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            if (result.isFailure()) {
+                Log.e("ETW", "Failed to query inventory: " + result);
+                return;
+            }
+
+            Log.d("ETW", "Query inventory was successful.");
+            
+            /*
+             * Check for items we own. Notice that for each purchase, we check
+             * the developer payload to see if it's correct! See
+             * verifyDeveloperPayload().
+             */
+            
+            // Do we have the premium upgrade?
+            Purchase premiumPurchase = inventory.getPurchase(SKU_FULL_VERSION);
+            full_version = (premiumPurchase != null && verifyDeveloperPayload(premiumPurchase));
+            Log.v("ETW", "User is " + (full_version ? "PREMIUM" : "NOT PREMIUM"));
+        }
+    };
+    
+    boolean verifyDeveloperPayload(Purchase p) {
+        String payload = p.getDeveloperPayload();
+        
+        return payload == "ETWfull";
+    }
+
     protected void onDestroy() {
         super.onDestroy();
         Log.v("SDL", "onDestroy()");
+        // killing billing services
+        if (mHelper != null) mHelper.dispose();
+        mHelper = null;
+
         // Send a quit message to the application
         SDLActivity.nativeQuit();
 
@@ -313,6 +366,66 @@ public class SDLActivity extends Activity {
         }
     }
 
+    public static void showAds() {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (full_version || adview != null) { return; }
+
+                adview = new AdView(mSingleton, AdSize.BANNER, "f048b8abe5da43c7");
+//                TextView adview = new TextView(mSingleton);
+//                adview.setText("Prova di testo");
+                /*
+                DisplayMetrics dm = new DisplayMetrics();
+                mSingleton.getWindowManager().getDefaultDisplay().getMetrics(dm);
+                AdSize testSize = AdSize.createAdSize(AdSize.BANNER, mSingleton);
+                int px = (dm.widthPixels - testSize.getWidthInPixels(mSingleton)) / 2;
+                int py = dm.heightPixels - testSize.getHeightInPixels(mSingleton);
+                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(
+                    testSize.getWidthInPixels(mSingleton), testSize.getHeightInPixels(mSingleton),
+                    px, py);
+
+                Log.v("ETW", "Positioning ads at " + px + "," + py);
+*/
+
+                /*
+                FrameLayout.LayoutParams params =new FrameLayout.LayoutParams(
+                                    FrameLayout.LayoutParams.FILL_PARENT, 
+                                    FrameLayout.LayoutParams.FILL_PARENT, android.view.Gravity.BOTTOM|android.view.Gravity.CENTER_HORIZONTAL);
+                */
+            
+                adview.setId(2);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                                                        RelativeLayout.LayoutParams.WRAP_CONTENT, 
+                                                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                params.addRule(RelativeLayout.ABOVE, mSurface.getId());
+                AdRequest re = new AdRequest();
+                re.addTestDevice(AdRequest.TEST_EMULATOR);
+                adview.loadAd(re);
+                mLayout.addView(adview, params);
+                Log.v("ETW", "Showing ads");
+            }
+        });
+    }
+    public static void hideAds() {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (adview == null) {  return; }
+
+                mLayout.removeView(adview);
+                adview.destroy();
+                adview = null;
+
+                Log.v("ETW", "Hiding ads");
+            }
+        });
+    }
+        
     public static boolean createEGLContext() {
         EGL10 egl = (EGL10)EGLContext.getEGL();
         int EGL_CONTEXT_CLIENT_VERSION=0x3098;
