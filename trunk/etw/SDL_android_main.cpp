@@ -41,7 +41,6 @@ get_lang_id()
         return NULL;
     }
 
-    __android_log_print(ANDROID_LOG_INFO, "ETW", "Language configuration: %s", language);
     return language;
 }
 
@@ -49,12 +48,21 @@ get_lang_id()
 // Called before SDL_main() to initialize JNI bindings in SDL library
 extern "C" void SDL_Android_Init(JNIEnv* env, jclass cls);
 
+
+static jmethodID mid_showAds;
+static jmethodID mid_hideAds;
+static jclass my_class;
+
 // Start up the SDL app
 extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jobject obj)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
     SDL_Android_Init(env, cls);
 
+    // get the bindings for my callbacks
+    my_class = (jclass)env->NewGlobalRef(cls);
+    mid_showAds = env->GetStaticMethodID(my_class, "showAds", "()V");
+    mid_hideAds = env->GetStaticMethodID(my_class, "hideAds", "()V");
     /* Run the application code! */
     int status;
     char *argv[2];
@@ -64,6 +72,18 @@ extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeInit(JNIEnv* env, jclass c
 
     /* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
     //exit(status);
+}
+
+extern "C" JNIEnv *Android_JNI_GetEnv();
+
+extern "C" void show_ads() {
+    JNIEnv *env = Android_JNI_GetEnv();
+    env->CallStaticVoidMethod(my_class, mid_showAds);
+}
+
+extern "C" void hide_ads() {
+    JNIEnv *env = Android_JNI_GetEnv();
+    env->CallStaticVoidMethod(my_class, mid_hideAds);
 }
 
 extern "C" {
@@ -85,16 +105,13 @@ extern "C" {
 
 extern "C" void Java_org_ggsoft_etw_SDLActivity_load(JNIEnv* env, jclass jcls, jobject obj)
 {
-    __android_log_write(ANDROID_LOG_INFO, "ETW", "Before AssetManager_fromJava");
     asset_mgr = AAssetManager_fromJava(env, obj); 
-    __android_log_write(ANDROID_LOG_INFO, "ETW", "AFTER AssetManager_fromJava");
 }
 
 extern "C" void Java_org_ggsoft_etw_SDLActivity_setInches(JNIEnv* env, jclass jcls, jfloat wi, jfloat hi)
 {
     display_width_inches = wi;
     display_height_inches = hi;
-    __android_log_write(ANDROID_LOG_INFO, "ETW", "Got inches from Java");
 }
                                     
 // Resize

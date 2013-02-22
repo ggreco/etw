@@ -167,6 +167,8 @@ void show_achievements();
 void add_score(int);
 void reset_achievements();
 void init_game_center();
+void show_ads();
+void hide_ads();
 
 // tutorial api
 void check_tutorial();

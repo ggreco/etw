@@ -13,6 +13,14 @@ static UIViewController *gViewColtroller = NULL;
 static UIWindow *gWindow = NULL;
 static UIView *gView = NULL;
 
+void show_ads() {
+    // TODO in iOS
+}
+
+void hide_ads() {
+    // TODO in iOS
+}
+
 const char *get_lang_id()
 {
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];

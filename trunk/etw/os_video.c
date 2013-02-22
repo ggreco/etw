@@ -289,7 +289,7 @@ void OpenTheScreen(void)
         extern double display_width_inches, display_height_inches;
         // we need linear on Android since we don't use a multiple of resolution
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-        if (display_height_inches <= 3.0) {
+        if (display_height_inches <= 3.5) {
             WINDOW_WIDTH = 320 * WINDOW_WIDTH / WINDOW_HEIGHT;
             WINDOW_HEIGHT = 320;            
         }

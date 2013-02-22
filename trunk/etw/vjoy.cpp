@@ -15,13 +15,18 @@ void touch_init()
     double scaling = 1.0;
     int button_w = 64, button_h = 64;
 #ifdef ANDROID
+    // I have to make buttons bigger if the resolution grow, but I have to make them SMALLER 
+    // if the size in inches of the monitor grow!
     extern double display_width_inches, display_height_inches;
-    scaling = 2.0 / display_height_inches;
+    double delta = (double)WINDOW_HEIGHT / 320.0f;
+
+    scaling = 2.0  * delta / display_height_inches;
     button_w = (double)button_w * scaling;
     button_h = (double)button_h * scaling;
 
-    D(bug("Display of %g x %g inches, using scaling %g and button %dx%d\n",
-          display_width_inches, display_height_inches, scaling, button_w, button_h));
+    D(bug("Display of %g x %g inches (window %dx%d), using scaling %g and button %dx%d\n",
+          display_width_inches, display_height_inches, 
+          WINDOW_WIDTH, WINDOW_HEIGHT, scaling, button_w, button_h));
 #endif 
     if (touch)
         delete touch;

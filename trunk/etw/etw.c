@@ -129,6 +129,9 @@ void FreeMenuStuff(void)
 
 BOOL LoadMenuStuff(void)
 {
+    // hide ads if present
+    hide_ads();
+
     if (firsttime) {
         save_back = FALSE;        /* Non mi interessa conservare gli sfondi */
         use_clipping = FALSE;    /* Voglio vedere gli omini parzialmente fuori dallo schermo */
