@@ -299,6 +299,10 @@ void free_game();
 // achievements
 void add_achievement(const char*, float);
 
+// ads
+void show_ads();
+void hide_ads();
+
 // tutorial
 void check_tutorial();
 

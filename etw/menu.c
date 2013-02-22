@@ -1315,7 +1315,11 @@ void ChangeMenu(WORD m)
         x = WINDOW_WIDTH - l * smallfont->width - 2;
         y = WINDOW_HEIGHT - smallfont->height - 1;
         TextShadow(x, y, c, l);
+        show_ads();
     }
+    else
+        hide_ads();
+
 //      bltchunkybitmap(main_bitmap,0,0,main_bitmap,0,0,WINDOW_WIDTH,WINDOW_HEIGHT,bitmap_width,bitmap_width);
 //      GriddedWipe(1,main_bitmap);
 
