@@ -53,6 +53,8 @@ public class SDLActivity extends Activity {
     private static AdView adview = null;
     
     static final String SKU_FULL_VERSION = "full_version";
+    // (arbitrary) request code for the purchase flow
+    static final int RC_REQUEST = 10001;
 
     // EGL private objects
     private static EGLContext  mEGLContext;
@@ -65,6 +67,7 @@ public class SDLActivity extends Activity {
     private static AssetManager mgr;
     private static Handler uiHandler;
     private static boolean full_version = false;
+    private static boolean no_inapp_billing = false;
     private static IabHelper mHelper;
     
     // Load the .so
@@ -97,6 +100,7 @@ public class SDLActivity extends Activity {
             public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
                     // Oh noes, there was a problem.
+                    no_inapp_billing = true;
                     Log.e("ETW", "Problem setting up In-app Billing: " + result);
                 }            
                 else {
@@ -155,10 +159,59 @@ public class SDLActivity extends Activity {
         }
     };
     
-    boolean verifyDeveloperPayload(Purchase p) {
+    static void buy_full_version() {
+         if (no_inapp_billing) {
+             Log.v("ETW", "Purchase procedure not available");
+             return;
+         }
+
+         Log.d("ETW", "Purchase procedure started");
+         String payload = "ETW".concat("full");
+
+         mHelper.launchPurchaseFlow(mSingleton, SKU_FULL_VERSION, RC_REQUEST, 
+                                    mPurchaseFinishedListener, payload); 
+    }
+        
+    static IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            Log.d("ETW", "Purchase finished: " + result + ", purchase: " + purchase);
+            if (result.isFailure()) {
+                Log.e("ETW", "Failed purchase!");
+                return;
+            }
+            if (!verifyDeveloperPayload(purchase)) {
+                Log.e("ETW", "Error purchasing. Authenticity verification failed.");
+                return;
+            }
+
+            Log.d("ETW", "Purchase successful.");
+
+            if (purchase.getSku().equals(SKU_FULL_VERSION)) {
+                // bought the premium upgrade!
+                Log.d("ETW", "Purchase is premium upgrade. Congratulating user.");
+                alert("Thank you for upgrading to premium!");
+                full_version = true;
+            }
+        }
+    };
+
+    static void alert(String message) {
+        AlertDialog.Builder bld = new AlertDialog.Builder(mSingleton);
+        bld.setMessage(message);
+        bld.setNeutralButton("OK", null);
+        Log.d("ETW", "Showing alert dialog: " + message);
+        bld.create().show();
+    }
+
+    static boolean has_full_version() {
+        return full_version;
+    }
+
+    static boolean verifyDeveloperPayload(Purchase p) {
+        String orig = "ETW".concat("full");
         String payload = p.getDeveloperPayload();
         
-        return payload == "ETWfull";
+        return payload == orig;
     }
 
     protected void onDestroy() {
