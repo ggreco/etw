@@ -487,8 +487,9 @@ struct {void *Prev;int Cat_ID;char Str[(35)+1];} __LTool__279 = {&__LTool__278,2
 struct {void *Prev;int Cat_ID;char Str[(110)+1];} __LTool__280 = {&__LTool__279,280,"YOU CAN PERFORM MAX 3 SUBSTITUTIONS IN A MATCH"};
 struct {void *Prev;int Cat_ID;char Str[(30)+1];} __LTool__281 = {&__LTool__280,281,"EXTRA TIME"};
 struct {void *Prev;int Cat_ID;char Str[(30)+1];} __LTool__282 = {&__LTool__281,282,"PENALTIES"};
+struct {void *Prev;int Cat_ID;char Str[(30)+1];} __LTool__283 = {&__LTool__282,283,"AD FREE VERSION"};
 
-#define STR_BEGIN_ENTRY &__LTool__282
+#define STR_BEGIN_ENTRY &__LTool__283
 #include <stdio.h>
 
 #ifndef CROSSCOMPILER

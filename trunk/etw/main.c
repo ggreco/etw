@@ -792,7 +792,7 @@ BOOL LoadStuff(void)
             }
 
             // show ads if present
-            show_ads();
+            show_ads(1);
             return TRUE;
         }
 

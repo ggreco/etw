@@ -13,13 +13,18 @@ static UIViewController *gViewColtroller = NULL;
 static UIWindow *gWindow = NULL;
 static UIView *gView = NULL;
 
-void show_ads() {
+void show_ads(int ontop) {
     // TODO in iOS
 }
 
 void hide_ads() {
     // TODO in iOS
 }
+// not needed atm
+void buy_full_version()
+{
+}
+int has_full_version() { return 1; }
 
 const char *get_lang_id()
 {

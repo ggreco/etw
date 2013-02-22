@@ -51,6 +51,8 @@ extern "C" void SDL_Android_Init(JNIEnv* env, jclass cls);
 
 static jmethodID mid_showAds;
 static jmethodID mid_hideAds;
+static jmethodID mid_buyFull;
+static jmethodID mid_hasFull;
 static jclass my_class;
 
 // Start up the SDL app
@@ -61,8 +63,10 @@ extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeInit(JNIEnv* env, jclass c
 
     // get the bindings for my callbacks
     my_class = (jclass)env->NewGlobalRef(cls);
-    mid_showAds = env->GetStaticMethodID(my_class, "showAds", "()V");
+    mid_showAds = env->GetStaticMethodID(my_class, "showAds", "(Z)V");
     mid_hideAds = env->GetStaticMethodID(my_class, "hideAds", "()V");
+    mid_buyFull = env->GetStaticMethodID(my_class, "buy_full_version", "()V");
+    mid_hasFull = env->GetStaticMethodID(my_class, "has_full_version", "()Z");
     /* Run the application code! */
     int status;
     char *argv[2];
@@ -76,9 +80,19 @@ extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeInit(JNIEnv* env, jclass c
 
 extern "C" JNIEnv *Android_JNI_GetEnv();
 
-extern "C" void show_ads() {
+extern "C" int has_full_version() {
     JNIEnv *env = Android_JNI_GetEnv();
-    env->CallStaticVoidMethod(my_class, mid_showAds);
+    return env->CallStaticBooleanMethod(my_class, mid_hasFull);
+}
+
+extern "C" int buy_full_version() {
+    JNIEnv *env = Android_JNI_GetEnv();
+    env->CallStaticVoidMethod(my_class, mid_buyFull);
+}
+
+extern "C" void show_ads(int ontop) {
+    JNIEnv *env = Android_JNI_GetEnv();
+    env->CallStaticVoidMethod(my_class, mid_showAds, ontop ? true : false);
 }
 
 extern "C" void hide_ads() {
