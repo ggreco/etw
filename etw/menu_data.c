@@ -65,7 +65,8 @@ struct Button prefs_bottoni[]=
 #else
     {20,57,150,80,MENU_GAME_PREFS,3,0,msg_92},  // Preferences
     {20,103,150,126,MENU_MOBILE_PREFS,0,13,msg_184},
-    {72,205,246,232,0,14,13,msg_95},
+    {72,180,246,205,0,9,11,msg_283},
+    {72,215,246,242,0,14,13,msg_95},
 #endif
 };
 

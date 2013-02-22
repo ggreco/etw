@@ -167,8 +167,11 @@ void show_achievements();
 void add_score(int);
 void reset_achievements();
 void init_game_center();
-void show_ads();
+// ads & inapp purchase
+void show_ads(int);
 void hide_ads();
+int has_full_version();
+void buy_full_version();
 
 // tutorial api
 void check_tutorial();

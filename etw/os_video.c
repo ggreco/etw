@@ -138,22 +138,31 @@ static ResInfo ressize[2] = {
 void set_resolution()
 {
     int i, j, n = SDL_GetNumDisplayModes(0);
-    
-    for (i = 0; i < n; ++i) {
-        SDL_DisplayMode mode;
-        SDL_GetDisplayMode(0, i, &mode);
-        D(bug("%d) %dx%d\n", i, mode.w, mode.h));
-        for (j = 0; j < 2; ++j) {
-            if (mode.w <= ressize[j].w && mode.w >= ressize[j].wm &&
-                mode.h <= ressize[j].h && mode.h >= ressize[j].hm) {
-                D(bug("Android resolution set to: %dx%d\n", mode.w, mode.h));
-                WINDOW_WIDTH = mode.w;
-                WINDOW_HEIGHT = mode.h;
-                return;
+   
+    if (n > 1) {
+        for (i = 0; i < n; ++i) {
+            SDL_DisplayMode mode;
+            SDL_GetDisplayMode(0, i, &mode);
+            D(bug("%d) %dx%d\n", i, mode.w, mode.h));
+            for (j = 0; j < 2; ++j) {
+                if (mode.w <= ressize[j].w && mode.w >= ressize[j].wm &&
+                        mode.h <= ressize[j].h && mode.h >= ressize[j].hm) {
+                    D(bug("Android resolution set to: %dx%d\n", mode.w, mode.h));
+                    WINDOW_WIDTH = mode.w;
+                    WINDOW_HEIGHT = mode.h;
+                    return;
+                }
             }
         }
+        D(bug("Unable to find a valid Android resolution!\n"));
     }
-    D(bug("Unable to find a valid Android resolution!\n"));
+    else {
+        SDL_DisplayMode mode;
+        SDL_GetDisplayMode(0, i, &mode);
+        D(bug("Android FIXED resolution set to: %dx%d\n", mode.w, mode.h));
+        WINDOW_WIDTH = mode.w;
+        WINDOW_HEIGHT = mode.h;
+    }
 }
 #endif
 

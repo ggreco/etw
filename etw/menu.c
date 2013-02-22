@@ -773,6 +773,9 @@ BOOL DoAction(WORD button)
 #ifdef MOBILE_VERSION
             if (button < 2)
                 UpdatePrefs(b->ID);
+            else if (button == 2 && !has_full_version()) {
+                buy_full_version();
+            }                
             else if (prefs_changed) {
                 prefs_changed = FALSE;
                 add_achievement("4_change"/*-*/, 100.0);
@@ -1202,6 +1205,10 @@ void ChangeMenu(WORD m)
             && current_menu != MENU_TEAM_SETTINGS) {
             actual_menu->Button[ARCADE_TEAMS + 1].ID = current_menu;
         }
+#ifdef MOBILE_VERSION
+        if (m == MENU_PREFS && has_full_version())
+            actual_menu->Button[2].Text = NULL;
+#endif
         current_menu = m;
     }
 
@@ -1315,7 +1322,7 @@ void ChangeMenu(WORD m)
         x = WINDOW_WIDTH - l * smallfont->width - 2;
         y = WINDOW_HEIGHT - smallfont->height - 1;
         TextShadow(x, y, c, l);
-        show_ads();
+        show_ads(0);
     }
     else
         hide_ads();

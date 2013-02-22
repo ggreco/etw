@@ -577,6 +577,8 @@ extern struct __LString __LTool__281;
 #define msg_281 __LTool__281.Str
 extern struct __LString __LTool__282;
 #define msg_282 __LTool__282.Str
+extern struct __LString __LTool__283;
+#define msg_283 __LTool__283.Str
 #ifdef __cplusplus
 }
 #endif

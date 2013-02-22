@@ -300,7 +300,7 @@ void free_game();
 void add_achievement(const char*, float);
 
 // ads
-void show_ads();
+void show_ads(int);
 void hide_ads();
 
 // tutorial
