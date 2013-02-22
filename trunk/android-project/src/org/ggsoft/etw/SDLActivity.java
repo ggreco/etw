@@ -419,7 +419,7 @@ public class SDLActivity extends Activity {
         }
     }
 
-    public static void showAds() {
+    public static void showAds(final boolean ontop) {
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -453,14 +453,19 @@ public class SDLActivity extends Activity {
                                                         RelativeLayout.LayoutParams.WRAP_CONTENT);
 
 
-                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                if (ontop) {
+                    params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                } else {
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                }
+
                 params.addRule(RelativeLayout.CENTER_HORIZONTAL);
                 params.addRule(RelativeLayout.ABOVE, mSurface.getId());
                 AdRequest re = new AdRequest();
                 re.addTestDevice(AdRequest.TEST_EMULATOR);
                 adview.loadAd(re);
                 mLayout.addView(adview, params);
-                Log.v("ETW", "Showing ads");
+                Log.v("ETW", "Showing ads, ontop:" + ontop);
             }
         });
     }
