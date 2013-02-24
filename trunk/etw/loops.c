@@ -396,6 +396,7 @@ void handle_pause_status()
             free(back);
             back = NULL;
         }
+        show_ads(1);
         show_vjoy();
         os_start_audio();
         

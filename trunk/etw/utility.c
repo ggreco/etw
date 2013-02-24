@@ -296,6 +296,7 @@ void DoPause(void)
     os_stop_audio();
 
     if (!replay_mode) {
+        hide_ads();
         DrawPause();
 
         save_temp_back();

@@ -347,16 +347,18 @@ int main(int argc, char *argv[])
     RESULT_FILE = "../Documents/result";    
 #elif defined(ANDROID)
     {
-        TEMP_DIR = (char*)SDL_AndroidGetInternalStoragePath();
+        const char *tempdir = SDL_AndroidGetInternalStoragePath();
+        TEMP_DIR = malloc(strlen(tempdir) + 2);
+        sprintf(TEMP_DIR, "%s/", tempdir);
         D(bug("Set storage path to <%s>\n", TEMP_DIR));
-        HIGH_FILE = malloc(strlen(TEMP_DIR) + strlen("high") + 2);
-        sprintf(HIGH_FILE, "%s/high", TEMP_DIR);
-        CONFIG_FILE = malloc(strlen(TEMP_DIR) + strlen("thismatch") + 2);
-        sprintf(CONFIG_FILE, "%s/thismatch", TEMP_DIR);
-        RESULT_FILE = malloc(strlen(TEMP_DIR) + strlen("result") + 2);
-        sprintf(RESULT_FILE, "%s/result", TEMP_DIR);
-        SCORE_FILE = malloc(strlen(TEMP_DIR) + strlen("ETWScores") + 2);
-        sprintf(SCORE_FILE, "%s/ETWScores", TEMP_DIR);
+        HIGH_FILE = malloc(strlen(TEMP_DIR) + strlen("high") + 1);
+        sprintf(HIGH_FILE, "%shigh", TEMP_DIR);
+        CONFIG_FILE = malloc(strlen(TEMP_DIR) + strlen("thismatch") + 1);
+        sprintf(CONFIG_FILE, "%sthismatch", TEMP_DIR);
+        RESULT_FILE = malloc(strlen(TEMP_DIR) + strlen("result") + 1);
+        sprintf(RESULT_FILE, "%sresult", TEMP_DIR);
+        SCORE_FILE = malloc(strlen(TEMP_DIR) + strlen("ETWScores") + 1);
+        sprintf(SCORE_FILE, "%sETWScores", TEMP_DIR);
     }
 #elif defined(LINUX) || defined(SOLARIS_X86) || defined(MACOSX)
     /* Find data and temporary directories */
