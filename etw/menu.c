@@ -18,7 +18,6 @@ extern BOOL pause_mode;
 struct MyFileRequest freq = { 0 };
 static const char *teamsel_message = NULL;
 
-
 BOOL MyEasyRequest(struct EasyStruct *e)
 {
     struct GfxMenu *old_menu, fake_menu;
@@ -1768,6 +1767,7 @@ BOOL HandleMenuIDCMP(void)
                         extern SDL_Window *screen;
                         int w, h;
                         SDL_GetWindowSize(screen, &w, &h);
+                        os_stop_audio();
                         D(bug("Received a minimize event, actual window %dx%d\n", w, h));
                         break;
                     }                        
@@ -1778,6 +1778,7 @@ BOOL HandleMenuIDCMP(void)
                         SDL_GetWindowSize(screen, &w, &h);
                         SDL_RenderSetLogicalSize(SDL_GetRenderer(screen), WINDOW_WIDTH, WINDOW_HEIGHT);
                         D(bug("Received a restore event, actual window %dx%d (%dx%d)\n", w, h, WINDOW_WIDTH, WINDOW_HEIGHT));
+                        os_start_audio();
                         ScreenSwap();
                         break;
                     }
@@ -1814,6 +1815,13 @@ BOOL HandleMenuIDCMP(void)
                 default:
                     break;
             }
+#ifdef ANDROID
+            if (e.key.keysym.scancode == SDL_SCANCODE_AC_BACK) {
+                D(bug("Pressed back key!"));
+                if (previous_menu[current_menu] != -1)
+                    ChangeMenu(previous_menu[current_menu]);
+            }
+#endif
             break;
         case SDL_KEYUP:
             switch (e.key.keysym.sym) {

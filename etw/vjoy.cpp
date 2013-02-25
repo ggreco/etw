@@ -113,6 +113,14 @@ void check_cpuvscpu_touch()
             return;
         }
     }
+    if (res & TouchControl::BACK) {
+        if (!pause_mode)
+            DoPause();
+        else
+            pause_mode = FALSE;
+        return;
+    }
+
     if (res & TouchControl::MINIMIZED && !pause_mode) {
         DoPause();
         return;
@@ -138,7 +146,15 @@ int check_replay_touch()
 
     int res = replay_touch->iteration();
 
-    
+    if (res & TouchControl::BACK) {
+        if (!pause_mode)
+            DoPause();
+        else
+            pause_mode = FALSE;
+        return TRUE;
+    }
+
+
     if (res & TouchControl::MINIMIZED && !pause_mode) {
         DoPause();
         return TRUE;
@@ -190,6 +206,15 @@ uint32_t MyReadTouchPort(uint32_t l)
     }
 
     int res = touch->iteration();
+
+    if (res & TouchControl::BACK) {
+        if (!pause_mode)
+            DoPause();
+        else
+            pause_mode = FALSE;
+        return 0;
+    }
+
 
     if (res & TouchControl::MINIMIZED && !pause_mode) {
         DoPause();

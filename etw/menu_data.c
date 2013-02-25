@@ -5,6 +5,41 @@ struct SoundInfo *menusound[NUMERO_SUONI_MENU+1];
 
 const char *numbers[100] = {0};
 
+
+const int previous_menu[MENUS] = {
+    -1, // main
+    MENU_MAIN_MENU,  // prefs
+    MENU_MAIN_MENU,  // highlight
+    MENU_MAIN_MENU,  // teams
+    MENU_MAIN_MENU,  // game start
+    MENU_GAME_START, // arcade
+    MENU_GAME_START, // simulation
+    MENU_GAME_START, // career
+    MENU_GAME_START, // training
+    -1, // team selection
+    MENU_MAIN_MENU, // scores
+    -1, // team settings
+    MENU_PREFS, // game prefs
+    MENU_PREFS, // video prefs
+    MENU_PREFS, // audio prefs
+    MENU_SIMULATION, // world cup
+    -1, // matches
+    MENU_SIMULATION, // league
+    MENU_ARCADE, // selection type
+    -1, // arcade selection
+    MENU_ARCADE, // challenge
+    -1, // world cup end
+    -1, // match result
+    MENU_SCORES, // view scores
+    MENU_HIGHLIGHT, // high selection
+    MENU_PREFS, // system prefs
+    MENU_PREFS, // joycfg
+    MENU_PREFS, // keycfg
+    -1, // pause
+    MENU_PREFS, // mobile prefs
+    MENU_PAUSE, // menu substitutions
+};
+
 char *menu_soundname[]=
 {
     "intro/bombdrop.wav"/*-*/,

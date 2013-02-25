@@ -185,6 +185,14 @@ iteration()
 
     while(SDL_PollEvent(&e)) {
         switch (e.type) {
+#ifdef ANDROID
+            case SDL_KEYDOWN:
+                if (e.key.keysym.scancode == SDL_SCANCODE_AC_BACK) {
+                    D(bug("Received android back button during game\n"));
+                    return BACK; 
+                }
+                break;
+#endif 
             case SDL_WINDOWEVENT:
                 switch(e.window.event) {
                     case SDL_WINDOWEVENT_MINIMIZED:
