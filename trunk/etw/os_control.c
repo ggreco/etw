@@ -355,7 +355,7 @@ void CheckKeys(void)
             else if (e.window.event == SDL_WINDOWEVENT_MINIMIZED && !pause_mode)
                 DoPause();
             break;
-        case SDL_KEYDOWN:
+        case SDL_KEYDOWN:           
             if(!(p->show_panel&PANEL_CHAT)) {
                 switch(e.key.keysym.sym)
                 {

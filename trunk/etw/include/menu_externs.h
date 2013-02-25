@@ -112,6 +112,7 @@ extern int8_t teamarray[], turno, nteams, daytime, league_pos[64], ppp, ppv, pps
 
 extern int WINDOW_WIDTH, WINDOW_HEIGHT, oldwidth, oldheight, wanted_width, wanted_height;
 extern int radar_position, players, current_menu;
+extern const int previous_menu[MENUS];
 extern uint8_t control[];
 extern char career_file[], *menu_soundname[], localename[], scontri, i_scontri;
 extern struct myfont *bigfont, *smallfont, *titlefont;

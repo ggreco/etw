@@ -48,8 +48,8 @@
 #define MENU_MAIN_MENU    0
 #define MENU_PREFS    1
 #define MENU_HIGHLIGHT    2
-#define MENU_GAME_START 4
 #define MENU_TEAMS    3
+#define MENU_GAME_START 4
 #define MENU_ARCADE    5
 #define MENU_SIMULATION 6
 #define MENU_CAREER    7

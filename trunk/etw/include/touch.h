@@ -83,7 +83,8 @@ class TouchControl
     }
     
 public:
-    enum Result {NOTHING = 0,
+    enum Result {
+        NOTHING = 0,
         LEFT = 0x1,
         RIGHT = 0x2,
         UP = 0x4,
@@ -104,7 +105,9 @@ public:
         MINIMIZED = 0x20000,
         RESTORED = 0x40000,
         FREE_SWIPE = 0x80000,
-        QUIT = 0xf00000};
+        BACK  = 0x100000,
+        QUIT = 0xf000000
+    };
     
     TouchControl(SDL_Window *screen, const char *knob = NULL, const char *base = NULL, const char *touch = NULL, double scaling = 1.0);
     ~TouchControl();
