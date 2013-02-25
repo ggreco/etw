@@ -450,7 +450,7 @@ public class SDLActivity extends Activity {
                 }
 
                 AdRequest re = new AdRequest();
-                re.addTestDevice(AdRequest.TEST_EMULATOR);
+//                re.addTestDevice(AdRequest.TEST_EMULATOR);
                 adview.loadAd(re);
                 mLayout.addView(adview, params);
                 Log.v("ETW", "Showing ads, ontop:" + ontop);
@@ -755,6 +755,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     // Key events
     public boolean onKey(View  v, int keyCode, KeyEvent event) {
+        // let android handle volume by itself
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
+            keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            return false;
+        }
 
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             //Log.v("SDL", "key down: " + keyCode);
