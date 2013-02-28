@@ -164,7 +164,7 @@ public class SDLActivity extends Activity {
              return;
          }
 
-         Log.d("ETW", "Purchase procedure started");
+         Log.v("ETW", "Purchase procedure started");
          String payload = "ETW".concat("full");
 
          mHelper.launchPurchaseFlow(mSingleton, SKU_FULL_VERSION, RC_REQUEST, 
@@ -173,7 +173,7 @@ public class SDLActivity extends Activity {
         
     static IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            Log.d("ETW", "Purchase finished: " + result + ", purchase: " + purchase);
+            Log.v("ETW", "Purchase finished: " + result + ", purchase: " + purchase);
             if (result.isFailure()) {
                 Log.e("ETW", "Failed purchase!");
                 return;
@@ -183,11 +183,11 @@ public class SDLActivity extends Activity {
                 return;
             }
 
-            Log.d("ETW", "Purchase successful.");
+            Log.v("ETW", "Purchase successful.");
 
             if (purchase.getSku().equals(SKU_FULL_VERSION)) {
                 // bought the premium upgrade!
-                Log.d("ETW", "Purchase is premium upgrade. Congratulating user.");
+                Log.v("ETW", "Purchase is premium upgrade. Congratulating user.");
                 alert("Thank you for upgrading to premium!");
                 full_version = true;
             }
@@ -209,8 +209,8 @@ public class SDLActivity extends Activity {
     static boolean verifyDeveloperPayload(Purchase p) {
         String orig = "ETW".concat("full");
         String payload = p.getDeveloperPayload();
-        
-        return payload == orig;
+//        Log.v("ETW", "Verifying that " + orig + " is equal to " + payload + " result:" + (payload == orig));
+        return payload.equals(orig);
     }
 
     protected void onDestroy() {
