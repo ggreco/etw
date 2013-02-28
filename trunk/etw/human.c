@@ -624,6 +624,7 @@ void HandleControlledTouch(int squadra)
     uint32_t joystate = r_controls[g->team->Joystick][counter];
     
     if(joystate&JPF_BUTTON_PLAY) {
+        hide_ads();
         DoPause();
         return;
     }
@@ -992,6 +993,7 @@ void HandleControlledJoyPad(int squadra)
 
     if(joystate&JPF_BUTTON_PLAY)
     {
+        hide_ads();
         DoPause();
         return;
     }

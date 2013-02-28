@@ -109,13 +109,16 @@ void check_cpuvscpu_touch()
     if ((res & TouchControl::BUTTON_3) &&
         (res & TouchControl::BUTTONUP)) {
         if (!network_game) {
+            hide_ads();
             DoPause();
             return;
         }
     }
     if (res & TouchControl::BACK) {
-        if (!pause_mode)
+        if (!pause_mode) {
+            hide_ads();
             DoPause();
+        }
         else
             pause_mode = FALSE;
         return;
@@ -147,8 +150,9 @@ int check_replay_touch()
     int res = replay_touch->iteration();
 
     if (res & TouchControl::BACK) {
-        if (!pause_mode)
+        if (!pause_mode) {
             DoPause();
+        }
         else
             pause_mode = FALSE;
         return TRUE;
@@ -208,8 +212,10 @@ uint32_t MyReadTouchPort(uint32_t l)
     int res = touch->iteration();
 
     if (res & TouchControl::BACK) {
-        if (!pause_mode)
+        if (!pause_mode) {
+            hide_ads();
             DoPause();
+        }
         else
             pause_mode = FALSE;
         return 0;
