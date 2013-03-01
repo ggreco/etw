@@ -1818,8 +1818,17 @@ BOOL HandleMenuIDCMP(void)
 #ifdef ANDROID
             if (e.key.keysym.scancode == SDL_SCANCODE_AC_BACK) {
                 D(bug("Pressed back key!"));
-                if (previous_menu[current_menu] != -1)
+                if (reqqing)
+                    return FALSE;
+                else if (pause_mode && game_start && current_menu == MENU_PAUSE) {
+                    pause_mode = FALSE;
+                    return TRUE;
+                }
+                else if (current_menu >= 0 && current_menu < MENUS &&
+                        previous_menu[current_menu] != -1) {
                     ChangeMenu(previous_menu[current_menu]);
+                    return TRUE;
+                }
             }
 #endif
             break;
