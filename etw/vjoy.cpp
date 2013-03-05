@@ -13,9 +13,9 @@ void touch_init()
     extern struct SDL_Window *screen;
     int w, h;
     double scaling = 1.0;
-    int button_w = 64, button_h = 64;
 #ifdef ANDROID
-    // I have to make buttons bigger if the resolution grow, but I have to make them SMALLER 
+    int button_w = 64, button_h = 64;
+    // I have to make buttons bigger if the resolution grow, but I have to make them SMALLER
     // if the size in inches of the monitor grow!
     extern double display_width_inches, display_height_inches;
     double delta = (double)WINDOW_HEIGHT / 320.0f;

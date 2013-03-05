@@ -222,7 +222,9 @@ void os_free_timer(void)
 FILE *os_open(const char *name, const char *mode)
 {
     char buf[2048], dir[512];
+#ifdef ANDROID
     const char *orig_name = name;
+#endif
     const char *fn;
     struct dirent *e;
     FILE *f;

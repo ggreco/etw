@@ -234,13 +234,13 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
      */
 }
 
+/*
 - (void) getPlayerAlias: (char *)aliasBuf: (int) length
 {
-    /*
     const char *aliasPtr = [[localPlayer alias] UTF8String];
     strncpy(aliasBuf, aliasPtr, length);
-     */
 }
+ */
 
 - (BOOL) isAuthenticated
 {
