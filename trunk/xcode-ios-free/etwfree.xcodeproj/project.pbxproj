@@ -102,6 +102,7 @@
 		0BE318A416E666EE0029EE19 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BE318A316E666ED0029EE19 /* AdSupport.framework */; };
 		0BE318A616E667010029EE19 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BE318A516E667010029EE19 /* MessageUI.framework */; };
 		0BE318A816E667110029EE19 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BE318A716E667110029EE19 /* SystemConfiguration.framework */; };
+		0BE318AA16E738080029EE19 /* Banner.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BE318A916E738080029EE19 /* Banner.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -253,6 +254,7 @@
 		0BE318A316E666ED0029EE19 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		0BE318A516E667010029EE19 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		0BE318A716E667110029EE19 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		0BE318A916E738080029EE19 /* Banner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Banner.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -352,6 +354,7 @@
 		0BD74ED7165245940045909C /* sources */ = {
 			isa = PBXGroup;
 			children = (
+				0BE318A916E738080029EE19 /* Banner.m */,
 				0B090F60169F3FB6005B1490 /* substitutions.c */,
 				0BD74F22165246760045909C /* anim.c */,
 				0BD74F23165246760045909C /* arcade.c */,
@@ -635,6 +638,7 @@
 				0B3DE794167BF4F400457D3F /* GameCenter.m in Sources */,
 				0B2490601694B304004D96AC /* tutorial.cpp in Sources */,
 				0B090F61169F3FB6005B1490 /* substitutions.c in Sources */,
+				0BE318AA16E738080029EE19 /* Banner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,8 +670,8 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"ADMOB=1",
 					"DEBUG=1",
-					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -675,6 +679,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7A4142CA-9AFD-471E-BE3C-B38294E5002B";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -692,12 +697,16 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gabriele Greco";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG_DISABLED=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"ADMOB=1",
+					"DEBUG_DISABLED=1",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-ObjC";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4FBC4BAF-DF64-42B3-96FB-9ACF2192035F";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
