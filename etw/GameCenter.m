@@ -9,22 +9,28 @@
 #import "GameCenter.h"
 #include "mydebug.h"
 
-static UIViewController *gViewColtroller = NULL;
+UIViewController *gViewColtroller = NULL;
 static UIWindow *gWindow = NULL;
-static UIView *gView = NULL;
+UIView *gView = NULL;
 
-void show_ads(int ontop) {
-    // TODO in iOS
-}
-
-void hide_ads() {
-    // TODO in iOS
-}
-// not needed atm
-void buy_full_version()
+void init_controllers()
 {
+    gWindow = [[UIApplication sharedApplication] keyWindow];
+    gView = [gWindow.subviews objectAtIndex:0];
+    id nextResponder = [gView nextResponder];
+    if ([nextResponder isKindOfClass:[UIViewController class]])
+        gViewColtroller = (UIViewController *) nextResponder;
+    else
+        NSLog(@"Unable to find viewcontroller!");
 }
+
+#ifndef ADMOB
+// needed only in ad-supported versions
+void hide_ads() {}
+void show_ads(int i) {}
+void buy_full_version() {}
 int has_full_version() { return 1; }
+#endif
 
 const char *get_lang_id()
 {
@@ -79,13 +85,8 @@ void add_score(int value)
 
 void init_game_center()
 {
-    gWindow = [[UIApplication sharedApplication] keyWindow];
-    gView = [gWindow.subviews objectAtIndex:0];
-    id nextResponder = [gView nextResponder];
-    if ([nextResponder isKindOfClass:[UIViewController class]])
-        gViewColtroller = (UIViewController *) nextResponder;
-    else
-        NSLog(@"Unable to find viewcontroller!");
+    if (!gWindow)
+        init_controllers();
     
     [[GameCenter getInstance] authenticateLocalPlayer];
 }
