@@ -8,7 +8,7 @@ uint32_t detail_level = 0xffffffff;
 long Colors = 0;
 int WINDOW_WIDTH = 320, WINDOW_HEIGHT = 256, framerate = 40;
 extern BOOL free_longpass;
-BOOL use_key0 = FALSE, use_key1 = FALSE, use_touch = FALSE;
+BOOL use_key0 = FALSE, use_key1 = FALSE, use_touch = FALSE, ads_present = FALSE;
 
 game_t *p;
 ball_t *pl;
@@ -164,8 +164,10 @@ void Loading(void)
     int i, x, y, passo, maxlen;
     struct team_disk s;
 
-// Da metterci le immagini dei campi.
-
+// set the position of the timer based on the status of ads
+    ads_present = !has_full_version();
+    
+// random pitch background for loading screen, except if arcade
     if (!arcade) {
         sprintf(buffer, "gfx/stadium%02d.gfx", MyRangeRand(NUMERO_STADI));
         LoadLogo(buffer);

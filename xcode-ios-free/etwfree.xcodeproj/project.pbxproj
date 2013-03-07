@@ -120,6 +120,7 @@
 		0B3DE795167BF61100457D3F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		0B49EB8D169746AD00907F2E /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = "../../sdl-ios-framework/build/sdl_mixer/SDL_mixer.framework"; sourceTree = "<group>"; };
 		0B49EB90169746BE00907F2E /* vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vorbis.framework; path = "../../sdl-ios-framework/build/tremor/vorbis.framework"; sourceTree = "<group>"; };
+		0B5566E216E8A30200D9EDEA /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0BAD164B16539DCB0071C986 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../SDL.framework; sourceTree = "<group>"; };
 		0BAD164D1655361D0071C986 /* iphone-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iphone-icon.png"; path = "../xcode-ios/iphone-icon.png"; sourceTree = "<group>"; };
 		0BAD16571656AF290071C986 /* mobile */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mobile; path = ../data/mobile; sourceTree = "<group>"; };
@@ -151,7 +152,7 @@
 		0BD74ED1165245940045909C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0BD74ED3165245940045909C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0BD74ED5165245940045909C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		0BD74ED9165245940045909C /* etw-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "etw-Info.plist"; sourceTree = "<group>"; };
+		0BD74ED9165245940045909C /* etw-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "etw-Info.plist"; path = "../xcode-ios-free/etw-Info.plist"; sourceTree = "<group>"; };
 		0BD74EDB165245940045909C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0BD74EE3165245940045909C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		0BD74EE5165245940045909C /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
@@ -533,6 +534,8 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				it,
+				de,
 			);
 			mainGroup = 0BD74EC2165245940045909C;
 			productRefGroup = 0BD74ECE165245940045909C /* Products */;
@@ -649,6 +652,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				0BD74EDB165245940045909C /* en */,
+				0B5566E216E8A30200D9EDEA /* it */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
