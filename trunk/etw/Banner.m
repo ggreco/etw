@@ -5,7 +5,11 @@
 extern UIView *gView;
 extern UIViewController *gViewColtroller;
 extern void init_controllers();
-static GADBannerView *banner = nil;
+
+@interface MyBanner : GADBannerView <GADBannerViewDelegate> {}
+@end
+
+static MyBanner *banner = nil;
 
 void buy_full_version() {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms://itunes.apple.com/app/eat-the-whistle/id581355601"]];    
@@ -15,6 +19,29 @@ int has_full_version() {
     return 0;
 }
 
+extern void DoPause();
+extern BOOL game_start, pause_mode;
+
+@implementation MyBanner
+
+- (void)adViewWillPresentScreen:(GADBannerView *)bannerView {
+    if (game_start && !pause_mode)
+        DoPause();
+}
+/*
+- (void)adViewDidDismissScreen:(GADBannerView *)bannerView {
+    NSLog(@"Did dismiss screen");
+}
+- (void)adViewWillDismissScreen:(GADBannerView *)bannerView {
+    NSLog(@"Will dismiss screen");
+}
+*/
+- (void)adViewWillLeaveApplication:(GADBannerView *)bannerView {
+    if (game_start && !pause_mode)
+        DoPause();
+}
+
+@end
 void show_ads(int ontop) {
     if (!banner) {
         NSLog(@"Creating banner object");
@@ -23,8 +50,9 @@ void show_ads(int ontop) {
         
         // Create a view of the standard size at the top of the screen.
         // Available AdSize constants are explained in GADAdSize.h.
-        banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner];
+        banner = [[MyBanner alloc] initWithAdSize:kGADAdSizeBanner];
         
+        [banner setDelegate:banner];
         // Specify the ad's "unit identifier." This is your AdMob Publisher ID.
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
             banner.adUnitID = @"a15137065c6c467";
@@ -38,7 +66,9 @@ void show_ads(int ontop) {
     
     NSLog(@"Displaying banner object ontop:%d.", ontop);
     GADRequest *request = [GADRequest request];
+#ifndef DEBUG_DISABLED
     request.testDevices =  [NSArray arrayWithObjects:GAD_SIMULATOR_ID, nil];
+#endif
     [gView addSubview:banner];
     [banner loadRequest:request];
     

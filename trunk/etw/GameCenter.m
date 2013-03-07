@@ -56,7 +56,7 @@ void show_achievements()
 void add_achievement(const char *id, float percent)
 {
     BOOL isnew = NO;
-    NSString *nid = [NSString stringWithCString:id encoding:NSUTF8StringEncoding];
+    NSString *nid = [NSString stringWithFormat:@"grp.%@",[NSString stringWithUTF8String:id]];
     GKAchievement* achievement = [[GameCenter getInstance].achievementCache objectForKey: nid];
     
     if (achievement == NULL) {
@@ -80,7 +80,7 @@ void add_achievement(const char *id, float percent)
 void add_score(int value)
 {
     if (value > 0)
-        [[GameCenter getInstance] saveScore:value withIdentifier:@"arcade_results"];
+        [[GameCenter getInstance] saveScore:value withIdentifier:@"grp.arcade_results"];
 }
 
 void init_game_center()

@@ -395,11 +395,12 @@ void ShowPanel(void)
 
         sprintf(buffer, "%3ld:%02d"/*-*/, mins + situation_time, (int) secs);
         // center the timer, it was in the right corner where we have the pause button now
-#ifndef ANDROID
-        TextShadow((WINDOW_WIDTH - (font_width * 6)) / 2, font_height + 2, buffer, 6);
-#else
-        TextShadow(2, font_height + 12, buffer, 6);
-#endif
+
+        if (!ads_present) {
+            TextShadow((WINDOW_WIDTH - (font_width * 6)) / 2, font_height + 2, buffer, 6);
+        } else {
+            TextShadow(2, font_height + 12, buffer, 6);
+        }
     }
 
     if (!pause_mode ) {
