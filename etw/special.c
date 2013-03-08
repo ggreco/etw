@@ -763,6 +763,8 @@ void RimessaLaterale(player_t *g)
 
 void HandleRimessa(player_t *g)
 {
+    static BOOL ads_hidden = FALSE;
+    
     if(p->show_panel&0xff00)
         return;
 
@@ -770,6 +772,12 @@ void HandleRimessa(player_t *g)
     {
         uint32_t l;
 
+        // hide ads if we are in the upper side of the pitch
+        if (ads_present && g->world_y < CENTROCAMPO_Y) {
+            ads_hidden = TRUE;
+            hide_ads();
+        }
+        
         // we show a panel for mobile use
         if (use_touch) {
             hide_vjoy();
@@ -782,6 +790,9 @@ void HandleRimessa(player_t *g)
 
         if(g->WaitForControl<0) {
             show_vjoy();
+            if (ads_hidden)
+                show_ads(1);
+            
             goto rimessacomputer;
         }
 
@@ -818,6 +829,8 @@ void HandleRimessa(player_t *g)
                     dst->SpecialData = -1;
                     g->FirePressed=FALSE;
                     DoSpecialAnim(g,GIOCATORE_RIMESSA);
+                    if (ads_hidden)
+                        show_ads(1);
                     return;
                 }
             }
