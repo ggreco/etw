@@ -16,6 +16,7 @@
 		0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3DE795167BF61100457D3F /* GameKit.framework */; };
 		0B49EB8E169746AD00907F2E /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B49EB8D169746AD00907F2E /* SDL_mixer.framework */; };
 		0B49EBCF1697AAF400907F2E /* vorbis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B49EB90169746BE00907F2E /* vorbis.framework */; };
+		0B5566ED16EA246800D9EDEA /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B5566EC16EA246800D9EDEA /* iAd.framework */; };
 		0BAD164C16539DCB0071C986 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAD164B16539DCB0071C986 /* SDL.framework */; };
 		0BAD164E1655361D0071C986 /* iphone-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD164D1655361D0071C986 /* iphone-icon.png */; };
 		0BAD16581656AF290071C986 /* mobile in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD16571656AF290071C986 /* mobile */; };
@@ -121,6 +122,7 @@
 		0B49EB8D169746AD00907F2E /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = "../../sdl-ios-framework/build/sdl_mixer/SDL_mixer.framework"; sourceTree = "<group>"; };
 		0B49EB90169746BE00907F2E /* vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vorbis.framework; path = "../../sdl-ios-framework/build/tremor/vorbis.framework"; sourceTree = "<group>"; };
 		0B5566E216E8A30200D9EDEA /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0B5566EC16EA246800D9EDEA /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		0BAD164B16539DCB0071C986 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../SDL.framework; sourceTree = "<group>"; };
 		0BAD164D1655361D0071C986 /* iphone-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iphone-icon.png"; path = "../xcode-ios/iphone-icon.png"; sourceTree = "<group>"; };
 		0BAD16571656AF290071C986 /* mobile */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mobile; path = ../data/mobile; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 			files = (
 				0BE318A016E665800029EE19 /* libGoogleAdMobAds.a in Frameworks */,
 				0BE318A816E667110029EE19 /* SystemConfiguration.framework in Frameworks */,
+				0B5566ED16EA246800D9EDEA /* iAd.framework in Frameworks */,
 				0BE318A616E667010029EE19 /* MessageUI.framework in Frameworks */,
 				0BE318A416E666EE0029EE19 /* AdSupport.framework in Frameworks */,
 				0BE318A216E6667B0029EE19 /* StoreKit.framework in Frameworks */,
@@ -311,6 +314,7 @@
 		0BD74EC2165245940045909C = {
 			isa = PBXGroup;
 			children = (
+				0B5566EC16EA246800D9EDEA /* iAd.framework */,
 				0BE3189516E6652C0029EE19 /* ads */,
 				0BD74F86165249840045909C /* headers */,
 				0BB5CD21165264F500BF007B /* data */,
@@ -758,7 +762,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = armv7;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gabriele Greco (MW5JBRQPH4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gabriele Greco";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -785,7 +789,7 @@
 					"\"$(SRCROOT)/admob\"",
 				);
 				PRODUCT_NAME = etwfree;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "442BAD3F-D4C6-49DE-8D67-048EAF606E91";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C7617088-73A0-4D3F-B5BB-BDCD324AD9DE";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
