@@ -1,0 +1,25 @@
+Eat the Whistle is born a few years ago (1997) and it was a commercial project,
+at that time I didn't though about opensourcing it and the team was 100%
+Italian, so many variables and a few comments are in Italian.
+
+I'm doing what I can to replace Italian comments with English ones as soon as
+I find them in the sources, but it's not as easy for variable and function
+names so I'll describe in this document a few translations that may help to
+understand the code if you are not an Italian speaker.
+
+Arbitro - REFEREE
+Giocatore - PLAYER
+Portiere - GOALKEEPER
+Squadra - TEAM
+Infortunio - INJURY
+Resistenza - STAMINA
+Velocita - SPEED
+Palla - BALL
+Creativita - TECHNIQUE
+Contrasto - TACKLE
+Immagine - PICTURE
+Comando - COMMAND
+Distanza - DISTANCE
+Prontezza - QUICKNESS
+Direzione - DIRECTION
+Campo - PITCH

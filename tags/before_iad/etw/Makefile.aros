@@ -1,0 +1,40 @@
+OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
+	anim.o crowd.o intro.o os_control.o teamsetup.o \
+	refree.o data.o league.o os_init.o	tables.o \
+	arcade.o speed_data.o lists.o os_video.o tactics.o \
+	chunkyblitting.o display.o loops.o ball.o teams.o \
+	commento.o etw.o main.o goalkeeper.o freq.o \
+	computer.o etw_locale.o	menu.o radar.o utility.o \
+	config.o font.o menu_config.o replay.o speed_tables.o \
+	connection.o generic_video.o menu_data.o sound.o wc.o \
+	control.o gfx.o menu_font.o special.o network.o \
+	highsocket.o
+    
+EXE = etw
+
+# cannot use original path because it recurses...
+PATH=$(CROSSDIR)/bin:/usr/local/bin:/usr/bin:/bin
+export PATH
+
+CROSSDIR = 
+CXX = g++
+CC = gcc
+LFLAGS = -lSDL_mixer -lSDL
+CFLAGS = -Wall -Wno-char-subscripts -O2 -fsigned-char -Iinclude -I/Development/include/sdl
+//CFLAGS = -Wall -Iinclude -I/Development/include/sdl -O2 -fomit-frame-pointer
+
+DEFINES = -DSUPER_DEBUG -DAMIGA -DCD_VERSION -DHAVE_STDINT_H -DAROS -DFAKENET
+
+.cpp.o:
+	$(CXX) $(CFLAGS) $(DEFINES) -o $@ -c $<
+
+.c.o:
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ -c $<
+
+all: $(EXE) 
+    
+$(EXE): $(OBJECTS)
+	$(CC) -o $@ $(OBJECTS) $(LFLAGS) -s
+
+clean:
+	/bin/rm -f *.o $(EXE)
