@@ -51,13 +51,19 @@ extern BOOL game_start, pause_mode;
     self.gbanner.rootViewController = gViewColtroller;
     [gView addSubview:self.gbanner];
     
-// iad allocation
-    NSLog(@"Creating apple banner object");
-    self.ibanner = [[ADBannerView alloc] initWithFrame:CGRectZero];
-    self.ibanner.delegate = self;
+// iad allocation, only on iphone
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        NSLog(@"Creating apple banner object");
+        self.ibanner = [[ADBannerView alloc] initWithFrame:CGRectZero];
+        self.ibanner.delegate = self;
 //    [self.ibanner sizeFromBannerContentSizeIdentifier:ADBannerContentSizeIdentifier320x50];
-    self.ibanner.hidden = TRUE;
-    [gView addSubview:self.ibanner];
+        self.ibanner.hidden = TRUE;
+        [gView addSubview:self.ibanner];
+    }
+    else {
+        self.ibanner = nil;
+        [self.gbanner loadRequest:[GADRequest request]];
+    }
     self.show_ads = TRUE;
     
     return self;
@@ -78,8 +84,9 @@ extern BOOL game_start, pause_mode;
 - (void)adViewDidReceiveAd:(GADBannerView *)view
 {
     NSLog(@"Admob load");
-    self.ibanner.hidden = self.show_ads;
-    self.gbanner.hidden = FALSE;
+    if (self.ibanner)
+        self.ibanner.hidden = TRUE;
+    self.gbanner.hidden = !self.show_ads;
 }
 
 // An error occured
@@ -93,8 +100,8 @@ extern BOOL game_start, pause_mode;
 - (void)bannerViewWillLoadAd:(ADBannerView *)banner
 {
     NSLog(@"iAd load");
-    self.gbanner.hidden = self.show_ads;
-    self.ibanner.hidden = FALSE;
+    self.gbanner.hidden = TRUE;
+    self.ibanner.hidden = !self.show_ads;
 }
 // Called when an error occured
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
@@ -106,12 +113,18 @@ extern BOOL game_start, pause_mode;
 
 -(void)dealloc {
     NSLog(@"Freeing ads");
-    [self.gbanner setDelegate:nil];
-    self.ibanner.delegate = nil;
-    [self.gbanner removeFromSuperview];
-    [self.ibanner removeFromSuperview];
-    [self.gbanner release];
-    [self.ibanner release];
+    if (self.gbanner) {
+        [self.gbanner setDelegate:nil];
+        [self.gbanner removeFromSuperview];
+        [self.gbanner release];
+        self.gbanner = nil;
+    }
+    if (self.ibanner) {
+        self.ibanner.delegate = nil;
+        [self.ibanner removeFromSuperview];
+        [self.ibanner release];
+        self.ibanner = nil;
+    }
     [super dealloc];
 }
 
@@ -133,7 +146,8 @@ extern BOOL game_start, pause_mode;
         frame.origin.y = gViewColtroller.view.bounds.size.height - AdSize.height;
     
     self.gbanner.frame = frame;
-    self.ibanner.frame = frame;
+    if (self.ibanner)
+        self.ibanner.frame = frame;
 }
 @end
 
