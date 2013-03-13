@@ -219,9 +219,8 @@ iteration()
                     
                     if (FreeTouch *ft = find_touch(e.tfinger.fingerId)) {
                         found = true;
-                        SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
-                        int x = e.tfinger.x * screen_w_ / t->xres,
-                            y = e.tfinger.y * screen_h_ / t->yres;
+                        int x = e.tfinger.x * (float)screen_w_,
+                            y = e.tfinger.y * (float)screen_h_;
                         
                         if (abs(ft->start_x - x) < 20 &&
                             abs(ft->start_y - y) < 20) {
@@ -262,9 +261,8 @@ iteration()
                 break;
             case SDL_FINGERDOWN:
                 {
-                    SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
-                    int x = e.tfinger.x * screen_w_ / t->xres,
-                        y = e.tfinger.y * screen_h_ / t->yres;
+                    int x = e.tfinger.x * (float)screen_w_,
+                        y = e.tfinger.y * (float)screen_h_;
                     bool found = false;
 
                     if (button *b = in_button(x, y)) {
@@ -303,9 +301,8 @@ iteration()
                 break;
             case SDL_FINGERMOTION:
                 if (visible_ && e.tfinger.fingerId == joyfinger_) {
-                    SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
-                    int x = e.tfinger.x * screen_w_ / t->xres,
-                        y = e.tfinger.y * screen_h_ / t->yres;
+                    int x = e.tfinger.x * (float)screen_w_,
+                        y = e.tfinger.y * (float)screen_h_;
                     center_x_ = x;
                     center_y_ = y;
 
@@ -322,9 +319,8 @@ iteration()
                 }
                 else if (FreeTouch *f = find_touch(e.tfinger.fingerId)) {
                     // handle free touch moves
-                    SDL_Touch *t = SDL_GetTouch(e.tfinger.touchId);
-                    f->move(e.tfinger.x * screen_w_ / t->xres,
-                            e.tfinger.y * screen_h_ / t->yres);
+                    f->move(e.tfinger.x * (float)screen_w_,
+                            e.tfinger.y * (float)screen_h_);
                 }
                 break;
         }
