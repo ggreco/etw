@@ -796,7 +796,11 @@ struct Button mrb[]=
 
 struct Button wcfb[]=
 {
+#ifndef MOBILE_VERSION
     {60,229,259,241,MENU_SIMULATION,7,9,msg_0},
+#else
+    {60,215,259,245,MENU_SIMULATION,7,9,msg_0},
+#endif
 };
 
 struct Button scores[]=
