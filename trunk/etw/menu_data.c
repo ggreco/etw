@@ -190,11 +190,11 @@ struct Button sim_bottoni[]=
     {20,177,150,190,-1,9,11,msg_180},
     {72,210,246,222,4,14,13,msg_108},
 #else
-    {20,47,150,47,0,7,9,NULL},  // Simulation
-    {20,50,150,73,MENU_TEAM_SELECTION,7,9,msg_109},
-    {20,90,150,113,MENU_TEAM_SELECTION,7,9,msg_110},
-    {20,130,150,153,MENU_TEAM_SELECTION,7,9,msg_111},
-    {20,170,150,193,-1,9,11,msg_99},
+    {20,45,150,65,0,7,9,NULL},  // Simulation
+    {20,75,150,95,MENU_TEAM_SELECTION,7,9,msg_109},
+    {20,105,150,125,MENU_TEAM_SELECTION,7,9,msg_110},
+    {20,135,150,155,MENU_TEAM_SELECTION,7,9,msg_111},
+    {20,175,150,195,-1,9,11,msg_99},
     {72,220,246,247,4,14,13,msg_108},
 #endif
 };
