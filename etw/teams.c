@@ -1015,15 +1015,12 @@ void LoadTeams(char *name)
 
             campionato.nteams++;
 
-            // on mobile we don't have the special event, at the moment
-#ifndef MOBILE_VERSION
             menu[MENU_SIMULATION].Button[0].Text=(*campionato.name!=0) ? campionato.name : NULL;
-#endif
+
             {
                 int i=0;
 
-                while(campionato.name[i])
-                {
+                while(campionato.name[i]) {
                     campionato.name[i]=toupper(campionato.name[i]);
                     i++;
                 }
