@@ -314,7 +314,6 @@
 		0BD74EC2165245940045909C = {
 			isa = PBXGroup;
 			children = (
-				0B5566EC16EA246800D9EDEA /* iAd.framework */,
 				0BE3189516E6652C0029EE19 /* ads */,
 				0BD74F86165249840045909C /* headers */,
 				0BB5CD21165264F500BF007B /* data */,
@@ -336,6 +335,7 @@
 		0BD74ED0165245940045909C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0B5566EC16EA246800D9EDEA /* iAd.framework */,
 				0BE318A516E667010029EE19 /* MessageUI.framework */,
 				0BE318A316E666ED0029EE19 /* AdSupport.framework */,
 				0BE318A116E6667B0029EE19 /* StoreKit.framework */,
