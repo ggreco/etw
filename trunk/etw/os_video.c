@@ -406,7 +406,7 @@ void os_load_palette(uint32_t *pal)
         SDL_palette[i + first].g = pal[1 + i *3 + 1] >> 24;
         SDL_palette[i + first].r = pal[1 + i *3 + 2] >> 24;
 
-        SDL_palette[i + first].unused = SDL_ALPHA_OPAQUE;
+        SDL_palette[i + first].a = SDL_ALPHA_OPAQUE;
 
         // doing half-colors:
         if (!first) {
@@ -430,7 +430,7 @@ void os_set_color(int i, int r, int g, int b)
     
     palette16[i] = (r << 11) | (g << 5) | b;
 
-    SDL_palette[i].unused = SDL_ALPHA_OPAQUE;
+    SDL_palette[i].a = SDL_ALPHA_OPAQUE;
 
 }
 
@@ -459,6 +459,7 @@ void ScreenSwap(void)
 
         SDL_RenderPresent(renderer);
     }
+    SDL_PumpEvents();
 }
 
 void blit_anim(struct BitMap *src, SDL_Rect *dest)
