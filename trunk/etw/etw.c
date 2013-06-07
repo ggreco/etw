@@ -198,13 +198,15 @@ BOOL LoadMenuStuff(void)
     }
 
     if (firsttime) {
-        D(bug("Loading intro...\n" /*-*/ ));
-
         if (!nointro) {
+            D(bug("Loading intro...\n" /*-*/ ));
+            
             os_delay(50); // a second of delay before the intro
             os_start_audio();
             Intro();
         }
+        else
+            D(bug("Intro skipped for preference setting...\n"));
 
         StoreButtonList();
     }

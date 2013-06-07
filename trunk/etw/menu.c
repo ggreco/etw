@@ -548,14 +548,14 @@ void DisplayText(struct Button *b, int xs, int ys, char *text, int len,
 void save_prefs()
 {
     FILE *f;
-
-    if (!(f = fopen("etw.cfg" /*-*/ , "w"/*-*/))) {
-        char buf[1024];
-        snprintf(buf, 1024, "%setw.cfg"/*-*/, TEMP_DIR);
-        if (!(f = fopen(buf, "w"/*-*/))) {
-            easy.es_TextFormat = msg_69;
+    
+    char buf[1024];
+    snprintf(buf, 1024, "%setw.cfg"/*-*/, TEMP_DIR);
+    if (!(f = fopen(buf, "w"/*-*/))) {
+        
+        if (!(f = fopen("etw.cfg" /*-*/ , "w"/*-*/))) {            easy.es_TextFormat = msg_69;
             easy.es_GadgetFormat = msg_58;
-
+            
             MyEasyRequest(&easy);
             return;
         } else {
@@ -564,7 +564,7 @@ void save_prefs()
         }
     } else {
         fclose(f);
-        write_config("etw.cfg" /*-*/ );
+        write_config(buf);
     }
 }
 
