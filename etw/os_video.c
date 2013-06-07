@@ -487,6 +487,7 @@ void blit_anim(struct BitMap *src, SDL_Rect *dest)
 
         SDL_RenderPresent(renderer);
     }
+    SDL_PumpEvents();
 }
 
 int os_videook(int x, int y)

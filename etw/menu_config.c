@@ -282,13 +282,17 @@ void load_config(FILE *f)
 void read_menu_config(void)
 {
     FILE *f;
-    D(bug("Reading configuration...\n"/*-*/));
+
     char b[128];
     snprintf(b, sizeof(b), "%s/etw.cfg", TEMP_DIR);
     
-    if (!(f = fopen(b, "r")))
+    if (!(f = fopen(b, "r"))) {
         f=fopen("etw.cfg"/*-*/,"r");
-
+        D(bug("Reading configuration from etw.cfg...\n"));
+    }
+    else {
+        D(bug("Reading configuration from %s...\n"/*-*/, b));
+    }
     // close is done inside load config
     load_config(f);
 
