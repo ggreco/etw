@@ -873,11 +873,10 @@ BOOL KeyCfg(WORD button)
             {
                 /* Update button as soon a key is pressed... */
                 case SDL_KEYDOWN:
-                    D(bug("Key pressed C: %d, S: %d, M: %d, U: %d, N: %s\n",
+                    D(bug("Key pressed C: %d, S: %d, M: %d, N: %s\n",
                         e.key.keysym.scancode,
                         e.key.keysym.sym,
                         e.key.keysym.mod,
-                        e.key.keysym.unicode,
                         SDL_GetKeyName(e.key.keysym.sym)));
 
                     /* Hit ESC to quit the modification */
