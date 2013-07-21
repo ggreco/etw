@@ -702,7 +702,7 @@ uint32_t ReadKeyPort(uint32_t port)
 {
     D(fprintf(stderr,"R:%d ", port));
     register uint32_t v=0;
-    register uint8_t *keys;
+    register const uint8_t *keys;
     register int *q;
 
     keys=SDL_GetKeyboardState(NULL);
