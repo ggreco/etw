@@ -101,14 +101,12 @@ extern "C" void hide_ads() {
 }
 
 extern "C" {
-    void Java_org_libsdl_app_SDLActivity_nativeRunAudioThread(JNIEnv* env, jclass cls);
     void Java_org_libsdl_app_SDLActivity_onNativeResize(JNIEnv* env, jclass jcls, jint width, jint height, jint format);
     void Java_org_libsdl_app_SDLActivity_onNativeKeyDown(JNIEnv* env, jclass jcls, jint keycode);
     void Java_org_libsdl_app_SDLActivity_onNativeKeyUp(JNIEnv* env, jclass jcls, jint keycode);
     void Java_org_libsdl_app_SDLActivity_onNativeTouch(JNIEnv* env, jclass jcls, jint touch_device_id_in, jint pointer_finger_id_in, jint action, jfloat x, jfloat y, jfloat p);
     void Java_org_libsdl_app_SDLActivity_onNativeAccel(JNIEnv* env, jclass jcls, jfloat x, jfloat y, jfloat z);
     void Java_org_libsdl_app_SDLActivity_nativeQuit(JNIEnv* env, jclass cls);
-    void Java_org_libsdl_app_SDLActivity_nativeRunAudioThread(JNIEnv* env, jclass cls);
     void Java_org_libsdl_app_SDLActivity_nativePause(JNIEnv* env, jclass cls);
     void Java_org_libsdl_app_SDLActivity_nativeResume(JNIEnv* env, jclass cls);
 };
@@ -161,10 +159,6 @@ extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeAccel(JNIEnv* env, jclas
 // Quit
 extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeQuit(JNIEnv* env, jclass cls) {
     Java_org_libsdl_app_SDLActivity_nativeQuit(env, cls);
-}
- 
-extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeRunAudioThread(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_nativeRunAudioThread(env, cls);
 }
 
 #endif /* __ANDROID__ */
