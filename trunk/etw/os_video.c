@@ -323,18 +323,25 @@ void OpenTheScreen(void)
 
     if(screen) {
         renderer = SDL_CreateRenderer(screen, -1, 0);
-        
+       
+        if (!renderer) {
+            D(bug("Error creating SDL renderer: %s\n", SDL_GetError()));
+        }
+
         if(!wb_game)
             SDL_ShowCursor(0);
         else
             SetTitle("Eat The Whistle " ETW_VERSION);
 
-        D(bug("Fine InitAnimSystem!\n"));
         SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
         screen_texture = SDL_CreateTexture(renderer, 
                 SDL_PIXELFORMAT_RGB565, 
                 SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
 //        SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_BLEND);
+        if (!screen_texture) {
+            D(bug("Error creating screen texture!\n"));
+        }
+
         alloc_bitmap();
     }
     D(bug("Opened window size %dx%d\n", WINDOW_WIDTH, WINDOW_HEIGHT));
