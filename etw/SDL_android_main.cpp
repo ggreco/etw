@@ -61,6 +61,8 @@ extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeInit(JNIEnv* env, jclass c
     /* This interface could expand with ABI negotiation, calbacks, etc. */
     SDL_Android_Init(env, cls);
 
+    SDL_SetMainReady();
+
     // get the bindings for my callbacks
     my_class = (jclass)env->NewGlobalRef(cls);
     mid_showAds = env->GetStaticMethodID(my_class, "showAds", "(Z)V");
@@ -101,14 +103,13 @@ extern "C" void hide_ads() {
 }
 
 extern "C" {
+    void Java_org_libsdl_app_SDLActivity_onNativeSurfaceChanged(JNIEnv* env, jclass jcls);
+    void Java_org_libsdl_app_SDLActivity_onNativeSurfaceDestroyed(JNIEnv* env, jclass jcls);
     void Java_org_libsdl_app_SDLActivity_onNativeResize(JNIEnv* env, jclass jcls, jint width, jint height, jint format);
     void Java_org_libsdl_app_SDLActivity_onNativeKeyDown(JNIEnv* env, jclass jcls, jint keycode);
     void Java_org_libsdl_app_SDLActivity_onNativeKeyUp(JNIEnv* env, jclass jcls, jint keycode);
     void Java_org_libsdl_app_SDLActivity_onNativeTouch(JNIEnv* env, jclass jcls, jint touch_device_id_in, jint pointer_finger_id_in, jint action, jfloat x, jfloat y, jfloat p);
     void Java_org_libsdl_app_SDLActivity_onNativeAccel(JNIEnv* env, jclass jcls, jfloat x, jfloat y, jfloat z);
-    void Java_org_libsdl_app_SDLActivity_nativeQuit(JNIEnv* env, jclass cls);
-    void Java_org_libsdl_app_SDLActivity_nativePause(JNIEnv* env, jclass cls);
-    void Java_org_libsdl_app_SDLActivity_nativeResume(JNIEnv* env, jclass cls);
 };
 
 extern "C" void Java_org_ggsoft_etw_SDLActivity_load(JNIEnv* env, jclass jcls, jobject obj) {
@@ -132,13 +133,13 @@ extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeKeyDown(JNIEnv* env, jcl
  
 
 // Pause
-extern "C" void Java_org_ggsoft_etw_SDLActivity_nativePause(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_nativePause(env, cls);
+extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeSurfaceChanged(JNIEnv* env, jclass cls) {
+    Java_org_libsdl_app_SDLActivity_onNativeSurfaceChanged(env, cls);
 }
 
 // resume
-extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeResume(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_nativeResume(env, cls);
+extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeSurfaceDestroyed(JNIEnv* env, jclass cls) {
+    Java_org_libsdl_app_SDLActivity_onNativeSurfaceDestroyed(env, cls);
 }
 
 // Keyup
@@ -156,11 +157,6 @@ extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeAccel(JNIEnv* env, jclas
      Java_org_libsdl_app_SDLActivity_onNativeAccel(env, jcls, x, y, z);
 }
  
-// Quit
-extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeQuit(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_nativeQuit(env, cls);
-}
-
 #endif /* __ANDROID__ */
 
 /* vi: set ts=4 sw=4 expandtab: */
