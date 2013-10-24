@@ -105,6 +105,9 @@ extern "C" void hide_ads() {
 extern "C" {
     void Java_org_libsdl_app_SDLActivity_onNativeSurfaceChanged(JNIEnv* env, jclass jcls);
     void Java_org_libsdl_app_SDLActivity_onNativeSurfaceDestroyed(JNIEnv* env, jclass jcls);
+    void Java_org_libsdl_app_SDLActivity_nativeLowMemory(JNIEnv* env, jclass jcls);
+    void Java_org_libsdl_app_SDLActivity_nativePause(JNIEnv* env, jclass jcls);
+    void Java_org_libsdl_app_SDLActivity_nativeResume(JNIEnv* env, jclass jcls);
     void Java_org_libsdl_app_SDLActivity_onNativeResize(JNIEnv* env, jclass jcls, jint width, jint height, jint format);
     void Java_org_libsdl_app_SDLActivity_onNativeKeyDown(JNIEnv* env, jclass jcls, jint keycode);
     void Java_org_libsdl_app_SDLActivity_onNativeKeyUp(JNIEnv* env, jclass jcls, jint keycode);
@@ -142,6 +145,19 @@ extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeSurfaceDestroyed(JNIEnv*
     Java_org_libsdl_app_SDLActivity_onNativeSurfaceDestroyed(env, cls);
 }
 
+// Pause
+extern "C" void Java_org_ggsoft_etw_SDLActivity_nativePause(JNIEnv* env, jclass cls) {
+    Java_org_libsdl_app_SDLActivity_nativePause(env, cls);
+}
+
+// resume
+extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeResume(JNIEnv* env, jclass cls) {
+    Java_org_libsdl_app_SDLActivity_nativeResume(env, cls);
+}
+// lowmemory
+extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeLowMemory(JNIEnv* env, jclass cls) {
+    Java_org_libsdl_app_SDLActivity_nativeLowMemory(env, cls);
+}
 // Keyup
 extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeKeyUp(JNIEnv* env, jclass jcls, jint keycode) {
     Java_org_libsdl_app_SDLActivity_onNativeKeyUp(env, jcls, keycode);
