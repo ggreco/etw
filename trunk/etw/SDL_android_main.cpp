@@ -56,27 +56,22 @@ static jmethodID mid_hasFull;
 static jclass my_class;
 
 // Start up the SDL app
-extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jobject obj)
+extern "C" void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jobject obj)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
     SDL_Android_Init(env, cls);
 
     SDL_SetMainReady();
 
-    // get the bindings for my callbacks
-    my_class = (jclass)env->NewGlobalRef(cls);
-    mid_showAds = env->GetStaticMethodID(my_class, "showAds", "(Z)V");
-    mid_hideAds = env->GetStaticMethodID(my_class, "hideAds", "()V");
-    mid_buyFull = env->GetStaticMethodID(my_class, "buy_full_version", "()V");
-    mid_hasFull = env->GetStaticMethodID(my_class, "has_full_version", "()Z");
     /* Run the application code! */
     int status;
     char *argv[2];
-    argv[0] = strdup("SDL_app");
+    argv[0] = strdup("ETW");
     argv[1] = NULL;
+ __android_log_write(ANDROID_LOG_INFO, "ETW", "NATIVE INIT COMPLETED");
     status = SDL_main(1, argv);
 
-    /* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
+ /* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
     //exit(status);
 }
 
@@ -102,75 +97,23 @@ extern "C" void hide_ads() {
     env->CallStaticVoidMethod(my_class, mid_hideAds);
 }
 
-extern "C" {
-    void Java_org_libsdl_app_SDLActivity_onNativeSurfaceChanged(JNIEnv* env, jclass jcls);
-    void Java_org_libsdl_app_SDLActivity_onNativeSurfaceDestroyed(JNIEnv* env, jclass jcls);
-    void Java_org_libsdl_app_SDLActivity_nativeLowMemory(JNIEnv* env, jclass jcls);
-    void Java_org_libsdl_app_SDLActivity_nativePause(JNIEnv* env, jclass jcls);
-    void Java_org_libsdl_app_SDLActivity_nativeResume(JNIEnv* env, jclass jcls);
-    void Java_org_libsdl_app_SDLActivity_onNativeResize(JNIEnv* env, jclass jcls, jint width, jint height, jint format);
-    void Java_org_libsdl_app_SDLActivity_onNativeKeyDown(JNIEnv* env, jclass jcls, jint keycode);
-    void Java_org_libsdl_app_SDLActivity_onNativeKeyUp(JNIEnv* env, jclass jcls, jint keycode);
-    void Java_org_libsdl_app_SDLActivity_onNativeTouch(JNIEnv* env, jclass jcls, jint touch_device_id_in, jint pointer_finger_id_in, jint action, jfloat x, jfloat y, jfloat p);
-    void Java_org_libsdl_app_SDLActivity_onNativeAccel(JNIEnv* env, jclass jcls, jfloat x, jfloat y, jfloat z);
-};
+extern "C" void Java_org_ggsoft_etw_ETWGame_load(JNIEnv* env, jclass jcls, jobject obj) {
+    // get the bindings for my callbacks
+     __android_log_write(ANDROID_LOG_INFO, "ETW", "Setting up java JNI bindings...");
 
-extern "C" void Java_org_ggsoft_etw_SDLActivity_load(JNIEnv* env, jclass jcls, jobject obj) {
+    my_class = (jclass)env->NewGlobalRef(jcls);
+    mid_showAds = env->GetStaticMethodID(my_class, "showAds", "(Z)V");
+    mid_hideAds = env->GetStaticMethodID(my_class, "hideAds", "()V");
+    mid_buyFull = env->GetStaticMethodID(my_class, "buy_full_version", "()V");
+    mid_hasFull = env->GetStaticMethodID(my_class, "has_full_version", "()Z");
+    
+     __android_log_write(ANDROID_LOG_INFO, "ETW", "Setting up java asset manager...");
     asset_mgr = AAssetManager_fromJava(env, obj); 
 }
 
-extern "C" void Java_org_ggsoft_etw_SDLActivity_setInches(JNIEnv* env, jclass jcls, jfloat wi, jfloat hi) {
+extern "C" void Java_org_ggsoft_etw_ETWGame_setInches(JNIEnv* env, jclass jcls, jfloat wi, jfloat hi) {
     display_width_inches = wi;
     display_height_inches = hi;
-}
-                                    
-// Resize
-extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeResize( JNIEnv* env, jclass jcls, jint width, jint height, jint format) {
-    Java_org_libsdl_app_SDLActivity_onNativeResize(env, jcls, width, height, format);
-}
- 
-// Keydown
-extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeKeyDown(JNIEnv* env, jclass jcls, jint keycode) {
-    Java_org_libsdl_app_SDLActivity_onNativeKeyDown(env, jcls, keycode);
-}
- 
-
-// Pause
-extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeSurfaceChanged(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_onNativeSurfaceChanged(env, cls);
-}
-
-// resume
-extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeSurfaceDestroyed(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_onNativeSurfaceDestroyed(env, cls);
-}
-
-// Pause
-extern "C" void Java_org_ggsoft_etw_SDLActivity_nativePause(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_nativePause(env, cls);
-}
-
-// resume
-extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeResume(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_nativeResume(env, cls);
-}
-// lowmemory
-extern "C" void Java_org_ggsoft_etw_SDLActivity_nativeLowMemory(JNIEnv* env, jclass cls) {
-    Java_org_libsdl_app_SDLActivity_nativeLowMemory(env, cls);
-}
-// Keyup
-extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeKeyUp(JNIEnv* env, jclass jcls, jint keycode) {
-    Java_org_libsdl_app_SDLActivity_onNativeKeyUp(env, jcls, keycode);
-}
- 
-// Touch
-extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeTouch(JNIEnv* env, jclass jcls, jint touch_device_id_in, jint pointer_finger_id_in, jint action, jfloat x, jfloat y, jfloat p) {
-    Java_org_libsdl_app_SDLActivity_onNativeTouch(env, jcls, touch_device_id_in, pointer_finger_id_in, action, x, y, p);
-}
- 
-// Accelerometer
-extern "C" void Java_org_ggsoft_etw_SDLActivity_onNativeAccel(JNIEnv* env, jclass jcls, jfloat x, jfloat y, jfloat z) {
-     Java_org_libsdl_app_SDLActivity_onNativeAccel(env, jcls, x, y, z);
 }
  
 #endif /* __ANDROID__ */
