@@ -355,7 +355,7 @@ void HandleControlledJ2B(int squadra)
 {
     register uint32_t joystate;
     register player_t *g = p->team[squadra]->attivo;
-    D(fprintf(stderr, "H:%d ", squadra));
+//    D(fprintf(stderr, "H:%d ", squadra));
 
     //      g->WaitForControl++;
 
