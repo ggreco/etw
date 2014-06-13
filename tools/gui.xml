@@ -28,7 +28,15 @@
       <column type="guint"/>
       <!-- column-name shot -->
       <column type="guint"/>
+      <!-- column-name technique -->
+      <column type="guint"/>
+      <!-- column-name creativity -->
+      <column type="guint"/>
+      <!-- column-name endurance -->
+      <column type="guint"/>
       <!-- column-name tackle -->
+      <column type="guint"/>
+      <!-- column-name stamina -->
       <column type="guint"/>
     </columns>
   </object>
@@ -482,12 +490,56 @@
                                       </object>
                                     </child>
                                     <child>
+                                      <object class="GtkTreeViewColumn" id="treeviewcolumn12">
+                                        <property name="title" translatable="yes">Tec</property>
+                                        <child>
+                                          <object class="GtkCellRendererText" id="cellrenderertext13"/>
+                                          <attributes>
+                                            <attribute name="text">8</attribute>
+                                          </attributes>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkTreeViewColumn" id="treeviewcolumn14">
+                                        <property name="title" translatable="yes">Cre</property>
+                                        <child>
+                                          <object class="GtkCellRendererText" id="cellrenderertext15"/>
+                                          <attributes>
+                                            <attribute name="text">9</attribute>
+                                          </attributes>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkTreeViewColumn" id="treeviewcolumn13">
+                                        <property name="title" translatable="yes">End</property>
+                                        <child>
+                                          <object class="GtkCellRendererText" id="cellrenderertext14"/>
+                                          <attributes>
+                                            <attribute name="text">10</attribute>
+                                          </attributes>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
                                       <object class="GtkTreeViewColumn" id="treeviewcolumn10">
                                         <property name="title" translatable="yes">Tk</property>
                                         <child>
                                           <object class="GtkCellRendererText" id="cellrenderertext11"/>
                                           <attributes>
-                                            <attribute name="text">8</attribute>
+                                            <attribute name="text">11</attribute>
+                                          </attributes>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkTreeViewColumn" id="treeviewcolumn15">
+                                        <property name="title" translatable="yes">Sta</property>
+                                        <child>
+                                          <object class="GtkCellRendererText" id="cellrenderertext16"/>
+                                          <attributes>
+                                            <attribute name="text">12</attribute>
                                           </attributes>
                                         </child>
                                       </object>

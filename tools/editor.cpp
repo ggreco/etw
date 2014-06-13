@@ -345,7 +345,11 @@ class ETWEditor : public gtk::Application, public gtk::Builder
                              5, t.players[i].number,
                              6, t.players[i].speed,
                              7, t.players[i].shot,
-                             8, t.players[i].tackle,
+                             8, t.players[i].technique,
+                             9, t.players[i].creativity,
+                             10, t.players[i].Durata,
+                             11, t.players[i].tackle,
+                             12, t.players[i].stamina,
                              -1);
             }
         }

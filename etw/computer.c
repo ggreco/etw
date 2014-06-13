@@ -123,7 +123,7 @@ WORD CalcolaPotenza(struct team_disk *s,char POS)
                     break;
                 case P_CENTRO:
                     potenza+=s->players[i].creativity;
-                    potenza+=s->players[i].Durata;
+                    potenza+=s->players[i].technique;
                     break;
             }
         }
@@ -135,7 +135,7 @@ WORD CalcolaPotenza(struct team_disk *s,char POS)
 WORD ComputerMatch(BYTE a,BYTE b)
 {
     int i,t;
-    WORD gol_a=0,gol_b=0,attacco_a,attacco_b,centro_a,centro_b,difesa_a,difesa_b;
+    int gol_a=0,gol_b=0,attacco_a,attacco_b,centro_a,centro_b,difesa_a,difesa_b;
 
     difesa_a=CalcolaPotenza(&teamlist[a],P_DIFESA);
     centro_a=CalcolaPotenza(&teamlist[a],P_CENTRO);
@@ -147,6 +147,10 @@ WORD ComputerMatch(BYTE a,BYTE b)
 /* In campionati e coppe con andata e ritorno chi e' in casa ha un bonus di 1/5 della
    sua potenza reale
  */
+    D(bug("%s (%d/%d/%d) - %s (%d/%d/%d) ", 
+                teamlist[a].name, difesa_a, centro_a, attacco_a,
+                teamlist[b].name, difesa_b, centro_b, attacco_b));
+
     if( (competition==MENU_LEAGUE || competition==MENU_MATCHES) &&i_scontri>1)
     {
         difesa_a*=6;
@@ -159,7 +163,7 @@ WORD ComputerMatch(BYTE a,BYTE b)
         attacco_a/=5;
     }
 
-    for(i=0;i<90;i++)
+    for(i=0;i < 90;i++)
     {
         t=centro_a-centro_b+RangeRand(201)-100;
 
@@ -168,27 +172,31 @@ WORD ComputerMatch(BYTE a,BYTE b)
         else if(gol_a>2||gol_b>2)
             t=t*3/4;
 
-        if(t>50)
-        {
-            t=attacco_a-difesa_b+RangeRand(81);
+        if (gol_a == 0 &&
+            gol_b == 0 && i > 45)
+            t=t*4/3;
 
-            if(t>40)
+        if(t>30)
+        {
+            t=attacco_a-difesa_b+RangeRand(101);
+
+            if(t>25)
             {
                 gol_a++;
-                attacco_a-=5;
-                centro_a-=5;
+                attacco_a-=1;
+                centro_a-=2;
                 difesa_a-=5;
             }
         }
-        else if(t<-50)
+        else if(t<-30)
         {
-            t=attacco_b-difesa_a+RangeRand(81);
+            t=attacco_b-difesa_a+RangeRand(101);
 
-            if(t>40)
+            if(t>25)
             {
                 gol_b++;
-                attacco_b-=5;
-                centro_b-=5;
+                attacco_b-=1;
+                centro_b-=2;
                 difesa_b-=5;
             }
         }
@@ -229,6 +237,7 @@ WORD ComputerMatch(BYTE a,BYTE b)
             gol_a+=1;
     }
 
+    D(bug(" = %d - %d\n", gol_a, gol_b));
     return (WORD) (gol_a | (gol_b<<8) );
 }
 
