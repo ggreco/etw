@@ -23,6 +23,8 @@
 #if defined(LINUX) || defined(IPHONE) || defined(ANDROID) 
     extern FILE *os_open(const char *, const char *);
 #   define fopen os_open
+#elif defined(WIN)
+#define os_open fopen
 #endif
 
 #if !defined(__SASC)
@@ -109,7 +111,8 @@ extern unsigned long os_get_timer(void);
 #define JPF_JOY_RIGHT      (1 << JPB_JOY_RIGHT)
 #define JP_DIRECTION_MASK (JPF_JOY_UP|JPF_JOY_DOWN|JPF_JOY_LEFT|JPF_JOY_RIGHT)
 
-#ifndef VOID 
+/* AC: We not need to define VOID under Windows, it's defined in winnt.h */
+#if !defined(VOID) && !defined(WIN)
 #   define VOID void
 #endif
 
