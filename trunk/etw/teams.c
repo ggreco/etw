@@ -1013,7 +1013,12 @@ void LoadTeams(char *name)
             D(bug("League: %s V:%ld-P:%ld-L:%ld-S:%ld\n", campionato.name, campionato.win,
                     campionato.draw, campionato.loss, campionato.nteams+1));
 
-            campionato.nteams++;
+            // AC: Old files had one team missing (probably due to a 0-based variable
+            // new files like Brazil 2014 does not have this limitation; but we need
+            // not to increase the number of available teams.
+            // At the moment the implemented method is the only one came to my mind...
+            if (strcmp(campionato.name,"BRAZIL 2014") != 0)
+                campionato.nteams++;
 
             menu[MENU_SIMULATION].Button[0].Text=(*campionato.name!=0) ? campionato.name : NULL;
 
