@@ -557,13 +557,12 @@ void free_game()
 {
     extern void FreeStuff();
     long temp; 
+    char buf[1024];
 
     D(bug("Totale frames: %ld real, skip %ld\n", frames, f_skip));
     if ((temp = (Timer() - start) / MY_CLOCKS_PER_SEC)) {
         D(bug("Total time: %ld secs, %ld FPS\n", temp, frames / temp));
     }
-    
-    char buf[1024];
     
     if (final)
         ShowFinal();

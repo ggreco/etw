@@ -806,11 +806,12 @@ void HandleRimessa(player_t *g)
                 player_t *dst = find_touch_player(g);
 
                 if (dst) {            
+                    int d;
                     show_vjoy();
 
                     pl->dir = FindDirection256(g->world_x, g->world_y, dst->world_x, dst->world_y);
                     g->dir = pl->dir / 32;
-                    int d=FindDistance(g->world_x, g->world_y, dst->world_x, dst->world_y,pl->dir);
+                    d=FindDistance(g->world_x, g->world_y, dst->world_x, dst->world_y,pl->dir);
                     TogliPalla();
                     DaiPalla(g);
 

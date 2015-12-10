@@ -219,8 +219,9 @@ struct team_disk *find_disk_team(team_t *s)
 }
 BOOL handle_pause(WORD button)
 {
+    team_t *cnt;
     D(bug("Clicked button %d in handle_pause\n", button));
-    team_t *cnt = find_controlled_team();
+    cnt = find_controlled_team();
 
     switch(button) {
             // continue playing

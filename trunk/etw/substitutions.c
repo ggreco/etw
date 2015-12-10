@@ -275,10 +275,11 @@ static BOOL perform_substitutions()
                 player_t *old_plr;
                 // if the player that was in that position is still on the 11...
                 if ((old_plr = has_player(actual_player_name))) {
+                    int temp_gnum;
+                    player_t temp;
                     D(bug("Swapping positions of %s and %s\n", new_player_name, actual_player_name));
                     // let's swap them
-                    int temp_gnum = new_plr->GNum;
-                    player_t temp;
+                    temp_gnum = new_plr->GNum;
                     temp = *new_plr;
                     *new_plr = *old_plr;
                     *old_plr = temp;
@@ -408,9 +409,9 @@ static void redraw_tactic(struct Button *b)
 
 BOOL TeamSubstitutions(WORD button)
 {
-    D(bug("Clicked button %d\n", button));
     struct Button *b;
     static int sel1 = -1;
+    D(bug("Clicked button %d\n", button));
 
     if (button < 0)
         return TRUE;
