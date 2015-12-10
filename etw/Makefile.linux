@@ -1,11 +1,12 @@
 CC = gcc
+CXX = g++
 
 CFLAGS = -Wall -g -fsigned-char -Iinclude \
     -Wpointer-arith -Wcast-align -Wcast-qual  -Wno-char-subscripts  -Wshadow \
     -Waggregate-return  -Wsign-compare \
     `pkg-config --cflags sdl2` `pkg-config --cflags gtk+-2.0`
 
-LDFLAGS = `pkg-config --libs sdl2` `pkg-config --libs gtk+-2.0`
+LDFLAGS = `pkg-config --libs SDL2_mixer` `pkg-config --libs gtk+-2.0` -lm -lpthread -lstdc++
 DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H
 
 OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
@@ -18,10 +19,14 @@ OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
 	config.o font.o menu_config.o replay.o speed_tables.o \
 	connection.o generic_video.o menu_data.o sound.o wc.o \
 	control.o gfx.o menu_font.o special.o network.o \
-	highsocket.o prefix.o
+	highsocket.o prefix.o tutorial.o vjoy.o touch.o \
+	stubs.o substitutions.o world.o
 
 .c.o: etw.h menu.h
 	$(CC) $(CFLAGS) $(DEFINES) -c $<
+
+.cpp.o: etw.h menu.h
+	$(CXX) $(CFLAGS) $(DEFINES) -c $<
 
 all: CHECKTOOLS etw
 
@@ -32,5 +37,6 @@ clean:
 	rm -rf etw *.o
 
 CHECKTOOLS:
-	@pkg-config --cflags sdl >/dev/null 2>&1 || (echo "Error: you need SDL"; exit 1)
+	@pkg-config --cflags sdl2 >/dev/null 2>&1 || (echo "Error: you need SDL2"; exit 1)
+	@pkg-config --cflags SDL2_mixer >/dev/null 2>&1 || (echo "Error: you need SDL2_mixer"; exit 1)
 	@pkg-config --cflags gtk+-2.0 >/dev/null 2>&1 || (echo "Error: you need GTK+2.0"; exit 1)

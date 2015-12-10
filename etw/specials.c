@@ -2040,6 +2040,7 @@ static int final_menu = -1;
 static void handle_challenge()
 {
     char *c;
+    WORD result;
     
     if (jingle >= 0)
     {
@@ -2051,7 +2052,7 @@ static void handle_challenge()
     if (turno == 10)
         final = TRUE;
 
-    WORD result = StartMatch(*teamarray, arcade_sequence[turno]);
+    result = StartMatch(*teamarray, arcade_sequence[turno]);
     
     cp[2].Text = teamlist[*teamarray].name;
     cp[3].Text = teamlist[arcade_sequence[turno]].name;
@@ -2274,6 +2275,8 @@ static void handle_worldcup()
     }
     else if (turno < 7)
     {
+        int i;
+
         // the sixth round has also the 3rd place final
         if (turno == 6) {
             cup_team_number = nteams;
@@ -2283,7 +2286,6 @@ static void handle_worldcup()
             cup_team_number = nteams / 2;
 
         EliminazioneDiretta();
-        int i;
         make_setup = TRUE;
         NewTurn();
         isworldcupfinal = 0;

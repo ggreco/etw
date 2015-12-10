@@ -105,13 +105,12 @@ void DisplayAnim(struct AnimInstData *a)
     int w = a->aid_BMH->bmh_Width, h = a->aid_BMH->bmh_Height;
     float dst_ratio = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
           src_ratio = (float)w / (float)h;
+    SDL_Rect srect = {0, 0, w, h};
 
     if (!create_anim_context(w, h)) {
         D(bug("Unable to create animation texture!\n"));
         return;
     }
-
-    SDL_Rect srect = {0, 0, w, h};
 
     if (dst_ratio > src_ratio) {
         int wanted_height = ((float)w / dst_ratio);
@@ -1484,8 +1483,9 @@ void decode_plane(uint8_t *opc, uint8_t *dta, uint8_t *plane, long bytesperrow, 
                 }
             }
             else if (*opc == 0) { // if the byte is 0 we have to check the next byte for a "repeat" run
+                int count;
                 opc++;
-                int count = *opc;
+                count = *opc;
                 opc++;
                 for (k = 0; k < count; ++k) {
                     *dst = *opc;
@@ -1530,7 +1530,7 @@ void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,long f_mode)
     }
 }               /* end DeltaUnpack */
 
-void C_BdyUnpack( UBYTE *f_bdy, PTR_RING *f_ring_ptr,long f_row,long f_BytePerRow,long f_compress)
+void C_BdyUnpack( UBYTE *f_bdy, PTR_RING *f_ring_ptr,LONG f_row,LONG f_BytePerRow,LONG f_compress)
 {
   register UBYTE  *WrPtr;       /* WritePointer to destination in BitMap */
   register short i, count;

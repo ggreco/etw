@@ -1443,10 +1443,10 @@ void draw_substitutions_menu()
 
 void draw_pause_menu()
 {
-;
     extern ball_t *pl;
     int i;
-    team_t *c = find_controlled_team();
+    team_t *c;
+    c = find_controlled_team();
 
     // it's important to set current_menu before CreateButton() since createbutton() uses it!
     actual_menu = &menu[MENU_PAUSE];

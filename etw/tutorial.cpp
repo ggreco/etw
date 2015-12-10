@@ -15,6 +15,9 @@ extern "C" {
     extern void RestartTime();
     extern void hide_vjoy();
     extern void show_vjoy();
+    extern BOOL pause_mode;
+    extern uint32_t ideal;
+    extern BOOL time_stopped;
 }
 
 #include "tutorial.h"
@@ -22,7 +25,6 @@ extern "C" {
 
 #define SZ(x) (sizeof(x)/sizeof(x[0]))
 
-extern BOOL pause_mode;
 
 bool running_tutorial_line = false;
 
@@ -147,7 +149,6 @@ static TutorialLine lines[] = {
 void tutorial_line(int i)
 {
     bool stopped = false;
-    extern BOOL time_stopped, pause_mode;
     struct EasyStruct easy = {0};
     running_tutorial_line = true;
     easy.es_TextFormat = lines[i].line;
@@ -169,7 +170,6 @@ void tutorial_line(int i)
         show_vjoy();
     
     if (stopped) {
-        extern uint32_t ideal;
         RestartTime();
         ideal = Timer() - 1;
     }
@@ -197,7 +197,7 @@ check_tutorial()
             continue;
         
         if (lines[i].ActivatedByMenu() &&
-            current_menu == (int)lines[i].data) {
+            current_menu == (int)(size_t)lines[i].data) {
             tutorial_line(i);
         }
         else if (lines[i].SpecialFuncMatch())
