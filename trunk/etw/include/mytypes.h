@@ -74,11 +74,18 @@ typedef unsigned int    uint32_t;
 #   define NULL ((void *)0L)
 #endif
 
+#ifdef _MSC_VER
+#define inline __inline
+#define snprintf _snprintf
+
+typedef signed int ssize_t;
+#else
 static inline int min(int a, int b) {
     return a < b ? a : b;
 }
 static inline int max(int a, int b) {
     return a > b ? a : b;
 }
+#endif
 
 #endif

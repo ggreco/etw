@@ -307,11 +307,11 @@ void fake_goal(int idx)
     {
         int i=p->team[0]->Reti+p->team[1]->Reti - 1;
 
-        goal_array[i]=(random() % 10) + 2;
+        goal_array[i]=(rand() % 10) + 2;
 
         goal_team[i]= idx;
 
-        goal_minute[i]=(random() % 45) + 1;
+        goal_minute[i]=(rand() % 45) + 1;
 
         if(extratime)
         {

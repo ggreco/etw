@@ -88,6 +88,9 @@ LINK32=link.exe
 
 # Name "game - Win32 Release"
 # Name "game - Win32 Debug"
+# Begin Group "Source Files"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
 SOURCE=.\anim.c
@@ -300,5 +303,6 @@ SOURCE="..\..\Sdl-1.2.3\lib\SDL.lib"
 
 SOURCE="..\..\Sdl-1.2.3\lib\SDLmain.lib"
 # End Source File
+# End Group
 # End Target
 # End Project

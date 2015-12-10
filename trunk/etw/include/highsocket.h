@@ -6,7 +6,9 @@
     #include <winsock.h>
 #elif defined(WIN32)
     #include <winsock.h>
-    #define EWOULDBLOCK 10000
+    #ifndef EWOULDBLOCK
+       #define EWOULDBLOCK 10000
+    #endif
     extern struct Library *SockBase;
 
 #elif defined(__SASC)

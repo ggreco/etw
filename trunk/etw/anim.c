@@ -968,7 +968,11 @@ void CopyBitMap( struct BitMap *bm1, struct BitMap *bm2 )
     if( bpr1 == bpr2 )
     {
       /* Interleaved BitMap ? */
+#ifdef _MSC_VER
+      if( ((char *)(bm1 -> Planes[ 1 ]) - (char *)(bm1 -> Planes[ 0 ])) == (bpr1 / (ULONG)(bm1 -> Depth)) )
+#else
       if( ((bm1 -> Planes[ 1 ]) - (bm1 -> Planes[ 0 ])) == (bpr1 / (ULONG)(bm1 -> Depth)) )
+#endif
       {
         ULONG planesize = bpr2 * (ULONG)(bm2 -> Rows);
 
@@ -994,7 +998,11 @@ void CopyBitMap( struct BitMap *bm1, struct BitMap *bm2 )
                ULONG  width = bm1 -> BytesPerRow;
 
       /* Interleaved BitMap ? */
+#ifdef _MSC_VER
+      if( ((char *)(bm1 -> Planes[ 1 ]) - (char *)(bm1 -> Planes[ 0 ])) == (bpr1 / (ULONG)(bm1 -> Depth)) )
+#else
       if( ((bm1 -> Planes[ 1 ]) - (bm1 -> Planes[ 0 ])) == (bpr1 / (ULONG)(bm1 -> Depth)) )
+#endif
       {
         width /= (bm1 -> Depth);
       }

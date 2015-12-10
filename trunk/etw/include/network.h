@@ -29,7 +29,9 @@
 #define SUB_ENDGAME 'M'
 #define SUB_LOCAL_QUIT 'Q'
 
+#ifndef _MSC_VER
 #pragma push(pack, 2)
+#endif
 
 typedef struct {
     char hdr[4];
@@ -68,7 +70,9 @@ typedef struct
 }
 syncmsg;
 
+#ifndef _MSC_VER
 #pragma pop(pack)
+#endif
 
 void free_network(void);
 player *connect_server(char *,int );
