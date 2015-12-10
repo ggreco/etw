@@ -2504,9 +2504,12 @@ void UpdateKeyCfg(void)
 
     for (i = 0; i < 20; i++)
     {
-        /* Uppercase conversion for ETW font */
-        const char *tmp = SDL_GetKeyName(query[i]);
+        /* AC: SDL_GetKeyName function wants SDL_Keycode instead of SDL_Scancode.
+         * I'm using SDL_GetKeyFromScancode instead of changing query declaration.
+         */
+        const char *tmp = SDL_GetKeyName(SDL_GetKeyFromScancode(query[i]));
         int j = 0;
+        /* Uppercase conversion for ETW font */
         while(*tmp)
         {
             keys_names[i][j] = toupper(*tmp);

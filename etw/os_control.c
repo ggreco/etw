@@ -671,7 +671,7 @@ void CheckKeys(void)
 }
 
 
-int query[]=
+SDL_Scancode query[]=
 {
     /* Red player */
     SDL_SCANCODE_UP,SDL_SCANCODE_RIGHT,SDL_SCANCODE_DOWN,SDL_SCANCODE_LEFT,
@@ -703,7 +703,7 @@ uint32_t ReadKeyPort(uint32_t port)
 //    D(fprintf(stderr,"R:%d ", port));
     register uint32_t v=0;
     register const uint8_t *keys;
-    register int *q;
+    register SDL_Scancode *q;
 
     keys=SDL_GetKeyboardState(NULL);
 
@@ -756,7 +756,7 @@ void LoadKeyDef(int port,char *file)
     if ((f=fopen(file,"r"))) {
         char buffer[120];
         int i=0;
-        int *q;
+        SDL_Scancode *q;
 
         q= (port) ? &query[10] : query;
 
@@ -790,7 +790,7 @@ void SaveKeyDef(int port,char *file)
     {
         char buffer[120];
         int i=0;
-        int *q;
+        SDL_Scancode *q;
 
         q= (port) ? &query[10] : query;
 
