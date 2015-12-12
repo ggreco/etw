@@ -9,12 +9,27 @@
 #import "GameCenter.h"
 #include "mydebug.h"
 
+#ifdef MACOSX
+NSViewController *gViewColtroller = NULL;
+static NSWindow *gWindow = NULL;
+NSView *gView = NULL;
+#else
 UIViewController *gViewColtroller = NULL;
 static UIWindow *gWindow = NULL;
 UIView *gView = NULL;
+#endif
 
 void init_controllers()
 {
+#ifdef MACOSX
+    gWindow = [[NSApplication sharedApplication] keyWindow];
+    //gView = [gWindow.initialFirstResponder];
+    id nextResponder = [gView nextResponder];
+    if ([nextResponder isKindOfClass:[NSViewController class]])
+        gViewColtroller = (NSViewController *) nextResponder;
+    else
+        NSLog(@"Unable to find viewcontroller!");
+#else
     gWindow = [[UIApplication sharedApplication] keyWindow];
     gView = [gWindow.subviews objectAtIndex:0];
     id nextResponder = [gView nextResponder];
@@ -22,6 +37,7 @@ void init_controllers()
         gViewColtroller = (UIViewController *) nextResponder;
     else
         NSLog(@"Unable to find viewcontroller!");
+#endif
 }
 
 #ifndef ADMOB
@@ -143,7 +159,11 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     
     // The device must be running iOS 4.1 or later.
     NSString *reqSysVer = @"4.1";
+#ifdef MACOSX
+	NSString *currSysVer = @"10.11";
+#else
     NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+#endif
     BOOL osVersionSupported = ([currSysVer compare: reqSysVer options: NSNumericSearch] != NSOrderedAscending);
     
     return (localPlayerClassAvailable && osVersionSupported);
@@ -188,6 +208,7 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     ];
 }
 
+#ifndef MACOSX
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     /*
@@ -234,6 +255,7 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     TumblebugsGuiManager::instance().mainmenuWindow->updateWelcomeText();
      */
 }
+#endif
 
 /*
 - (void) getPlayerAlias: (char *)aliasBuf: (int) length
@@ -351,8 +373,13 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
 
 +(BOOL)isGameCenterNotificationUp
 {
+#ifdef MACOSX
+    NSArray *windows = [[NSApplication sharedApplication] windows];
+    for(NSWindow *win in windows)
+#else
     NSArray *windows = [[UIApplication sharedApplication] windows];
     for(UIWindow *win in windows)
+#endif
     {
         NSArray *winSubViews = [win subviews];
         if([winSubViews count] == 1)
@@ -369,7 +396,11 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     return NO;
 }
 
-- (void)listSubviewsOfView:(UIView *)view 
+#ifdef MACOSX
+- (void)listSubviewsOfView:(NSView *)view
+#else
+- (void)listSubviewsOfView:(UIView *)view
+#endif
 {
     
     // Get the subviews of the view
@@ -377,8 +408,12 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     
     // Return if there are no subviews
     if ([subviews count] == 0) return;
-    
+
+#ifdef MACOSX
+    for (NSView *subview in subviews) {
+#else
     for (UIView *subview in subviews) {
+#endif
         
         D(NSLog(@"%@", subview));
         

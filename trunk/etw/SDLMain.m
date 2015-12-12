@@ -40,7 +40,7 @@ static BOOL   gFinderLaunch;
     /* Post a SDL_QUIT event */
     SDL_Event event;
     event.type = SDL_QUIT;
-    SDL_PushEvent(&event);
+    SDL_PushEvent(&eve  nt);
 }
 @end
 

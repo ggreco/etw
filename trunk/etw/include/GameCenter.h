@@ -11,11 +11,19 @@
 
 #include "SDL.h"
 
+#ifdef MACOSX
+@interface GameCenter : NSObject <GKLeaderboardViewControllerDelegate, GKAchievementViewControllerDelegate, NSTextViewDelegate> {
+    GKLocalPlayer *localPlayer;
+    NSArray *descriptions;
+    BOOL attemptedLogin;
+}
+#else
 @interface GameCenter : NSObject <GKLeaderboardViewControllerDelegate, GKAchievementViewControllerDelegate, UIAlertViewDelegate> {
     GKLocalPlayer *localPlayer;
     NSArray *descriptions;
     BOOL attemptedLogin;
 }
+#endif
 
 @property (strong,atomic) NSMutableDictionary *achievementCache;
 
