@@ -5,13 +5,10 @@
 #include "highdirent.h"
 #include "sound.h"
 
-#if defined(__IPHONEOS__)
-#include <unistd.h>
-
-#include <sys/stat.h>
-#include <sys/types.h>
-#elif defined(LINUX) || defined(SOLARIS_X86)
+#if !defined(WIN)
+#if defined(LINUX) || defined(SOLARIS_X86)
 #include <gtk/gtk.h>
+#endif
 #include <unistd.h>
 
 #include <sys/stat.h>
@@ -337,7 +334,11 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef MACOSX
-    chdir("ETW.app/Contents/Resources/data");
+    char newPath[1024];
+    extern const char *GetAppName(void);
+    sprintf(newPath,"%s.app/Contents/Resources",GetAppName());
+    chdir(newPath);
+//    chdir("ETW.app/Contents/Resources");
 #endif
     srand(time(NULL));
     
@@ -362,7 +363,7 @@ int main(int argc, char *argv[])
         SCORE_FILE = malloc(strlen(TEMP_DIR) + strlen("ETWScores") + 1);
         sprintf(SCORE_FILE, "%sETWScores", TEMP_DIR);
     }
-#elif defined(LINUX) || defined(SOLARIS_X86) || defined(MACOSX)
+#elif defined(LINUX) || defined(SOLARIS_X86)
     /* Find data and temporary directories */
     {
         struct passwd *pwd;
@@ -418,7 +419,7 @@ int main(int argc, char *argv[])
     RESULT_FILE = "t/result";
     SCORE_FILE = "ETWScores";
 #endif
-    
+
     InitStrings();
 
 /* Fix of an old language catalog bug... */
