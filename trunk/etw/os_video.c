@@ -287,7 +287,7 @@ void OpenTheScreen(void)
     scaling = NULL;
 #else
     if(wb_game) 
-        screen =SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
+        screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
     else
         screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
 #endif
@@ -328,10 +328,11 @@ void OpenTheScreen(void)
             D(bug("Error creating SDL renderer: %s\n", SDL_GetError()));
         }
 
-        if(!wb_game)
-            SDL_ShowCursor(0);
-        else
-            SetTitle("Eat The Whistle " ETW_VERSION);
+#ifdef MOBILE_VERSION
+        SDL_ShowCursor(0);
+#else
+        SetTitle("Eat The Whistle " ETW_VERSION);
+#endif
 
         SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
         screen_texture = SDL_CreateTexture(renderer, 
@@ -503,3 +504,7 @@ int os_videook(int x, int y)
     /* TODO SDL_VideoModeOK(x,y,8,SDL_SWSURFACE | (wb_game ? SDL_RESIZABLE : SDL_FULLSCREEN) ); */
 }
 
+void FullScreen(BOOL active)
+{
+    SDL_SetWindowFullscreen(screen, active ? SDL_WINDOW_FULLSCREEN : 0);
+}

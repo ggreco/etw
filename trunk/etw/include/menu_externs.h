@@ -137,6 +137,7 @@ void delete_anim_context();
 
 // Moduli generici...
 void ResizeWindow(int, int);
+void FullScreen(BOOL);
 void bltchunkybitmap(uint8_t *, int, int, uint8_t *, int, int, int, int, int, int);
 void bltanimobj(struct MChunky *, uint8_t *, int, int, int);
 void rectfill_pattern(uint8_t * b, int x1, int y1, int x2, int y2, unsigned char color, int width);
