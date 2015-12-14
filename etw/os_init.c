@@ -185,7 +185,7 @@ int strnicmp(const char *a, const char *b, size_t l)
 
 unsigned long MY_CLOCKS_PER_SEC = 0, MY_CLOCKS_PER_SEC_50;
 
-unsigned long os_get_timer(void)
+unsigned int os_get_timer(void)
 {
     return SDL_GetTicks();
 }
