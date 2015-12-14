@@ -169,9 +169,31 @@ void set_resolution()
 
 
 
-void ResizeWindow(int w, int h)
+BOOL ResizeWindow(int w, int h)
 {
+    extern Uint8 *back;
+
     SDL_SetWindowSize(screen, w, h);
+    SDL_RenderSetLogicalSize(renderer, w, h);
+
+    SDL_DestroyTexture(screen_texture);
+    screen_texture = SDL_CreateTexture(renderer,
+                                       SDL_PIXELFORMAT_RGB565,
+                                       SDL_TEXTUREACCESS_STREAMING, w, h);
+
+    free(main_bitmap);
+    free(back);
+    bitmap_width = WINDOW_WIDTH = w;
+    bitmap_height = WINDOW_HEIGHT = h;
+
+    main_bitmap = malloc(WINDOW_WIDTH * WINDOW_HEIGHT);
+    back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT);
+
+    if (!main_bitmap || !back) {
+        // We should free main_bitmap and back here?
+        return FALSE;
+    }
+    return TRUE;
 }
 
 void ResizeWin(SDL_Event *event)
