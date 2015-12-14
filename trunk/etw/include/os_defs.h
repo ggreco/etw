@@ -75,7 +75,7 @@ extern char *SCORE_FILE;
 #define Timer() os_get_timer()
 #define mytimer unsigned long
 extern unsigned long MY_CLOCKS_PER_SEC, MY_CLOCKS_PER_SEC_50;
-extern unsigned long os_get_timer(void);
+extern unsigned int os_get_timer(void);
 
 
 
