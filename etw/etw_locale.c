@@ -544,27 +544,7 @@ char *GetLanguage(void)
     else
         return L10N_ENGLISH;
 }
-#elif defined(MACOSX)
-char *GetLanguage(void)
-{
-    extern int MacGetLanguage(void);
-    int langid;
-    if((langid = MacGetLanguage()))
-    {
-        switch(langid)
-        {
-            case 1:
-                return L10N_ITALIAN;
-            case 2:
-                return L10N_GERMAN;
-            default:
-                return L10N_ENGLISH;
-        }
-    }
-    else
-        return L10N_ENGLISH;
-}
-#elif defined(MOBILE_VERSION)
+#elif defined(MOBILE_VERSION) || defined(MACOSX)
 char *GetLanguage(void)
 {
     extern const char *get_lang_id();
