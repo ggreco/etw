@@ -1583,8 +1583,7 @@ BOOL VideoPrefs(WORD button)
                 /* AC: if we are on screen, disable the scaling */
                 use_gfx_scaling = FALSE;
 
-                ResizeWindow(atoi(resolutions[current_resolution]),
-                             atoi(resolutions[current_resolution] + 4));
+                FullScreen(TRUE);
                 
                 /* AC: Since these buttons are restored later on, I think
                  * that we don't have to eliminate them. They are Scaling
@@ -1602,8 +1601,7 @@ BOOL VideoPrefs(WORD button)
             {
                 wb_game = TRUE;
 
-                ResizeWindow(atoi(resolutions[current_resolution]),
-                             atoi(resolutions[current_resolution] + 4));
+                FullScreen(FALSE);
 
                 RedrawButton(&actual_menu->Button[16],
                              actual_menu->Button[0].Color);
