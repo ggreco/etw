@@ -1717,7 +1717,19 @@ BOOL VideoPrefs(WORD button)
             }
             while (!os_videook(wanted_width, wanted_height));
 
-            ResizeWindow(wanted_width, wanted_height);
+            if (!ResizeWindow(wanted_width, wanted_height)) {
+                request("Not enough memory.\n");
+                FreeMenuStuff();
+                exit(0);
+            }
+
+            if (arcade_back)
+                LoadArcadeBack();
+            else
+                LoadBack();
+
+            UpdateButtonList();
+            ChangeMenu(current_menu);
 
             break;
 
