@@ -395,7 +395,7 @@ void CheckPelle(void)
 
 void MakeName(player_t *g, struct player_disk *gd)
 {
-    int j, l = strlen(gd->name) + strlen(gd->surname) + 1;
+    int j, l = (int)strlen(gd->name) + (int)strlen(gd->surname) + 1;
 
     g->name = malloc(l + 1);
 
@@ -754,7 +754,7 @@ void DisponiSquadra(team_t *s, int sector, BOOL possesso)
 
 FILE *OpenTeam(char *name)
 {
-    char path[100];
+    char path[1024];
     FILE *fh;
 
     strcpy(path, TEMP_DIR);
@@ -1192,7 +1192,7 @@ game_t *SetupSquadre(void)
 
     Progress();
 
-    result_width = (strlen(p->team[0]->name) + strlen(p->team[1]->name) + 9) * VS_CHAR_X;
+    result_width = (int)(strlen(p->team[0]->name) + strlen(p->team[1]->name) + 9) * VS_CHAR_X;
 
     if(!(p->result = malloc(result_width * (VS_CHAR_Y+1))))
     {

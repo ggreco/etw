@@ -668,7 +668,7 @@ static void * OpenCatalog(char *catalog)
 
             clen = fread_u32(f);
 
-            cat->offsetfirst=ftell(f);
+            cat->offsetfirst=(int)ftell(f);
 
             D(bug("Catalog length: %ld bytes\n",clen));
 

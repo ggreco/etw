@@ -223,7 +223,7 @@ BOOL credits_iteration()
             
             for (i = 0; i < 5; i++) {
                 if (stage[actual].string[i]) {
-                    int l=strlen(stage[actual].string[i]);
+                    int l=(int)strlen(stage[actual].string[i]);
                     
                     x=top_x+((MAXSTRINGLEN-l)*bigfont->width)/2;
                     

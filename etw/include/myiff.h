@@ -51,24 +51,24 @@ struct StoredProperty
 struct ContextNode
 {
     struct MyMinNode cn_Node;
-    long cn_ID;
-    long cn_Type;
-    long cn_Size;    /*  Size of this chunk           */
-    long cn_Scan;    /*  # of bytes read/written so far */
+    LONG cn_ID;
+    LONG cn_Type;
+    LONG cn_Size;    /*  Size of this chunk           */
+    LONG cn_Scan;    /*  # of bytes read/written so far */
 };
 
 struct PropNode
 {
     struct PropNode *next;
-    long cn_ID;
-    long cn_Scan;
+    LONG cn_ID;
+    LONG cn_Scan;
     struct StoredProperty sp;
 };
 
 struct IFFHandle
 {
     FILE *iff_Stream;
-    unsigned long iff_Flags, iff_Stops, iff_props;
+    ULONG iff_Flags, iff_Stops, iff_props;
     int32_t *stops, *props;
     struct ContextNode Current;
     struct PropNode *Prop;
@@ -89,24 +89,24 @@ struct IFFHandle
 /* Basic functions */
 
 struct IFFHandle *AllocIFF(void);
-long OpenIFF(struct IFFHandle *iff, long rwMode);
-long ParseIFF(struct IFFHandle *iff, long control);
+LONG OpenIFF(struct IFFHandle *iff, LONG rwMode);
+LONG ParseIFF(struct IFFHandle *iff, LONG control);
 void CloseIFF(struct IFFHandle *iff);
 void FreeIFF(struct IFFHandle *iff);
 
 /* additional anim parsing functions */
 struct StoredProperty *FindProp(struct IFFHandle *, LONG type, LONG id);
-long PropChunks(struct IFFHandle * iff, int32_t *chunks, int num_chunks);
+LONG PropChunks(struct IFFHandle * iff, int32_t *chunks, int num_chunks);
 
 /* Read/Write functions */
 
-size_t ReadChunkBytes(struct IFFHandle *iff, APTR buf, long numBytes);
-size_t ReadChunkRecords(struct IFFHandle *iff, APTR buf, long bytesPerRecord,
-                         long numRecords);
+LONG ReadChunkBytes(struct IFFHandle *iff, APTR buf, LONG numBytes);
+LONG ReadChunkRecords(struct IFFHandle *iff, APTR buf, LONG bytesPerRecord,
+                         LONG numRecords);
 
 /* Built-in chunk/property handlers */
 
-size_t StopChunks(struct IFFHandle *iff, int32_t *propArray, long numPairs);
+LONG StopChunks(struct IFFHandle *iff, int32_t *propArray, LONG numPairs);
 struct ContextNode *CurrentChunk(struct IFFHandle *iff);
 
 /* IFFHandle initialization */

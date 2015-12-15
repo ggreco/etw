@@ -9,7 +9,7 @@ int8_t scroll_type = 0;
 long int frames = 0;
 #endif
 
-long int
+int32_t
 #ifdef DEMOVERSION
     time_length = (2 * 60), t_l = 2;
 #else

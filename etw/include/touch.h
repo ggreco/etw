@@ -10,14 +10,14 @@ class TouchControl
 {
     struct FreeTouch {
         FreeTouch() : fid(-1) {}
-        FreeTouch(int i, int x, int y) : fid(i), start_x(x), start_y(y) {}
+        FreeTouch(SDL_FingerID i, int x, int y) : fid(i), start_x(x), start_y(y) {}
         int start_x, start_y;
         std::vector< std::pair<int, int> > coords;
-        int fid;
+        SDL_FingerID fid;
         void move(int x, int y) { coords.push_back(std::make_pair(x, y)); }
     };
     
-    typedef  std::map<int, FreeTouch> TouchMap;
+    typedef  std::map<SDL_FingerID, FreeTouch> TouchMap;
     TouchMap touches_;
     
     struct button {
@@ -25,7 +25,7 @@ class TouchControl
         uint32_t id;
         SDL_Texture *img, *pressed;
         bool is_pressed;
-        int finger;
+        SDL_FingerID finger;
         bool visible;
     };
     
@@ -37,7 +37,7 @@ class TouchControl
     SDL_Texture *knob_, *joybase_, *free_;
     int knob_w_, knob_h_, knob_orig_w_, knob_orig_h_, joyrect_orig_w_, joyrect_orig_h_;
     bool visible_;
-    int joyfinger_;
+    SDL_FingerID joyfinger_;
     int fading_;
     int center_y_, center_x_, screen_w_, screen_h_;
     int reference_y_, reference_x_;
@@ -69,11 +69,11 @@ class TouchControl
     }
     
     // add a new touch, replace the previous one if stuck
-    void add_touch(int i, int x, int y) {
+    void add_touch(SDL_FingerID i, int x, int y) {
         FreeTouch touch(i, x, y);
         touches_[i] = touch;
     }
-    FreeTouch *find_touch(int fid) {
+    FreeTouch *find_touch(SDL_FingerID fid) {
         TouchMap::iterator it = touches_.find(fid);
         
         if (it != touches_.end())

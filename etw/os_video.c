@@ -439,7 +439,7 @@ void os_load_palette(uint32_t *pal)
         SDL_palette[i + first].a = SDL_ALPHA_OPAQUE;
 
         // doing half-colors:
-        if (!first) {
+        if (!first && colornum <= 32) {
             r = (r*2/3);  g = (g*2/3);  b = (b*2/3);
             SDL_palette[224 + i].r =  (pal[1 + i *3] >> 24) * 2 / 3;
             SDL_palette[224 + i].g =  (pal[1 + i *3 + 1] >> 24) * 2 / 3;

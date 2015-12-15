@@ -148,7 +148,7 @@ void DrawName(char *name, char *surname, int num, int x, int y)
     else if (*name)
         sprintf(buffer, "%-2d %s", num, name);
 
-    num = strlen(buffer);
+    num = (int)strlen(buffer);
 
     drawtext(buffer, num, x + 1, y + 1, Pens[P_NERO]);
     k = drawtext(buffer, 2, x, y, Pens[P_GIALLO]);

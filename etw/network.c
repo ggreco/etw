@@ -123,7 +123,7 @@ void UpdateNetStatus(char *string)
     extern int WINDOW_WIDTH, WINDOW_HEIGHT;
 
     MyRestoreBack();
-    PrintShadow(FixedScaledX(1),FixedScaledY(210),string,strlen(string),bigfont);
+    PrintShadow(FixedScaledX(1),FixedScaledY(210),string, (int)strlen(string),bigfont);
     ScreenSwap();
 }
 
@@ -140,7 +140,7 @@ int ReceiveTeam(struct team_disk *s)
          if (m->type==MSG_TEAM) {
             FILE *f;
 
-            snprintf(buf, 1024, "%stempremteam", TEMP_DIR);
+            snprintf(buf, sizeof(buf), "%stempremteam", TEMP_DIR);
             if ((f=fopen(buf/*-*/,"wb+"))) {
                 fwrite(((char *)m)+sizeof(simplemsg),1,m->size,f);
                 fseek(f,0,SEEK_SET);
@@ -168,7 +168,7 @@ int SendTeam(int8_t team)
     short l;
     FILE *f;
 
-    snprintf(buf, 1024, "%stempteam", TEMP_DIR);
+    snprintf(buf, sizeof(buf), "%stempteam", TEMP_DIR);
     if((f=fopen(buf/*-*/,"wb+"))) {
         WriteTeam(f,&teamlist[team]);
         fseek(f,0,SEEK_SET);
@@ -238,7 +238,7 @@ BOOL ConfigureSession(player *p)
         msg.subtype=0; // da cambiare x vedere il colore voluto.
         msg.size=0;
 
-        snprintf(buf, 1024, "%stempconfig", TEMP_DIR);
+        snprintf(buf, sizeof(buf), "%stempconfig", TEMP_DIR);
         if ((f=fopen(buf/*-*/,"wb+"/*-*/))) {
             extern void load_config(FILE *);
 
@@ -265,7 +265,7 @@ player *connect_server(char *ip,int team)
     player *p;
     char buffer[100];
     struct sockaddr_in sin;
-    long addr,l;
+    int32_t addr,l;
 
     UpdateNetStatus("CONNECTING");
 
@@ -373,7 +373,7 @@ void free_network(void)
 
 statusmsg mystatusmsg={{SERVER_HDR,MSG_EVENT,0,0},0};
 
-unsigned long NetJoyPos[2]={0,0};
+uint32_t NetJoyPos[2]={0,0};
 
 void stripmsg(simplemsg *m,int *len)
 {
