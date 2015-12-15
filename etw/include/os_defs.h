@@ -23,7 +23,7 @@
 #if defined(LINUX) || defined(IPHONE) || defined(ANDROID) 
     extern FILE *os_open(const char *, const char *);
 #   define fopen os_open
-#elif defined(WIN)
+#elif defined(WIN) || defined(MACOSX)
 #define os_open fopen
 #endif
 
