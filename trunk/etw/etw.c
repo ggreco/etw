@@ -336,7 +336,7 @@ int main(int argc, char *argv[])
 #ifdef MACOSX
     char newPath[1024];
     extern const char *GetAppName(void);
-    sprintf(newPath,"%s.app/Contents/Resources",GetAppName());
+    sprintf(newPath,"%s/Contents/Resources",GetAppName());
     chdir(newPath);
 //    chdir("ETW.app/Contents/Resources");
 #endif

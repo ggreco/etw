@@ -74,6 +74,6 @@ int MacRequester(struct MyFileRequest *fr)
 const char *GetAppName(void)
 {
     NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
-    NSString *appName = [[NSFileManager defaultManager] displayNameAtPath: bundlePath];
-    return [appName cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    //NSString *appName = [[NSFileManager defaultManager] displayNameAtPath: bundlePath];
+    return [bundlePath cStringUsingEncoding:[NSString defaultCStringEncoding]];
 }
