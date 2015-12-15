@@ -85,7 +85,7 @@ void SendQuit(void);
 void SendFinish(unsigned short);
 int ReceiveTeam(struct team_disk *);
 
-extern unsigned long NetJoyPos[2];
+extern uint32_t NetJoyPos[2];
 extern player *network_player;
 extern char chat_message[CHATMSGSIZE];
 extern char outgoing_chat[CHATMSGSIZE];

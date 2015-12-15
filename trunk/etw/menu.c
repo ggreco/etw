@@ -168,7 +168,7 @@ BOOL MyEasyRequest(struct EasyStruct *e)
     setfont(tf);
 
     while (linee) {
-        len = strlen(c);
+        len = (int)strlen(c);
         x = (WINDOW_WIDTH - len * tf->width) / 2;
 
         ColorTextShadow(x, y, c, len, P_BIANCO);
@@ -1060,7 +1060,7 @@ void PrintButtonType(struct Button *b, WORD bl, WORD bt,
         }
         
         if (c)
-            DisplayText(b, bl + b->X1, bt + b->Y1, c, strlen(c), tf);
+            DisplayText(b, bl + b->X1, bt + b->Y1, c, (int)strlen(c), tf);
     }
 }
 
@@ -1091,7 +1091,7 @@ void CreateButton(struct Button *b)
         main_bitmap[b->X1 + b->Y1 * bitmap_width] = Pens[P_BIANCO];
     }
 
-    l = strlen(t);
+    l = (int)strlen(t);
 
     if ((l * tf->width) > (b->X2 - b->X1 + 2)) {
         l = (b->X2 - b->X1) / tf->width;
@@ -1128,7 +1128,7 @@ void RedrawButton(struct Button *b, UBYTE colore)
         main_bitmap[b->X1 + b->Y1 * bitmap_width] = Pens[P_BIANCO];
     }
 
-    l = strlen(t);
+    l = (int)strlen(t);
 
     if ((l * tf->width) > (b->X2 - b->X1 + 2)) {
         l = (b->X2 - b->X1) / tf->width;
@@ -1224,12 +1224,12 @@ void ChangeMenu(WORD m)
 
     if (m == MENU_TEAM_SELECTION && teamsel_message) {
         TextShadow(FixedScaledX(8), FixedScaledY(20) + titlefont->height, 
-                   teamsel_message, strlen(teamsel_message));
+                   teamsel_message, (int)strlen(teamsel_message));
     }
     else if (m == MENU_ARCADE_SELECTION && teamsel_message) {
-        int x = (WINDOW_WIDTH - titlefont->width * strlen(teamsel_message)) / 2,
+        int x = (WINDOW_WIDTH - titlefont->width * (int)strlen(teamsel_message)) / 2,
             y = FixedScaledY(124) + titlefont->height;
-        TextShadow(x, y, teamsel_message, strlen(teamsel_message));
+        TextShadow(x, y, teamsel_message, (int)strlen(teamsel_message));
     }
 
     if (current_menu == MENU_TEAM_SETTINGS) {
@@ -1240,15 +1240,15 @@ void ChangeMenu(WORD m)
         if (y <= titlefont->height)
             y = titlefont->height + 1;
 
-        i = strlen(teamlist[actual_team].name);
+        i = (int)strlen(teamlist[actual_team].name);
 
         TextShadow(FixedScaledX(5), y, teamlist[actual_team].name, i);
 
         setfont(WINDOW_HEIGHT > 300 ? bigfont : smallfont);
 
-        i = strlen(c);
+        i = (int)strlen(c);
         l = titlefont->width * i;
-        l2 = strlen(teamlist[actual_team].allenatore) * titlefont->width;
+        l2 = (int)strlen(teamlist[actual_team].allenatore) * titlefont->width;
 
         y = FixedScaledY(titlefont->height - 1);
 
@@ -1257,7 +1257,7 @@ void ChangeMenu(WORD m)
 
         TextShadow(WINDOW_WIDTH - l - l2 - FixedScaledX(4), y, c, i);
 
-        i = strlen(teamlist[actual_team].allenatore);
+        i = (int)strlen(teamlist[actual_team].allenatore);
         TextShadow(WINDOW_WIDTH - l2 - FixedScaledX(4),
                    FixedScaledY(titlefont->height + 8),
                    teamlist[actual_team].allenatore, i);
@@ -1268,7 +1268,7 @@ void ChangeMenu(WORD m)
         if (y <= titlefont->height)
             y = titlefont->height + 1;
 
-        i = strlen(t);
+        i = (int)strlen(t);
 
         if (*t != '-') {
             TextShadow(WINDOW_WIDTH / 2 - i * titlefont->width / 2, y, t,
@@ -1316,7 +1316,7 @@ void ChangeMenu(WORD m)
 
         setfont(smallfont);
 
-        l = strlen(c);
+        l = (int)strlen(c);
 
         x = WINDOW_WIDTH - l * smallfont->width - 2;
         y = WINDOW_HEIGHT - smallfont->height - 1;
@@ -1389,7 +1389,7 @@ void draw_substitutions_menu()
         if (y <= titlefont->height)
             y = titlefont->height + 1;
 
-        i = strlen(t);
+        i = (int)strlen(t);
 
         if (*t != '-') {
             TextShadow(WINDOW_WIDTH / 2 - i * titlefont->width / 2, y, t,

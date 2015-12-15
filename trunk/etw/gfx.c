@@ -363,8 +363,7 @@ gfx_t *LoadGfxObject(const char *_name, int32_t * pens, uint8_t * dest)
                     fread(planes[i], BITRASSIZE(obj->width, obj->height),
                           1, fh);
 
-                do_p2c(planes, obj->bmap, obj->width, obj->height,
-                       obj->realdepth, obj->pens);
+                do_p2c(planes, obj->bmap, obj->width, obj->height, obj->realdepth, obj->pens);
 
                 /* 15/06/04 - AC: After converting bitplanes in a bitmap, we should
                  * free them.

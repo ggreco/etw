@@ -1255,7 +1255,7 @@ BOOL GamePrefs(WORD button)
 
             actual_menu->Button[button].Text = time_options[duration];
 
-            t_l = atol(time_options[duration]);
+            t_l = atoi(time_options[duration]);
             break;
         case 3:
             field++;
@@ -1694,8 +1694,8 @@ BOOL VideoPrefs(WORD button)
 
                 buffer[3] = 0;
 
-                FIXED_SCALING_WIDTH = atol(buffer);
-                FIXED_SCALING_HEIGHT = atol(scaling_resolutions[current_scaling] + 4);
+                FIXED_SCALING_WIDTH = atoi(buffer);
+                FIXED_SCALING_HEIGHT = atoi(scaling_resolutions[current_scaling] + 4);
             }
             break;
         case 21:
@@ -1706,8 +1706,8 @@ BOOL VideoPrefs(WORD button)
                 if (!resolutions[current_resolution])
                     current_resolution = 0;
 
-                wanted_width = atol(resolutions[current_resolution]);
-                wanted_height = atol(resolutions[current_resolution] + 4);
+                wanted_width = atoi(resolutions[current_resolution]);
+                wanted_height = atoi(resolutions[current_resolution] + 4);
 
 #ifdef TESTING_RES_1024
                 /* AC: Trying to increase screen resolution upto 1024x768 */

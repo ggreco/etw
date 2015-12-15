@@ -194,7 +194,7 @@ void DisplayTactic(const char* tct, int xs, int ys, const char *pos[], int team_
              if (pos[i]) {
                  int y = FixedScaledY(110-t.Position[0][i][GOALKICK].x*156/10240),
                      x = FixedScaledX(t.Position[0][i][GOALKICK].y*100/4352-15);
-                 int l = strlen(pos[i]);
+                 int l = (int)strlen(pos[i]);
 
                  BltAnimObj(symbols, main_bitmap, team_type, x+xs, y+ys, bitmap_width);
 

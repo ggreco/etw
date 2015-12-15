@@ -7,7 +7,7 @@ char joybuttons[2];
 uint8_t joycfg_buttons[2][8];
 char num_joys=0;
 BOOL has_joystick=FALSE;
-extern unsigned long NetJoyPos[];
+extern uint32_t NetJoyPos[];
 
 extern void ResizeWin(SDL_Event *);
 

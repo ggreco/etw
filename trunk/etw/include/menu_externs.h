@@ -100,7 +100,7 @@ extern BOOL no_sound, allow_replay, nocpu, saved, wb_game, big, injuries, substi
     audio_to_fast, use_gfx_scaling, tutorial, use_touch, prefs_changed, reqqing;
 extern int32_t Pens[256];
 extern int framerate;
-extern long int t_l, situation_time;
+extern int32_t t_l, situation_time;
 extern uint32_t detail_level, ahimode;
 extern struct Match turni[64][32];
 extern int arcade_score;

@@ -10,7 +10,7 @@
 extern uint8_t team_a, team_b;
 extern int8_t player_type[4], role[4], current_field;
 extern char shirt[2][24], palette[24], fieldname[24];
-extern long int time_length;
+extern int32_t time_length;
 extern BOOL use_offside, highlight;
 int8_t field;
 extern int highlight_size, matchstatus_size;

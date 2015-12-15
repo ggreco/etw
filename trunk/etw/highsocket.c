@@ -138,7 +138,7 @@ int SockWrite(int Socket,void *Buffer,long Size)
     return -1;
 #else
 
-    return(send(Socket,Buffer,Size,0));
+    return (int)(send(Socket,Buffer,Size,0));
 
 #endif
 }
@@ -160,7 +160,7 @@ int SockRead(int Socket,void *Buffer,long Size)
     return -1;
 #else
 
-    return(recv(Socket,Buffer,Size,0));
+    return (int)(recv(Socket,Buffer,Size,0));
 
 #endif
 }

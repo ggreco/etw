@@ -11,7 +11,7 @@ typedef UWORD           uint16_t;
 typedef LONG            int32_t;
 typedef ULONG           uint32_t;
 
-#elif defined HAVE_STDINT_H
+#else
 #   include <stdint.h>
 #   include <stdio.h>
 typedef void *          APTR;
@@ -26,13 +26,14 @@ typedef uint8_t         BYTEBITS;
 typedef uint16_t        WORDBITS;
 typedef uint32_t        LONGBITS;
 typedef char * STRPTR;
+#endif
 
-#else
+#if 0
 typedef char * STRPTR;
 typedef void            *APTR;      /* 32-bit untyped pointer */
 #   if !defined(_WINNT_H) && !defined(_WINNT_)
-typedef signed long     LONG;       /* signed 32-bit quantity */
-typedef unsigned long   ULONG;      /* unsigned 32-bit quantity */
+typedef int32_t     LONG;       /* signed 32-bit quantity */
+typedef uint32_t   ULONG;      /* unsigned 32-bit quantity */
 #   endif
 #   if !defined( _WINDEF_H) && !defined(_WINDEF_)
 #       ifndef WORD
@@ -49,7 +50,7 @@ typedef unsigned short  UWORD;      /* unsigned 16-bit quantity */
 typedef unsigned char   UBYTE;      /* unsigned 8-bit quantity */
 typedef unsigned char   BYTEBITS;   /* 8 bits manipulated individually */
 typedef unsigned short  WORDBITS;   /* 16 bits manipulated individually */
-typedef unsigned long   LONGBITS;   /* 32 bits manipulated individually */
+typedef uint32_t LONGBITS;   /* 32 bits manipulated individually */
 // typedef void VOID;
 
 #ifndef _STDINT_H_

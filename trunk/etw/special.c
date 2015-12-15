@@ -273,7 +273,7 @@ void UpdateCornerLine(void)
     register int i;
     register WORD vx,vy;
     WORD line_length;
-    long a,b;
+    int a,b;
 
 /* Sarebbe b=quota/8 e a=-b/32, io pero' ho bisogno di numeri grandi per mantenere
  * la precisione allora moltiplico tutto *256;

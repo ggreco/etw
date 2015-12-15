@@ -340,19 +340,16 @@ int main(int argc, char *argv[])
     chdir(newPath);
 //    chdir("ETW.app/Contents/Resources");
 #endif
-    srand(time(NULL));
+    srand((int)time(NULL));
     
-#if defined(IPHONE)
-    SCORE_FILE = "../Documents/ETWScores";
-    TEMP_DIR = "../Documents/";
-    HIGH_FILE = "../Documents/high";
-    CONFIG_FILE = "../Documents/thismatch";
-    RESULT_FILE = "../Documents/result";    
-#elif defined(ANDROID)
+#if defined(IPHONE) || defined(ANDROID)
     {
-        const char *tempdir = SDL_AndroidGetInternalStoragePath();
-        TEMP_DIR = malloc(strlen(tempdir) + 2);
-        sprintf(TEMP_DIR, "%s/", tempdir);
+#ifdef ANDROID
+        const char *temp_dir = SDL_AndroidGetInternalStoragePath();
+#else
+        char *temp_dir = SDL_GetPrefPath("ggsoft", "ETW");
+#endif
+        TEMP_DIR = strdup(temp_dir);
         D(bug("Set storage path to <%s>\n", TEMP_DIR));
         HIGH_FILE = malloc(strlen(TEMP_DIR) + strlen("high") + 1);
         sprintf(HIGH_FILE, "%shigh", TEMP_DIR);
@@ -362,6 +359,9 @@ int main(int argc, char *argv[])
         sprintf(RESULT_FILE, "%sresult", TEMP_DIR);
         SCORE_FILE = malloc(strlen(TEMP_DIR) + strlen("ETWScores") + 1);
         sprintf(SCORE_FILE, "%sETWScores", TEMP_DIR);
+#ifndef ANDROID
+        SDL_free(temp_dir);
+#endif
     }
 #elif defined(LINUX) || defined(SOLARIS_X86)
     /* Find data and temporary directories */

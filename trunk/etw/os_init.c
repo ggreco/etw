@@ -233,9 +233,9 @@ FILE *os_open(const char *name, const char *mode)
     if(name[0] != '/')
     {
 #ifndef ANDROID
-        sprintf(buf, GAME_DIR "%s", name);
+        snprintf(buf, sizeof(buf), GAME_DIR "%s", name);
 #else
-        sprintf(buf, "%s/%s", TEMP_DIR, name);
+        snprintf(buf, sizeof(buf), "%s/%s", TEMP_DIR, name);
 #endif
         name = buf;
     }

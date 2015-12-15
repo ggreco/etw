@@ -143,11 +143,11 @@ void do_p2c(unsigned char **plane, uint8_t * b, int width, int height, int depth
             int32_t *pens)
 {
     register int i, source_color, current_bit;
-    size_t k;
+    size_t k, sz = BITRASSIZE(width, height);
 
     if(pens)
     {
-        for(k = 0; k < BITRASSIZE(width, height); k++)
+        for(k = 0; k < sz; k++)
         {
             for(current_bit = 128; current_bit > 0; current_bit >>= 1)
             {
@@ -165,7 +165,7 @@ void do_p2c(unsigned char **plane, uint8_t * b, int width, int height, int depth
     }
     else
     {
-        for(k = 0; k < BITRASSIZE(width, height); k++)
+        for(k = 0; k < sz; k++)
         {
             for(current_bit = 128; current_bit > 0; current_bit >>= 1)
             {

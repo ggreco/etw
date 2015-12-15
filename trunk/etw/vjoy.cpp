@@ -6,7 +6,7 @@ extern "C" {
 
 #include "eat.h"
 extern void SendNetwork(unsigned long joypos);
-extern unsigned long NetJoyPos[2];
+extern uint32_t NetJoyPos[2];
 
 void touch_init()
 {

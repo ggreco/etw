@@ -252,7 +252,7 @@ LONG MergeAnim(struct AnimInstData *aid,FILE *fh)
                                   pos += cn -> cn_Scan;
                           }
 #else
-                          pos = ftell(fh);
+                          pos = (ULONG)ftell(fh);
 #endif
                           /* bmhd header loaded ? */
                           if ( bmhdprop == NULL ) {
@@ -689,9 +689,7 @@ LONG LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
                                 /* "Seek" success ? */
                                 if( seekdist != (-1L) )
                                 {
-                                    LONG bytesread;
-
-                                    bytesread = fread( buff, 1, (worknode -> fn_LoadSize),(aid -> aid_FH) );
+                                    LONG bytesread = (LONG)fread( buff, 1, (worknode -> fn_LoadSize),(aid -> aid_FH) );
 
                                     /* No error during reading ? */
                                     if( (bytesread >= (worknode -> fn_BMSize)) && (bytesread != -1L) )
@@ -1413,9 +1411,9 @@ void BodyToBitMap(struct BitMap *f_bm,struct BitMapHeader *bmh,UBYTE *f_body,LON
     Ring[Depth-1].next = (APTR)&Ring[0];
     C_BdyUnpack(f_body,
           &Ring[0],
-          (long)i,                  /* Zeilensumme */
-          (long)f_bm->BytesPerRow,
-          (long)(dltasize!=(f_bm->BytesPerRow*i)) );
+          (LONG)i,                  /* Zeilensumme */
+          (LONG)f_bm->BytesPerRow,
+          (LONG)(dltasize!=(f_bm->BytesPerRow*i)) );
   }
 }               /* end BodyToBitMap */
 
@@ -1515,9 +1513,9 @@ void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,long f_mode)
     register unsigned char *opclist;
     unsigned char *dtalist;
     register short i;
-    long          *deltadata;
+    LONG         *deltadata;
 
-    deltadata = (long *)(f_dlta_adr);
+    deltadata = (LONG *)(f_dlta_adr);
     /* Loop for max. 8 Bitplanes */
 
     if (f_mode != 0) {

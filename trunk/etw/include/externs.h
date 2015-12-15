@@ -23,7 +23,7 @@ extern uint8_t control[4], tipo_porta;
 extern char *controls[CONTROLS], spk_basename[64];
 extern int32_t Pens[256];
 extern int framerate, game_status, urgent_status, basepri;
-extern long int time_length, t_l, situation_time;
+extern int32_t time_length, t_l, situation_time;
 extern WORD velocita_x[3][10][8],cambio_x[8],inversione_x[8][8],arcade_frame_sequence[];
 extern WORD velocita_y[3][10][8],cambio_y[8],inversione_y[8][8];
 extern int8_t prontezza[10],opposto[],scroll_type,situation_result[2];

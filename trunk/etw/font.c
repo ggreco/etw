@@ -87,7 +87,7 @@ void PrintTeamName(player_t * g, int y)
     char *c = g->team->name;
     int l, x;
 
-    l = strlen(c);
+    l = (int)strlen(c);
 
     y -= ((font_height << 1) + 1);
 
@@ -241,7 +241,7 @@ void LoadLogo(char *name)
 
 void split_string(char *string, int y)
 {
-    int l = strlen(string);
+    int l = (int)strlen(string);
     int x = font_width * 2;
 
     if (((l + 3) * font_width) < bitmap_width) {
@@ -266,13 +266,13 @@ void ShowPanel(void)
     if (replay_mode) {
         if (slow_motion) {
             const char *txt = msg_275;
-            int l = strlen(txt);
+            int l = (int)strlen(txt);
             int x = (WINDOW_WIDTH - l * font_width) >> 1;                
             TextShadow(x, font_height + 2, txt, l);
         }
         if (p->show_panel & PANEL_HIGHSAVE) {
             const char *txt =  msg_264;
-            int l = strlen(txt);
+            int l = (int)strlen(txt);
             int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;
             TextShadow(x, y, txt, l);
@@ -343,7 +343,7 @@ void ShowPanel(void)
         else
             g = &p->team[0]->players[p->referee.Argomento];
 
-        l = strlen(g->name);
+        l = (int)strlen(g->name);
 
         TextShadow(x, y, g->name, l);
     }
@@ -352,7 +352,7 @@ void ShowPanel(void)
         int x, y, l;
         const char *sp = msg_267;
 
-        l = strlen(sp);
+        l = (int)strlen(sp);
 
         x = WINDOW_WIDTH - l * font_width;
         x >>= 1;
@@ -364,7 +364,7 @@ void ShowPanel(void)
     // always show the clock
     if (!penalties && !free_kicks /* && p->show_panel & PANEL_TIME */) {
         char buffer[8];
-        int mins, secs;
+        long mins, secs;
         mytimer temptime;
 
         if (first_kickoff) {
@@ -405,7 +405,7 @@ void ShowPanel(void)
 
     if (!pause_mode ) {
         if (p->show_panel & PANEL_SUBSTITUTION) {
-            int l = how_many_changes();
+            int l = (int)how_many_changes();
 
             if (l > 0) {
                 change_data *c = changes;
@@ -420,15 +420,15 @@ void ShowPanel(void)
 
                 x += font_width * 2;
                 y += font_height * 3;
-                ColorTextShadow(x, y, msg_268, strlen(msg_268), changes->team->MarkerRed);
-                ColorTextShadow(x2, y, msg_265, strlen(msg_265), changes->team->MarkerRed);
-                len = max(strlen(msg_268), strlen(msg_265)) + 1;
+                ColorTextShadow(x, y, msg_268, (int)strlen(msg_268), changes->team->MarkerRed);
+                ColorTextShadow(x2, y, msg_265, (int)strlen(msg_265), changes->team->MarkerRed);
+                len = max((int)strlen(msg_268), (int)strlen(msg_265)) + 1;
                 x += font_width * len;
                 x2 += font_width * len;
                 
                 for (i = 0; i < l; ++i) {
-                    TextShadow(x, y, c->out, strlen(c->out));
-                    TextShadow(x2, y, c->in, strlen(c->in));
+                    TextShadow(x, y, c->out, (int)strlen(c->out));
+                    TextShadow(x2, y, c->in, (int)strlen(c->in));
                     y += font_height * 2;
                     c = c->next;
                 }
@@ -445,7 +445,7 @@ void ShowPanel(void)
 
         sprintf(buffer, msg_259, g->name);
 
-        l = strlen(buffer);
+        l = (int)strlen(buffer);
 
         x = WINDOW_WIDTH - l * font_width;
         x >>= 1;
@@ -489,7 +489,7 @@ void ShowPanel(void)
     // new panels used only in the mobile version
     if (p->show_panel & PANEL_THROW_IN) {
         const char *txt =  msg_277;
-        int l = strlen(txt);
+        int l = (int)strlen(txt);
         int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;
         TextShadow(x, y, txt, l);
@@ -497,7 +497,7 @@ void ShowPanel(void)
 
     if (p->show_panel & PANEL_CORNER) {
         const char *txt =  msg_276;
-        int l = strlen(txt);
+        int l = (int)strlen(txt);
         int x = (WINDOW_WIDTH - l * font_width) >> 1,
             y = (WINDOW_HEIGHT - font_height) >> 1;
         TextShadow(x, y, txt, l);
@@ -527,11 +527,11 @@ void ShowPanel(void)
 
         xs = (font_width << 1) + font_width;
 
-        l = strlen(p->team[0]->name);
+        l = (int)strlen(p->team[0]->name);
 
         TextShadow(xs, y, p->team[0]->name, l);
 
-        l = strlen(p->team[1]->name);
+        l = (int)strlen(p->team[1]->name);
 
         x = WINDOW_WIDTH - (l + 3) * font_width;
 
@@ -540,7 +540,7 @@ void ShowPanel(void)
         y += (font_height * 2);
 
         for (t = 0; t < NUMERO_STATS; t++) {
-            int len = strlen(stats[t].name);
+            int len = (int)strlen(stats[t].name);
             x = (WINDOW_WIDTH - len * font_width) >> 1;
 
             TextShadow(x, y, stats[t].name, len);
@@ -583,7 +583,7 @@ void ShowPanel(void)
         y = WINDOW_HEIGHT - (font_height << 3) + (font_height << 1) +
             font_height;
 
-        l = strlen(p->team[0]->name);
+        l = (int)strlen(p->team[0]->name);
 
         TextShadow(x, y, p->team[0]->name, l);
 
@@ -599,7 +599,7 @@ void ShowPanel(void)
             x = font_width << 2;
             y = WINDOW_HEIGHT - (font_height << 2) + font_height;
 
-            l = strlen(p->team[1]->name);
+            l = (int)strlen(p->team[1]->name);
 
             TextShadow(x, y, p->team[1]->name, l);
 
@@ -645,7 +645,7 @@ void ShowPanel(void)
 
     if (p->show_panel & PANEL_KICKOFF) {
         int x, y;
-        int l = strlen(msg_266);
+        int l = (int)strlen(msg_266);
         int delta = max(80, l * font_width * 2 / 3);
         rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - delta,
                          (WINDOW_HEIGHT >> 1) - 40,
@@ -661,7 +661,7 @@ void ShowPanel(void)
     }
     if (p->show_panel & PANEL_PENALTIES) {
         int x, y;
-        int l = strlen(msg_282);
+        int l = (int)strlen(msg_282);
         int delta = max(80, l * font_width * 2 / 3);
         rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - delta,
                          (WINDOW_HEIGHT >> 1) - 40,
@@ -677,7 +677,7 @@ void ShowPanel(void)
     }
     if (p->show_panel & PANEL_EXTRATIME) {
         int x, y;
-        int l = strlen(msg_281);
+        int l = (int)strlen(msg_281);
         int delta = max(80, l * font_width * 2 / 3);
         rectfill_pattern(main_bitmap, (WINDOW_WIDTH >> 1) - delta,
                          (WINDOW_HEIGHT >> 1) - 40,
@@ -721,7 +721,7 @@ void DrawPause(void)
                   pause_gfx->height,
                   pause_gfx->width, pause_gfx->height, bitmap_width);
     } else {
-        drawtext(msg_269, strlen(msg_269), (WINDOW_WIDTH - 6 * font_width) / 2,
+        drawtext(msg_269, (int)strlen(msg_269), (WINDOW_WIDTH - 6 * font_width) / 2,
                  10, Pens[P_BIANCO]);
     }
 

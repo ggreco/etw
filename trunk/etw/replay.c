@@ -896,8 +896,8 @@ void EndReplay(void)
 
 void SaveReplay(void)
 {
-    char buffer[128];
-    int pos = sprintf(buffer, "%sreplay.001", TEMP_DIR);
+    char buffer[1024];
+    int pos = snprintf(buffer, sizeof(buffer), "%sreplay.001", TEMP_DIR);
     extern struct team_disk leftteam_dk, rightteam_dk;
     FILE *f;
     int i, j;

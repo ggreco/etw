@@ -22,7 +22,7 @@ BOOL wb_game=FALSE,use_replay=TRUE,allow_replay=TRUE,nocpu=FALSE,arcade=FALSE,su
 int8_t situation_result[2]={0,0},strictness=10;
 
 int display_id = 0, wanted_width, wanted_height;
-long int situation_time = 0;
+int32_t situation_time = 0;
 char localename[40];
 
 void OpenMenuScreen(void)
@@ -64,13 +64,13 @@ void load_config(FILE *f)
             }
             else if(!strnicmp(buffer,"strictness="/*-*/,11))
             {
-                if((value=atol(&buffer[11]))>0)
+                if((value=atoi(&buffer[11]))>0)
                     if(value>=0&&value<11)
                         strictness=value;
             }
             else if(!strnicmp(buffer,"frames="/*-*/,7))
             {
-                if((value=atol(&buffer[7]))>0)
+                if((value=atoi(&buffer[7]))>0)
                     if(value>0)
                         framerate=1000000/value;
             }
@@ -115,7 +115,7 @@ void load_config(FILE *f)
                 /* AC: il valore da utilizzare per ottenere lo scaling, e' 10.
                  * con 9, viene contato anche il carattere =.
                  */
-                if((value=atol(&buffer[10]))>0)
+                if((value=atoi(&buffer[10]))>0)
                 {
                     extern int FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
                     extern char *scaling_resolutions[];
@@ -130,7 +130,7 @@ void load_config(FILE *f)
                             current_scaling=(BYTE)i;
 
                             FIXED_SCALING_HEIGHT=value;
-                            FIXED_SCALING_WIDTH=atol(scaling_resolutions[i]);
+                            FIXED_SCALING_WIDTH=atoi(scaling_resolutions[i]);
                         }
                     }
                 }
@@ -145,12 +145,12 @@ void load_config(FILE *f)
             }
             else if(!strnicmp(buffer,"displayid="/*-*/,10) )
             {
-                if((value=atol(&buffer[10]))>0)
+                if((value=atoi(&buffer[10]))>0)
                     display_id=value;
             }
             else if(!strnicmp(buffer,"radar="/*-*/,6) )
             {
-                if((value=atol(&buffer[6]))>0)
+                if((value=atoi(&buffer[6]))>0)
                 {
                     if(value>=0 && value <12)
                     {
@@ -199,7 +199,7 @@ void load_config(FILE *f)
             }
             else if(!strnicmp(buffer,"time="/*-*/,5))
             {
-                if((value=atol(&buffer[5]))>0)
+                if((value=atoi(&buffer[5]))>0)
                 {
                     if(value>0&&value<=45)
                     {
@@ -259,7 +259,7 @@ void load_config(FILE *f)
             }
             else if(!strnicmp(buffer,"field_type="/*-*/,11))
             {    
-                if((value=atol(&buffer[11]))>0)
+                if((value=atoi(&buffer[11]))>0)
                 {
                     if(value>0&&value<10)
                         field_type=value;
@@ -267,7 +267,7 @@ void load_config(FILE *f)
             }
             else if(!strnicmp(buffer,"field="/*-*/,6))
             {    
-                if((value=atol(&buffer[6]))>0)
+                if((value=atoi(&buffer[6]))>0)
                 {
                     if(value>0&&value<10)
                         field=value;
@@ -283,7 +283,7 @@ void read_menu_config(void)
 {
     FILE *f;
 
-    char b[128];
+    char b[1024];
     snprintf(b, sizeof(b), "%s/etw.cfg", TEMP_DIR);
     
     if (!(f = fopen(b, "r"))) {
@@ -365,7 +365,7 @@ void write_config(char *dest)
         fprintf(f,"control%d=%s\n"/*-*/, 0, controls[control[1]]);
         fprintf(f,"control%d=%s\n"/*-*/, 1, controls[control[0]]);
 
-        fprintf(f,"time=%ld\n"/*-*/,t_l);
+        fprintf(f,"time=%d\n"/*-*/,t_l);
 
 // relativo al campo...
         fprintf(f,"field=%d\nfield_type=%d\n"/*-*/,
@@ -379,7 +379,7 @@ void write_config(char *dest)
 
             if(situation)
             {
-                fprintf(f,"situation_time=%ld\n"/*-*/,situation_time);
+                fprintf(f,"situation_time=%d\n"/*-*/,situation_time);
                 fprintf(f,"situation_result=%d-%d\n"/*-*/,situation_result[0],situation_result[1]);
             }
         }
