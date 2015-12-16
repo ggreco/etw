@@ -5,7 +5,6 @@
 
 #include "SDL.h"
 
-//#define TESTING_RES_1024
 BOOL prefs_changed = FALSE;
 
 extern void MenuResizing(int, int);
@@ -228,15 +227,18 @@ BYTE current_resolution = 0, current_scaling = 0;
 
 char *resolutions[] =
 {
+#ifdef OLD_RES
     "320x200"/*-*/,
     "320X240"/*-*/,
     "400X300"/*-*/,
     "640x400"/*-*/,
+#else
+    "480X320"/*-*/,		// This is the current resolution saved in etw.cfg, will it change?
+#endif
     "640X480"/*-*/,
     "800X600"/*-*/,
-#ifdef TESTING_RES_1024
     "1024X768"/*-*/,
-#endif
+    "1280X1024"/*-*/,
     NULL
 };
 
@@ -258,9 +260,8 @@ char *scaling_resolutions[] =
     "320X256"/*-*/,
     "356X288"/*-*/,
     "400X300"/*-*/,
-#ifdef TESTING_RES_1024
     "512X384"/*-*/,
-#endif
+    "640X512"/*-*/,
     NULL
 };
 
@@ -288,6 +289,7 @@ void SetCurrentResolution(void);
 
 void SetCurrentResolution(void)
 {
+#ifdef OLD_RES
     if (WINDOW_WIDTH <= 360)
         current_resolution = (WINDOW_HEIGHT < 210) ? 0 : 1;
     else if (WINDOW_WIDTH <= 450)
@@ -296,6 +298,16 @@ void SetCurrentResolution(void)
         current_resolution = (WINDOW_HEIGHT < 410) ? 3 : 4;
     else
         current_resolution = 5;
+#else
+    if (WINDOW_WIDTH <= 640)
+        current_resolution = 0;
+    else if (WINDOW_WIDTH <= 800)
+        current_resolution = 1;
+    else if (WINDOW_WIDTH < 1024)
+        current_resolution = 2;
+    else
+        current_resolution = 3;
+#endif
 }
 
 char *radar_options[] =
@@ -1709,11 +1721,9 @@ BOOL VideoPrefs(WORD button)
                 wanted_width = atoi(resolutions[current_resolution]);
                 wanted_height = atoi(resolutions[current_resolution] + 4);
 
-#ifdef TESTING_RES_1024
                 /* AC: Trying to increase screen resolution upto 1024x768 */
                 if (wanted_height == 0)
-                    wanted_height = atol(resolutions[current_resolution] + 5);
-#endif
+                    wanted_height = atoi(resolutions[current_resolution] + 5);
             }
             while (!os_videook(wanted_width, wanted_height));
 
