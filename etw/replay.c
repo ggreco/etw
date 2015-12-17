@@ -50,9 +50,9 @@ static void ReadATeam(FILE *f, team_t *s)
     s->Schema = fread_u8(f);
     s->Joystick = fread_u8(f);
 
-    s->tactic = (tactic_t *)fread_u32(f); // must be converted in a pointer!
+    s->tactic = (tactic_t *)(size_t)fread_u32(f); // must be converted in a pointer!
     s->TempoPossesso = fread_u32(f);
-    s->attivo = (player_t *)fread_u32(f); // must be converted in a pointer!
+    s->attivo = (player_t *)(size_t)fread_u32(f); // must be converted in a pointer!
 
 // goalkeeper
     s->keepers.world_x = fread_u16(f); 
@@ -65,7 +65,7 @@ static void ReadATeam(FILE *f, team_t *s)
     s->keepers.ActualSpeed = fread_u8(f); 
     s->keepers.FrameLen = fread_u8(f); 
     s->keepers.Tick = fread_u16(f); 
-    s->keepers.team = (team_t *) fread_u32(f);  // must be converted in a pointeR!
+    s->keepers.team = (team_t *) (size_t)fread_u32(f);  // must be converted in a pointeR!
     s->keepers.NameLen = fread_u8(f); 
     s->keepers.SNum = fread_u8(f); 
     s->keepers.Ammonito = fread_u8(f); 
@@ -92,7 +92,7 @@ static void ReadATeam(FILE *f, team_t *s)
         g->ActualSpeed = fread_u8(f);
         g->FrameLen = fread_u8(f);
         g->Tick = fread_u16(f);
-        g->team = (team_t *)fread_u32(f);  // must be converted in a pointeR!
+        g->team = (team_t *)(size_t)fread_u32(f);  // must be converted in a pointeR!
         g->NameLen = fread_u8(f);
         g->GNum = fread_u8(f);
         g->Ammonito = fread_u8(f);
@@ -141,8 +141,8 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
 {
     int i;
 // write ball related data 
-    m->game.ball.gioc_palla = (player_t *)fread_u32(f);
-    m->game.ball.sq_palla = (team_t *)fread_u32(f);
+    m->game.ball.gioc_palla = (player_t *)(size_t)fread_u32(f);
+    m->game.ball.sq_palla = (team_t *)(size_t)fread_u32(f);
     m->game.ball.world_x = fread_u16(f);
     m->game.ball.world_y = fread_u16(f);
     m->game.ball.delta_x = fread_u16(f);
@@ -187,8 +187,8 @@ void ReadMatch(FILE *f, struct MatchStatus *m)
     m->game.TempoPassato = fread_u32(f);
     m->game.show_panel = fread_u32(f);
     m->game.show_time = fread_u32(f);
-    m->game.possesso = (team_t *) fread_u32(f);
-    m->game.player_injuried = (player_t *)fread_u32(f);
+    m->game.possesso = (team_t *) (size_t)fread_u32(f);
+    m->game.player_injuried = (player_t *)(size_t)fread_u32(f);
     m->game.check_sector = fread_u16(f);
 
     for (i = 0; i < SHOT_LENGTH; i++)
@@ -958,23 +958,23 @@ void SaveReplay(void)
     *m = match[StartReplaySet];
 
     if(m->game.player_injuried)
-        m->game.player_injuried=(player_t *)(1+m->game.player_injuried->SNum*11+m->game.player_injuried->GNum);
+        m->game.player_injuried=(player_t *)((size_t)(1+m->game.player_injuried->SNum*11+m->game.player_injuried->GNum));
 
-    m->game.possesso=(team_t *)(m->game.possesso==p->team[0] ? 0 : 1);
+    m->game.possesso=(team_t *)((size_t)(m->game.possesso==p->team[0] ? 0 : 1));
     
     if(m->game.ball.sq_palla)
-        m->game.ball.sq_palla=(team_t *)(m->game.ball.sq_palla==p->team[0] ? 1 : 2);
+        m->game.ball.sq_palla=(team_t *)((size_t)(m->game.ball.sq_palla==p->team[0] ? 1 : 2));
 
     for(i = 0; i < 2; i++) {
         char *c = m->team[i].tactic->Name;
 
-        m->team[i].attivo=(player_t *)((int)m->team[i].attivo->GNum);
+        m->team[i].attivo=(player_t *)((size_t)m->team[i].attivo->GNum);
 
-        m->team[i].tactic=(tactic_t *)( (c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4]);
+        m->team[i].tactic=(tactic_t *)((size_t)((c[0]<<24)|(c[1]<<16)|(c[2]<<8)|c[4]));
     }
 
     if(m->game.ball.gioc_palla)
-        m->game.ball.gioc_palla = (player_t *)(m->game.ball.gioc_palla->SNum * 11 + m->game.ball.gioc_palla->GNum + 1);
+        m->game.ball.gioc_palla = (player_t *)((size_t)(m->game.ball.gioc_palla->SNum * 11 + m->game.ball.gioc_palla->GNum + 1));
 
     WriteMatch(f, m);
 
