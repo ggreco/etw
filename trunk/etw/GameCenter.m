@@ -198,7 +198,7 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
                          // work with achievement here, store it in your cache or smith
                          [self.achievementCache setObject: achievement forKey:achievement.identifier];
                      }
-                     D(NSLog(@"Obtained %d achievements, partially/totally completed", [scores count]));
+                     D(NSLog(@"Obtained %lu achievements, partially/totally completed", (unsigned long)[scores count]));
                  }
              }];
         }
@@ -285,7 +285,7 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
         }
         leaderboardController.timeScope = GKLeaderboardTimeScopeWeek;
         
-        [gViewColtroller presentModalViewController: leaderboardController animated: YES];
+        [gViewColtroller presentViewController: leaderboardController animated: YES completion:nil];
 
        /* UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
         [mainWindow insertSubview:leaderboardController.view aboveSubview:mainWindow]; */
@@ -316,12 +316,12 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
 
 - (void) leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
 {
-    [gViewColtroller dismissModalViewControllerAnimated: YES];
+    [gViewColtroller dismissViewControllerAnimated:YES completion:nil];
 }
 
 + (void) leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
 {
-    [gViewColtroller dismissModalViewControllerAnimated: YES];
+    [gViewColtroller dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)sendAchievement:(GKAchievement *)achievement {
@@ -353,7 +353,7 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
 	if (achievements != NULL)
 	{
 		achievements.achievementDelegate = self;
-		[gViewColtroller presentModalViewController: achievements animated: YES];
+        [gViewColtroller presentViewController: achievements animated: YES completion:nil];
         
         [achievements release];
 	}
@@ -361,13 +361,13 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
 
 - (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController;
 {
-	[gViewColtroller dismissModalViewControllerAnimated: YES];
+    [gViewColtroller dismissViewControllerAnimated: YES completion:nil];
 	//[gViewColtroller release];
 }
 
 + (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController;
 {
-	[gViewColtroller dismissModalViewControllerAnimated: YES];
+    [gViewColtroller dismissViewControllerAnimated: YES completion:nil];
 	//[gViewColtroller release];
 }
 

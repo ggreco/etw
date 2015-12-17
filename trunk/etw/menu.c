@@ -1311,7 +1311,8 @@ void ChangeMenu(WORD m)
     }
 
     if (current_menu == MENU_MAIN_MENU) {
-        char *c = ETW_VERSION;
+        char c[40];
+        snprintf(c, sizeof(c), "%s (%s)", ETW_VERSION, sizeof(void *) > 4 ? "X64" : "X32");
         int l, x, y;
 
         setfont(smallfont);
