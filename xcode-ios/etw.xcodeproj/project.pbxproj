@@ -37,6 +37,7 @@
 		0BB5CD3B1652651300BF007B /* t in Resources */ = {isa = PBXBuildFile; fileRef = 0BB5CD2D1652651300BF007B /* t */; };
 		0BB5CD3C1652651300BF007B /* tct in Resources */ = {isa = PBXBuildFile; fileRef = 0BB5CD2E1652651300BF007B /* tct */; };
 		0BB5CD3D1652651300BF007B /* teams in Resources */ = {isa = PBXBuildFile; fileRef = 0BB5CD2F1652651300BF007B /* teams */; };
+		0BC9E2981C1F051A00C36C2D /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BC9E2971C1F051A00C36C2D /* CoreMotion.framework */; };
 		0BD74ED2165245940045909C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BD74ED1165245940045909C /* UIKit.framework */; };
 		0BD74ED4165245940045909C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BD74ED3165245940045909C /* Foundation.framework */; };
 		0BD74ED6165245940045909C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BD74ED5165245940045909C /* CoreGraphics.framework */; };
@@ -137,6 +138,7 @@
 		0BB5CD2D1652651300BF007B /* t */ = {isa = PBXFileReference; lastKnownFileType = folder; name = t; path = ../data/t; sourceTree = "<group>"; };
 		0BB5CD2E1652651300BF007B /* tct */ = {isa = PBXFileReference; lastKnownFileType = folder; name = tct; path = ../data/tct; sourceTree = "<group>"; };
 		0BB5CD2F1652651300BF007B /* teams */ = {isa = PBXFileReference; lastKnownFileType = folder; name = teams; path = ../data/teams; sourceTree = "<group>"; };
+		0BC9E2971C1F051A00C36C2D /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		0BD74ECD165245940045909C /* etw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = etw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BD74ED1165245940045909C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0BD74ED3165245940045909C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -242,6 +244,7 @@
 				65A9C5A21C1B08E5003F18DD /* SDL2_mixer.framework in Frameworks */,
 				0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */,
 				65A9C5A41C1B08F9003F18DD /* SDL2.framework in Frameworks */,
+				0BC9E2981C1F051A00C36C2D /* CoreMotion.framework in Frameworks */,
 				0BD74ED2165245940045909C /* UIKit.framework in Frameworks */,
 				0BD74ED4165245940045909C /* Foundation.framework in Frameworks */,
 				0BD74ED6165245940045909C /* CoreGraphics.framework in Frameworks */,
@@ -301,6 +304,7 @@
 		0BD74ED0165245940045909C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0BC9E2971C1F051A00C36C2D /* CoreMotion.framework */,
 				65A9C5A31C1B08F9003F18DD /* SDL2.framework */,
 				65A9C5A11C1B08E5003F18DD /* SDL2_mixer.framework */,
 				0B3DE795167BF61100457D3F /* GameKit.framework */,
@@ -471,8 +475,13 @@
 		0BD74EC4165245940045909C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Gabriele Greco";
+				TargetAttributes = {
+					0BD74ECC165245940045909C = {
+						DevelopmentTeam = 26P4KFB7Z3;
+					};
+				};
 			};
 			buildConfigurationList = 0BD74EC7165245940045909C /* Build configuration list for PBXProject "etw" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -610,8 +619,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gabriele Greco (MW5JBRQPH4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -623,9 +633,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7A4142CA-9AFD-471E-BE3C-B38294E5002B";
+				PROVISIONING_PROFILE = "9ae155ce-3486-4873-8046-426017febdc3";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -639,16 +650,17 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gabriele Greco";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG_DISABLED=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4FBC4BAF-DF64-42B3-96FB-9ACF2192035F";
+				PROVISIONING_PROFILE = "e3624e68-5fe3-4f31-b99c-6799ddadd8b2";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -658,7 +670,8 @@
 		0BD74EEC165245940045909C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -677,12 +690,16 @@
 					"\"$(SRCROOT)/../../sdl-ios-framework/build/sdl_mixer/SDL2_mixer.framework/Headers\"",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/etw-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.ggsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -690,7 +707,8 @@
 		0BD74EED165245940045909C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -709,12 +727,16 @@
 					"\"$(SRCROOT)/../../sdl-ios-framework/build/sdl_mixer/SDL2_mixer.framework/Headers\"",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/etw-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.ggsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
