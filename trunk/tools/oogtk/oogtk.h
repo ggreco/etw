@@ -1411,7 +1411,12 @@ This function initialize GTK subsystem passing the parameters from the applicati
             static void Flush() { while (gtk_events_pending()) gtk_main_iteration(); }
             static void Quit() { gtk_main_quit(); }
 
-            static void ThreadInit() { g_thread_init(NULL); }
+            static void ThreadInit() { 
+                // da glib 2.32 e`deprecata e non più necessaria
+#if GLIB_MINOR_VERSION < 32
+                g_thread_init(NULL); 
+#endif
+            }
             // helpers for signals that need a fixed answer.
             void QuitLoop() { gtk_main_quit(); }
             bool True() { return true; }
@@ -1703,7 +1708,9 @@ If the builder already contains one or more interfaces the interfaces are merged
                     return false;
                 }
 
+#ifdef WIN32
                 if (g_module_supported())
+#endif
                     gtk_builder_connect_signals (builder_, this);
 
                 return true;
@@ -1889,6 +1896,10 @@ namespace gtk {
                 return new Range(o);
             } else if (GTK_IS_ENTRY_COMPLETION(o)) {
                 return new EntryCompletion(o);
+#if GTK_MINOR_VERSION > 23                
+            } else if (GTK_IS_COMBO_BOX_TEXT(o)) {
+                return new ComboBoxText(o);
+#endif
             } else if (GTK_IS_COMBO_BOX(o)) {
                 return new ComboBox(o);
             } else if (GTK_IS_EVENT_BOX(o)) {
@@ -1932,6 +1943,74 @@ namespace gtk {
         return NULL;
     }
 
+    template <typename T,typename R, typename J>
+    inline bool CbkEvent<T,R,J>::
+    notify(GtkWidget *w, GdkEvent *e) const
+    { 
+        switch (type) {
+            case NoParam:
+                {
+                   ReturnType<T, R, FakeTypeBase, J> rtype;
+    
+                   if (myFnc0)
+                        return rtype.notify(myFnc0, myObj, rccode);
+                   else
+                        return rtype.notify(ma1, myFnc1, myObj, rccode);
+                }
+            case HasWidget:
+                if (Widget *ww = dynamic_cast<Widget *>(Object::Find((GObject *)w))) {
+                    ReturnType<T, R, Widget &, J> rtype;
+
+                    if (mywFnc0)
+                        return rtype.notify(*ww, mywFnc0, myObj, rccode);
+                    else
+                        return rtype.notify(*ww, ma1, mywFnc1, myObj, rccode);
+                }
+                else
+                    throw std::runtime_error("Callback asking for a widget with widget NULL!");
+            case HasSocket:
+                {
+                    ReturnType<T, R, SockFd, J> rtype;
+                    SockFd fd = g_io_channel_unix_get_fd((GIOChannel*)w);
+
+                    if (mysFnc0)
+                        return rtype.notify(fd, mysFnc0, myObj, rccode);
+                    else
+                        return rtype.notify(fd, ma1, mysFnc1, myObj, rccode);
+                }
+            case HasEvent:
+                if (Event *ee = (Event *)e) {
+                    ReturnType<T, R, Event &, J> rtype;
+                    if (myeFnc0)
+                        return rtype.notify(*ee, myeFnc0, myObj, rccode);
+                    else
+                        return rtype.notify(*ee, ma1, myeFnc1, myObj, rccode);
+                }
+                else
+                    throw std::runtime_error("Callback asking for an event with event NULL!");
+            default:
+                    throw std::runtime_error("Callback asking for an event with unknown type!");
+        }
+    }
+   
+    template <typename T, typename J>
+    inline bool CbkDrag<T,J>::
+    notify(GtkWidget *w, SelectionData *e) const
+    { 
+        if (Widget *ww = dynamic_cast<Widget *>(Object::Find((GObject *)w))) {
+            if (!e)
+                throw std::runtime_error("Callback asking for a selectiondata with selectiondata NULL!");
+
+            if (mywFnc1)
+                (myObj->*mywFnc1)(*ww, *e, ma1);
+            else
+                (myObj->*mywFnc0)(*ww, *e);
+        }
+        else
+            throw std::runtime_error("Callback asking for a widget with widget NULL!");
+
+        return true;
+    }
 }
 // stream operations
 inline std::ostream& operator<<(std::ostream& os, const gtk::Label &label) {

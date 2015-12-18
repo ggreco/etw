@@ -145,7 +145,9 @@ bool SaveTeams(const char *name, const championship_disk &c)
         for (std::map<std::string, team_disk>::const_iterator it = teams_.begin(); it != teams_.end(); ++it)
             WriteTeam(fh, &it->second);
         ::fclose(fh);
+        return true;
     }
+    return false;
 }
 
 bool LoadTeams(const char *name, championship_disk &campionato)

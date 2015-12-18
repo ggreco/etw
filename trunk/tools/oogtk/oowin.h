@@ -582,7 +582,7 @@ The bitfield needed which is passed in provides information about what sorts of 
                         J data /**< user data for the function*/) {
                 AbstractFilter *cbk = new FilterCbk<T,J>(base, callback, data);
                 cbks_.push_back(cbk);
-                gtk_file_filter_add_custom(*this, flags, filter_wrapper, cbk, NULL);
+                gtk_file_filter_add_custom(*this, (GtkFileFilterFlags)flags, (GtkFileFilterFunc)filter_wrapper, cbk, NULL);
             }
 /** Adds rule to a filter that allows files based on a custom callback function. 
 
@@ -594,7 +594,7 @@ The bitfield needed which is passed in provides information about what sorts of 
                         T *base /**< pointer to the base of the class */) {
                 AbstractFilter *cbk = new FilterCbk<T, void>(base, callback);
                 cbks_.push_back(cbk);
-                gtk_file_filter_add_custom(*this, flags, filter_wrapper, cbk, NULL);
+                gtk_file_filter_add_custom(*this, (GtkFileFilterFlags)flags, (GtkFileFilterFunc)filter_wrapper, cbk, NULL);
             }
     };
 
@@ -1020,9 +1020,8 @@ A message dialog is a simple dialog with an icon indicating the dialog type (err
                 g_vasprintf(&msg, msg_format, va);
                 va_end(va);
 
-                Init(gtk_message_dialog_new_with_markup(*parent, 
-                        (GtkDialogFlags)flags, (GtkMessageType)msgtype, (GtkButtonsType)buttontype,
-                        ""));
+                Init(gtk_message_dialog_new_with_markup(parent ? GTK_WINDOW(parent->Obj()) : NULL, (GtkDialogFlags)flags, (GtkMessageType)msgtype, 
+                            (GtkButtonsType)buttontype, "."));
                 gtk_message_dialog_set_markup(*this, msg);
                 g_free(msg);
                 Internal(true);
@@ -1035,9 +1034,9 @@ A message dialog is a simple dialog with an icon indicating the dialog type (err
                 char *msg;
                 g_vasprintf(&msg, msg_format, va);
 
-                Init(gtk_message_dialog_new_with_markup(*parent,
+                Init(gtk_message_dialog_new_with_markup(parent ? GTK_WINDOW(parent->Obj()) : NULL,
                             (GtkDialogFlags)flags, (GtkMessageType)msgtype, (GtkButtonsType)buttontype,
-                            ""));
+                            "."));
                 gtk_message_dialog_set_markup(*this, msg);
                 g_free(msg);
                 Internal(true);
@@ -1049,7 +1048,7 @@ A message dialog is a simple dialog with an icon indicating the dialog type (err
                           DialogFlags flags = DialogDestroyWithParent,
                           Window *parent = NULL) : Dialog(DerivedType()) {
                 Init(gtk_message_dialog_new_with_markup(parent ? GTK_WINDOW(parent->Obj()) : NULL, 
-                            (GtkDialogFlags)flags, (GtkMessageType)msgtype, (GtkButtonsType)buttontype, ""));
+                            (GtkDialogFlags)flags, (GtkMessageType)msgtype, (GtkButtonsType)buttontype, "."));
                 gtk_message_dialog_set_markup(*this, msg.c_str());
                 Internal(true);
             }

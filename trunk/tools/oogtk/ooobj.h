@@ -397,13 +397,13 @@ oogtk C++ enums.
                     (*it)->Set(this);
             }
             void SetData(const char *key, int data) {
-                g_object_set_data(obj_, key, (void *)data);
+                g_object_set_data(obj_, key, GINT_TO_POINTER(data));
             }
             void SetData(const char *key, void *data) {
                 g_object_set_data(obj_, key, data);
             }
             void GetData(const char *key, int &data) {
-                data = GPOINTER_TO_SIZE(g_object_get_data(obj_, key));
+                data = GPOINTER_TO_INT(g_object_get_data(obj_, key));
             }
             void GetData(const char *key, void *&data) {
                 data = g_object_get_data(obj_, key);
@@ -475,73 +475,6 @@ oogtk C++ enums.
             g_object_steal_data(obj_, "object");
         }
         obj_ = NULL;
-    }
-
-    template <typename T,typename R, typename J>
-    inline bool CbkEvent<T,R,J>::
-    notify(GtkWidget *w, GdkEvent *e) const
-    { 
-        switch (type) {
-            case NoParam:
-                {
-                   ReturnType<T, R, FakeTypeBase, J> rtype;
-    
-                   if (myFnc0)
-                        return rtype.notify(myFnc0, myObj, rccode);
-                   else
-                        return rtype.notify(ma1, myFnc1, myObj, rccode);
-                }
-            case HasWidget:
-                if (Widget *ww = dynamic_cast<Widget *>(Object::Find((GObject *)w))) {
-                    ReturnType<T, R, Widget &, J> rtype;
-
-                    if (mywFnc0)
-                        return rtype.notify(*ww, mywFnc0, myObj, rccode);
-                    else
-                        return rtype.notify(*ww, ma1, mywFnc1, myObj, rccode);
-                }
-                else
-                    throw std::runtime_error("Callback asking for a widget with widget NULL!");
-            case HasSocket:
-                {
-                    ReturnType<T, R, SockFd, J> rtype;
-                    SockFd fd = g_io_channel_unix_get_fd((GIOChannel*)w);
-
-                    if (mysFnc0)
-                        return rtype.notify(fd, mysFnc0, myObj, rccode);
-                    else
-                        return rtype.notify(fd, ma1, mysFnc1, myObj, rccode);
-                }
-            case HasEvent:
-                if (Event *ee = (Event *)e) {
-                    ReturnType<T, R, Event &, J> rtype;
-                    if (myeFnc0)
-                        return rtype.notify(*ee, myeFnc0, myObj, rccode);
-                    else
-                        return rtype.notify(*ee, ma1, myeFnc1, myObj, rccode);
-                }
-                else
-                    throw std::runtime_error("Callback asking for an event with event NULL!");
-            default:
-                    throw std::runtime_error("Callback asking for an event with unknown type!");
-        }
-    }
-   
-    template <typename T, typename J>
-    inline bool CbkDrag<T,J>::
-    notify(GtkWidget *w, SelectionData *e) const
-    { 
-        if (Widget *ww = dynamic_cast<Widget *>(Object::Find((GObject *)w))) {
-            if (!e)
-                throw std::runtime_error("Callback asking for a selectiondata with selectiondata NULL!");
-
-            if (mywFnc1)
-                (myObj->*mywFnc1)(*ww, *e, ma1);
-            else
-                (myObj->*mywFnc0)(*ww, *e);
-        }
-        else
-            throw std::runtime_error("Callback asking for a widget with widget NULL!");
     }
 }
 #endif

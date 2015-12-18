@@ -56,12 +56,16 @@ class Thread
 {
 /// DOXYS_OFF    
     static GPrivate *PrivateKey() {
+#if GLIB_MINOR_VERSION < 32
         static GPrivate *key = NULL;
 
         if (!key)
             key = g_private_new(NULL);
-
         return key;
+#else
+        static GPrivate key = G_PRIVATE_INIT(NULL);
+        return &key;
+#endif
     }
 
     std::string name_;
@@ -97,7 +101,6 @@ public:
     /// create a new thread with an optional name
     Thread(const std::string &name = "child thread") : 
         name_(name), running_(false), done_(true), detached_(false), th_(0) {
-        PrivateKey(); // initialize the private key at the first thread creation
     }
 
     virtual ~Thread() {};
@@ -164,12 +167,22 @@ public:
         running_ = true;
         done_ = false;
 
-        if (!(th_ = g_thread_create(threadfunc, this, detached_ ? FALSE : TRUE, NULL))) {
+        if (!(th_ = 
+#if GLIB_MINOR_VERSION < 32
+                    g_thread_create(threadfunc, this, detached_ ? FALSE : TRUE, NULL)
+#else
+                    g_thread_new(name_.c_str(), threadfunc, this)
+#endif
+                )) {
             running_ = false;
             done_ = true;
 
             return false;
         }
+#if GLIB_MINOR_VERSION > 31
+        if (detached_)
+            g_thread_unref(th_);
+#endif
 
         return true;
     }
