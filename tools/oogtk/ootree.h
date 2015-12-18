@@ -215,7 +215,7 @@ To help show some common operation of a model, some examples are provided. The f
                         const_cast<TreeIter *>(&it), idx, &value, -1);
             }
 
-            void Get(const TreeIter &it, ...) {
+            void Get(TreeIter it, ...) {
                 va_list va;
                 va_start(va, it);
                 gtk_tree_model_get_valist(*this, const_cast<TreeIter *>(&it), va);
@@ -246,7 +246,7 @@ Otherwise, iter is left invalid and false is returned.
             }
 
             virtual void Remove(const TreeIter &it) = 0;
-            virtual void Set(const TreeIter &it, ...) = 0;
+            virtual void Set(TreeIter it, ...) = 0;
             virtual bool IsValid(const TreeIter &it) const = 0;
             virtual void SetValue(const TreeIter &it, int idx, int value) = 0;
             virtual void SetValue(const TreeIter &it, int idx, const std::string &value) = 0;
@@ -328,7 +328,7 @@ Otherwise, iter is left invalid and false is returned.
                 Init(gtk_list_store_newv(types.size(), (GType *)&types[0]));
                 Internal(true);
             }
-            void Set(const TreeIter &it, ...) {
+            void Set(TreeIter it, ...) {
                 va_list va;
                 va_start(va, it);
                 gtk_list_store_set_valist(*this, const_cast<TreeIter *>(&it), va);
@@ -347,20 +347,24 @@ Otherwise, iter is left invalid and false is returned.
                 gtk_list_store_set(*this, 
                         const_cast<TreeIter *>(&it), idx, value.c_str(), -1);
             }
-            
-            void AddTail(...) {
+           
+            template <typename T>
+            void AddTail(gint col, T v, ...) {
                 TreeIter it;
                 gtk_list_store_append(*this, &it);
+                gtk_list_store_set(*this, &it, col, v, -1);
                 va_list va;
-                va_start(va, this);
+                va_start(va, v);
                 gtk_list_store_set_valist(*this, &it, va);
                 va_end(va);
             }
-            void AddFront(...) {
+            template <typename T>
+            void AddFront(gint col, T v, ...) {
                 TreeIter it;
                 gtk_list_store_prepend(*this, &it);
+                gtk_list_store_set(*this, &it, col, v, -1);                
                 va_list va;
-                va_start(va, this);
+                va_start(va, v);
                 gtk_list_store_set_valist(*this, &it, va);
                 va_end(va);
             }
@@ -418,7 +422,7 @@ Otherwise, iter is left invalid and false is returned.
                 Init(gtk_tree_store_newv(types.size(), (GType *)&types[0]));
                 Internal(true);
             }
-            void Set(const TreeIter &it, ...) {
+            void Set(TreeIter it, ...) {
                 va_list va;
                 va_start(va, it);
                 gtk_tree_store_set_valist(*this, const_cast<TreeIter *>(&it), va);
@@ -437,7 +441,7 @@ Otherwise, iter is left invalid and false is returned.
                         const_cast<TreeIter *>(&it), idx, value.c_str(), -1);
             }
             
-            TreeIter AddFront(const TreeIter &parent, ...) {
+            TreeIter AddFront(TreeIter parent, ...) {
                 TreeIter it;
                 gtk_tree_store_prepend(*this, &it, const_cast<TreeIter *>(&parent));
                 va_list va;
@@ -448,7 +452,7 @@ Otherwise, iter is left invalid and false is returned.
                 return it;
             }
 
-            TreeIter AddTail(const TreeIter &parent, ...) {
+            TreeIter AddTail(TreeIter parent, ...) {
                 TreeIter it;
                 gtk_tree_store_append(*this, &it, const_cast<TreeIter *>(&parent));
                 va_list va;
@@ -458,22 +462,26 @@ Otherwise, iter is left invalid and false is returned.
 
                 return it;
             }
-            TreeIter AddFront(...) {
+            template <typename T>
+            TreeIter AddFront(gint col, T v, ...) {
                 TreeIter it;
                 gtk_tree_store_prepend(*this, &it, NULL);
+                gtk_tree_store_set(*this, &it, col, v, -1);
                 va_list va;
-                va_start(va, this);
+                va_start(va, v);
                 gtk_tree_store_set_valist(*this, &it, va);
                 va_end(va);
 
                 return it;
             }
 
-            TreeIter AddTail(...) {
+            template <typename T>
+            TreeIter AddTail(gint col, T v, ...) {
                 TreeIter it;
                 gtk_tree_store_append(*this, &it, NULL);
+                gtk_tree_store_set(*this, &it, col, v, -1);
                 va_list va;
-                va_start(va, this);
+                va_start(va, v);
                 gtk_tree_store_set_valist(*this, &it, va);
                 va_end(va);
 
@@ -558,7 +566,7 @@ In addition to regular completion matches, which will be inserted into the entry
             /// Gets the entry completion has been attached to.
             Entry *GetEntry() { return dynamic_cast<Entry *>(Find((GObject*)gtk_entry_completion_get_entry(*this))); }
             /// Sets the model for this object. If completion already has a model set, it will remove it before setting the new model. If model is NULL, then it will unset the model.
-            void Model(TreeModel *m) { 
+            void Model(const TreeModel *m) { 
                 if (!m) 
                     gtk_entry_completion_set_model(*this, NULL); 
                 else
@@ -1476,31 +1484,74 @@ This function is mostly intended for use by accessibility technologies; applicat
             BUILD_EVENT(OnChanged, "changed");
    };
 
+/**
+A ComboBoxText is a simple variant of ComboBox that hides the model-view complexity for simple text-only use cases.
+To create a ComboBoxText, use the constructor ComboBoxText::ComboBoxText().
+You can add items to a ComboBoxText with ComboBoxText::Append(), ComboBoxText::Insert() or ComboBoxText::Prepend() and remove options with ComboBoxText::Remove().
+If the ComboBoxText contains an entry (via the 'has-entry' property), its contents can be retrieved using ComboBoxText::ActiveText(). The entry itself can be accessed by calling Bin::Child() on the combo box.  
+ */
     class ComboBoxText : public ComboBox
     {
         public:
 /// DOXYS_OFF             
-            operator  GtkComboBox *() const { return GTK_COMBO_BOX(Obj()); }
+#if GTK_MINOR_VERSION > 23
+            operator  GtkComboBoxText *() const { return GTK_COMBO_BOX_TEXT(Obj()); }
+            ComboBoxText(GObject *obj) { Init(obj); }
+#else
+            operator  GtkComboBox *() const { return GTK_COMBO_BOX(Obj()); }            
+#endif
 /// DOXYS_ON
-
+            /// Creates a new ComboBoxText, which is a ComboBox just displaying strings. With GTK 2.24+ the combo box created by this function may have an optional entry.
+#if GTK_MINOR_VERSION > 23
+            ComboBoxText(bool with_entry = false  /**< optional entry for the ComboBoxText, defaults to false */
+                        ) : ComboBox(DerivedType()) {
+                Init(with_entry ? gtk_combo_box_text_new_with_entry() : gtk_combo_box_text_new());
+                Internal(true);
+            }
+#else
             ComboBoxText() : ComboBox(DerivedType()) {
                 Init(gtk_combo_box_new_text());
                 Internal(true);
             }
+#endif
             void Append(const std::string &text) {
+#if GTK_MINOR_VERSION < 24
                 gtk_combo_box_append_text(*this, text.c_str());
+#else
+                gtk_combo_box_text_append_text(*this, text.c_str());
+#endif
             }
             void Prepend(const std::string &text) {
+#if GTK_MINOR_VERSION < 24
                 gtk_combo_box_prepend_text(*this, text.c_str());
+#else
+                gtk_combo_box_text_prepend_text(*this, text.c_str());
+#endif
             }
             void Insert(const std::string &text, int position) {
+#if GTK_MINOR_VERSION < 24
                 gtk_combo_box_insert_text(*this, position, text.c_str());
+#else
+                gtk_combo_box_text_insert_text(*this, position, text.c_str());
+#endif
             }
-            void Remove(int row) { gtk_combo_box_remove_text(*this, row); }
+            void Remove(int row) { 
+#if GTK_MINOR_VERSION < 24
+                gtk_combo_box_remove_text(*this, row); 
+#else
+                gtk_combo_box_text_remove(*this, row); 
+#endif
+            }
 
             std::string ActiveText() { 
                 std::string res;
-                if (gchar *c = gtk_combo_box_get_active_text(*this)) {
+                if (gchar *c = 
+#if GTK_MINOR_VERSION < 24
+                        gtk_combo_box_get_active_text(*this)                        
+#else
+                        gtk_combo_box_text_get_active_text(*this)
+#endif
+                        ) {
                     res = c; 
                     g_free(c);
                 }
