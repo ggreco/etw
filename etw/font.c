@@ -462,7 +462,7 @@ void ShowPanel(void)
 #ifndef MOBILE_VERSION
     if (p->show_panel & PANEL_REPLAY) {
         char *c = msg_272;
-        int x, y, l = strlen(c);
+        int x, y, l = (int)strlen(c);
 
         x = WINDOW_WIDTH - l * font_width;
         x >>= 1;
@@ -475,7 +475,7 @@ void ShowPanel(void)
 
         if (friendly && !first_half) {
             c = msg_271;
-            l = strlen(c);
+            l = (int)strlen(c);
 
             y += (font_height << 1);
             x = WINDOW_WIDTH - l * font_width;
