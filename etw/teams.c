@@ -925,11 +925,19 @@ void SaveTeams(char *name)
     int i;
 
     if ((fh=fopen(name, "wb"/*-*/))) {
-        campionato.nteams--;
-
-        fwrite(&campionato, sizeof(struct championship_disk), 1, fh);
-
-        campionato.nteams++;
+        // AC: Old files had one team missing (probably due to a 0-based variable
+        // new files like Brazil 2014 does not have this limitation; but we need
+        // not to increase the number of available teams.
+        // At the moment the implemented method is the only one came to my mind...
+        if (strcmp(campionato.name,"BRAZIL 2014") != 0) {
+            campionato.nteams--;
+            
+            fwrite(&campionato, sizeof(struct championship_disk), 1, fh);
+            
+            campionato.nteams++;
+        }
+        else
+            fwrite(&campionato, sizeof(struct championship_disk), 1, fh);
 
         for(i=0; i<campionato.nteams; i++)
             WriteTeam(fh, &teamlist[i]);
