@@ -222,7 +222,7 @@ BOOL FileRequest(struct MyFileRequest *fr)
 BOOL FileRequest(struct MyFileRequest *fr)
 {
     fr->File = szFileName;
-    snprintf(szFileName, sizeof(szFileName), "%s/savegame", TEMP_DIR);
+    snprintf(szFileName, sizeof(szFileName), "%ssavegame", TEMP_DIR);
     return TRUE;
 }
 #endif                            /* WIN */
