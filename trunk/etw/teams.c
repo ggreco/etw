@@ -10,12 +10,12 @@ UBYTE highlight_team[3]={P_BIANCO, P_ROSSO1, P_BLU1}, totale_giornate;
 
 int8_t teamarray[64], competition=MENU_TEAMS, turno=0, actual_team=-1;
 int8_t controllo[64], nteams, ruolo[64], ppv=3, pps=0, ppp=1;
-char teamfile[128];
+char teamfile[256];
 
 BOOL saved=TRUE, random_draw=FALSE, special=FALSE;
 char division=0, scontri=0, i_scontri=0;
 
-char career_file[128]={0};
+char career_file[256]={0};
 
 struct championship_disk campionato;
 struct team_disk *teamlist=NULL;
