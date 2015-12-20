@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
+#include <arpa/inet.h>
 
 typedef struct gfx
 {
@@ -162,7 +164,7 @@ gfx_t *LoadGfxObject(char *name)
 
     fclose(fh);
 
-    fprintf(stderr, "Loaded GfxObject %s: %ld x %ld x %ld\n", name,
+    fprintf(stderr, "Loaded GfxObject %s: %d x %d x %d\n", name,
             obj->width, obj->height, obj->depth);
 
     return obj;
