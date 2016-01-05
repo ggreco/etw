@@ -561,7 +561,7 @@ struct MChunky *convert_mchunky(FILE *f, FILE *fo, int width, int height,
     do_p2c(planes, chunky, width, height, depth, NULL);
 
 
-    if ((blks = calloc(sizeof(int16_t), height))) {
+    if ((blks = calloc(sizeof(uint16_t), height))) {
         if ((t_data = malloc(start_datas * sizeof(uint8_t)))) {
             if ((bufs = malloc(start_blocks * sizeof(int16_t)))) {
                 uint8_t linebuffer[640], *chunky_line = chunky;
