@@ -477,9 +477,9 @@ BOOL LoadStuff(void)
 
         if ((scaling->Src =
                     malloc(FIXED_SCALING_WIDTH * FIXED_SCALING_HEIGHT))) {
-            if ((scaling->XRef = malloc(FIXED_SCALING_WIDTH * sizeof(char)))) {
+            if ((scaling->XRef = malloc(FIXED_SCALING_WIDTH * sizeof(uint8_t)))) {
                 if ((scaling->YRef =
-                            malloc(FIXED_SCALING_HEIGHT * sizeof(char)))) {
+                            malloc(FIXED_SCALING_HEIGHT * sizeof(uint8_t)))) {
                     MakeRef(scaling->XRef, FIXED_SCALING_WIDTH,
                             WINDOW_WIDTH);
                     MakeRef(scaling->YRef, FIXED_SCALING_HEIGHT,

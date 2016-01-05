@@ -1014,11 +1014,11 @@ BOOL AllocReplayBuffers(void)
     SetLimit = size - 1;
 
     for(i = 0; i < MAX_PLAYERS; i++) {
-        if(!(r_controls[i] = malloc(size * 256 * sizeof(LONG)))) {
+        if(!(r_controls[i] = malloc(size * 256 * sizeof(uint32_t)))) {
             D(bug("No memory to allocate r_controls buffers!\n"));
             return FALSE;
         }
-        if(!(r_args[i] = malloc(size * 256 * sizeof(LONG)))) {
+        if(!(r_args[i] = malloc(size * 256 * sizeof(uint32_t)))) {
             D(bug("No memory to allocate r_args buffers!\n"));
             return FALSE;
         }
