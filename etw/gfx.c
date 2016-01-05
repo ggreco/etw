@@ -504,8 +504,10 @@ anim_t *LoadAnimObject(const char *name, int32_t * pens)
         }
 
         free(obj->Frames);
+        free(obj);
     } else {
         D(bug("Non c'e' memoria per obj->Frames.\n"));
+        free(obj);
     }
 
     fclose(fh);
