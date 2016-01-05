@@ -607,7 +607,7 @@ static void * OpenCatalog(char *catalog)
 {
     char buffer[100],*lang=GetLanguage(); // debug, dovrebbe essere la lingua di sistema
     FILE *f;
-    struct MyCatalog *cat;
+    struct MyCatalog *cat = NULL;
 
     strcpy(buffer,CAT_DIR);
     strcat(buffer,lang); 
@@ -702,6 +702,8 @@ static void * OpenCatalog(char *catalog)
         else {
 fallback:
             D(bug("Not an IFF catalog!\n"));
+            if (cat)
+                free(cat);
             fclose(f);
             return NULL;
         }

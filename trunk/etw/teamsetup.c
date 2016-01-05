@@ -791,12 +791,18 @@ team_t *CreateTeam(int num)
     if(keepers)
     {
         if(!(keepers = CloneAnimObj(keepers)))
+        {
+            free(s);
             return NULL;
+        }
     }
     else
     {
         if(!(keepers = LoadAnimObject((current_field==7 ? "gfx/portsnow.obj" : "gfx/portiere.obj"), Pens)))
+        {
+            free(s);
             return NULL;
+        }
     }
 
     for(i = 0; i < strlen(sd.name); i++)
