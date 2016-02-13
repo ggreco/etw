@@ -265,6 +265,15 @@ void close_graphics(void)
 {
     D(bug("Inizio FreeGraphics()!\n"));
 
+    if (screen_texture)
+        SDL_DestroyTexture(screen_texture);
+    
+    if (renderer)
+        SDL_DestroyRenderer(renderer);
+    
+    if (screen)
+        SDL_DestroyWindow(screen);
+
     FreeGraphics();
     D(bug("Fine FreeGraphics()!\n"));
 }
