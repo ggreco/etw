@@ -637,8 +637,20 @@ WORD restore_menus()
                     
                 }
                 
-                /* AC: Non comparivano i nomi dei marcatori. */
-                ScreenSwap();
+                /* Some competitions require to "wait" here, otherwise we loose the
+                    scorers screen */
+                if (!training && !interrupted && !highlight &&!friendly)  {
+                    struct GfxMenu *old_menu = actual_menu;
+                    int old_current_menu = current_menu;
+                    ScreenSwap();
+                    reqqing = TRUE;
+
+                    while (HandleMenuIDCMP());
+                    reqqing = FALSE;
+                    
+                    actual_menu = old_menu;
+                    current_menu = old_current_menu;
+                } 
 
                 while(fgets(buffer,19,f))
                 {
