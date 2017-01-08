@@ -44,12 +44,9 @@ static                 BOOL                 FreeAbleFrame( struct AnimInstData *
 static                 struct FrameNode    *AllocFrameNode( void );
 static                 struct FrameNode    *FindFrameNode( struct MyList *, ULONG );
 static                 void                 CopyBitMap( struct BitMap *, struct BitMap * );
-static                 void                 XCopyMem( APTR, APTR, ULONG );
 static                 void                 ClearBitMap( struct BitMap * );
 static                 void                 XORBitMaps( struct BitMap *, struct BitMap * );
 static                 struct BitMap       *AllocBitMapPooled( ULONG, ULONG, ULONG);
-static                 APTR                 AllocVecPooled( APTR, ULONG );
-static                 void                 FreeVecPooled( APTR, APTR );
 static                 LONG                 DrawDLTA( struct AnimInstData *, struct BitMap *, struct BitMap *, struct AnimHeader *, UBYTE *, ULONG );
 static                 void                 DumpAnimHeader( struct AnimInstData *, ULONG, struct AnimHeader * );
 static                 struct FrameNode    *GetPrevFrameNode( struct FrameNode *, ULONG );
