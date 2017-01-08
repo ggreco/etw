@@ -436,7 +436,7 @@ void FreeStuff(void)
     free_joyports();
 
     os_free_timer();
-    close_graphics();
+    FreeGraphics();
 }
 
 
@@ -513,7 +513,7 @@ BOOL LoadStuff(void)
     ClipY = WINDOW_HEIGHT - 1;
 
     if (!InitFonts()) {
-        close_graphics();
+        FreeGraphics();
         return FALSE;
     }
 
@@ -531,7 +531,7 @@ BOOL LoadStuff(void)
 
         if (!CaricaSuoni()) {
             FreeFonts();
-            close_graphics();
+            FreeGraphics();
             return FALSE;
         }
 
@@ -672,7 +672,7 @@ BOOL LoadStuff(void)
                 if (!no_sound) {
                     LiberaSuoni();
                 }
-                close_graphics();
+                FreeGraphics();
                 return FALSE;
             }
 
@@ -698,7 +698,7 @@ BOOL LoadStuff(void)
                     LiberaSuoni();
                 }
 
-                close_graphics();
+                FreeGraphics();
                 return FALSE;
             }
         } else {
@@ -803,7 +803,7 @@ BOOL LoadStuff(void)
     FreeFonts();
     LiberaListe();
 
-    close_graphics();
+    FreeGraphics();
 
     if (!no_sound) {
         LiberaSuoni();

@@ -288,6 +288,7 @@ int main(int argc, char *argv[])
 {
     /* AC: Why if I include externs.h I obtain 55 compilation error? */
     extern void LoadKeyDef(int, char *);
+    extern void close_graphics(void);
     
 
     D(bug("ETW main\n"));
@@ -498,6 +499,8 @@ int main(int argc, char *argv[])
 
         if(SoundStarted())
             FreeSoundSystem();
+        
+        close_graphics();
     }
 
     free_menus();
