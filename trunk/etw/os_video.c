@@ -263,10 +263,19 @@ void ResizeWin(SDL_Event *event)
 
 void close_graphics(void)
 {
-    D(bug("Inizio FreeGraphics()!\n"));
+    D(bug("Begin close_graphics()!\n"));
+
+    if (screen_texture)
+        SDL_DestroyTexture(screen_texture);
+
+    if (renderer)
+        SDL_DestroyRenderer(renderer);
+
+    if (screen)
+        SDL_DestroyWindow(screen);
 
     FreeGraphics();
-    D(bug("Fine FreeGraphics()!\n"));
+    D(bug("End close_graphics()!\n"));
 }
 
 BOOL alloc_bitmap(void)
