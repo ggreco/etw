@@ -23,12 +23,13 @@ void init_controllers()
 {
 #ifdef MACOSX
     gWindow = [[NSApplication sharedApplication] keyWindow];
-    //gView = [gWindow.initialFirstResponder];
-    id nextResponder = [gView nextResponder];
+    gView = [gWindow contentView];
+    gViewColtroller = [gWindow contentViewController];
+/*    id nextResponder = [gView nextResponder];
     if ([nextResponder isKindOfClass:[NSViewController class]])
         gViewColtroller = (NSViewController *) nextResponder;
     else
-        NSLog(@"Unable to find viewcontroller!");
+        NSLog(@"Unable to find viewcontroller!");*/
 #else
     gWindow = [[UIApplication sharedApplication] keyWindow];
     gView = [gWindow.subviews objectAtIndex:0];
@@ -69,6 +70,7 @@ void show_achievements()
 {
     [[GameCenter getInstance] showAchievements];
 }
+
 void add_achievement(const char *id, float percent)
 {
     BOOL isnew = NO;
@@ -175,11 +177,15 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
         return;
     
     attemptedLogin = YES;
-    
+
     // See page 28, should keep a local copy of player to compare after returning from background
     
     localPlayer = [GKLocalPlayer localPlayer];
+#ifndef MACOSX
+    [localPlayer setAuthenticateHandler:(^(UIViewController* viewcontroller, NSError *error)
+#else
     [localPlayer authenticateWithCompletionHandler:^(NSError *error)
+#endif
     {
         if (error != nil) {
             NSLog(@"Error initializing game center: %@", error);
@@ -202,9 +208,17 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
                  }
              }];
         }
+        else if(viewcontroller)
+        {
+            [gViewColtroller presentViewController: viewcontroller animated: YES completion:nil];
+//            [self presentViewController:viewcontroller]; //present the login form
+        }
         
         D(NSLog(@"Player Authenticated %d", localPlayer.isAuthenticated));
     }
+#ifndef MACOSX
+     )
+#endif
     ];
 }
 
@@ -275,21 +289,19 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     if (![GameCenter isGameCenterAPIAvailable])
         return;
     
-    GKLeaderboardViewController *leaderboardController = [[GKLeaderboardViewController alloc] init];
+    GKGameCenterViewController* leaderboardController = [[GKGameCenterViewController alloc] init];
     if (leaderboardController != nil)
     {
-        leaderboardController.leaderboardDelegate = [GameCenter getInstance];
+        leaderboardController.gameCenterDelegate = [GameCenter getInstance];
         if ([identifier length] > 0)
         {
-            [leaderboardController setCategory:[[[NSString alloc] initWithFormat:@"%@_Arcade_Test", [identifier stringByReplacingOccurrencesOfString:@" " withString:@"_"]] autorelease]];
+            [leaderboardController setLeaderboardIdentifier:[[[NSString alloc] initWithFormat:@"%@_Arcade_Test", [identifier stringByReplacingOccurrencesOfString:@" " withString:@"_"]] autorelease]];
         }
-        leaderboardController.timeScope = GKLeaderboardTimeScopeWeek;
-        
+        leaderboardController.leaderboardTimeScope = GKLeaderboardTimeScopeWeek;
+        leaderboardController.viewState = GKGameCenterViewControllerStateLeaderboards;
+
         [gViewColtroller presentViewController: leaderboardController animated: YES completion:nil];
 
-       /* UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
-        [mainWindow insertSubview:leaderboardController.view aboveSubview:mainWindow]; */
-        
         [leaderboardController release];
     }
 }
@@ -298,28 +310,27 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
 {
     D(NSLog(@"Logging score %d with id %@", score, identifier));
     
-    GKScore *scoreReporter = [[[GKScore alloc] initWithCategory:identifier] autorelease];
+    GKScore *scoreReporter = [[[GKScore alloc] initWithLeaderboardIdentifier:identifier] autorelease];
     scoreReporter.value = score;
-    
-    [scoreReporter reportScoreWithCompletionHandler:^(NSError *error)
-     {
+
+    [GKScore reportScores:@[scoreReporter] withCompletionHandler:^(NSError *error) {
         if (error != nil) {
             D(NSLog(@"Error Message: - %@",[error localizedDescription]));
         }
         else {
-             D(NSLog(@"Successfully added score"));
+            D(NSLog(@"Successfully added score"));
         }
     } ];
-    
+
     [scoreReporter release];
 }
 
-- (void) leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
+- (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)viewController
 {
     [gViewColtroller dismissViewControllerAnimated:YES completion:nil];
 }
 
-+ (void) leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
++ (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)viewController
 {
     [gViewColtroller dismissViewControllerAnimated:YES completion:nil];
 }
@@ -331,44 +342,34 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     else
         achievement.showsCompletionBanner = NO;
     
-    [achievement reportAchievementWithCompletionHandler:
-     ^(NSError *error) {
-         dispatch_async(dispatch_get_main_queue(), ^(void)
-                        {
-                            if (error == NULL) {
-                                D(NSLog(@"Successfully sent archievement %@!", achievement.description));
-                            } else {
-                                D(NSLog(@"Achievement %@ failed to send... will try again \
-                                      later.  Reason: %@", achievement.description, error.localizedDescription));
-                            }
-                        });
-     }];
+    NSArray *achievements = [NSArray arrayWithObjects:achievement, nil];
+    [GKAchievement reportAchievements:achievements withCompletionHandler:^(NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void)
+                       {
+                           if (error == nil) {
+                               D(NSLog(@"Successfully sent archievement %@!", achievement.description));
+                           } else {
+                               D(NSLog(@"Achievement %@ failed to send... will try again \
+                                       later.  Reason: %@", achievement.description, error.localizedDescription));
+                           }
+                       });
+    }];
 }
+                                         
 - (void) showAchievements
 {
     if (![GameCenter isGameCenterAPIAvailable])
         return;
 	
-    GKAchievementViewController *achievements = [[GKAchievementViewController alloc] init];
-	if (achievements != NULL)
-	{
-		achievements.achievementDelegate = self;
+    GKGameCenterViewController* achievements = [[GKGameCenterViewController alloc] init];
+    if (achievements != nil)
+    {
+        achievements.gameCenterDelegate = [GameCenter getInstance];
+        achievements.viewState = GKGameCenterViewControllerStateAchievements;
         [gViewColtroller presentViewController: achievements animated: YES completion:nil];
         
         [achievements release];
-	}
-}
-
-- (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController;
-{
-    [gViewColtroller dismissViewControllerAnimated: YES completion:nil];
-	//[gViewColtroller release];
-}
-
-+ (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController;
-{
-    [gViewColtroller dismissViewControllerAnimated: YES completion:nil];
-	//[gViewColtroller release];
+    }
 }
 
 +(BOOL)isGameCenterNotificationUp

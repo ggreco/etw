@@ -12,13 +12,13 @@
 #include "SDL.h"
 
 #ifdef MACOSX
-@interface GameCenter : NSObject <GKLeaderboardViewControllerDelegate, GKAchievementViewControllerDelegate, NSTextViewDelegate> {
+@interface GameCenter : NSObject <GKGameCenterControllerDelegate, NSTextViewDelegate> {
     GKLocalPlayer *localPlayer;
     NSArray *descriptions;
     BOOL attemptedLogin;
 }
 #else
-@interface GameCenter : NSObject <GKLeaderboardViewControllerDelegate, GKAchievementViewControllerDelegate, UIAlertViewDelegate> {
+@interface GameCenter : NSObject <GKGameCenterControllerDelegate, UIAlertViewDelegate> {
     GKLocalPlayer *localPlayer;
     NSArray *descriptions;
     BOOL attemptedLogin;
