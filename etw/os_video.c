@@ -316,12 +316,6 @@ void OpenTheScreen(void)
     
     wb_game = FALSE;
     scaling = NULL;
-#else
-    if(wb_game) 
-        screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
-    else
-        screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
-#endif
 
 #ifdef ANDROID
     if (WINDOW_WIDTH > 640 ||
@@ -350,6 +344,13 @@ void OpenTheScreen(void)
         WINDOW_WIDTH /= 2;
         WINDOW_HEIGHT /= 2;
     }
+#endif
+
+#else
+    if(wb_game) 
+        screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
+    else
+        screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
 #endif
 
     if(screen) {
