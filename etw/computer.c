@@ -3,7 +3,7 @@
 
 #define NUMERO_CHEAT 8
 
-// LONG framerate=25;
+// int32_t framerate=25;
 
 char *cheats[NUMERO_CHEAT]=
 {
@@ -17,7 +17,7 @@ char *cheats[NUMERO_CHEAT]=
     "outro"/*-*/
 };
 
-void CheckCheat(UBYTE c )
+void CheckCheat(uint8_t c )
 {
     static int cheat_counter=0,current_cheat=-1;
     int i;
@@ -100,10 +100,10 @@ void CheckCheat(UBYTE c )
     }
 }
 
-WORD CalcolaPotenza(struct team_disk *s,char POS)
+int16_t CalcolaPotenza(struct team_disk *s,char POS)
 {
     int i;
-    WORD potenza=0;
+    int16_t potenza=0;
 
     for(i=0;i<10;i++)
     {
@@ -132,7 +132,7 @@ WORD CalcolaPotenza(struct team_disk *s,char POS)
     return potenza;
 }
 
-WORD ComputerMatch(BYTE a,BYTE b)
+int16_t ComputerMatch(int8_t a,int8_t b)
 {
     int i,t;
     int gol_a=0,gol_b=0,attacco_a,attacco_b,centro_a,centro_b,difesa_a,difesa_b;
@@ -238,7 +238,7 @@ WORD ComputerMatch(BYTE a,BYTE b)
     }
 
     D(bug(" = %d - %d\n", gol_a, gol_b));
-    return (WORD) (gol_a | (gol_b<<8) );
+    return (int16_t) (gol_a | (gol_b<<8) );
 }
 
 char *ElaboraRisultato(int8_t a, int8_t b, uint16_t risultato)

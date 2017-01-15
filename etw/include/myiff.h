@@ -44,31 +44,31 @@
 
 struct StoredProperty
 {
-    LONG sp_Size;
+    int32_t sp_Size;
     APTR sp_Data;
 };
 
 struct ContextNode
 {
     struct MyMinNode cn_Node;
-    LONG cn_ID;
-    LONG cn_Type;
-    LONG cn_Size;    /*  Size of this chunk           */
-    LONG cn_Scan;    /*  # of bytes read/written so far */
+    int32_t cn_ID;
+    int32_t cn_Type;
+    int32_t cn_Size;    /*  Size of this chunk           */
+    int32_t cn_Scan;    /*  # of bytes read/written so far */
 };
 
 struct PropNode
 {
     struct PropNode *next;
-    LONG cn_ID;
-    LONG cn_Scan;
+    int32_t cn_ID;
+    int32_t cn_Scan;
     struct StoredProperty sp;
 };
 
 struct IFFHandle
 {
     FILE *iff_Stream;
-    ULONG iff_Flags, iff_Stops, iff_props;
+    uint32_t iff_Flags, iff_Stops, iff_props;
     int32_t *stops, *props;
     struct ContextNode Current;
     struct PropNode *Prop;
@@ -89,24 +89,24 @@ struct IFFHandle
 /* Basic functions */
 
 struct IFFHandle *AllocIFF(void);
-LONG OpenIFF(struct IFFHandle *iff, LONG rwMode);
-LONG ParseIFF(struct IFFHandle *iff, LONG control);
+int32_t OpenIFF(struct IFFHandle *iff, int32_t rwMode);
+int32_t ParseIFF(struct IFFHandle *iff, int32_t control);
 void CloseIFF(struct IFFHandle *iff);
 void FreeIFF(struct IFFHandle *iff);
 
 /* additional anim parsing functions */
-struct StoredProperty *FindProp(struct IFFHandle *, LONG type, LONG id);
-LONG PropChunks(struct IFFHandle * iff, int32_t *chunks, int num_chunks);
+struct StoredProperty *FindProp(struct IFFHandle *, int32_t type, int32_t id);
+int32_t PropChunks(struct IFFHandle * iff, int32_t *chunks, int num_chunks);
 
 /* Read/Write functions */
 
-LONG ReadChunkBytes(struct IFFHandle *iff, APTR buf, LONG numBytes);
-LONG ReadChunkRecords(struct IFFHandle *iff, APTR buf, LONG bytesPerRecord,
-                         LONG numRecords);
+int32_t ReadChunkBytes(struct IFFHandle *iff, APTR buf, int32_t numBytes);
+int32_t ReadChunkRecords(struct IFFHandle *iff, APTR buf, int32_t bytesPerRecord,
+                         int32_t numRecords);
 
 /* Built-in chunk/property handlers */
 
-LONG StopChunks(struct IFFHandle *iff, int32_t *propArray, LONG numPairs);
+int32_t StopChunks(struct IFFHandle *iff, int32_t *propArray, int32_t numPairs);
 struct ContextNode *CurrentChunk(struct IFFHandle *iff);
 
 /* IFFHandle initialization */

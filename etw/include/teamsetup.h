@@ -77,22 +77,22 @@ struct championship_disk
 
 struct control_disk
 {
-    WORD ManagerType;
-    UBYTE ControlType;
-    UBYTE Joystick;
-    UBYTE Player;
+    int16_t ManagerType;
+    uint8_t ControlType;
+    uint8_t Joystick;
+    uint8_t Player;
 };
 
 struct Storia
 {
-    UBYTE Posizione, Punti, Vittorie, Sconfitte, Pareggi, GolFatti, GolSubiti;
-    BYTE TurnoEuropea;
-    BYTE TurnoNazionale;
+    uint8_t Posizione, Punti, Vittorie, Sconfitte, Pareggi, GolFatti, GolSubiti;
+    int8_t TurnoEuropea;
+    int8_t TurnoNazionale;
 };
 
 struct manager_disk
 {
-    WORD Punteggio;
+    int16_t Punteggio;
     struct Storia storia[16];
 };
 
@@ -101,10 +101,10 @@ struct teamstats_disk
     unsigned short Punti; // Punti della squadra, negativo significa TURNO.
     BOOL Controllata; // Punteggio manager, solo se "Career"
 // Classifica
-    UBYTE GolFatti, GolSubiti, Giocate;
-    UBYTE Vittorie, Pareggi, Sconfitte;
-    BYTE TurnoEuropea;
-    BYTE TurnoNazionale;
+    uint8_t GolFatti, GolSubiti, Giocate;
+    uint8_t Vittorie, Pareggi, Sconfitte;
+    int8_t TurnoEuropea;
+    int8_t TurnoNazionale;
 };
 
 void ReadTeam(FILE *, struct team_disk *);

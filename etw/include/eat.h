@@ -36,18 +36,18 @@
 struct object
 {
     anim_t *anim;
-    WORD world_x, world_y;
+    int16_t world_x, world_y;
     BOOL OnScreen;
-    WORD AnimType, AnimFrame; // Animation type and current frame
+    int16_t AnimType, AnimFrame; // Animation type and current frame
     int8_t otype;  // object type, this is used to find what kind of object we are handling
 };
 
 struct movingobject
 {
     anim_t *anim;
-    WORD world_x, world_y;
+    int16_t world_x, world_y;
     BOOL OnScreen;
-    WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
+    int16_t AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
     int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
     int8_t dir;   // Direzione di movimento
     int8_t ActualSpeed; // Velocita' del tipo
@@ -60,7 +60,7 @@ struct Animazione
 {
     char FrameLen;
     char Frames;
-    WORD *Frame;
+    int16_t *Frame;
 };
 
 
@@ -77,12 +77,12 @@ struct game
     struct player *player_injuried;
     anim_t *extras; // Ci metto bandierine, fotografi, poliziotti...
     struct team *possesso;
-    ULONG TempoPassato;
-    LONG show_panel, show_time;
-    UWORD check_sector;
-    WORD shotheight[SHOT_LENGTH], flash_pos;
+    uint32_t TempoPassato;
+    int32_t show_panel, show_time;
+    uint16_t check_sector;
+    int16_t shotheight[SHOT_LENGTH], flash_pos;
     BOOL goal, sopra_rete, flash_mode, doing_shot, mantieni_distanza, penalty_onscreen;
-    WORD arcade_counter, marker_x, marker_y, penalty_counter, adder;
+    int16_t arcade_counter, marker_x, marker_y, penalty_counter, adder;
     uint8_t TabCounter, result_len, last_touch;
     int8_t arcade_on_field, RiservaAttuale;
 //    struct linesman linesman[2]; tolti per non modificare la struttura

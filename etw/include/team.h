@@ -20,17 +20,17 @@ typedef struct team
     struct keeper keepers;
     struct player players[10];
     struct tactic *tactic;
-    ULONG TempoPossesso;
+    uint32_t TempoPossesso;
     struct player *attivo;
     anim_t *Marker;
-    WORD Marker_X, Marker_Y, MarkerFrame;
+    int16_t Marker_X, Marker_Y, MarkerFrame;
     BOOL MarkerOnScreen;
     uint8_t *NomeAttivo;
     int8_t gioco_ruolo;
     char name[52];
     BOOL MarkerRed;
     uint8_t ArcadeEffect, NumeroRiserve;
-    WORD ArcadeCounter;
+    int16_t ArcadeCounter;
 } team_t;
 
 #endif

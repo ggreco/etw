@@ -3,7 +3,7 @@
 
 struct myfont *bigfont,*smallfont,*titlefont;
 
-static WORD restore_x = 0,restore_y = 0, restore_w=0, restore_h=0;
+static int16_t restore_x = 0,restore_y = 0, restore_w=0, restore_h=0;
 
 BOOL InitMenuFonts(void)
 {

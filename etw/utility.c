@@ -14,7 +14,7 @@ player_t *has_player_injuried()
 }
 // char Table[]={4,1,5,0,3,2,5,2,1,4,0,3};
 
-void SetShotSpeed(player_t *g, WORD distance)
+void SetShotSpeed(player_t *g, int16_t distance)
 {
 // Suppongo che queste saranno da modificare!
 
@@ -47,7 +47,7 @@ void SetShotSpeed(player_t *g, WORD distance)
     }
 }
 
-BOOL InArea(BYTE area, WORD x, WORD y)
+BOOL InArea(int8_t area, int16_t x, int16_t y)
 {
     if(y <= AREA_RIGORE_Y_N || y >= AREA_RIGORE_Y_S)
         return FALSE;
@@ -63,7 +63,7 @@ BOOL InArea(BYTE area, WORD x, WORD y)
     return FALSE;
 }
 
-BOOL InAnyArea(WORD x,WORD y)
+BOOL InAnyArea(int16_t x,int16_t y)
 {
     if(y <= AREA_RIGORE_Y_N || y >= AREA_RIGORE_Y_S)
         return FALSE;
@@ -79,13 +79,13 @@ BOOL InAnyArea(WORD x,WORD y)
     return FALSE;
 }
 
-void SetComando(player_t *g, BYTE cmd, BYTE dopo, BYTE arg)
+void SetComando(player_t *g, int8_t cmd, int8_t dopo, int8_t arg)
 {
     switch(cmd)
     {
         case ESEGUI_ROTAZIONE:
             {
-                BYTE NewDir=(g->dir-arg);
+                int8_t NewDir=(g->dir-arg);
 
                 if(NewDir>4)
                 {
@@ -137,9 +137,9 @@ void SetComando(player_t *g, BYTE cmd, BYTE dopo, BYTE arg)
     }
 }
 
-WORD CanScore(player_t *g)
+int16_t CanScore(player_t *g)
 {
-    register WORD temp_x,temp_y;
+    register int16_t temp_x,temp_y;
 
     temp_y=(g->world_y>>3);
 
@@ -157,7 +157,7 @@ WORD CanScore(player_t *g)
             if(temp_y>(temp_x-180) &&
                temp_y<(-temp_x+740)    )
             {
-/*                BYTE temp;
+/*                int8_t temp;
 
 Si tira anche girati di schiena!
 
@@ -217,7 +217,7 @@ struct team_disk *find_disk_team(team_t *s)
     else
         return &leftteam_dk;
 }
-BOOL handle_pause(WORD button)
+BOOL handle_pause(int16_t button)
 {
     team_t *cnt;
     D(bug("Clicked button %d in handle_pause\n", button));
@@ -309,7 +309,7 @@ void DoPause(void)
 player_t *FindNearestDirPlayer(player_t *g)
 {
     register player_t *g2,*g_min=NULL;
-    WORD d_min=31000,t;
+    int16_t d_min=31000,t;
     register int i;
 
     for(i=0;i<10;i++)
@@ -338,7 +338,7 @@ player_t *FindNearestDirPlayer(player_t *g)
 player_t *FindNearestPlayer(player_t *g)
 {
     register player_t *g2,*g_min=NULL;
-    WORD d_min=31000,t;
+    int16_t d_min=31000,t;
     register int i;
 
     for(i=0;i<10;i++)
@@ -391,9 +391,9 @@ void UpdateShotHeight(void)
         p->shotheight[SHOT_LENGTH/2]--;
 }
 
-WORD FindDirection(WORD x1, WORD y1, WORD x2,WORD y2)
+int16_t FindDirection(int16_t x1, int16_t y1, int16_t x2,int16_t y2)
 {
-    register WORD xd,xr,yd,yr;
+    register int16_t xd,xr,yd,yr;
 
     xd=(x1-x2); 
     yd=(y1-y2);
@@ -438,9 +438,9 @@ WORD FindDirection(WORD x1, WORD y1, WORD x2,WORD y2)
     return D_NORD_EST;
 }
 
-void MoveTo(player_t *g,WORD xd,WORD yd)
+void MoveTo(player_t *g,int16_t xd,int16_t yd)
 {
-    register WORD NewDir=FindDirection(g->world_x,g->world_y,xd,yd);
+    register int16_t NewDir=FindDirection(g->world_x,g->world_y,xd,yd);
 
     if(!g->ActualSpeed)
     {
@@ -493,9 +493,9 @@ void MoveTo(player_t *g,WORD xd,WORD yd)
     }
 }
 
-WORD FindDirection32(WORD xfrom, WORD yfrom,WORD xto,WORD yto)
+int16_t FindDirection32(int16_t xfrom, int16_t yfrom,int16_t xto,int16_t yto)
 {
-    register WORD x,y,x2,y2,x8,y8;
+    register int16_t x,y,x2,y2,x8,y8;
 
     x=xto-xfrom;
     y=yfrom-yto;
@@ -663,10 +663,10 @@ WORD FindDirection32(WORD xfrom, WORD yfrom,WORD xto,WORD yto)
 }
 
 
-UBYTE FindDirection256(WORD xfrom, WORD yfrom,WORD xto,WORD yto)
+uint8_t FindDirection256(int16_t xfrom, int16_t yfrom,int16_t xto,int16_t yto)
 {
-    register WORD xda=abs(xto-xfrom)>>4,yda=abs(yfrom-yto)>>4;
-    register UBYTE angle;
+    register int16_t xda=abs(xto-xfrom)>>4,yda=abs(yfrom-yto)>>4;
+    register uint8_t angle;
 
     if(yda!=xda)
     {
@@ -686,7 +686,7 @@ UBYTE FindDirection256(WORD xfrom, WORD yfrom,WORD xto,WORD yto)
             double temp;
 
             temp=atan2((double)yda,(double)xda);
-            angle=(UBYTE)((PID2-temp)*40.74);
+            angle=(uint8_t)((PID2-temp)*40.74);
         }
     }
     else angle=32; // 45 gradi in 256ali
@@ -743,9 +743,9 @@ void LiberaListe(void)
     totale_lista_c = 0;
 }
 
-BOOL AllowRotation(player_t *g,WORD NewDir)
+BOOL AllowRotation(player_t *g,int16_t NewDir)
 {
-    register WORD result=abs(g->dir-NewDir);
+    register int16_t result=abs(g->dir-NewDir);
 
     if(result!=1&&result!=7)
         return FALSE;
@@ -852,10 +852,10 @@ void RimuoviCLista(struct DOggetto *o)
     }
 }
 
-player_t *FindNearest(team_t *s,WORD x,WORD y)
+player_t *FindNearest(team_t *s,int16_t x,int16_t y)
 {
     register int i;
-    register WORD t,minv=32767;
+    register int16_t t,minv=32767;
     register player_t *n=&s->players[0],*g;
 
     for(i=0;i<10;i++)
@@ -938,7 +938,7 @@ void CheckActive(void)
 
         if(i>=0 && (r_controls[i][counter]&JP_DIRECTION_MASK) )
         {
-            WORD Dir=GetJoyDirection(r_controls[i][counter]);
+            int16_t Dir=GetJoyDirection(r_controls[i][counter]);
 
             /**
              * AC: Codeguard signals here a memory access overrun of 2 bytes
@@ -1048,9 +1048,9 @@ void EseguiDopoComando(player_t *g)
     }
 }
 
-WORD IndirizzaTiro(player_t *g, uint32_t joystate)
+int16_t IndirizzaTiro(player_t *g, uint32_t joystate)
 {
-    register WORD dest_y, dest_x;
+    register int16_t dest_y, dest_x;
 
     pl->velocita = 8 + GetTable() + g->Tiro;
 
@@ -1074,5 +1074,5 @@ WORD IndirizzaTiro(player_t *g, uint32_t joystate)
 
     pl->dir=FindDirection256(g->world_x,g->world_y,dest_x,dest_y);
 
-    return (WORD)FindDistance(g->world_x,g->world_y,dest_x,dest_y,pl->dir);
+    return (int16_t)FindDistance(g->world_x,g->world_y,dest_x,dest_y,pl->dir);
 }

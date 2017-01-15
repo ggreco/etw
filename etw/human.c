@@ -146,7 +146,7 @@ void HandleControlled(int squadra)
             // Passaggio
             else
             {
-                WORD d=FindDirection(g->world_x,G2P_Y(g->world_y),(g->SNum ? PORTA_E_X : PORTA_O_X),PORTA_Y);
+                int16_t d=FindDirection(g->world_x,G2P_Y(g->world_y),(g->SNum ? PORTA_E_X : PORTA_O_X),PORTA_Y);
 
                 if(abs(CambioDirezione[g->dir][d])>1 || !InArea(g->SNum^1,g->world_x,g->world_y) )
                 {
@@ -186,7 +186,7 @@ void HandleControlled(int squadra)
 
     if( (joystate&JP_DIRECTION_MASK) ) 
     {
-        register WORD NewDir=GetJoyDirection(joystate);
+        register int16_t NewDir=GetJoyDirection(joystate);
 
         if(g->dir == opposto[NewDir])
         {
@@ -214,7 +214,7 @@ void HandleControlled(int squadra)
         {
             if(g->ActualSpeed==3)
             {
-                WORD tv=abs(g->dir-NewDir);
+                int16_t tv=abs(g->dir-NewDir);
 
                 if(tv>4)
                     tv=8-tv;
@@ -262,7 +262,7 @@ void HandleControlled(int squadra)
             {
                 if(g==pl->gioc_palla)
                 {
-                    WORD tv=abs(g->dir-NewDir);
+                    int16_t tv=abs(g->dir-NewDir);
 
                     if(tv>4)
                         tv=8-tv;
@@ -461,7 +461,7 @@ void HandleControlledJ2B(int squadra)
 
     if( (joystate&JP_DIRECTION_MASK) ) 
     {
-        register WORD NewDir=GetJoyDirection(joystate);
+        register int16_t NewDir=GetJoyDirection(joystate);
 
         if(g->dir == opposto[NewDir])
         {
@@ -489,7 +489,7 @@ void HandleControlledJ2B(int squadra)
         {
             if(g->ActualSpeed==3)
             {
-                WORD tv=abs(g->dir-NewDir);
+                int16_t tv=abs(g->dir-NewDir);
 
                 if(tv>4)
                     tv=8-tv;
@@ -537,7 +537,7 @@ void HandleControlledJ2B(int squadra)
             {
                 if(g==pl->gioc_palla)
                 {
-                    WORD tv=abs(g->dir-NewDir);
+                    int16_t tv=abs(g->dir-NewDir);
 
                     if(tv>4)
                         tv=8-tv;
@@ -747,7 +747,7 @@ void HandleControlledTouch(int squadra)
     
     if( (joystate&JP_DIRECTION_MASK) )
     {
-        register WORD NewDir=GetJoyDirection(joystate);
+        register int16_t NewDir=GetJoyDirection(joystate);
         
         if(g->dir == opposto[NewDir])
         {
@@ -766,7 +766,7 @@ void HandleControlledTouch(int squadra)
         {
             if(g->ActualSpeed==3)
             {
-                WORD tv=abs(g->dir-NewDir);
+                int16_t tv=abs(g->dir-NewDir);
                 
                 if(tv>4)
                     tv=8-tv;
@@ -814,7 +814,7 @@ void HandleControlledTouch(int squadra)
             {
                 if(g==pl->gioc_palla)
                 {
-                    WORD tv=abs(g->dir-NewDir);
+                    int16_t tv=abs(g->dir-NewDir);
                     
                     if(tv>4)
                         tv=8-tv;
@@ -1007,7 +1007,7 @@ void HandleControlledJoyPad(int squadra)
 
     if( (joystate&JP_DIRECTION_MASK) ) 
     {
-        register WORD NewDir=GetJoyDirection(joystate);
+        register int16_t NewDir=GetJoyDirection(joystate);
 
         if(g->dir == opposto[NewDir])
         {
@@ -1026,7 +1026,7 @@ void HandleControlledJoyPad(int squadra)
         {
             if(g->ActualSpeed==3)
             {
-                WORD tv=abs(g->dir-NewDir);
+                int16_t tv=abs(g->dir-NewDir);
 
                 if(tv>4)
                     tv=8-tv;
@@ -1074,7 +1074,7 @@ void HandleControlledJoyPad(int squadra)
             {
                 if(g==pl->gioc_palla)
                 {
-                    WORD tv=abs(g->dir-NewDir);
+                    int16_t tv=abs(g->dir-NewDir);
 
                     if(tv>4)
                         tv=8-tv;
@@ -1157,7 +1157,7 @@ void HandleControlledJoyPad(int squadra)
     }
 }
 
-WORD GetJoyDirection(uint32_t joystate)
+int16_t GetJoyDirection(uint32_t joystate)
 {
     if(joystate & JPF_JOY_UP)
     {

@@ -169,7 +169,7 @@ void HandleGoalKick(keeper_t *g)
         else if (g->FirePressed)
 rinvio:
         {
-            WORD olddir=g->dir;
+            int16_t olddir=g->dir;
 
             g->FirePressed=FALSE;
 
@@ -314,7 +314,7 @@ void HandleKeeperControlled(keeper_t *g)
         else if (g->FirePressed)
 rinvio:
         {
-            WORD olddir=g->dir;
+            int16_t olddir=g->dir;
 
             g->FirePressed=FALSE;
 
@@ -585,8 +585,8 @@ void HandleKeeper(int num)
         }
         else if(!pl->gioc_palla && (near_porta || (GetTable()>1&&g->Attenzione>(GetTable())) ) )
         {
-            WORD dest_x,dest_y,distance;
-            WORD gxl=g->world_x-44,
+            int16_t dest_x,dest_y,distance;
+            int16_t gxl=g->world_x-44,
                 gxr=g->world_x+150,
                 gyu=g->world_y+75,
                 gyd=g->world_y+200,
@@ -618,7 +618,7 @@ void HandleKeeper(int num)
             {
                 if(dest_x<(39*8))
                 {
-                    WORD temp=(39*8)-dest_x;
+                    int16_t temp=(39*8)-dest_x;
                     temp/=3;
                     temp*=2;
 
@@ -633,7 +633,7 @@ void HandleKeeper(int num)
             {
                 if(dest_x>(1236*8))
                 {
-                    WORD temp=dest_x-(1236*8);
+                    int16_t temp=dest_x-(1236*8);
 
                     temp/=3;
                     temp*=2;
@@ -652,7 +652,7 @@ void HandleKeeper(int num)
 
             if(distance>8  && ( near_porta || distance<(g->Parata<<5) )  )
             {
-                BYTE temp=CambioDirezione[g->dir][g->SpecialData>>5];
+                int8_t temp=CambioDirezione[g->dir][g->SpecialData>>5];
 
                 distance=min((g->Parata<<5),distance);
 
@@ -1063,7 +1063,7 @@ skiptuffo:
                             g->SpecialData= g->SNum ? 5 : 251;
 
                         {
-                            BYTE temp=CambioDirezione[g->dir][g->SpecialData>>5];
+                            int8_t temp=CambioDirezione[g->dir][g->SpecialData>>5];
 
                             if(temp<0)
                             {

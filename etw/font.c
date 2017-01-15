@@ -18,7 +18,7 @@ BOOL left_sel, right_sel;
 
 struct Stats {
     char *name;
-    UBYTE address;
+    uint8_t address;
 };
 
 typedef struct change_data_

@@ -113,9 +113,9 @@ struct GfxMenu
     char *Title;
     struct Button *Button;
     struct Button *Pannello;
-    WORD NumeroBottoni, NumeroPannelli, ID;
-    WORD X, Y;
-    BYTE Immagine;
+    int16_t NumeroBottoni, NumeroPannelli, ID;
+    int16_t X, Y;
+    int8_t Immagine;
     uint8_t Color, Highlight;
     APTR SpecialFunction;
 };

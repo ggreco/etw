@@ -220,10 +220,10 @@ int8_t selected_number = 0, wanted_number = 0, duration = 1,
 char *enabled = msg_7, *disabled = msg_8;
 extern int os_videook(int, int);
 
-BYTE arcade_sequence[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-BYTE mondiali[] = { 8, 4, 2, 2 };
+int8_t arcade_sequence[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+int8_t mondiali[] = { 8, 4, 2, 2 };
 
-BYTE current_resolution = 0, current_scaling = 0;
+int8_t current_resolution = 0, current_scaling = 0;
 
 char *resolutions[] =
 {
@@ -362,7 +362,7 @@ static BOOL CanContinue(void);
 void RandomDraw(int n)
 {
     int i = RangeRand(50), k, s1, s2;
-    BYTE temp;
+    int8_t temp;
 
     for (k = 0; k < i; k++)
     {
@@ -382,7 +382,7 @@ void RandomDraw(int n)
 void SwapAllTeams(void)
 {
     int i, k;
-    UBYTE t;
+    uint8_t t;
 
     for (i = 0; i < totale_giornate; i++)
     {
@@ -466,7 +466,7 @@ BOOL CanContinue(void)
                   (wanted_number < 0 && selected_number >= -wanted_number));
 }
 
-BOOL ChangeMRMenu(WORD button)
+BOOL ChangeMRMenu(int16_t button)
 {
     extern struct Button mrb[];
     ChangeMenu(mrb[button].ID);
@@ -499,9 +499,9 @@ static BOOL has_arcade_human_selection()
     return FALSE;
 }
 
-BOOL TeamSelection(WORD button)
+BOOL TeamSelection(int16_t button)
 {
-    static BYTE selected = -1;
+    static int8_t selected = -1;
     static BOOL team1_selected = FALSE, team2_selected = FALSE;
     struct Button *b;
 
@@ -740,7 +740,7 @@ singlematch:
             {
                 if ((network_player = connect_server(network_server, teamarray[0])))
                 {
-                    BYTE team = teamarray[0] != 0 ? 0 : 1;
+                    int8_t team = teamarray[0] != 0 ? 0 : 1;
                     controllo[team] = -1;
                     StartMatch(teamarray[0], team);
                 }
@@ -772,7 +772,7 @@ singlematch:
     return TRUE;
 }
 
-BOOL JoyCfg(WORD button)
+BOOL JoyCfg(int16_t button)
 {
     if (button >= (actual_menu->NumeroBottoni - 1)
          && actual_menu->Button[button].ID >= 0)
@@ -814,7 +814,7 @@ BOOL JoyCfg(WORD button)
     return TRUE;
 }
 
-BOOL KeyCfg(WORD button)
+BOOL KeyCfg(int16_t button)
 {
     /* AC: 27/05/04 - First rudimental keyboard configuration */
     if (button>=(actual_menu->NumeroBottoni - 3)
@@ -980,9 +980,9 @@ BOOL KeyCfg(WORD button)
     return TRUE;
 }
 
-BOOL ArcadeTeamSelection(WORD button)
+BOOL ArcadeTeamSelection(int16_t button)
 {
-    static BYTE selected = -1;
+    static int8_t selected = -1;
     static BOOL team1_selected = FALSE, team2_selected = FALSE;
     struct Button *b;
 
@@ -1246,7 +1246,7 @@ friendlymatch:
     return TRUE;
 }
 
-BOOL GamePrefs(WORD button)
+BOOL GamePrefs(int16_t button)
 {
     if (button == (actual_menu->NumeroBottoni - 1)
          && actual_menu->Button[button].ID >= 0)
@@ -1351,7 +1351,7 @@ BOOL GamePrefs(WORD button)
     return TRUE;
 }
 
-BOOL AudioPrefs(WORD button)
+BOOL AudioPrefs(int16_t button)
 {
     if (button == (actual_menu->NumeroBottoni - 1)
          && actual_menu->Button[button].ID >= 0)
@@ -1438,7 +1438,7 @@ BOOL AudioPrefs(WORD button)
     return TRUE;
 }
 
-BOOL SystemPrefs(WORD button)
+BOOL SystemPrefs(int16_t button)
 {
     if (button >= (actual_menu->NumeroBottoni - 3)
          && actual_menu->Button[button].ID >= 0)
@@ -1502,7 +1502,7 @@ BOOL SystemPrefs(WORD button)
 }
 
 
-BOOL MobilePrefs(WORD button)
+BOOL MobilePrefs(int16_t button)
 {
     if (button == (actual_menu->NumeroBottoni - 1)
          && actual_menu->Button[button].ID >= 0)
@@ -1575,7 +1575,7 @@ BOOL MobilePrefs(WORD button)
     return TRUE;   
 }       
 
-BOOL VideoPrefs(WORD button)
+BOOL VideoPrefs(int16_t button)
 {
     if (button == (actual_menu->NumeroBottoni - 1)
          && actual_menu->Button[button].ID >= 0)
@@ -1757,7 +1757,7 @@ BOOL VideoPrefs(WORD button)
     return TRUE;
 }
 
-void UpdatePrefs(BYTE set)
+void UpdatePrefs(int8_t set)
 {
     struct GfxMenu *m = &menu[set];
 
@@ -1910,7 +1910,7 @@ void SetupMatches(void)
 
             if (turno < totale_giornate)
             {
-                BYTE a, b;
+                int8_t a, b;
                 int k;
 
                 for (k = 0; k < nteams / 2; k++)
@@ -1984,7 +1984,7 @@ void SetupMatches(void)
             {
                 int i, j, k = 0;
                 extern struct Match camp4[3][2];
-                extern BYTE start_groups[8][4];
+                extern int8_t start_groups[8][4];
 
                 menu[MENU_MATCHES].Title = ( turno == 0 ? msg_45 : (turno == 1 ? msg_46 : msg_47));
 
@@ -2060,7 +2060,7 @@ static int final_menu = -1;
 static void handle_challenge()
 {
     char *c;
-    WORD result;
+    int16_t result;
     
     if (jingle >= 0)
     {
@@ -2142,9 +2142,9 @@ static void PostMatches()
     ChangeMenu(MENU_MATCHES);
 }
 
-static void prepare_table(int i, WORD risultato)
+static void prepare_table(int i, int16_t risultato)
 {
-    BYTE a=teamarray[i*2], b=teamarray[i*2+1];
+    int8_t a=teamarray[i*2], b=teamarray[i*2+1];
 
     mp[i*4+3].Text=strdup(ElaboraRisultato(a, b, risultato));
 
@@ -2172,8 +2172,8 @@ static void EliminazioneDiretta()
     // then we can start to parse the following match
     for(i = 0; i < cup_team_number; i++)
     {
-        BYTE a=teamarray[i*2], b=teamarray[i*2+1];
-        WORD risultato;
+        int8_t a=teamarray[i*2], b=teamarray[i*2+1];
+        int16_t risultato;
 
         // on human players we mark the point that we reach
         // and we leave the loop...
@@ -2196,7 +2196,7 @@ static void EliminazioneDiretta()
     nopari=FALSE;
 }
 
-WORD PlayMatch(BYTE a, BYTE b)
+int16_t PlayMatch(int8_t a, int8_t b)
 {
     if(controllo[a]>=0 || controllo[b]>=0) {
         return StartMatch(a, b);
@@ -2207,8 +2207,8 @@ WORD PlayMatch(BYTE a, BYTE b)
 
 static void handle_league()
 {
-    WORD risultato;
-    BYTE a, b;
+    int16_t risultato;
+    int8_t a, b;
     int k;
     
     menu[MENU_MATCHES].Title = msg_55;
@@ -2259,10 +2259,10 @@ static void handle_worldcup()
     if (turno < 3)
     {
         int j, k = 0;
-        BYTE a, b;
-        WORD risultato;
+        int8_t a, b;
+        int16_t risultato;
         extern struct Match camp4[3][2];
-        extern BYTE start_groups[8][4], groups[8][4];
+        extern int8_t start_groups[8][4], groups[8][4];
         
         final = FALSE;
         for (i = 0; i < 8; i++)
@@ -2311,7 +2311,7 @@ static void handle_worldcup()
         isworldcupfinal = 0;
         
         if (turno == 7) {
-            BYTE temp = teamarray[2];
+            int8_t temp = teamarray[2];
             
             teamarray[2] = teamarray[1];
             teamarray[1] = temp;
@@ -2388,7 +2388,7 @@ void FreeHighSelection(void)
     }
 }
 
-BOOL HighSelection(WORD button)
+BOOL HighSelection(int16_t button)
 {
     struct Button *b;
 

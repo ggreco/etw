@@ -5,8 +5,8 @@
 #include "tactics.h"
 #include "files.h"
 
-UBYTE colore_team[3]={P_GRIGIO0, P_ROSSO0, P_BLU2};
-UBYTE highlight_team[3]={P_BIANCO, P_ROSSO1, P_BLU1}, totale_giornate;
+uint8_t colore_team[3]={P_GRIGIO0, P_ROSSO0, P_BLU2};
+uint8_t highlight_team[3]={P_BIANCO, P_ROSSO1, P_BLU1}, totale_giornate;
 
 int8_t teamarray[64], competition=MENU_TEAMS, turno=0, actual_team=-1;
 int8_t controllo[64], nteams, ruolo[64], ppv=3, pps=0, ppp=1;
@@ -502,7 +502,7 @@ void update_menu_tactic()
     DisplayTactic(teamlist[actual_team].tactics[0], actual_menu->X,  actual_menu->Y, nums, controllo[actual_team]);
 }
 
-BOOL TeamSettings(WORD button)
+BOOL TeamSettings(int16_t button)
 {
     struct Button *b;
     static int sel1 = -1;
@@ -687,7 +687,7 @@ BOOL TeamSettings(WORD button)
             if (b->Color != COLOR_TATTICA_SELEZIONATA)
 changetactic:
             {
-                extern void DrawBox(WORD);
+                extern void DrawBox(int16_t);
                 int i;
                 strcpy(teamlist[actual_team].tactics[0], b->Text);
 
@@ -737,7 +737,7 @@ changetactic:
     return TRUE;
 }
 
-void SetTeamSettings(WORD team, BOOL starting)
+void SetTeamSettings(int16_t team, BOOL starting)
 {
     int i, k;
 
@@ -986,10 +986,10 @@ void SaveTeams(char *name)
             fwrite(controllo, sizeof(controllo), 1, fh);
 
             if(competition==MENU_WORLD_CUP)    {
-                extern BYTE start_groups[8][4]; //, groups[8][4]; i don't need this
+                extern int8_t start_groups[8][4]; //, groups[8][4]; i don't need this
                 
                 for(i=0; i<8; i++) {
-                    fwrite(start_groups[i], 4, sizeof(BYTE), fh);
+                    fwrite(start_groups[i], 4, sizeof(int8_t), fh);
                 }
             }
             else if(competition==MENU_LEAGUE) {
@@ -1155,12 +1155,12 @@ void LoadTeams(char *name)
                     fread(controllo, sizeof(controllo), 1, fh);
 
                     if(competition==MENU_WORLD_CUP)    {
-                        extern BYTE start_groups[8][4], groups[8][4];
+                        extern int8_t start_groups[8][4], groups[8][4];
                         
                         for(i=0; i<8; i++) {
-                            fread(start_groups[i], sizeof(BYTE), 4, fh);
+                            fread(start_groups[i], sizeof(int8_t), 4, fh);
 
-                            memcpy(groups[i], start_groups[i], 4*sizeof(BYTE));
+                            memcpy(groups[i], start_groups[i], 4*sizeof(int8_t));
                         }
 
                         GroupsUpdate();

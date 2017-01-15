@@ -47,48 +47,48 @@ int8_t prontezza[10]={40,35,30,26,22,18,14,12,10,8};
 
 // Animazioni dei giocatori
 
-WORD Fermo[]={0};
-WORD Respira[]={8,16};
-WORD RespiraPalla[]={24,32};
-WORD CorsaParziale[]={40,48};
-WORD CorsaVeloce[]={40,48,56,64,72,80};
-WORD CorsaVelocePalla[]={88,96,104,112,120,128};
-WORD Scivolata[]={152,160,168};
-WORD Alzati[]={176,192};
-WORD TestaAvanti[]={224,248};
-WORD TestaSinistra[]={232,248};
-WORD TestaDestra[]={240,248};
-WORD PassaggioF=152,Tacco=304,CambioAnti=136,CambioOrario=144,
+int16_t Fermo[]={0};
+int16_t Respira[]={8,16};
+int16_t RespiraPalla[]={24,32};
+int16_t CorsaParziale[]={40,48};
+int16_t CorsaVeloce[]={40,48,56,64,72,80};
+int16_t CorsaVelocePalla[]={88,96,104,112,120,128};
+int16_t Scivolata[]={152,160,168};
+int16_t Alzati[]={176,192};
+int16_t TestaAvanti[]={224,248};
+int16_t TestaSinistra[]={232,248};
+int16_t TestaDestra[]={240,248};
+int16_t PassaggioF=152,Tacco=304,CambioAnti=136,CambioOrario=144,
     PreparaRimessa=272,StopPiede=464,NonPossibile=472,RialzaCarponi=192;
-WORD RecuperaPalla[]={256,264};
-WORD Rimessa[]={272,280,288,272};
-WORD Infortunio[]={504,176,184,176,184,176,184};
-WORD DopoRimessa[]={296,296,480,472};
-WORD Tiro[]={312,320,328};
-WORD StopPetto[]={448,464};
-WORD Caduta[]={400,400,424,432,432};
-WORD Caduta2[]={416,416,424,432,432};
-WORD Caduta3[]={408,416,416};
-WORD PreTuffo[]={408};
-WORD TuffoTesta[]={416,424,432,440,440,440};
-WORD InversioneMarcia[]={136,304};
-WORD Contrasto[]={456,152,8}; // Era 152 8 8
-WORD RialzaAvanti[]={432,432,440,440,416,192};
-WORD Stacco[]={200,208,216};
-WORD Pregirata[]={336,344};
-WORD Rovesciata[]={352,360};
-WORD GirataDestra[]={368,376};
-WORD GirataSinistra[]={384,392};
-WORD Atterra[]={248,480,472};
-WORD Esultanza1[]={448,530-D_SUD_EST,531-D_SUD_EST,531-D_SUD_EST,531-D_SUD_EST,531-D_SUD_EST,531-D_SUD_EST};
-WORD Esultanza2[]={448,534-D_SUD_OVEST,535-D_SUD_OVEST,535-D_SUD_OVEST,535-D_SUD_OVEST,534-D_SUD_OVEST,535-D_SUD_OVEST};
-WORD Esultanza3[]={458,334,496,496,496,496,496,496,496,496,496,496,496};
-WORD Esultanza4[]={520,296,520,296,520,296,520,296,520,296};
-WORD Esultanza5[]={200,208,200,520,520,520,520,520,520,520,520,520,520};
-WORD Esultanza6[]={408,416,432,432,432,432,440,440,440,440,440,440,440};
-WORD Esultanza7[]={520,532-D_SUD_OVEST,533-D_SUD_OVEST,520,532-D_SUD_OVEST,533-D_SUD_OVEST,520,532-D_SUD_OVEST,533-D_SUD_OVEST,520,532-D_SUD_OVEST,533-D_SUD_OVEST,533-D_SUD_OVEST};
-WORD DisperazioneEst[]={528-D_SUD_EST,529-D_SUD_EST,529-D_SUD_EST,529-D_SUD_EST};
-WORD DisperazioneOvest[]={532-D_SUD_OVEST,533-D_SUD_OVEST,533-D_SUD_OVEST,533-D_SUD_OVEST};
+int16_t RecuperaPalla[]={256,264};
+int16_t Rimessa[]={272,280,288,272};
+int16_t Infortunio[]={504,176,184,176,184,176,184};
+int16_t DopoRimessa[]={296,296,480,472};
+int16_t Tiro[]={312,320,328};
+int16_t StopPetto[]={448,464};
+int16_t Caduta[]={400,400,424,432,432};
+int16_t Caduta2[]={416,416,424,432,432};
+int16_t Caduta3[]={408,416,416};
+int16_t PreTuffo[]={408};
+int16_t TuffoTesta[]={416,424,432,440,440,440};
+int16_t InversioneMarcia[]={136,304};
+int16_t Contrasto[]={456,152,8}; // Era 152 8 8
+int16_t RialzaAvanti[]={432,432,440,440,416,192};
+int16_t Stacco[]={200,208,216};
+int16_t Pregirata[]={336,344};
+int16_t Rovesciata[]={352,360};
+int16_t GirataDestra[]={368,376};
+int16_t GirataSinistra[]={384,392};
+int16_t Atterra[]={248,480,472};
+int16_t Esultanza1[]={448,530-D_SUD_EST,531-D_SUD_EST,531-D_SUD_EST,531-D_SUD_EST,531-D_SUD_EST,531-D_SUD_EST};
+int16_t Esultanza2[]={448,534-D_SUD_OVEST,535-D_SUD_OVEST,535-D_SUD_OVEST,535-D_SUD_OVEST,534-D_SUD_OVEST,535-D_SUD_OVEST};
+int16_t Esultanza3[]={458,334,496,496,496,496,496,496,496,496,496,496,496};
+int16_t Esultanza4[]={520,296,520,296,520,296,520,296,520,296};
+int16_t Esultanza5[]={200,208,200,520,520,520,520,520,520,520,520,520,520};
+int16_t Esultanza6[]={408,416,432,432,432,432,440,440,440,440,440,440,440};
+int16_t Esultanza7[]={520,532-D_SUD_OVEST,533-D_SUD_OVEST,520,532-D_SUD_OVEST,533-D_SUD_OVEST,520,532-D_SUD_OVEST,533-D_SUD_OVEST,520,532-D_SUD_OVEST,533-D_SUD_OVEST,533-D_SUD_OVEST};
+int16_t DisperazioneEst[]={528-D_SUD_EST,529-D_SUD_EST,529-D_SUD_EST,529-D_SUD_EST};
+int16_t DisperazioneOvest[]={532-D_SUD_OVEST,533-D_SUD_OVEST,533-D_SUD_OVEST,533-D_SUD_OVEST};
 
 struct Animazione Animation[]=
 {
@@ -152,31 +152,31 @@ struct Animazione Animation[]=
 
 // Animazioni del portiere
 
-WORD PFermoPalla=8,PAttento=80;
-WORD PRinvioManoPrima_E[]={114-D_EST,115-D_EST,138-D_EST},
+int16_t PFermoPalla=8,PAttento=80;
+int16_t PRinvioManoPrima_E[]={114-D_EST,115-D_EST,138-D_EST},
      PRinvioManoDopo_E[]={139-D_EST,0,0,0},
      PRinvioManoPrima_O[]={118-D_OVEST,119-D_OVEST,142-D_OVEST},
      PRinvioManoDopo_O[]={143-D_OVEST,0,0,0},
      PRinvioLiberoPrima_E[]={112-D_EST,113-D_EST},
      PRinvioLiberoPrima_O[]={116-D_OVEST,117-D_OVEST};
-WORD PCorsa[]={16,24,32,40,48,56};
-WORD PCamminaLaterale[]={72,80};
-WORD PRinvioPiede_E[]={136-D_EST,137-D_EST,72,80};
-WORD PRinvioPiede_O[]={140-D_OVEST,141-D_OVEST,72,80};
-WORD PRaccogliPalla[]={88,96,8};
-WORD PTuffoUscitaPrendi[]={144,152,64,64,64,64,64,216,216,8};
-WORD PTuffoUscitaManca[]={144,152,176,176,176,248,248,0};
-WORD PSaltoPrendi[]={160,168,184,192,200,208};
-WORD PSaltoManca[]={160,168,184,224,232,240};
-WORD PPrendiMezzaria[]={0,96,8}; // era 200
-WORD PTuffoDestra[]={272,280};
-WORD PTuffoSinistra[]={256,264};
-WORD PTuffoSinistraPrendi[]={296,304};
-WORD PTuffoDestraPrendi[]={312,320};
-WORD PTuffoSinistraManca[]={264,256};
-WORD PTuffoDestraManca[]={280,272};
-WORD PTerra[]={288,288,288,176,176,248,248,0};
-WORD PTerraPalla[]={64,64,64,128,128,216,216,8};
+int16_t PCorsa[]={16,24,32,40,48,56};
+int16_t PCamminaLaterale[]={72,80};
+int16_t PRinvioPiede_E[]={136-D_EST,137-D_EST,72,80};
+int16_t PRinvioPiede_O[]={140-D_OVEST,141-D_OVEST,72,80};
+int16_t PRaccogliPalla[]={88,96,8};
+int16_t PTuffoUscitaPrendi[]={144,152,64,64,64,64,64,216,216,8};
+int16_t PTuffoUscitaManca[]={144,152,176,176,176,248,248,0};
+int16_t PSaltoPrendi[]={160,168,184,192,200,208};
+int16_t PSaltoManca[]={160,168,184,224,232,240};
+int16_t PPrendiMezzaria[]={0,96,8}; // era 200
+int16_t PTuffoDestra[]={272,280};
+int16_t PTuffoSinistra[]={256,264};
+int16_t PTuffoSinistraPrendi[]={296,304};
+int16_t PTuffoDestraPrendi[]={312,320};
+int16_t PTuffoSinistraManca[]={264,256};
+int16_t PTuffoDestraManca[]={280,272};
+int16_t PTerra[]={288,288,288,176,176,248,248,0};
+int16_t PTerraPalla[]={64,64,64,128,128,216,216,8};
 
 struct Animazione PortAnim[]=
 {
@@ -218,7 +218,7 @@ struct Animazione PortAnim[]=
 
 // Animazioni dell'arbitro
 
-WORD referee_list[]={/* fischia */56,/* Fallo */ 64,65,/* Cartellino*/ 72,80,80,80,80,80,72,
+int16_t referee_list[]={/* fischia */56,/* Fallo */ 64,65,/* Cartellino*/ 72,80,80,80,80,80,72,
                 /* Corsa */ 8,16,24,32,40,48 };
 
 struct Animazione ArbAnim[]=
@@ -230,7 +230,7 @@ struct Animazione ArbAnim[]=
         {8,7,&referee_list[3]} 
 };
 
-WORD linesman_list[]={/*Fermo*/0,/* Fuori 1*/ 2, /* Fallo */ 4, /*Fuori 0 */ 6, /* Inversione */ 8,
+int16_t linesman_list[]={/*Fermo*/0,/* Fuori 1*/ 2, /* Fallo */ 4, /*Fuori 0 */ 6, /* Inversione */ 8,
     /* Corsa */ 10,12,14,16,18,20};
 
 struct Animazione GLAnim[]=
@@ -297,7 +297,7 @@ int8_t dir_next[]=
     0
 };
 
-WORD inversione_x[8][8]=
+int16_t inversione_x[8][8]=
 {
     {1,1,2,2,2,2,1,1},
     {-1,-2,-3,-5,-6,-7,-9,-11},
@@ -309,7 +309,7 @@ WORD inversione_x[8][8]=
     {1,2,3,5,6,7,9,11},
 };
 
-WORD inversione_y[8][8]=
+int16_t inversione_y[8][8]=
 {
     {2,4,6,8,9,10,11,12},
     {1,2,3,4,5,6,7,9},
@@ -321,23 +321,23 @@ WORD inversione_y[8][8]=
     {1,2,3,4,5,6,7,9},
 };
 
-WORD cambio_x[8]=
+int16_t cambio_x[8]=
 {
     -3,-3,-2,+2,+3,+3,+2,-2,
 };
 
-WORD cambio_y[8]=
+int16_t cambio_y[8]=
 {
     2,-2,-3,-3,-2,+2,+3,+3,
 };
 
 
-WORD avanzamento_x[8]=
+int16_t avanzamento_x[8]=
 {
     32, 72, 96, 72, 40, 0, -24, 0,
 };
 
-WORD avanzamento_y[8]=
+int16_t avanzamento_y[8]=
 {
         88, 96, 120, 152, 160, 152, 120, 96
 };
@@ -367,12 +367,12 @@ struct Rect ingombri[]=
     {0,0,0,0},  // Tipo finale non definito 
 };
 
-WORD porte_x[]={1,1236,8,1236};
+int16_t porte_x[]={1,1236,8,1236};
 
-WORD quota_mod_x[MAX_QUOTA]={0,0,0,0,0,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2};
-WORD quota_mod_y[MAX_QUOTA]={0,2,4,6,8,11,13,15,17,20,22,24,26,29,31,33,35,37,40,42,44,46,48};
+int16_t quota_mod_x[MAX_QUOTA]={0,0,0,0,0,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2};
+int16_t quota_mod_y[MAX_QUOTA]={0,2,4,6,8,11,13,15,17,20,22,24,26,29,31,33,35,37,40,42,44,46,48};
 
-WORD av_palla_y[8][12]=
+int16_t av_palla_y[8][12]=
 {
         {0,-4,-6,-8,-10,-11,-10,-8,-6,-4,-2,0},
         {0,-2,-4,-6, -7,-7,-6,-4,-3,-2,-1, 0},
@@ -384,7 +384,7 @@ WORD av_palla_y[8][12]=
         {0,-2,-4,-6, -7,-7,-6,-4,-3,-2,-1, 0},
 };
 
-WORD av_palla_x[8][12]=
+int16_t av_palla_x[8][12]=
 {
         {0,0,0,0,0,0,0,0,0,0,0,0},
         {0,2,4,6,7, 7,6,4,3,2,1,0},

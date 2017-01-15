@@ -529,7 +529,7 @@ struct MyCatalog
 char *GetLanguage(void)
 {
 
-    WORD langid;
+    int16_t langid;
 
     if ((langid=GetSystemDefaultLangID()))    {
         switch(PRIMARYLANGID(langid)) {

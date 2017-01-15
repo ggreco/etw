@@ -1,4 +1,4 @@
-// extern void GriddedWipe(UBYTE Type, struct BitMap *source);
+// extern void GriddedWipe(uint8_t Type, struct BitMap *source);
 #include "menu.h"
 
 extern void LoadMenuLogo(char *name);
@@ -11,7 +11,7 @@ extern void FreeMenuFonts(void);
 /* AC: _WINUSER_ is for Microsoft Visual C++ _WINUSER_H for MinGW */
 extern void blit_scaled_logo();
 #if !defined(_WINUSER_) && !defined(_WINUSER_H)
-extern void ChangeMenu(WORD );
+extern void ChangeMenu(int16_t );
 #endif
 extern void OpenMenuScreen(void);
 extern void PlayMenuMusic(void);
@@ -33,7 +33,7 @@ extern void InitTable(void);
 extern void UpdateLeagueTable(void);
 extern void SaveTeams(char *);
 extern void LoadTeams(char *);
-extern void RedrawButton(struct Button *, UBYTE);
+extern void RedrawButton(struct Button *, uint8_t);
 extern void CancelButton(struct Button *);
 extern void ClearScores(void);
 extern void PrintShadow(int, int, char *, int, struct myfont *);
@@ -41,45 +41,45 @@ extern void MyRestoreBack(void);
 extern void ClearScores(void);
 extern void LoadScores(void);
 extern void ShowCredits(void);
-extern void AddScore(UBYTE);
+extern void AddScore(uint8_t);
 extern BOOL FileRequest(struct MyFileRequest *);
 
-extern void CheckCheat(UBYTE);
-extern void DrawBox(WORD);
+extern void CheckCheat(uint8_t);
+extern void DrawBox(int16_t);
 // Procedure speciali dei menu...
 
-extern BOOL handle_pause(WORD);
-extern BOOL TeamSelection(WORD);
-extern BOOL ArcadeTeamSelection(WORD);
-extern BOOL TeamSettings(WORD);
-extern BOOL TeamSubstitutions(WORD);
-extern BOOL VideoPrefs(WORD);
-extern BOOL SystemPrefs(WORD);
-extern BOOL MobilePrefs(WORD);
-extern BOOL GamePrefs(WORD);
-extern BOOL AudioPrefs(WORD);
-extern BOOL HighSelection(WORD);
-extern BOOL JoyCfg(WORD);
-extern BOOL KeyCfg(WORD);
+extern BOOL handle_pause(int16_t);
+extern BOOL TeamSelection(int16_t);
+extern BOOL ArcadeTeamSelection(int16_t);
+extern BOOL TeamSettings(int16_t);
+extern BOOL TeamSubstitutions(int16_t);
+extern BOOL VideoPrefs(int16_t);
+extern BOOL SystemPrefs(int16_t);
+extern BOOL MobilePrefs(int16_t);
+extern BOOL GamePrefs(int16_t);
+extern BOOL AudioPrefs(int16_t);
+extern BOOL HighSelection(int16_t);
+extern BOOL JoyCfg(int16_t);
+extern BOOL KeyCfg(int16_t);
 
-extern void SetTeamSettings(WORD, BOOL);
+extern void SetTeamSettings(int16_t, BOOL);
 extern void DisplayTactic(const char*, int, int, const char *n[], int);
-extern WORD StartMatch(BYTE, BYTE);
-extern WORD LastMatchResult();
+extern int16_t StartMatch(int8_t, int8_t);
+extern int16_t LastMatchResult();
 extern void ScaleGfxObj(gfx_t *, uint8_t *);
 extern void UpdateButtonList(void);
 
 extern void StoreButtonList(void);
 
-extern void UpdatePrefs(BYTE);
+extern void UpdatePrefs(int8_t);
 extern void SetupSpecialEvent(struct Button *);
 extern void ClearSelection(void);
 extern void ClearMatches(int);
 extern void GroupsUpdate(void);
 extern void SetupMatches(void);
 extern void PlayMatches(int);
-extern WORD ComputerMatch(BYTE, BYTE);
-extern WORD PlayMatch(BYTE, BYTE);
+extern int16_t ComputerMatch(int8_t, int8_t);
+extern int16_t PlayMatch(int8_t, int8_t);
 char *ElaboraRisultato(int8_t, int8_t, uint16_t);
 extern BOOL GroupsClear(void);
 extern void request(const char *);
@@ -87,7 +87,7 @@ extern void ViewEliminazioneDiretta(int);
 extern BOOL HandleMenuIDCMP(void);
 extern void LoadHigh(char *);
 extern void SetHighSelection(void);
-extern BOOL ChangeMRMenu(WORD);
+extern BOOL ChangeMRMenu(int16_t);
 
 extern player *network_player;
 extern struct Button teamselection[], teamsettings[], pannelli[], wcp[], league[], mp[], mb[], lb[],
@@ -107,7 +107,7 @@ extern int arcade_score;
 
 extern int8_t competition, selected_number, wanted_number, actual_team, controllo[], p_control[],
     situation_result[2], strictness, field, duration, field_type, ruolo[];
-extern UBYTE totale_giornate;
+extern uint8_t totale_giornate;
 extern int8_t teamarray[], turno, nteams, daytime, league_pos[64], ppp, ppv, pps;
 
 extern int WINDOW_WIDTH, WINDOW_HEIGHT, oldwidth, oldheight, wanted_width, wanted_height;
@@ -125,7 +125,7 @@ extern char numero[17][3], *controls[];
 extern struct team_disk *teamlist;
 extern struct teamstats_disk DatiCampionato[];
 extern struct EasyStruct easy;
-extern UBYTE colore_team[3], highlight_team[3];
+extern uint8_t colore_team[3], highlight_team[3];
 extern struct SoundInfo *menusound[];
 extern struct championship_disk campionato;
 extern const char *numbers[100];

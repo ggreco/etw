@@ -13,7 +13,7 @@ BOOL joyonly=FALSE, tutorial = TRUE,
     arcade_teams=FALSE,first_half=TRUE,extratime=FALSE,
     final=FALSE,use_width=FALSE,use_height=FALSE,first_kickoff=TRUE,
     friendly=FALSE,use_direct=FALSE,use_offside=TRUE; // Da mettere false di default
-UBYTE team_a=0,team_b=0;
+uint8_t team_a=0,team_b=0;
 int FIXED_SCALING_WIDTH=320,FIXED_SCALING_HEIGHT=256;
 
 struct MyFastScaleArgs *scaling=NULL;

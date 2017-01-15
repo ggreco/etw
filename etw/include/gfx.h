@@ -115,10 +115,10 @@ extern int bitmap_width,bitmap_height;
 
 extern void FreeGfxObj(gfx_t *);
 extern void FreeGraphics(void);
-extern void DrawObject(gfx_t *, WORD, WORD);
+extern void DrawObject(gfx_t *, int16_t, int16_t);
 extern gfx_t *LoadGfxObject(const char *, int32_t *, uint8_t *);
 extern anim_t *LoadAnimObject(const char *, int32_t *);
-extern void RemapAnimObjColor(anim_t *, UBYTE, UBYTE);
+extern void RemapAnimObjColor(anim_t *, uint8_t, uint8_t);
 extern void ClearAnimObj(void);
 extern void SortDrawList(void);
 extern void DrawAnimObj(void);
@@ -126,10 +126,10 @@ void DrawAnimObjScale(void); // Disegna i bob tenendo conto dello scaling
 extern void ScreenSwap(void);
 extern BOOL InitAnimSystem(void);
 extern BOOL InAnimList(anim_t *);
-extern void AddAnimObj(anim_t *,WORD, WORD, WORD);
+extern void AddAnimObj(anim_t *,int16_t, int16_t, int16_t);
 extern void FreeAnimObj(anim_t *);
 extern BOOL LoadIFFPalette(char *);
-extern void RemapMColor(struct MChunky *,UBYTE, UBYTE);
+extern void RemapMColor(struct MChunky *,uint8_t, uint8_t);
 extern void RemapMChunkyColors(struct MChunky *, uint8_t *);
 extern void RemapColor(uint8_t *, uint8_t, uint8_t, int);
 extern void RemapColors(uint8_t *, int32_t *, int);

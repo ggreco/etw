@@ -138,7 +138,7 @@ linesman_t *linesman;
 
 uint8_t cols[2][4], NumeroTattiche = 0;
 BOOL teams_swapped = FALSE, has_black[2] = { FALSE, FALSE };
-WORD swaps = 0;
+int16_t swaps = 0;
 char *tactics[32];
 
 anim_t *players[2] = { NULL, NULL }, *keepers = NULL, *ports, *arcade_anim;
@@ -177,7 +177,7 @@ void RimuoviGuardalinee(void)
 
 void ChangeImmagine(player_t *g, anim_t *o)
 {
-    WORD x, y, f, b;
+    int16_t x, y, f, b;
     BOOL g_nero = IsBlack(g);
 
     x = g->anim->x_pos;
@@ -253,12 +253,12 @@ void ChangeImmagine(player_t *g, anim_t *o)
 
 void SwapTeams(void)
 {
-    extern UBYTE ReplaySet;
+    extern uint8_t ReplaySet;
 //    struct team_disk td;
     char c;
     team_t *s;
     int i, j;
-    UBYTE tmp;
+    uint8_t tmp;
     void (*Temp)(int);
 
     D(bug("Inverting teams in pitch...\n"));

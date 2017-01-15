@@ -2,7 +2,7 @@
 
 /* Velocita palla asse X */
 
-WORD velocita_scivolata_x[32]=
+int16_t velocita_scivolata_x[32]=
 {
  /* Velocita' 40 */
         0,
@@ -41,7 +41,7 @@ WORD velocita_scivolata_x[32]=
 
 /* Velocita palla asse Y */
 
-WORD velocita_scivolata_y[32]=
+int16_t velocita_scivolata_y[32]=
 {
      /* Velocita' 40 */
         -20,

@@ -1,8 +1,8 @@
 // #include <datatypes/animationclass.h>
 
-#define ALIGN_LONG( mem ) ((APTR)((((ULONG)(mem)) + 3UL) & ~3UL))
+#define ALIGN_LONG( mem ) ((APTR)((((uint32_t)(mem)) + 3UL) & ~3UL))
 /* Align memory on 16 byte boundary */
-#define ALIGN_QUADLONG( mem ) ((APTR)((((ULONG)(mem)) + 15UL) & ~15UL))
+#define ALIGN_QUADLONG( mem ) ((APTR)((((uint32_t)(mem)) + 15UL) & ~15UL))
 
 /*
 **
@@ -69,43 +69,43 @@
 
 struct DPAnimChunk
 {
-    UWORD dpan_Version;
-    UWORD dpan_nframes;
-    ULONG dpan_FPS;
+    uint16_t     dpan_Version;
+    uint16_t     dpan_nframes;
+    uint32_t     dpan_FPS;
 };
 
 
 struct BitMapHeader
 {
-    UWORD        bmh_Width;
-    UWORD        bmh_Height;
-    WORD         bmh_Left;
-    WORD         bmh_Top;
-    UBYTE        bmh_Depth;
-    UBYTE        bmh_Masking;
-    UBYTE        bmh_Compression;
-    UBYTE        bmh_Pad;
-    UWORD        bmh_Transparent;
-    UBYTE        bmh_XAspect;
-    UBYTE        bmh_YAspect;
-    WORD         bmh_PageWidth;
-    WORD         bmh_PageHeight;
+    uint16_t     bmh_Width;
+    uint16_t     bmh_Height;
+    int16_t      bmh_Left;
+    int16_t      bmh_Top;
+    uint8_t      bmh_Depth;
+    uint8_t      bmh_Masking;
+    uint8_t      bmh_Compression;
+    uint8_t      bmh_Pad;
+    uint16_t     bmh_Transparent;
+    uint8_t      bmh_XAspect;
+    uint8_t      bmh_YAspect;
+    int16_t      bmh_PageWidth;
+    int16_t      bmh_PageHeight;
 };
 
 struct AnimHeader
 {
-    UBYTE	 ah_Operation;
-    UBYTE	 ah_Mask;
-    UWORD	 ah_Width;
-    UWORD	 ah_Height;
-    WORD	 ah_Left;
-    WORD	 ah_Top;
-    ULONG	 ah_AbsTime;
-    ULONG	 ah_RelTime;
-    UBYTE	 ah_Interleave;
-    UBYTE	 ah_Pad0;
-    ULONG	 ah_Flags;
-    UBYTE	 ah_Pad[16];
+    uint8_t	 ah_Operation;
+    uint8_t	 ah_Mask;
+    uint16_t ah_Width;
+    uint16_t ah_Height;
+    int16_t	 ah_Left;
+    int16_t	 ah_Top;
+    uint32_t ah_AbsTime;
+    uint32_t ah_RelTime;
+    uint8_t	 ah_Interleave;
+    uint8_t	 ah_Pad0;
+    uint32_t ah_Flags;
+    uint8_t	 ah_Pad[16];
 };
 #pragma pack(pop)
 
@@ -113,11 +113,11 @@ typedef void * PLANEPTR;
 
 struct BitMap
 {
-    UWORD    BytesPerRow;
-    UWORD    Rows;
-    UBYTE    Flags;
-    UBYTE    Depth;
-    UWORD    pad;
+    uint16_t BytesPerRow;
+    uint16_t Rows;
+    uint8_t  Flags;
+    uint8_t  Depth;
+    uint16_t pad;
     PLANEPTR Planes[8];
 };
 
@@ -130,22 +130,22 @@ struct AnimInstData
 {
     /* Misc */
 //    struct SignalSemaphore  aid_SigSem;             /* Instance data lock                      */
-//    UWORD                   aid_Pad0;
+//    uint16_t                aid_Pad0;
 //    APTR                    aid_Pool;               /* pool for misc things */
 //    APTR                    aid_FramePool;          /* pool for animation bitmaps */
     struct BitMapHeader    *aid_BMH;                /* Short cut to animation.datatype's bitmapheader */
     struct MyList          aid_FrameList;          /* List of frames                          */
     struct MyList          aid_PostedFreeList;     /* List of frames which should be freed */
     struct FrameNode       *aid_CurrFN;             /* Last framenode obtained using ADTM_LOADFRAME */
-    ULONG                   aid_ModeID;
+    uint32_t                aid_ModeID;
     BOOL                    aid_NoCMAPs;            /* Don't create colormaps                  */
     BOOL                    aid_LoadAll;            /* Load all frames of the animation        */
     BOOL                    aid_NoDynamicTiming;    /* No dynamic timing ?                     */
-    ULONG                   aid_FPS;                /* fps of stream (maybe modified by prefs) */
+    uint32_t                aid_FPS;                /* fps of stream (maybe modified by prefs) */
 
     /* Disk-loading section */
     FILE                    *aid_FH;
-    LONG                    aid_CurrFilePos;
+    int32_t                 aid_CurrFilePos;
 };
 
 
@@ -161,14 +161,14 @@ struct FrameNode
     struct FrameNode  *fn_PrevFrame;
 
 /* Misc */
-    UWORD              fn_PostedFree;
-    WORD               fn_UseCount;       /* In-Use counter */
+    uint16_t           fn_PostedFree;
+    int16_t            fn_UseCount;       /* In-Use counter */
 
 /* Timing section */
-    ULONG              fn_TimeStamp;
-    ULONG              fn_Frame;
-    ULONG              fn_Duration;
-    ULONG           Clock;
+    uint32_t           fn_TimeStamp;
+    uint32_t           fn_Frame;
+    uint32_t           fn_Duration;
+    uint32_t           Clock;
 
 /* Animation info */
     struct AnimHeader  fn_AH;
@@ -177,17 +177,17 @@ struct FrameNode
     struct BitMap     *fn_BitMap;
 
 /* BitMap loading section */
-    UBYTE          *delta;
+    uint8_t           *delta;
 
 // Per la gestione via disco...
 
-    LONG               fn_BMOffset; /* File offset (0 is begin of file) */
-    ULONG              fn_BMSize;   /* Chunk size  */
-    ULONG              fn_LoadSize; /* temporary variable used by ADTM_LOADFRAME */
+    int32_t            fn_BMOffset; /* File offset (0 is begin of file) */
+    uint32_t           fn_BMSize;   /* Chunk size  */
+    uint32_t           fn_LoadSize; /* temporary variable used by ADTM_LOADFRAME */
 
 /* Sample section */
     struct SoundInfo  *fn_Sample;
-    ULONG fn_Rate,fn_Volume,fn_Loops;
+    uint32_t fn_Rate,fn_Volume,fn_Loops;
 };
 
 #define ERROR_NOT_IMPLEMENTED 6
@@ -195,7 +195,7 @@ struct FrameNode
 #define ERROR_REQUIRED_ARG_MISSING 2
 #define ERROR_NOT_ENOUGH_DATA 3
 
-LONG MergeAnim(struct AnimInstData *,FILE *);
+int32_t MergeAnim(struct AnimInstData *,FILE *);
 struct FrameNode *GetFrameNode(struct AnimInstData *,int);
 void DisplayAnim(struct AnimInstData *);
 void FreeFrames(struct AnimInstData *);

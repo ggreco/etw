@@ -14,7 +14,7 @@ BOOL replay_mode = FALSE, start_replay = FALSE, was_using_radar = FALSE;
 BOOL was_using_nosound = FALSE, was_using_result = FALSE, slow_motion = FALSE;
 BOOL mantieni_distanza = FALSE, no_record = FALSE, replay_looped = FALSE;
 BOOL full_replay = FALSE, time_stopped = FALSE, pause_replay = FALSE;
-UWORD real_counter, counter = 0, CounterLimit;
+uint16_t real_counter, counter = 0, CounterLimit;
 
 extern BOOL draw_r;
 extern void WriteGameConfig(FILE *);
@@ -24,8 +24,8 @@ struct MatchStatus
 {
     game_t game;
     team_t team[2];
-    UWORD ReplayCounter;
-    WORD field_x,field_y;
+    uint16_t ReplayCounter;
+    int16_t field_x,field_y;
     uint8_t need_release[MAX_PLAYERS];
 };
 
@@ -436,9 +436,9 @@ void RestartTime(void)
     }
 }
 
-void StoreReplay(UBYTE Set)
+void StoreReplay(uint8_t Set)
 {
-    register LONG i;
+    register int32_t i;
 
 // Refree and ball
 
@@ -475,9 +475,9 @@ void StoreReplay(UBYTE Set)
 
 // Mi servono 36 puntatori per ogni squadra, 11 per le immagini, 11 per nomi, 11 per cognomi e tre per cose varie.
 
-void LoadReplay(UBYTE Set)
+void LoadReplay(uint8_t Set)
 {
-    register LONG i, j;
+    register int32_t i, j;
     void **a = NULL;
 
     i = 0;
@@ -549,7 +549,7 @@ void LoadReplay(UBYTE Set)
 
         if (a) {
             STRPTR c;
-            uint32_t d = (ULONG)p->team[i]->tactic, e;
+            uint32_t d = (uint32_t)p->team[i]->tactic, e;
             // first fix the pointers then the reference INSIDE them!
             p->team[i]->keepers.anim = a[i * SQ_PTR];
             p->team[i]->Marker = a[i * SQ_PTR + 12];
@@ -567,7 +567,7 @@ void LoadReplay(UBYTE Set)
 
             p->team[i]->NomeAttivo = a[i * SQ_PTR + 13];
 
-            p->team[i]->attivo = &p->team[i]->players[(ULONG)p->team[i]->attivo];
+            p->team[i]->attivo = &p->team[i]->players[(uint32_t)p->team[i]->attivo];
 
             c = p->team[i]->tactic->Name;
 
@@ -643,21 +643,21 @@ void LoadReplay(UBYTE Set)
             p->extras->node.mpPrev = NULL;
 
         // setting serialized "match" pointers: possesso, player_injuried, sq_palla, gioc_palla
-        p->possesso = p->team[(LONG)p->possesso];
+        p->possesso = p->team[(int32_t)p->possesso];
 
         if(p->player_injuried) {
-            ULONG l = (ULONG)p->player_injuried;
+            uint32_t l = (uint32_t)p->player_injuried;
             l--;
 
             p->player_injuried=(l >= 11 ? &(p->team[1]->players[l-11]) : &(p->team[0]->players[l]) );
         }
 
         if(pl->sq_palla) {
-            pl->sq_palla = p->team[((ULONG)pl->sq_palla) - 1];
+            pl->sq_palla = p->team[((uint32_t)pl->sq_palla) - 1];
         }
 
         if(pl->gioc_palla) {
-            ULONG l = (ULONG)pl->gioc_palla;
+            uint32_t l = (uint32_t)pl->gioc_palla;
 
             l--;
 
@@ -901,7 +901,7 @@ void SaveReplay(void)
     extern struct team_disk leftteam_dk, rightteam_dk;
     FILE *f;
     int i, j;
-    WORD highsize;
+    int16_t highsize;
     struct MatchStatus *m;
 
 
@@ -1010,7 +1010,7 @@ BOOL AllocReplayBuffers(void)
         size = (highlight_size / 256) + 3; //per sicurezza
     }
 
-    CounterLimit = (UWORD)(size * 256 - 1);
+    CounterLimit = (uint16_t)(size * 256 - 1);
     SetLimit = size - 1;
 
     for(i = 0; i < MAX_PLAYERS; i++) {
@@ -1045,7 +1045,7 @@ BOOL AllocReplayBuffers(void)
     mantieni_distanza = FALSE; no_record = FALSE; replay_looped = FALSE;
     full_replay = FALSE; time_stopped = FALSE;
 
-    D(bug("Replay configured: SetLimit:%ld CounterLimit:%ld\n", (LONG)SetLimit, (LONG)CounterLimit));
+    D(bug("Replay configured: SetLimit:%ld CounterLimit:%ld\n", (int32_t)SetLimit, (int32_t)CounterLimit));
     return TRUE;
 }
 
@@ -1070,7 +1070,7 @@ void FreeReplayBuffers(void)
 void LoadHighlight(void)
 {
     FILE *fh;
-    WORD lswaps;
+    int16_t lswaps;
     int i, j;
 
     fh = fopen(HIGH_FILE,"rb");
