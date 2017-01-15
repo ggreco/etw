@@ -1,8 +1,16 @@
 // #include <datatypes/animationclass.h>
 
-#define ALIGN_LONG( mem ) ((APTR)((((uint32_t)(mem)) + 3UL) & ~3UL))
-/* Align memory on 16 byte boundary */
-#define ALIGN_QUADLONG( mem ) ((APTR)((((uint32_t)(mem)) + 15UL) & ~15UL))
+#if INTPTR_MAX == INT32_MAX
+    #define ALIGN_LONG( mem ) ((APTR)((((uint32_t)(mem)) + 3UL) & ~3UL))
+    /* Align memory on 16 byte boundary */
+    #define ALIGN_QUADLONG( mem ) ((APTR)((((uint32_t)(mem)) + 15UL) & ~15UL))
+#elif INTPTR_MAX == INT64_MAX
+    #define ALIGN_LONG( mem ) ((APTR)((((uint64_t)(mem)) + 3ULL) & ~3ULL))
+    /* Align memory on 16 byte boundary */
+    #define ALIGN_QUADLONG( mem ) ((APTR)((((uint64_t)(mem)) + 15ULL) & ~15ULL))
+#else
+    #error "Environment not 32 or 64-bit."
+#endif
 
 /*
 **
