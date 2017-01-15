@@ -27,7 +27,7 @@ struct dirent                /* data from readdir() */
 
 
 typedef struct {
-    long Handle;
+    intptr_t Handle;
     char DirName[257];
     struct dirent DirentBuf;
     struct _finddata_t FindBuf;
