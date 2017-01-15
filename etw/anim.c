@@ -51,7 +51,7 @@ static                 int32_t              DrawDLTA( struct AnimInstData *, str
 static                 void                 DumpAnimHeader( struct AnimInstData *, uint32_t, struct AnimHeader * );
 static                 struct FrameNode    *GetPrevFrameNode( struct FrameNode *, uint32_t );
 
-void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,long f_mode);
+void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,int32_t f_mode);
 void BodyToBitMap(struct BitMap *f_bm,struct BitMapHeader *bmh,uint8_t *f_body,int32_t dltasize);
 void MakeYTable(short f_BytesPerRow);
 
@@ -1464,7 +1464,7 @@ void MakeYTable(short f_BytesPerRow)
  * 2 .. Anim7 Vert. Long DLTA
  */
 
-void decode_plane(uint8_t *opc, uint8_t *dta, uint8_t *plane, long bytesperrow, long fmode)
+void decode_plane(uint8_t *opc, uint8_t *dta, uint8_t *plane, int32_t bytesperrow, int32_t fmode)
 {
     int i, j, k;
 
@@ -1505,7 +1505,7 @@ void decode_plane(uint8_t *opc, uint8_t *dta, uint8_t *plane, long bytesperrow, 
     }
 }
 
-void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,long f_mode)
+void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,int32_t f_mode)
 {
     register unsigned char *opclist;
     unsigned char *dtalist;
@@ -1527,7 +1527,7 @@ void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,long f_mode)
             decode_plane(opclist,        /* in   (opc list)  */
                          dtalist,        /* dta  (data list) */
                          f_bm->Planes[i],  /* out  (bitplane)  */
-                         (long)f_bm->BytesPerRow,
+                         (int32_t)f_bm->BytesPerRow,
                          f_mode);
         }
     }
@@ -1538,7 +1538,7 @@ void C_BdyUnpack( uint8_t *f_bdy, PTR_RING *f_ring_ptr,int32_t f_row,int32_t f_B
   register uint8_t  *WrPtr;       /* WritePointer to destination in BitMap */
   register short i, count;
 
-  long ct_u, ct_r, sum_u, sum_r;
+  int32_t ct_u, ct_r, sum_u, sum_r;
 
 
   ct_u = ct_r = sum_u = sum_r = 0;
