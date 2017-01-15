@@ -218,7 +218,7 @@ BOOL LoadMenuStuff(void)
 
         os_delay(50);
 
-        rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1,
+        rectfill(main_bitmap, 0, 0, ClipX, ClipY,
                  Pens[P_NERO], bitmap_width);
 
         ScreenSwap();
