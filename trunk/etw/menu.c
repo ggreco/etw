@@ -8,8 +8,8 @@
 int current_menu = 0, current_button = NO_BUTTON, actual_button = 0;
 struct GfxMenu *actual_menu = &menu[0];
 void CreateButton(struct Button *b);
-void SelectButton(WORD button);
-void DrawBox(WORD button);
+void SelectButton(int16_t button);
+void DrawBox(int16_t button);
 static BOOL new_competition = FALSE;
 struct Button req_bottoni[4];
 BOOL reqqing = FALSE;
@@ -271,7 +271,7 @@ BOOL DoWarning(int a)
     return FALSE;
 }
 
-WORD *menubase = NULL;
+int16_t *menubase = NULL;
 
 void StoreButtonList(void)
 {
@@ -290,7 +290,7 @@ void StoreButtonList(void)
 
     D(bug("Allocated %ld words for default menu datas.\n"/*-*/, k));
 
-    if (!(menubase = malloc(k * sizeof(WORD))))
+    if (!(menubase = malloc(k * sizeof(int16_t))))
         return;
 
     for (i = 0, k = 0; i < MENUS; i++) {
@@ -351,7 +351,7 @@ void UpdateButtonList(void)
     }
 }
 
-void EraseBox(WORD button)
+void EraseBox(int16_t button)
 {
     if (reqqing) {
 // Il colore di fondo del requester e' sempre: Pens[P_ROSSO1]
@@ -398,7 +398,7 @@ void EraseBox(WORD button)
     }
 }
 
-void DrawBox(WORD button)
+void DrawBox(int16_t button)
 {
     if (current_menu < MENU_GAME_PREFS || current_menu > MENU_AUDIO_PREFS
         || button == actual_menu->NumeroBottoni - 1) {
@@ -568,7 +568,7 @@ void save_prefs()
     }
 }
 
-BOOL DoAction(WORD button)
+BOOL DoAction(int16_t button)
 {
     struct Button *b = &actual_menu->Button[button];
 
@@ -589,15 +589,15 @@ BOOL DoAction(WORD button)
 
     if (actual_menu->SpecialFunction) {
         BOOL value;
-        BOOL(*func) (WORD);
+        BOOL(*func) (int16_t);
 
-        func = (BOOL(*)(WORD)) actual_menu->SpecialFunction;
+        func = (BOOL(*)(int16_t)) actual_menu->SpecialFunction;
 
         value = func(button);
         ScreenSwap();
         return value;
     } else if (b->ID >= 0) {
-        WORD ID;
+        int16_t ID;
         penalties = FALSE;
         free_kicks = FALSE;
 
@@ -914,7 +914,7 @@ BOOL DoAction(WORD button)
                 }
             } else if (button == 2) {
                 char buffer[130];
-                UBYTE temp = competition;
+                uint8_t temp = competition;
 
                 freq.Title = msg_72;
                 freq.Save = TRUE;
@@ -1034,7 +1034,7 @@ void CancelButton(struct Button *b)
                     bitmap_width, bitmap_width);
 }
 
-void PrintButtonType(struct Button *b, WORD bl, WORD bt,
+void PrintButtonType(struct Button *b, int16_t bl, int16_t bt,
                      struct myfont *tf)
 {
     if ((current_menu == MENU_TEAM_SELECTION && b < &actual_menu->Button[TS_RIGHE * TS_COLONNE]) ||
@@ -1101,7 +1101,7 @@ void CreateButton(struct Button *b)
     PrintButtonType(b, 0, top, tf);
 }
 
-void RedrawButton(struct Button *b, UBYTE colore)
+void RedrawButton(struct Button *b, uint8_t colore)
 {
     char *t = b->Text;
     struct myfont *tf = smallfont;
@@ -1178,7 +1178,7 @@ void blit_scaled_logo()
 #endif
 }
 
-void ChangeMenu(WORD m)
+void ChangeMenu(int16_t m)
 {
     int i;
     
@@ -1293,7 +1293,7 @@ void ChangeMenu(WORD m)
         update_menu_tactic();
 
         if (ruolo[actual_team] && controllo[actual_team] >= 0) {
-            UBYTE oldpen;
+            uint8_t oldpen;
 
             oldpen =
                 actual_menu->Button[ruolo[actual_team] * 2 + 1].Color;
@@ -1485,7 +1485,7 @@ void draw_pause_menu()
     DrawBox(actual_button);
 }
 
-void SelectButton(WORD button)
+void SelectButton(int16_t button)
 {
     if (button != NO_BUTTON) {
         struct Button *b = &actual_menu->Button[button];
@@ -1498,7 +1498,7 @@ void SelectButton(WORD button)
     }
 }
 
-void DeselectButton(WORD button)
+void DeselectButton(int16_t button)
 {
     if (button != NO_BUTTON) {
         struct Button *b = &actual_menu->Button[button];
@@ -1509,16 +1509,16 @@ void DeselectButton(WORD button)
 
             if ((b->X2 - b->X1) > 16) {
                 main_bitmap[b->X1 + b->Y1 * bitmap_width] =
-                    (UBYTE) Pens[P_BIANCO];
+                    (uint8_t) Pens[P_BIANCO];
             }
         } else
             RedrawButton(b, b->Color);
     }
 }
 
-WORD GetButton(WORD x, WORD y)
+int16_t GetButton(int16_t x, int16_t y)
 {
-    WORD i;
+    int16_t i;
 
     for (i = 0; i < actual_menu->NumeroBottoni; i++) {
         struct Button *b = &actual_menu->Button[i];
@@ -1533,7 +1533,7 @@ WORD GetButton(WORD x, WORD y)
 
 void MoveMark(int k)
 {
-    WORD old_button = actual_button;
+    int16_t old_button = actual_button;
 
     if ((actual_button + k) < 0)
         k = actual_button;
@@ -1558,7 +1558,7 @@ void MoveMark(int k)
 BOOL HandleJoy(uint32_t joystatus)
 {
     static BOOL clicked = FALSE;
-    WORD old_button = actual_button;
+    int16_t old_button = actual_button;
 
     if (joystatus & JPF_BUTTON_RED) {
         SelectButton(actual_button);
@@ -1910,7 +1910,7 @@ BOOL HandleMenuIDCMP(void)
                 }
             } else if (e.button.state == SDL_RELEASED
                        && current_button != NO_BUTTON) {
-                WORD temp;
+                int16_t temp;
 
                 DeselectButton(current_button);
                 ScreenSwap();

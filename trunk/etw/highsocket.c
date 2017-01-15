@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <SDL_config.h>
 
 #if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(SOLARIS_X86) || defined(IPHONE) || defined(ANDROID)
 #include <unistd.h>
@@ -85,7 +86,7 @@ int SocketSystemBoot(void)
 /* Inizializzazione dei socket sotto Win95/NT; richiediamo almeno
 la versione 1.1 */
 
-WORD wVersionRequested; 
+int16_t wVersionRequested; 
 WSADATA wsaData; 
 int err; 
 wVersionRequested = MAKEWORD(1, 1); 

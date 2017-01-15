@@ -5,7 +5,7 @@
  * Contains function to load and manage static and moving objects.
  */
 
-static void AddNode(struct MyList *l, APTR ptr, BYTE type);
+static void AddNode(struct MyList *l, APTR ptr, int8_t type);
 
 int ClipX = 0, ClipY = 0;
 
@@ -66,7 +66,7 @@ struct MyNode *InAList(struct MyList *l, APTR ptr)
 void DrawAnimObj(void)
 {
     register anim_t *obj;
-    register WORD cf;
+    register int16_t cf;
 
     for (obj = (anim_t *) DrawList.pHead; obj->node.mpNext;
          obj = (anim_t *) obj->node.mpNext) {
@@ -168,7 +168,7 @@ BOOL InAnimList(anim_t *obj)
  *  and frame.
  */
 
-void AddAnimObj(anim_t * obj, WORD x, WORD y, WORD frame)
+void AddAnimObj(anim_t * obj, int16_t x, int16_t y, int16_t frame)
 {
     MyAddTail(&DrawList, (struct MyNode *) obj);
 
@@ -196,7 +196,7 @@ void AddAnimObj(anim_t * obj, WORD x, WORD y, WORD frame)
 void SortDrawList(void)
 {
     register anim_t *o, *best;
-    register WORD best_bottom;
+    register int16_t best_bottom;
 
 // Non uso NewList per la velocita'!
 
@@ -616,7 +616,7 @@ void FreeGraphics(void)
     }
 }
 
-void RemapAnimObjColor(anim_t * o, UBYTE source_color, UBYTE dest_color)
+void RemapAnimObjColor(anim_t * o, uint8_t source_color, uint8_t dest_color)
 {
     int k;
     uint8_t pens[256];
@@ -632,7 +632,7 @@ void RemapAnimObjColor(anim_t * o, UBYTE source_color, UBYTE dest_color)
     }
 }
 
-void RemapMColor(struct MChunky *c, UBYTE source_color, UBYTE dest_color)
+void RemapMColor(struct MChunky *c, uint8_t source_color, uint8_t dest_color)
 {
     register int k;
     uint8_t pens[256];
@@ -646,7 +646,7 @@ void RemapMColor(struct MChunky *c, UBYTE source_color, UBYTE dest_color)
     RemapMChunkyColors(c, pens);
 }
 
-void AddNode(struct MyList *l, APTR ptr, BYTE type)
+void AddNode(struct MyList *l, APTR ptr, int8_t type)
 {
     struct MyNode *n;
 

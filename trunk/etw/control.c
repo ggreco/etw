@@ -46,10 +46,10 @@ void CheckInfortuni(player_t *g)
 void MoveNonControlled(void)
 {
     register int i;
-    register WORD xg,yg;
+    register int16_t xg,yg;
     register player_t *g;
     register team_t *s;
-    WORD xlimit_e,ylimit_s,xlimit_o,ylimit_n,j;
+    int16_t xlimit_e,ylimit_s,xlimit_o,ylimit_n,j;
 
     // Cacho un paio di cose :)
 
@@ -480,7 +480,7 @@ skipchange:
 
                 if(g->OnScreen)
                 {
-                    WORD yk=(g->world_y>>3)-field_y;
+                    int16_t yk=(g->world_y>>3)-field_y;
 
                     // show marker only for human players or if computer player has an arcade effect
                     if(yk>7 && (s->Joystick != -1 || g->ArcadeEffect)) {
@@ -968,7 +968,7 @@ skipchange:
 }
 
 
-void ChangeControlled(team_t *s,WORD i)
+void ChangeControlled(team_t *s,int16_t i)
 {
     if(s->gioco_ruolo||s->players[i].Comando||s->players[i].AnimType==GIOCATORE_ESPULSO)
         return;
@@ -1001,8 +1001,8 @@ void HandleExtras(void)
 {
     register int i=0;
     register object_t *g;
-    register WORD xg;
-    register WORD yg;
+    register int16_t xg;
+    register int16_t yg;
 
     while(object_list[i]) {
         g=object_list[i];

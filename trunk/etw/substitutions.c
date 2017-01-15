@@ -4,15 +4,15 @@
 
 extern struct Button button_substitutions[];
 extern struct Button panel_substitutions[];
-UBYTE game_colore_team[3]={14, 9, 6};
-UBYTE game_highlight_team[3]={1, 7, 8};
+uint8_t game_colore_team[3]={14, 9, 6};
+uint8_t game_highlight_team[3]={1, 7, 8};
 
 #include "defines.h"
 
 extern const char *empty;
-extern WORD swaps;
+extern int16_t swaps;
 extern void add_change(team_t *t, const char *in, const char *out);
-extern void SetComando(player_t *g, BYTE cmd, BYTE dopo, BYTE arg);
+extern void SetComando(player_t *g, int8_t cmd, int8_t dopo, int8_t arg);
 extern BOOL using_tactic(team_t *, const char *);
 extern struct team_disk *find_disk_team(team_t *);
 
@@ -407,7 +407,7 @@ static void redraw_tactic(struct Button *b)
     }
 }
 
-BOOL TeamSubstitutions(WORD button)
+BOOL TeamSubstitutions(int16_t button)
 {
     struct Button *b;
     static int sel1 = -1;

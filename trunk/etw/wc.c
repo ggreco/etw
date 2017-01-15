@@ -97,8 +97,8 @@ BOOL GroupsClear(void)
 
 void OrderGroup(int n)
 {
-    BYTE temp[4],best;
-    WORD maxpunti,maxdiff,maxgol;
+    int8_t temp[4],best;
+    int16_t maxpunti,maxdiff,maxgol;
     int i,k=0;
 
     for(i=0;i<4;i++)
@@ -187,8 +187,8 @@ void GroupsUpdate(void)
 
 void UpdateLeagueTable(void)
 {
-    BYTE temp[32];
-    WORD maxpunti,maxdiff,maxgol;
+    int8_t temp[32];
+    int16_t maxpunti,maxdiff,maxgol;
     int i,j=0,best,ns=nteams;
 
     if(teamarray[ns-1]==FAKE_TEAM)
@@ -320,7 +320,7 @@ void ClearScores(void)
 void PositionScores(void)
 {
     int i;
-    WORD size=FixedScaledY(7),start=FixedScaledY(25),diff=FixedScaledY(9);
+    int16_t size=FixedScaledY(7),start=FixedScaledY(25),diff=FixedScaledY(9);
 
     for(i=0;i<score_number;i++)
     {
@@ -415,7 +415,7 @@ void WriteScores(void)
     }
 }
 
-void AddScore(UBYTE team)
+void AddScore(uint8_t team)
 {
     char buffer[100];
     int i=0;

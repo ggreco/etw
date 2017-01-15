@@ -123,7 +123,7 @@ void FreePass(player_t *g, uint32_t joystate)
 
 void TargetedPass(player_t *g, uint32_t joystate)
 {
-    WORD d,old_x=g->world_x,old_y=g->world_y;
+    int16_t d,old_x=g->world_x,old_y=g->world_y;
     player_t *g2;
 
     if(joystate&JP_DIRECTION_MASK)
@@ -179,7 +179,7 @@ void TargetedPass(player_t *g, uint32_t joystate)
 
 void EseguiCross(player_t *g)
 {
-    WORD old_x=g->world_x,old_y=g->world_y,distance;
+    int16_t old_x=g->world_x,old_y=g->world_y,distance;
     player_t *g2;
 
     g->world_y=RIGORE_Y;
@@ -215,9 +215,9 @@ void PreparaBarriera(int8_t team_id)
     team_t *s=p->team[team_id];
     player_t *g;
 // La barriera la metto sul primo o sul secondo palo a seconda della posizione del pallone
-    UBYTE dir=FindDirection256(pl->world_x,pl->world_y,
+    uint8_t dir=FindDirection256(pl->world_x,pl->world_y,
         (team_id ? PORTA_O_X : PORTA_E_X),pl->world_y>CENTROCAMPO_Y ? GOAL_Y_S : GOAL_Y_N);
-    WORD fuoco_x=pl->world_x,fuoco_y=pl->world_y,get_position,i;
+    int16_t fuoco_x=pl->world_x,fuoco_y=pl->world_y,get_position,i;
 
 // 128 pixel di distanza
 
@@ -271,8 +271,8 @@ void UpdateCornerLine(void)
 {
     int cornerline[34];
     register int i;
-    register WORD vx,vy;
-    WORD line_length;
+    register int16_t vx,vy;
+    int16_t line_length;
     int a,b;
 
 /* Sarebbe b=quota/8 e a=-b/32, io pero' ho bisogno di numeri grandi per mantenere
@@ -407,8 +407,8 @@ void DoSpecials(player_t *g)
         }
     else if ( pl->quota>3 && InAreaGrandePalla(g) )
     {
-            WORD dest_x,dest_y,distance;
-            WORD PortaDir=FindDirection(g->world_x,g->world_y,G2P_X( ( g->SNum ? PORTA_E_X : PORTA_O_X) ),G2P_Y(PORTA_O_Y));
+            int16_t dest_x,dest_y,distance;
+            int16_t PortaDir=FindDirection(g->world_x,g->world_y,G2P_X( ( g->SNum ? PORTA_E_X : PORTA_O_X) ),G2P_Y(PORTA_O_Y));
 
 // modifica necessaria * i 50fps!
 
@@ -521,8 +521,8 @@ void Tira(player_t *g)
 
 void PreparaPassaggio(player_t *g,player_t *g_min)
 {
-    register WORD distance;
-    register WORD ExpectedX=g_min->world_x,ExpectedY=g_min->world_y;
+    register int16_t distance;
+    register int16_t ExpectedX=g_min->world_x,ExpectedY=g_min->world_y;
 
 
     if(g_min->ActualSpeed>0)
@@ -596,7 +596,7 @@ void PreparaPassaggio(player_t *g,player_t *g_min)
 void Passaggio(player_t *g)
 {
     player_t *g_min;
-    register WORD Dir=g->dir,pos=0;
+    register int16_t Dir=g->dir,pos=0;
 
     while(pos < 5)  {
         if ((g_min=FindNearestDirPlayer(g))) {
@@ -665,7 +665,7 @@ void PassaggioB(player_t *g)
 
 void Passaggio2(player_t *g,char Dir)
 {
-    WORD olddir=g->dir;
+    int16_t olddir=g->dir;
 
     g->dir=Dir;
 
@@ -673,7 +673,7 @@ void Passaggio2(player_t *g,char Dir)
 
     if(g->dir!=olddir)
     {
-        BYTE NewDir=g->dir;
+        int8_t NewDir=g->dir;
         
         g->dir=olddir;
 
@@ -858,7 +858,7 @@ void HandleRimessa(player_t *g)
         }
         else if (g->FirePressed)
         {
-            WORD temp;
+            int16_t temp;
 
             p->team[0]->ArcadeCounter=0;
             p->team[1]->ArcadeCounter=0;
@@ -1030,7 +1030,7 @@ tirarigore:
 
         if(g->WaitForControl<0)
         {
-            UBYTE tt=GetTable(); 
+            uint8_t tt=GetTable(); 
 
             // Occhio questa parentesi potrebbe causare dei bei casini!
 
@@ -1094,8 +1094,8 @@ static void after_corner_common(player_t *g)
     
     {
         player_t *g2;
-        WORD xs=pl->world_x+(pl->delta_x<<7);
-        WORD ys=pl->world_y+(pl->delta_y<<7);
+        int16_t xs=pl->world_x+(pl->delta_x<<7);
+        int16_t ys=pl->world_y+(pl->delta_y<<7);
         
         if((g2=FindNearest(g->team,xs,ys))) {
             g->SpecialData=g2->GNum;
@@ -1324,7 +1324,7 @@ tirapunizione:
         p->doing_shot=FALSE;
 
         if (g->WaitForControl < 0) {
-            UBYTE c;
+            uint8_t c;
 
 // punizionecomputer: non usata per ora
             TogliPalla();
@@ -1346,7 +1346,7 @@ tirapunizione:
 
                 if(c==CS_SI) {
 /*
-                    WORD dest_x;
+                    int16_t dest_x;
 
                     if(g->SNum==0)
                         dest_x=FONDO_O_X;
@@ -1356,7 +1356,7 @@ tirapunizione:
                     CPUShot(g);
                 }
                 else {
-                    WORD dest_x;
+                    int16_t dest_x;
 
                     if(g->SNum==0)
                         dest_x=RIGORE_X_O;
@@ -1403,8 +1403,8 @@ void ColpoDiTesta(player_t *g)
 
     if(CanScore(g)==CS_SI)
     {
-        WORD PortaDir, temp;
-        WORD Dir = g->dir;
+        int16_t PortaDir, temp;
+        int16_t Dir = g->dir;
         uint32_t state;
 
         PortaDir=FindDirection(g->world_x,g->world_y,G2P_X( ( g->SNum ? PORTA_E_X : PORTA_O_X) ),G2P_Y(PORTA_O_Y));
@@ -1486,7 +1486,7 @@ void ColpoDiTesta(player_t *g)
     }
     else
     {
-        WORD olddir=g->dir,temp;
+        int16_t olddir=g->dir,temp;
 // passaggio
         TogliPalla();
         DaiPalla(g);
@@ -1655,7 +1655,7 @@ BOOL IsOffside(player_t *g)
         {
             team_t *sa=p->team[0];
             int i;
-            WORD xpos=g1->world_x+100;
+            int16_t xpos=g1->world_x+100;
             BOOL offs=TRUE;
 
             for(i=0;i<10;i++)
@@ -1676,7 +1676,7 @@ BOOL IsOffside(player_t *g)
         {
             team_t *sa=p->team[1];
             int i;
-            WORD xpos=g1->world_x-100;
+            int16_t xpos=g1->world_x-100;
             BOOL offs=TRUE;
 
             for(i=0;i<10;i++)

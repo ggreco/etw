@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SDL_config.h>
 
 #if defined(WIN) && !defined(WINCE) && !defined(CROSSCOMPILER)
 
@@ -26,7 +27,7 @@ DIR *opendir(char *DirName)
 
 dirent_t *readdir(DIR *Directory)
 {
-    LONG n;
+    int32_t n;
 
     if (Directory->Handle == -1)
         n = Directory->Handle = _findfirst(Directory->DirName, &Directory->FindBuf);

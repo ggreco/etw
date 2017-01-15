@@ -4,14 +4,14 @@
 typedef struct referee
 {
     anim_t *anim;
-    WORD world_x, world_y;
+    int16_t world_x, world_y;
     BOOL OnScreen;
-    WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
+    int16_t AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
     int8_t otype;  // Tipo di oggetto, fin qui ci devo arrivare!
     int8_t dir;   // Direzione di movimento
     int8_t ActualSpeed; // Velocita' del tipo
     int8_t FrameLen; // Quando e' 0 posso cambiare frame
-    WORD Tick, Argomento;
+    int16_t Tick, Argomento;
     BOOL Special;
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).
@@ -28,14 +28,14 @@ typedef struct referee
 typedef struct linesman
 {
     anim_t *anim;
-    WORD world_x, world_y;
+    int16_t world_x, world_y;
     BOOL OnScreen;
-    WORD AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
+    int16_t AnimType, AnimFrame; // Animazione in uso e frame a cui si e'
     char otype;  // Tipo di oggetto, fin qui ci devo arrivare!
     uint8_t dir;   // Direzione di movimento
     char ActualSpeed; // Velocita' del tipo
     char FrameLen; // Quando e' 0 posso cambiare frame
-    WORD Tick, Argomento;
+    int16_t Tick, Argomento;
     BOOL Special;
     char *name;
     char *surname; // Subpuntatore a Nome (che contiene Nome e Cognome di fila).

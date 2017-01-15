@@ -2,7 +2,7 @@
 
 /* Velocita giocatore asse X */
 
-WORD velocita_x[3][10][8]=
+int16_t velocita_x[3][10][8]=
 {
     { /* Velocita 0 */
         { /* Giocatore con velocita' 0 (0.750000 pixel)*/
@@ -314,7 +314,7 @@ WORD velocita_x[3][10][8]=
 
 /* Velocita giocatore asse Y */
 
-WORD velocita_y[3][10][8]=
+int16_t velocita_y[3][10][8]=
 {
     { /* Velocita 0 */
         { /* Giocatore con velocita' 0 (0.187500 pixel)*/

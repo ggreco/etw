@@ -1,6 +1,6 @@
 #include "mytypes.h"
 
-UBYTE Table[256]={
+uint8_t Table[256]={
 2,
 3,4,3,0,1,4,1,0,3,4,1,2,5,4,1,2,
 1,2,1,0,1,4,1,2,1,2,3,2,5,0,3,2,
@@ -20,7 +20,7 @@ UBYTE Table[256]={
 1,0,3,2,5,2,5,2,5,2,1,0,3,0,4,
 };
 
-WORD cos_table[256] =
+int16_t cos_table[256] =
 {
     128,
     128,
@@ -280,7 +280,7 @@ WORD cos_table[256] =
     128,
 };
 
-WORD sin_table[256] =
+int16_t sin_table[256] =
 {
     0,
     3,
@@ -543,7 +543,7 @@ WORD sin_table[256] =
 
 // Questa tabella contiene le differenze di direzione tra una dir ed un altra!
 
-BYTE CambioDirezione[8][8] = {
+int8_t CambioDirezione[8][8] = {
     { // Dir di partenza: 0
         0, 1, 2, 3, 4, -3, -2, -1, 
     },

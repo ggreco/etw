@@ -15,53 +15,11 @@ typedef ULONG           uint32_t;
 #   include <stdint.h>
 #   include <stdio.h>
 typedef void *          APTR;
-typedef int32_t         LONG;
-typedef uint32_t        ULONG;
-typedef int16_t         WORD;
-typedef uint16_t        UWORD;
-typedef int8_t          BYTE;
-typedef uint8_t         UBYTE;
 typedef unsigned int    BOOL;
 typedef uint8_t         BYTEBITS;
 typedef uint16_t        WORDBITS;
 typedef uint32_t        LONGBITS;
 typedef char * STRPTR;
-#endif
-
-#if 0
-typedef char * STRPTR;
-typedef void            *APTR;      /* 32-bit untyped pointer */
-#   if !defined(_WINNT_H) && !defined(_WINNT_)
-typedef int32_t     LONG;       /* signed 32-bit quantity */
-typedef uint32_t   ULONG;      /* unsigned 32-bit quantity */
-#   endif
-#   if !defined( _WINDEF_H) && !defined(_WINDEF_)
-#       ifndef WORD
-typedef signed short    WORD;       /* signed 16-bit quantity */
-#       endif
-#       ifndef BYTE
-typedef signed char     BYTE;
-#       endif
-#       ifndef BOOL
-typedef unsigned int    BOOL;
-#       endif
-#   endif /* _WINDEF */
-typedef unsigned short  UWORD;      /* unsigned 16-bit quantity */
-typedef unsigned char   UBYTE;      /* unsigned 8-bit quantity */
-typedef unsigned char   BYTEBITS;   /* 8 bits manipulated individually */
-typedef unsigned short  WORDBITS;   /* 16 bits manipulated individually */
-typedef uint32_t LONGBITS;   /* 32 bits manipulated individually */
-// typedef void VOID;
-
-#ifndef _STDINT_H_
-typedef signed char     int8_t;
-typedef unsigned char   uint8_t;
-typedef signed short    int16_t;
-typedef unsigned short  uint16_t;
-typedef signed int      int32_t;
-typedef unsigned int    uint32_t;
-#endif
-
 #endif
 
 /* Get TRUE, FALSE and NULL if not available */

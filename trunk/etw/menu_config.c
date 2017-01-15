@@ -125,9 +125,9 @@ void load_config(FILE *f)
                     {
                         if(value==atol(scaling_resolutions[i]+4))
                         {
-                            extern BYTE current_scaling;
+                            extern int8_t current_scaling;
 
-                            current_scaling=(BYTE)i;
+                            current_scaling=(int8_t)i;
 
                             FIXED_SCALING_HEIGHT=value;
                             FIXED_SCALING_WIDTH=atoi(scaling_resolutions[i]);

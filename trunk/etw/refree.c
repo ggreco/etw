@@ -3,7 +3,7 @@
 #define OWN_GOAL 64
 
 extern BOOL replay_done;
-UBYTE goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE];
+uint8_t goal_array[GA_SIZE],goal_minute[GA_SIZE],goal_team[GA_SIZE];
 char ColoreCartellino[8]={ESPULSIONE,ESPULSIONE,ESPULSIONE,ESPULSIONE,ESPULSIONE,ESPULSIONE,ESPULSIONE,ESPULSIONE};
 char golrig[2]={0,0};
 
@@ -632,7 +632,7 @@ void HandleReferee(void)
 
                             if(g->Comando!=ColoreCartellino[g->dir])
                             {
-                                UBYTE from,to;
+                                uint8_t from,to;
 
                                 from= ColoreCartellino[g->dir]==ESPULSIONE ? Pens[P_ROSSO0] : Pens[P_GIALLO];
                                 to= g->Comando==ESPULSIONE ? Pens[P_ROSSO0] : Pens[P_GIALLO];

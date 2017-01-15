@@ -26,8 +26,8 @@ struct MyList
    struct  MyNode *pHead;
    struct  MyNode *pTail;
    struct  MyNode *pTailPred;
-   UBYTE   lh_Type;
-   UBYTE   l_pad;
+   uint8_t lh_Type;
+   uint8_t l_pad;
 };    /* word aligned */
 
 #define MY_LIST_H

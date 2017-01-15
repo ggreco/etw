@@ -2,7 +2,7 @@
 
 #define NUM_ARCADE_FRAMES 10
 
-WORD arcade_frame_sequence[NUM_ARCADE_FRAMES]={0,1,1,2,2,2,2,2,1,1};
+int16_t arcade_frame_sequence[NUM_ARCADE_FRAMES]={0,1,1,2,2,2,2,2,1,1};
 
 struct pos bonus_pos[]=
 {
@@ -14,7 +14,7 @@ struct pos bonus_pos[]=
     {900*8,460*8},
 };
 
-void RemoveArcadeEffect(player_t *g,UBYTE effect)
+void RemoveArcadeEffect(player_t *g,uint8_t effect)
 {
     switch(effect)
     {
@@ -43,7 +43,7 @@ void RemoveArcadeEffect(player_t *g,UBYTE effect)
     g->ArcadeEffect=NESSUN_COMANDO;
 }
 
-void AddArcadeEffect(player_t *g,UBYTE effect)
+void AddArcadeEffect(player_t *g,uint8_t effect)
 {
     if(g->ArcadeEffect)
         RemoveArcadeEffect(g,g->ArcadeEffect);
@@ -92,7 +92,7 @@ void AddArcadeEffect(player_t *g,UBYTE effect)
 
 void GetArcadeEffect(player_t *g, object_t *o)
 {
-    WORD k=(o->AnimType-20)/3;
+    int16_t k=(o->AnimType-20)/3;
 
     switch(k)
     {

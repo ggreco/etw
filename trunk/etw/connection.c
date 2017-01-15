@@ -29,7 +29,7 @@ BOOL ETW_running=FALSE;
 
 struct team_disk leftteam_dk,rightteam_dk;
 
-BOOL CheckMaglie(UBYTE a,UBYTE b)
+BOOL CheckMaglie(uint8_t a,uint8_t b)
 {
 /*
     Ritorno false se il colore 0 delle due squadre e' uguale,
@@ -155,21 +155,21 @@ BOOL StartGame(void)
 }
 
 static BOOL team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
-static WORD parent_menu, team1, team2;
-static WORD match_result = -1;
+static int16_t parent_menu, team1, team2;
+static int16_t match_result = -1;
 
 
-WORD restore_menus();
+int16_t restore_menus();
 
 // you can read the match result only once
-WORD LastMatchResult()
+int16_t LastMatchResult()
 {
-    WORD rc = match_result;
+    int16_t rc = match_result;
     match_result = -1;
     return rc;
 }
 
-WORD StartMatch(BYTE t1,BYTE t2)
+int16_t StartMatch(int8_t t1,int8_t t2)
 {
     int t, old_tl;
     match_result = -1;
@@ -183,7 +183,7 @@ WORD StartMatch(BYTE t1,BYTE t2)
 
     if(!training&&!network_game) {
         if(RangeRand(2)) {
-            UBYTE temp;
+            uint8_t temp;
 
             temp=team1;
             team1=team2;
@@ -201,7 +201,7 @@ WORD StartMatch(BYTE t1,BYTE t2)
         }
     }
     else if(network_game && network_player->num) {
-        UBYTE temp=team1;
+        uint8_t temp=team1;
 
         D(bug("Player got team 1, swapping teams\n"));
 
@@ -227,7 +227,7 @@ WORD StartMatch(BYTE t1,BYTE t2)
 
     if(arcade_teams)
     {
-        extern BYTE arcade_team[];
+        extern int8_t arcade_team[];
 
         arcade_team[0]=team1;
         arcade_team[1]=team2;
@@ -409,11 +409,11 @@ WORD StartMatch(BYTE t1,BYTE t2)
 
 BOOL interrupted = FALSE;
 
-WORD restore_menus()
+int16_t restore_menus()
 {
     char buf[1024];
     FILE *f;
-    WORD risultato=-1;
+    int16_t risultato=-1;
     interrupted = FALSE;
   
     // restore previous menu state

@@ -101,7 +101,7 @@ void Progress(void);
                 pl->Hide=FALSE; pl->special = 0; \
             } } while(0)
 
-#define FindDistance(xs,ys,xd,yd,angle) (xd!=xs&&sin_table[angle]!=0 ? ((WORD)(abs( (abs(xd-xs)<<7)/sin_table[angle]) )) : abs(yd-ys) )
+#define FindDistance(xs,ys,xd,yd,angle) (xd!=xs&&sin_table[angle]!=0 ? ((int16_t)(abs( (abs(xd-xs)<<7)/sin_table[angle]) )) : abs(yd-ys) )
 
 #define FermaPalla() do { pl->velocita=0; pl->delta_x=0; pl->delta_y=0; pl->quota=0; } while(0)
 #define HaltBallNoQuota() do { pl->velocita=0; pl->delta_x=0; pl->delta_y=0; pl->special = 1; } while(0)

@@ -23,14 +23,14 @@ struct IFFHandle *AllocIFF(void)
     return h;
 }
 
-LONG PropChunks(struct IFFHandle * iff, int32_t *propArray, int numPairs)
+int32_t PropChunks(struct IFFHandle * iff, int32_t *propArray, int numPairs)
 {
     iff->props = propArray;
     iff->iff_props = numPairs;
     return 0L;
 }
 
-LONG OpenIFF(struct IFFHandle * iff, LONG rwMode)
+int32_t OpenIFF(struct IFFHandle * iff, int32_t rwMode)
 {
     if (iff->iff_Stream && rwMode == IFFF_READ)
     {
@@ -53,9 +53,9 @@ LONG OpenIFF(struct IFFHandle * iff, LONG rwMode)
     }
 }
 
-LONG ParseIFF(struct IFFHandle * iff, LONG control)
+int32_t ParseIFF(struct IFFHandle * iff, int32_t control)
 {
-    ULONG i;
+    uint32_t i;
     uint32_t temp;
 
     if (control != IFFPARSE_SCAN) {
@@ -90,7 +90,7 @@ LONG ParseIFF(struct IFFHandle * iff, LONG control)
                     temp = fread_u32(iff->iff_Stream);
                     iff->Current.cn_Size = temp;
                 }
-                iff->Current.cn_Scan = (LONG)ftell(iff->iff_Stream);
+                iff->Current.cn_Scan = (int32_t)ftell(iff->iff_Stream);
                 return 0L;
             }
         }
@@ -105,7 +105,7 @@ LONG ParseIFF(struct IFFHandle * iff, LONG control)
                 p->sp.sp_Size = temp;
                 p->sp.sp_Data = malloc(temp);
                 fread(p->sp.sp_Data, 1, temp, iff->iff_Stream);
-                p->cn_Scan = (LONG)ftell(iff->iff_Stream);
+                p->cn_Scan = (int32_t)ftell(iff->iff_Stream);
 
                 iff->Prop = p;
                 continue; // do not seek backward, we are aligned
@@ -117,7 +117,7 @@ LONG ParseIFF(struct IFFHandle * iff, LONG control)
     }
 }
 
-struct StoredProperty *FindProp(struct IFFHandle *iff, LONG type, LONG id)
+struct StoredProperty *FindProp(struct IFFHandle *iff, int32_t type, int32_t id)
 {
     struct PropNode *p = iff->Prop;
     while (p) {
@@ -146,20 +146,20 @@ void FreeIFF(struct IFFHandle *iff)
 
 /* Read/Write functions */
 
-LONG ReadChunkBytes(struct IFFHandle *iff, void *buf, LONG numBytes)
+int32_t ReadChunkBytes(struct IFFHandle *iff, void *buf, int32_t numBytes)
 {
-    return (LONG)fread(buf, 1, numBytes, iff->iff_Stream);
+    return (int32_t)fread(buf, 1, numBytes, iff->iff_Stream);
 }
 
-LONG ReadChunkRecords(struct IFFHandle * iff, void *buf,
-                         LONG bytesPerRecord, LONG numRecords)
+int32_t ReadChunkRecords(struct IFFHandle * iff, void *buf,
+                         int32_t bytesPerRecord, int32_t numRecords)
 {
-    return (LONG)fread(buf, bytesPerRecord, numRecords, iff->iff_Stream);
+    return (int32_t)fread(buf, bytesPerRecord, numRecords, iff->iff_Stream);
 }
 
 /* Built-in chunk/property handlers */
 
-LONG StopChunks(struct IFFHandle * iff, int32_t * propArray, LONG numPairs)
+int32_t StopChunks(struct IFFHandle * iff, int32_t * propArray, int32_t numPairs)
 {
     iff->stops = propArray;
     iff->iff_Stops = numPairs;

@@ -710,7 +710,7 @@ void HandleBall(void)
 
 void PostHandleBall(void)
 {
-    register WORD x,y;
+    register int16_t x,y;
     register player_t *g;
 
     if(pl->InGioco) {
@@ -729,7 +729,7 @@ void PostHandleBall(void)
         if(g->ActualSpeed==3&&g->AnimType==GIOCATORE_CORSA_VELOCE_PALLA)
         {    
 // Nota il /2 vale solo finche non aggiorno ai 50 FPS gli avanzamenti!
-            register WORD xa=g->AnimFrame+g->AnimFrame+2-(g->FrameLen>>1);
+            register int16_t xa=g->AnimFrame+g->AnimFrame+2-(g->FrameLen>>1);
 
             if(xa>11||xa<0)
             {
@@ -754,7 +754,7 @@ void PostHandleBall(void)
         }
         else if(g->AnimType==GIOCATORE_CAMBIO_ORARIO)
         {
-            register WORD fakedir=g->dir+1;
+            register int16_t fakedir=g->dir+1;
 
 // Le direzioni antiorarie sono uguali a quelle orarie translate di 1 e
 // ribaltate
@@ -768,7 +768,7 @@ void PostHandleBall(void)
         {
 // Nota il /2 vale solo finche non aggiorno ai 50 FPS gli avanzamenti!
 
-            register WORD xa=(g->AnimFrame<<2)+3-(g->FrameLen>>1);
+            register int16_t xa=(g->AnimFrame<<2)+3-(g->FrameLen>>1);
 
             if(xa<0||xa>7)
             {

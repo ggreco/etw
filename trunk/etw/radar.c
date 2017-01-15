@@ -142,11 +142,11 @@ void HandleRadarBig(void)
     {
         if(small_dot)
         {
-            *bm2= (UBYTE) (PBianca ? Pens[P_BIANCO] : Pens[P_NERO]); // E' piccola, la tengo un pixel sopra
+            *bm2= (uint8_t) (PBianca ? Pens[P_BIANCO] : Pens[P_NERO]); // E' piccola, la tengo un pixel sopra
         }
         else
         {
-            UBYTE b = (UBYTE)(PBianca ? Pens[P_BIANCO] : Pens[P_NERO]); // E' piccola, la tengo un pixel sopra
+            uint8_t b = (uint8_t)(PBianca ? Pens[P_BIANCO] : Pens[P_NERO]); // E' piccola, la tengo un pixel sopra
 
             *bm2 = b;
             bm2++;
@@ -304,11 +304,11 @@ void HandleRadarLittle(void)
     {
         if(small_dot)
         {
-            *bm2= (UBYTE) (PBianca ? Pens[P_BIANCO] : Pens[P_NERO]); // E' piccola, la tengo un pixel sopra
+            *bm2= (uint8_t) (PBianca ? Pens[P_BIANCO] : Pens[P_NERO]); // E' piccola, la tengo un pixel sopra
         }
         else
         {
-            UBYTE b = (BYTE)(PBianca ? Pens[P_BIANCO] : Pens[P_NERO]); // E' piccola, la tengo un pixel sopra
+            uint8_t b = (int8_t)(PBianca ? Pens[P_BIANCO] : Pens[P_NERO]); // E' piccola, la tengo un pixel sopra
 
             *bm2 = b;
             bm2++;
@@ -344,7 +344,7 @@ void HandleRadarLittle(void)
 
 void ResizeRadar(void)
 {
-    WORD old_x = radar_xstart, old_y = radar_ystart, i;
+    int16_t old_x = radar_xstart, old_y = radar_ystart, i;
     BOOL changed = FALSE;
 
     old_x += (BIG_MODIFIER/2);

@@ -18,8 +18,8 @@ int32_t
 
 mytimer StartGameTime, EndTime, ideal;
 
-WORD field_x, field_y, n_limit, o_limit, s_limit, e_limit;
-WORD field_x_limit, field_y_limit, real_fx, real_fy;
+int16_t field_x, field_y, n_limit, o_limit, s_limit, e_limit;
+int16_t field_x_limit, field_y_limit, real_fx, real_fy;
 void (*HandleTeam0) (int);
 void (*HandleTeam1) (int);
 void (*HandleRadar) (void);
@@ -62,8 +62,8 @@ void HandleControl(void)
 
 void HandleScrolling(void)
 {
-    register WORD xs, ys, max_scroll;
-    static WORD scroll_tick = 0;
+    register int16_t xs, ys, max_scroll;
+    static int16_t scroll_tick = 0;
 /* checks on the display scrolling */
 
     scroll_tick++;

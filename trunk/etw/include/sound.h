@@ -20,7 +20,7 @@
 
 struct BufferInfo
 {
-    UBYTE    Buffer[BUFFER_SIZE];
+    uint8_t  Buffer[BUFFER_SIZE];
 };
 
     /* Sound replay information. */
@@ -31,8 +31,8 @@ struct BufferInfo
 
 struct SoundInfo
 {
-    ULONG     Flags, Loops;
-    LONG      channel;
+    uint32_t  Flags, Loops;
+    int32_t   channel;
     Mix_Chunk *SoundData;
 };
 

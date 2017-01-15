@@ -38,16 +38,16 @@
 #define sCmpFibDelta   1    /* Fibonacci-delta encoding (Appendix C) */
                 /* Could be more kinds in the future. */
 typedef struct {
-    ULONG oneShotHiSamples,    /* # samples in the high octave 1-shot part */
-          repeatHiSamples,    /* # samples in the high octave repeat part */
-          samplesPerHiCycle;    /* # samples/cycle in high octave, else 0 */
-    UWORD samplesPerSec;    /* data sampling rate */
-    UBYTE ctOctave,        /* # of octaves of waveforms */
-          sCompression;        /* data compression technique used */
-    ULONG  volume;        /* playback nominal volume from 0 to Unity
-                 * (full volume). Map this value into
-                 * the output hardware's dynamic range.
-                 */
+    uint32_t oneShotHiSamples,  /* # samples in the high octave 1-shot part */
+             repeatHiSamples,   /* # samples in the high octave repeat part */
+             samplesPerHiCycle; /* # samples/cycle in high octave, else 0 */
+    uint16_t samplesPerSec;     /* data sampling rate */
+    uint8_t  ctOctave,          /* # of octaves of waveforms */
+             sCompression;      /* data compression technique used */
+    uint32_t volume;            /* playback nominal volume from 0 to Unity
+                                 * (full volume). Map this value into
+                                 * the output hardware's dynamic range.
+                                 */
     } Voice8Header;
 
 /* ---------- NAME -----------------------------------------------------*/
@@ -65,8 +65,8 @@ typedef struct {
 /* ---------- Envelope ATAK & RLSE -------------------------------------*/
 
 typedef struct {
-    UWORD duration;    /* segment duration in milliseconds, > 0 */
-    ULONG dest;        /* destination volume factor */
+    uint16_t duration; /* segment duration in milliseconds, > 0 */
+    uint32_t dest;     /* destination volume factor */
     } EGPoint;
 
 /* ATAK and RLSE chunks contain an EGPoint[], piecewise-linear envelope. */
@@ -76,7 +76,7 @@ typedef struct {
  */
 
 /* ---------- BODY -----------------------------------------------------*/
-/* BODY chunk contains a BYTE[], array of audio data samples. */
+/* BODY chunk contains a int8_t[], array of audio data samples. */
 /* (8-bit signed numbers, -128 through 127.) */
 
 
@@ -84,6 +84,6 @@ typedef struct {
 
 /* Just call this macro to write a VHDR chunk. */
 #define PutVHDR(iff, vHdr)  \
-    PutCk(iff, ID_VHDR, sizeof(Voice8Header), (BYTE *)vHdr)
+    PutCk(iff, ID_VHDR, sizeof(Voice8Header), (int8_t *)vHdr)
 
 #endif

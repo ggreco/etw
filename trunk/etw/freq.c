@@ -187,12 +187,12 @@ BOOL FileRequest(struct MyFileRequest *fr)
         }
         
         if (AslRequestTags(f, 
-                    fr->File ? ASLFR_InitialFile : TAG_IGNORE, (ULONG) fr->File,
-                    fr->Dir ? ASLFR_InitialDrawer : TAG_IGNORE, (ULONG) fr->Dir,
+                    fr->File ? ASLFR_InitialFile : TAG_IGNORE, (uint32_t) fr->File,
+                    fr->Dir ? ASLFR_InitialDrawer : TAG_IGNORE, (uint32_t) fr->Dir,
                     ASLFR_DoSaveMode, (BOOL) fr->Save,
-                    ASLFR_TitleText, (ULONG) fr->Title,
+                    ASLFR_TitleText, (uint32_t) fr->Title,
                     ASLFR_RejectIcons, TRUE,
-                    use_filter ? ASLFR_InitialPattern : TAG_IGNORE, (ULONG) use_filter,
+                    use_filter ? ASLFR_InitialPattern : TAG_IGNORE, (uint32_t) use_filter,
                     TAG_DONE
                     )) {
 
