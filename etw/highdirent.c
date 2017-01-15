@@ -27,7 +27,7 @@ DIR *opendir(char *DirName)
 
 dirent_t *readdir(DIR *Directory)
 {
-    int32_t n;
+    intptr_t n;
 
     if (Directory->Handle == -1)
         n = Directory->Handle = _findfirst(Directory->DirName, &Directory->FindBuf);
