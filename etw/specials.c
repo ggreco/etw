@@ -1795,7 +1795,7 @@ void UpdatePrefs(int8_t set)
         m->Button[1].Text = wb_game ? "WINDOW"/*-*/ : "FULLSCREEN"/*-*/;
         m->Button[3].Text = (detail_level & USA_RADAR)
                           ? radar_options[radar_position] : disabled;
-        m->Button[13].Text = nointro ? enabled : disabled;
+        m->Button[13].Text = nointro ? disabled : enabled;
 
         m->Button[17].Text = use_gfx_scaling ? enabled : disabled;
         m->Button[18].Text = use_gfx_scaling ? msg_218 : NULL;
