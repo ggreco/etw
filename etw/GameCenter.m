@@ -208,12 +208,14 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
                  }
              }];
         }
+#ifndef MACOSX
         else if(viewcontroller)
         {
             [gViewColtroller presentViewController: viewcontroller animated: YES completion:nil];
 //            [self presentViewController:viewcontroller]; //present the login form
         }
-        
+#endif
+
         D(NSLog(@"Player Authenticated %d", localPlayer.isAuthenticated));
     }
 #ifndef MACOSX
