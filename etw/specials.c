@@ -1283,7 +1283,7 @@ BOOL GamePrefs(int16_t button)
                 CancelButton(&actual_menu->Button[12]);
                 CancelButton(&actual_menu->Button[13]);
             }
-            else if (!actual_menu->Button[20].Text)
+            else if (!actual_menu->Button[12].Text)
             {
                 field_type = 0;
                 actual_menu->Button[12].Text = msg_35;
