@@ -20,7 +20,7 @@ static void blitBitmap16(struct BitMap *src, uint16_t *dst)
 {
     int x, i, current_bit;
     uint8_t *plane[8];
-    for (i = 0; i < src->Depth; ++i) 
+    for (i = 0; i < src->Depth; ++i)
         plane[i] = (uint8_t*)src->Planes[i];
 
     for (x = 0; x < (src->BytesPerRow * src->Rows); ++x) {
@@ -29,10 +29,10 @@ static void blitBitmap16(struct BitMap *src, uint16_t *dst)
 
             for(i = 0; i < src->Depth; i++)
                 if(plane[i][x] & current_bit)
-                    source_color |= (1 << i); 
+                    source_color |= (1 << i);
 
             *(dst++) = palette16[source_color];
-        }			
+        }
     }
 }
 
@@ -40,7 +40,7 @@ static void blitBitmap32(struct BitMap *src, uint32_t *dst)
 {
     int x, i, current_bit;
     uint8_t *plane[8];
-    for (i = 0; i < src->Depth; ++i) 
+    for (i = 0; i < src->Depth; ++i)
         plane[i] = (uint8_t*)src->Planes[i];
 
     for (x = 0; x < (src->BytesPerRow * src->Rows); ++x) {
@@ -49,31 +49,29 @@ static void blitBitmap32(struct BitMap *src, uint32_t *dst)
 
             for(i = 0; i < src->Depth; i++)
                 if(plane[i][x] & current_bit)
-                    source_color |= (1 << i); 
+                    source_color |= (1 << i);
 
             *(dst++) = *((uint32_t*)&(SDL_palette[source_color]));
-        }			
+        }
     }
 }
 
-static void blitScreen16(uint16_t *dst)
+static void blitScreen16(uint8_t *src, uint16_t *dst, uint32_t width, uint32_t height)
 {
-    uint8_t *src = main_bitmap;    
     int x, y;
 
-    for (y = bitmap_height; y > 0; y--)
-    	for (x = bitmap_width; x > 0; x--)
-			*(dst++) = palette16[*src++];
+    for (y = height; y > 0; y--)
+        for (x = width; x > 0; x--)
+            *(dst++) = palette16[*src++];
 }
 
-static void blitScreen32(uint32_t *dst)
+static void blitScreen32(uint8_t *src, uint32_t *dst, uint32_t width, uint32_t height)
 {
-    uint8_t *src = main_bitmap;    
     int x, y;
 
-    for (y = bitmap_height; y > 0; y--)
-    	for (x = bitmap_width; x > 0; x--)
-			*(dst++) = *((uint32_t*)&(SDL_palette[*src++]));
+    for (y = height; y > 0; y--)
+        for (x = width; x > 0; x--)
+            *(dst++) = *((uint32_t*)&(SDL_palette[*src++]));
 }
 
 #ifdef IPHONE
@@ -94,7 +92,7 @@ static void blitScreen32x2(uint32_t *dst)
     uint8_t *src = main_bitmap;
     uint32_t *dst2 = dst + bitmap_width * 2;
     int x, y;
-    
+
     for (y = bitmap_height; y > 0; y--) {
     	for (x = bitmap_width; x > 0; x--) {
             uint32_t *col = (uint32_t *)&(SDL_palette[*src++]);
@@ -111,7 +109,7 @@ static void blitScreen32x2(uint32_t *dst)
 void set_resolution()
 {
     int i, j, n = SDL_GetNumDisplayModes(0);
-    
+
     for (i = 0; i < n; ++i) {
         SDL_DisplayMode mode;
         SDL_GetDisplayMode(0, i, &mode);
@@ -138,7 +136,7 @@ static ResInfo ressize[2] = {
 void set_resolution()
 {
     int i, j, n = SDL_GetNumDisplayModes(0);
-   
+
     if (n > 1) {
         for (i = 0; i < n; ++i) {
             SDL_DisplayMode mode;
@@ -201,9 +199,9 @@ void ResizeWin(SDL_Event *event)
     uint8_t *newbm;
     int old_width = WINDOW_WIDTH, old_height = WINDOW_HEIGHT;
     int w, h;
-    
+
     SDL_GetWindowSize(screen, &w, &h);
-        
+
 // WINDOW_WIDTH e WINDOW_HEIGHT sono copiati qui;
 
 //    os_resize(event);
@@ -282,7 +280,7 @@ BOOL alloc_bitmap(void)
 {
     if (main_bitmap)
         free(main_bitmap);
-    
+
     bitmap_width=WINDOW_WIDTH;
     bitmap_height=WINDOW_HEIGHT;
 
@@ -308,12 +306,12 @@ void OpenTheScreen(void)
 #ifdef MOBILE_VERSION
     // ios devices only permit touch controls
     control[0] = CTRL_TOUCH; 
-    control[1] = CTRL_TOUCH; 
+    control[1] = CTRL_TOUCH;
 
     set_resolution();
-    
+
     screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
-    
+
     wb_game = FALSE;
     scaling = NULL;
 
@@ -325,7 +323,7 @@ void OpenTheScreen(void)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
         if (display_height_inches <= 3.5) {
             WINDOW_WIDTH = 320 * WINDOW_WIDTH / WINDOW_HEIGHT;
-            WINDOW_HEIGHT = 320;            
+            WINDOW_HEIGHT = 320;
         }
         else {
             WINDOW_WIDTH = 480 * WINDOW_WIDTH / WINDOW_HEIGHT;
@@ -339,7 +337,7 @@ void OpenTheScreen(void)
 // this is enough in iOS
     if (WINDOW_WIDTH > 640 ||
         WINDOW_HEIGHT > 480) {
-        
+
         D(bug("Too high display resolution, going to: %dx%d\n", WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
         WINDOW_WIDTH /= 2;
         WINDOW_HEIGHT /= 2;
@@ -355,7 +353,7 @@ void OpenTheScreen(void)
 
     if(screen) {
         renderer = SDL_CreateRenderer(screen, -1, 0);
-       
+
         if (!renderer) {
             D(bug("Error creating SDL renderer: %s\n", SDL_GetError()));
         }
@@ -367,8 +365,8 @@ void OpenTheScreen(void)
 #endif
 
         SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
-        screen_texture = SDL_CreateTexture(renderer, 
-                SDL_PIXELFORMAT_RGB565, 
+        screen_texture = SDL_CreateTexture(renderer,
+                SDL_PIXELFORMAT_RGB565,
                 SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
 //        SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_BLEND);
         if (!screen_texture) {
@@ -384,8 +382,8 @@ static SDL_Texture *anim_texture = NULL;
 
 int create_anim_context(int width, int height)
 {
-    anim_texture = SDL_CreateTexture(renderer, 
-                                     SDL_PIXELFORMAT_RGB565, 
+    anim_texture = SDL_CreateTexture(renderer,
+                                     SDL_PIXELFORMAT_RGB565,
                                      SDL_TEXTUREACCESS_STREAMING, width, height);
 
     return anim_texture != NULL;
@@ -454,7 +452,7 @@ void os_load_palette(uint32_t *pal)
             SDL_palette[224 + i].r =  (pal[1 + i *3] >> 24) * 2 / 3;
             SDL_palette[224 + i].g =  (pal[1 + i *3 + 1] >> 24) * 2 / 3;
             SDL_palette[224 + i].b = (pal[1 + i *3 + 2] >> 24) * 2 / 3;
-            palette16[224 + i] = (r << 11) | (g  << 5) | b;        
+            palette16[224 + i] = (r << 11) | (g  << 5) | b;
         }
     }
 }
@@ -467,7 +465,7 @@ void os_set_color(int i, int r, int g, int b)
     r >>= 3;
     g >>= 2;
     b >>= 3;
-    
+
     palette16[i] = (r << 11) | (g << 5) | b;
 
     SDL_palette[i].a = SDL_ALPHA_OPAQUE;
@@ -478,14 +476,23 @@ void ScreenSwap(void)
 {
     void *pixels;
     int pitch;
-    
+    uint8_t *src = main_bitmap;
+    uint32_t width = bitmap_width, height = bitmap_height;
+
     if(!SDL_LockTexture(screen_texture, NULL, &pixels, &pitch)) {
-        if (pitch == bitmap_width * 2)
-            blitScreen16(pixels);
-        else if (pitch == bitmap_width * 4)
-            blitScreen32(pixels);
+        if (scaling) {
+            bitmapFastScale(scaling);
+            src = scaling->Dest;
+            height = scaling->DestHeight;
+            width = scaling->DestWidth;
+        }
+
+        if (pitch == width * 2)
+            blitScreen16(src, pixels, width, height);
+        else if (pitch == width * 4)
+            blitScreen32(src, pixels, width, height);
         else {
-            D(bug("Unsupported pitch: %d (width %d)\n", pitch, bitmap_width));
+            D(bug("Unsupported pitch: %d (width %d)\n", pitch, width));
         }
 
         SDL_UnlockTexture(screen_texture);

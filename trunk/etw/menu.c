@@ -1519,6 +1519,12 @@ void DeselectButton(int16_t button)
 int16_t GetButton(int16_t x, int16_t y)
 {
     int16_t i;
+    extern struct MyFastScaleArgs *scaling;
+
+    if (scaling) {
+        x /= scaling->xRatio;
+        y /= scaling->yRatio;
+    }
 
     for (i = 0; i < actual_menu->NumeroBottoni; i++) {
         struct Button *b = &actual_menu->Button[i];

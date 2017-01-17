@@ -412,6 +412,7 @@ void FreeStuff(void)
     D(bug("Freeing scaling data...\n"));
     
     if(scaling) {
+        main_bitmap = scaling->Dest;
         free(scaling->Src);
         free(scaling->XRef);
         free(scaling->YRef);
@@ -474,6 +475,8 @@ BOOL LoadStuff(void)
         scaling->DestWidth = WINDOW_WIDTH;
         scaling->DestSpan = bitmap_width;
         scaling->DestHeight = WINDOW_HEIGHT;
+        scaling->xRatio = (float)scaling->DestWidth / (float)FIXED_SCALING_WIDTH;
+        scaling->yRatio = (float)scaling->DestHeight / (float)FIXED_SCALING_HEIGHT;
 
         if ((scaling->Src =
                     malloc(FIXED_SCALING_WIDTH * FIXED_SCALING_HEIGHT))) {
