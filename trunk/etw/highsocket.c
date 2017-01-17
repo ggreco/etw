@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <SDL_config.h>
+#include <SDL_stdinc.h>
 
 #if defined(LINUX) || defined(FAKENET) || defined(MACOSX) || defined(SOLARIS_X86) || defined(IPHONE) || defined(ANDROID)
 #include <unistd.h>
