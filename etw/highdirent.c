@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL_config.h>
+#include <SDL_stdinc.h>
 
 #if defined(WIN) && !defined(WINCE) && !defined(CROSSCOMPILER)
 
