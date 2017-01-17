@@ -81,9 +81,11 @@ typedef struct ResInfo {
     int w, h;
 } ResInfo;
 
-static ResInfo ressize[3] = {
+static ResInfo ressize[] = {
     {480, 320},
     {568, 320},
+    {667, 375},
+    {736, 414},
     {1024,768}
 };
 
@@ -113,11 +115,17 @@ void set_resolution()
     for (i = 0; i < n; ++i) {
         SDL_DisplayMode mode;
         SDL_GetDisplayMode(0, i, &mode);
-        for (j = 0; j < 3; ++j) {
+        D(bug("Got resolution %dx%d\n", mode.w, mode.h));
+        for (j = 0; j < sizeof(ressize)/sizeof(ressize[0]); ++j) {
             if (mode.w == ressize[j].w &&
                 mode.h == ressize[j].h) {
                 WINDOW_WIDTH = mode.w;
                 WINDOW_HEIGHT = mode.h;
+
+                if (mode.w % 2)
+                    WINDOW_WIDTH++;
+                if (mode.h % 2)
+                    WINDOW_HEIGHT++;
                 return;
             }
         }
@@ -210,17 +218,19 @@ void ResizeWin(SDL_Event *event)
     ClipX=WINDOW_WIDTH=w;
     ClipY=WINDOW_HEIGHT=h;
 
-    if(!(newbm=malloc(WINDOW_WIDTH*WINDOW_HEIGHT)))
-    {
-// Da aggiungere il  controresize della finestra
-        D(bug("Fallita la malloc!\n"));
-        ClipX=WINDOW_WIDTH=old_width;
-        ClipY=WINDOW_HEIGHT=old_height;
-        return;
-    }
+    
 
     if(!scaling)
     {
+        if(!(newbm=malloc(WINDOW_WIDTH*WINDOW_HEIGHT)))
+        {
+            // Da aggiungere il  controresize della finestra
+            D(bug("Failed malloc of resized bitmap!\n"));
+            ClipX=WINDOW_WIDTH=old_width;
+            ClipY=WINDOW_HEIGHT=old_height;
+            return;
+        }
+        
         bltchunkybitmap(main_bitmap,0,0,newbm,0,0,min(WINDOW_WIDTH,old_width),min(WINDOW_HEIGHT,old_height),bitmap_width,WINDOW_WIDTH);
         free(main_bitmap);
         main_bitmap=newbm;
@@ -335,7 +345,7 @@ void OpenTheScreen(void)
     }
 #else
 // this is enough in iOS
-    if (WINDOW_WIDTH > 640 ||
+    if (WINDOW_WIDTH > 800 ||
         WINDOW_HEIGHT > 480) {
 
         D(bug("Too high display resolution, going to: %dx%d\n", WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
