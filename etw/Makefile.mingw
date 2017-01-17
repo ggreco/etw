@@ -1,9 +1,12 @@
-CROSSDIR = /usr/local/cross-gcc33/i386-mingw32msvc
-CC = $(CROSSDIR)/bin/gcc
+CROSSDIR = C:/mingw
+CC = gcc
+CXX = g++
 DEBUG = 
-CFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL \
+CFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL2 \
          -O2 -Wall -fsigned-char -Wno-char-subscripts
-LFLAGS = -lmingw32 -lSDLmain -lSDL -mwindows -lwsock32 -lcomdlg32 
+CPPFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL2 \
+         -O2 -Wall -fsigned-char -Wno-char-subscripts
+LFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -mwindows -lwsock32 -lcomdlg32 
 DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER -DDEBUG_DISABLED
 
 OBJECTS = icon.o highdirent.o cpu.o human.o myiff.o specials.o \
@@ -16,17 +19,20 @@ OBJECTS = icon.o highdirent.o cpu.o human.o myiff.o specials.o \
 	config.o font.o menu_config.o replay.o speed_tables.o \
 	connection.o generic_video.o menu_data.o sound.o wc.o \
 	control.o gfx.o menu_font.o special.o network.o \
-	highsocket.o
+	highsocket.o tutorial.o vjoy.o touch.o \
+	stubs.o substitutions.o world.o
 
-.c.o: eat.h menu.h
+.c.o: etw.h menu.h
 	$(CC) $(CFLAGS) $(DEFINES) -c $<
 
+.cpp.o: etw.h menu.h
+	$(CXX) $(CFLAGS) $(DEFINES) -c $<
 
 etw.exe: $(OBJECTS)
-	$(CC) -o $@ $(CROSSDIR)/lib/libSDLmain.a $(OBJECTS) $(LFLAGS)
+	$(CXX) -o $@ $(OBJECTS) $(LFLAGS)
 
 icon.o: Script1.rc
-	$(CROSSDIR)/../bin/i386-mingw32msvc-windres $< $@
+	windres $< $@
    
 clean:
 	rm -rf *.o
