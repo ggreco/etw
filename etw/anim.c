@@ -48,7 +48,9 @@ static                 void                 ClearBitMap( struct BitMap * );
 static                 void                 XORBitMaps( struct BitMap *, struct BitMap * );
 static                 struct BitMap       *AllocBitMapPooled( uint32_t, uint32_t, uint32_t);
 static                 int32_t              DrawDLTA( struct AnimInstData *, struct BitMap *, struct BitMap *, struct AnimHeader *, uint8_t *, uint32_t );
+#ifdef SUPER_DEBUG
 static                 void                 DumpAnimHeader( struct AnimInstData *, uint32_t, struct AnimHeader * );
+#endif
 static                 struct FrameNode    *GetPrevFrameNode( struct FrameNode *, uint32_t );
 
 void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,int32_t f_mode);
@@ -362,7 +364,9 @@ int32_t MergeAnim(struct AnimInstData *aid,FILE *fh)
                                               fn->fn_AH.ah_Flags = SDL_SwapBE32(fn->fn_AH.ah_Flags);
 
                                               /* Info */
-                                              // DumpAnimHeader( aid, (fn -> fn_TimeStamp), (&(fn -> fn_AH)) );
+#ifdef SUPER_DEBUG
+                                              DumpAnimHeader( aid, (fn -> fn_TimeStamp), (&(fn -> fn_AH)) );
+#endif
 
                                               /* Check if we have dynamic timing */
                                               maxreltime = max( maxreltime, (fn -> fn_AH . ah_RelTime) );
@@ -449,13 +453,13 @@ int32_t MergeAnim(struct AnimInstData *aid,FILE *fh)
                                                               /* Allocate buffer */
                                                               if( (buff = (uint8_t *)malloc( (cn -> cn_Size) + 32UL )) )
                                                               {
-                                                                  struct FrameNode *prevfn;
+                                                                  //struct FrameNode *prevfn;
 
                                                                   /* Clear buffer to get rid of some problems with corrupted DLTAs */
                                                                   memset( (void *)buff, 0, (size_t)((cn -> cn_Size) + 31UL) );
 
                                                                   /* Get previous frame */
-                                                                  prevfn = fn -> fn_PrevFrame;
+                                                                  //prevfn = fn -> fn_PrevFrame;
 
                                                                   /* Load delta data */
                                                                   error = ReadChunkBytes( iff, buff, (cn -> cn_Size) );
@@ -769,91 +773,89 @@ int32_t LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
 
 void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
 {
-          /* Free bitmaps only if we don't cache the whole anim */
-    struct FrameNode *fn2=fn;
+    if( (aid -> aid_LoadAll) == FALSE )
+    {
+        /* Free bitmaps only if we don't cache the whole anim */
+        struct FrameNode *fn2=fn;
+        struct MyMinNode *pfn;
+        uint16_t           i   = 10;
 
-          if( (aid -> aid_LoadAll) == FALSE )
-          {
-            struct MyMinNode *pfn;
-            uint16_t           i   = 10;
+        //            ObtainSemaphore( (&(aid -> aid_SigSem)) );
 
-//            ObtainSemaphore( (&(aid -> aid_SigSem)) );
-
-            if( fn )
+        if( fn )
+        {
+            if( (fn -> fn_UseCount) > 0 )
             {
-              if( (fn -> fn_UseCount) > 0 )
-              {
                 fn -> fn_UseCount--;
 
                 /* Free an existing bitmap if it isn't in use and if it is NOT the first bitmap */
                 if( ((fn -> fn_UseCount) == 0) && (fn -> fn_BitMap) && (fn != (struct FrameNode *)(aid -> aid_FrameList . pHead)) )
                 {
-                  if( FALSE /*FreeAbleFrame( aid, fn )*/ )
-                  {
-                    /* Is this node in the posted-free queue ? */
-                    if( fn -> fn_PostedFree ) {
-                      MyRemove( (struct MyNode *)(&(fn -> fn_PostedFreeNode)) );
-                      fn -> fn_PostedFree = FALSE;
-
-                      D( kprintf( "free posted 1 %lu\n", (fn -> fn_TimeStamp) ) );
-                    }
-
-                    free( (fn -> fn_BitMap) );
-                    fn -> fn_BitMap = NULL;
-                  }
-                  else
-                  {
-                    if( (fn -> fn_PostedFree) == FALSE )
+                    if( FALSE /*FreeAbleFrame( aid, fn )*/ )
                     {
-                      D( bug( "posted free %lu\n", (fn -> fn_TimeStamp) ) );
+                        /* Is this node in the posted-free queue ? */
+                        if( fn -> fn_PostedFree ) {
+                            MyRemove( (struct MyNode *)(&(fn -> fn_PostedFreeNode)) );
+                            fn -> fn_PostedFree = FALSE;
 
-                      MyAddTail( &(aid -> aid_PostedFreeList), (struct MyNode *)(&(fn -> fn_PostedFreeNode)) );
-                      fn -> fn_PostedFree = TRUE;
+                            D( kprintf( "free posted 1 %lu\n", (fn -> fn_TimeStamp) ) );
+                        }
+
+                        free( (fn -> fn_BitMap) );
+                        fn -> fn_BitMap = NULL;
                     }
-                  }
+                    else
+                    {
+                        if( (fn -> fn_PostedFree) == FALSE )
+                        {
+                            D( bug( "posted free %lu\n", (fn -> fn_TimeStamp) ) );
+
+                            MyAddTail( &(aid -> aid_PostedFreeList), (struct MyNode *)(&(fn -> fn_PostedFreeNode)) );
+                            fn -> fn_PostedFree = TRUE;
+                        }
+                    }
                 }
-              }
             }
+        }
 
-            while( (pfn = (struct MyMinNode *)MyRemHead( &(aid -> aid_PostedFreeList)))  )  {
-              fn = POSTEDFREENODE2FN( pfn );
-              fn -> fn_PostedFree = FALSE;
+        while( (pfn = (struct MyMinNode *)MyRemHead( &(aid -> aid_PostedFreeList)))  )  {
+            fn = POSTEDFREENODE2FN( pfn );
+            fn -> fn_PostedFree = FALSE;
 
-              if( (fn -> fn_UseCount) == 0 )
-              {
+            if( (fn -> fn_UseCount) == 0 )
+            {
                 if( FreeAbleFrame( aid, fn ) )
                 {
-                  D( kprintf( "free posted 2 %lu \n", (fn -> fn_TimeStamp) );
+                    D( kprintf( "free posted 2 %lu \n", (fn -> fn_TimeStamp) );
 
-                  free( fn -> fn_BitMap );
-                  fn -> fn_BitMap = NULL;
+                    free( fn -> fn_BitMap );
+                    fn -> fn_BitMap = NULL;
                 }
                 else
                 {
-                  MyAddTail(&(aid -> aid_PostedFreeList), (struct MyNode *)&(fn -> fn_PostedFreeNode)) ;
-                  fn -> fn_PostedFree = TRUE;
+                    MyAddTail(&(aid -> aid_PostedFreeList), (struct MyNode *)&(fn -> fn_PostedFreeNode)) ;
+                    fn -> fn_PostedFree = TRUE;
                 }
 
                 /* Don't process the list twice */
                 if( fn == fn2 )
                 {
-                  i = min( 1, i );
+                    i = min( 1, i );
 
-                  break;
+                    break;
                 }
 
                 if( i-- == 0 )
                 {
-                  D( kprintf( "pl overflow at %lu\n", fn2-> fn_TimeStamp) ) );
+                    D( kprintf( "pl overflow at %lu\n", fn2-> fn_TimeStamp) ) );
 
-                  break;
+                    break;
                 }
-              }
             }
+        }
 
-//            ReleaseSemaphore( (&(aid -> aid_SigSem)) );
-          }
-
+        //            ReleaseSemaphore( (&(aid -> aid_SigSem)) );
+    }
 }
 
 
@@ -1303,7 +1305,7 @@ static int32_t DrawDLTA( struct AnimInstData *aid, struct BitMap *prevbm, struct
     return( error );
 }
 
-
+#ifdef SUPER_DEBUG
 static void DumpAnimHeader( struct AnimInstData *aid, uint32_t ti, struct AnimHeader *anhd )
 {
     if ( anhd )  {
@@ -1336,7 +1338,7 @@ static void DumpAnimHeader( struct AnimInstData *aid, uint32_t ti, struct AnimHe
 
     }
 }
-
+#endif
 
 static
 struct FrameNode *GetPrevFrameNode( struct FrameNode *currfn, uint32_t interleave )
