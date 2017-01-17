@@ -232,8 +232,6 @@ char *resolutions[] =
     "320X240"/*-*/,
     "400X300"/*-*/,
     "640x400"/*-*/,
-#else
-    "480X320"/*-*/,		// This is the current resolution saved in etw.cfg, will it change?
 #endif
     "640X480"/*-*/,
     "800X600"/*-*/,
