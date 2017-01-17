@@ -34,6 +34,8 @@ struct MyFastScaleArgs
     int SrcWidth, SrcHeight, DestWidth, DestHeight;
     uint8_t *XRef, *YRef;
     uint8_t *Src, *Dest;
+    float xRatio, yRatio; // This ones are used only by the GetButton to
+                          // obtain the mouse position scaled down
 };
 
 // Da generic_video.c
