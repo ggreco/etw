@@ -611,8 +611,6 @@ int32_t LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
 {
     int32_t error = 0L;
 
-    //          ObtainSemaphore( (&(aid -> aid_SigSem)) );
-
     if (fn) {
         aid -> aid_CurrFN = fn;
 
@@ -766,8 +764,6 @@ int32_t LoadFrameNode(struct AnimInstData *aid,struct FrameNode *fn)
         D(bug("Frame non trovato\n"));
     }
 
-    //          ReleaseSemaphore( (&(aid -> aid_SigSem)) );
-
     return error;
 }
 
@@ -779,8 +775,6 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
         struct FrameNode *fn2=fn;
         struct MyMinNode *pfn;
         uint16_t           i   = 10;
-
-        //            ObtainSemaphore( (&(aid -> aid_SigSem)) );
 
         if( fn )
         {
@@ -853,8 +847,6 @@ void UnloadFrame(struct AnimInstData *aid,struct FrameNode *fn)
                 }
             }
         }
-
-        //            ReleaseSemaphore( (&(aid -> aid_SigSem)) );
     }
 }
 
