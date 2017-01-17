@@ -14,6 +14,8 @@
 		0B2490601694B304004D96AC /* tutorial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B24905E1694B304004D96AC /* tutorial.cpp */; };
 		0B3DE794167BF4F400457D3F /* GameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B3DE793167BF4F400457D3F /* GameCenter.m */; };
 		0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3DE795167BF61100457D3F /* GameKit.framework */; };
+		0B4FD25E1E2E18DB00D1A887 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4FD25D1E2E18DB00D1A887 /* AVFoundation.framework */; };
+		0B88D9411E2E3B440053F24D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B88D9401E2E3B440053F24D /* Images.xcassets */; };
 		0BAD164E1655361D0071C986 /* iphone-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD164D1655361D0071C986 /* iphone-icon.png */; };
 		0BAD16581656AF290071C986 /* mobile in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD16571656AF290071C986 /* mobile */; };
 		0BAD165B1656AFCE0071C986 /* touch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD165A1656AFCE0071C986 /* touch.cpp */; };
@@ -112,6 +114,8 @@
 		0B3DE792167BF4E100457D3F /* team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = team.h; path = include/team.h; sourceTree = "<group>"; };
 		0B3DE793167BF4F400457D3F /* GameCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenter.m; sourceTree = "<group>"; };
 		0B3DE795167BF61100457D3F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		0B4FD25D1E2E18DB00D1A887 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		0B88D9401E2E3B440053F24D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = etw/Images.xcassets; sourceTree = "<group>"; };
 		0BAD164D1655361D0071C986 /* iphone-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-icon.png"; sourceTree = "<group>"; };
 		0BAD16571656AF290071C986 /* mobile */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mobile; path = ../data/mobile; sourceTree = "<group>"; };
 		0BAD165A1656AFCE0071C986 /* touch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = touch.cpp; path = ../etw/touch.cpp; sourceTree = "<group>"; };
@@ -244,6 +248,7 @@
 				65A9C5A21C1B08E5003F18DD /* SDL2_mixer.framework in Frameworks */,
 				0B3DE796167BF61100457D3F /* GameKit.framework in Frameworks */,
 				65A9C5A41C1B08F9003F18DD /* SDL2.framework in Frameworks */,
+				0B4FD25E1E2E18DB00D1A887 /* AVFoundation.framework in Frameworks */,
 				0BC9E2981C1F051A00C36C2D /* CoreMotion.framework in Frameworks */,
 				0BD74ED2165245940045909C /* UIKit.framework in Frameworks */,
 				0BD74ED4165245940045909C /* Foundation.framework in Frameworks */,
@@ -284,6 +289,7 @@
 		0BD74EC2165245940045909C = {
 			isa = PBXGroup;
 			children = (
+				0B88D9401E2E3B440053F24D /* Images.xcassets */,
 				0BD74F86165249840045909C /* headers */,
 				0BB5CD21165264F500BF007B /* data */,
 				0BD74ED7165245940045909C /* sources */,
@@ -304,6 +310,7 @@
 		0BD74ED0165245940045909C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0B4FD25D1E2E18DB00D1A887 /* AVFoundation.framework */,
 				0BC9E2971C1F051A00C36C2D /* CoreMotion.framework */,
 				65A9C5A31C1B08F9003F18DD /* SDL2.framework */,
 				65A9C5A11C1B08E5003F18DD /* SDL2_mixer.framework */,
@@ -514,6 +521,7 @@
 				0BB5CD321652651300BF007B /* crowd in Resources */,
 				0BB5CD331652651300BF007B /* etw.cfg in Resources */,
 				0BB5CD341652651300BF007B /* gfx in Resources */,
+				0B88D9411E2E3B440053F24D /* Images.xcassets in Resources */,
 				0BB5CD351652651300BF007B /* intro in Resources */,
 				0BB5CD361652651300BF007B /* menugfx in Resources */,
 				0BB5CD371652651300BF007B /* music in Resources */,
@@ -670,8 +678,11 @@
 		0BD74EEC165245940045909C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 26P4KFB7Z3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -690,7 +701,7 @@
 					"\"$(SRCROOT)/../../sdl-ios-framework/build/sdl_mixer/SDL2_mixer.framework/Headers\"",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/etw-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -700,6 +711,7 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -707,8 +719,11 @@
 		0BD74EED165245940045909C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 26P4KFB7Z3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -727,7 +742,7 @@
 					"\"$(SRCROOT)/../../sdl-ios-framework/build/sdl_mixer/SDL2_mixer.framework/Headers\"",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/etw-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -737,6 +752,7 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

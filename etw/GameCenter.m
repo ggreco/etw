@@ -323,8 +323,6 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
             D(NSLog(@"Successfully added score"));
         }
     } ];
-
-    [scoreReporter release];
 }
 
 - (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)viewController
