@@ -276,7 +276,7 @@ void Loading(void)
 
                 sprintf(buffer, "menugfx/arcade%d.gfx", arcade_team[i]);
 
-                if ((o = LoadGfxObject(buffer, NULL, NULL))) {
+                if ((o = LoadGfxObject(buffer, NULL))) {
                     scale.SrcX = scale.SrcY = 0;
 
                     if (i == 1)
@@ -546,7 +546,7 @@ BOOL LoadStuff(void)
         SetCrowd(FONDO);
     }
 
-    if ((background = LoadGfxObject(fieldname, Pens, NULL))) {
+    if ((background = LoadGfxObject(fieldname, Pens))) {
         gfx_t *temp;
         int x = 106;
 
@@ -555,7 +555,7 @@ BOOL LoadStuff(void)
         // Loading and displaying sponsor tablets
 
         if (!arcade) {
-            if ((temp = LoadGfxObject("gfx/sponsors", Pens, NULL))) {
+            if ((temp = LoadGfxObject("gfx/sponsors", Pens))) {
                 for (i = 0; i < 8; i++) {
                     if (i == 4)
                         x = SPONSOR_X_2;
@@ -596,7 +596,7 @@ BOOL LoadStuff(void)
 
         // loading and printing stadium gfx
         if (!arcade)
-            if ((temp = LoadGfxObject("gfx/spalti", Pens, NULL))) {
+            if ((temp = LoadGfxObject("gfx/spalti", Pens))) {
                 x = 34;
 
                 for (i = 0; i < 4; i++) {
@@ -755,7 +755,7 @@ BOOL LoadStuff(void)
             if ((goal_banner = LoadAnimObject("gfx/goal.obj", Pens)))
                 goal_banner->Flags |= AOBJ_OVER;
 
-            pause_gfx = LoadGfxObject("gfx/paused", Pens, NULL);
+            pause_gfx = LoadGfxObject("gfx/paused", Pens);
 
             if ((replay = LoadAnimObject("gfx/replay.obj", Pens)))
                 replay->Flags |= AOBJ_OVER;

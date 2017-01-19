@@ -362,6 +362,9 @@ static BOOL not_red_card_substitution(int p1, int p2)
     if ((b->Text == NULL || b->Text == empty) && (b2->Text == NULL | b2->Text == empty))
         return TRUE;
 
+    if (!b->Text || !b2->Text)
+        return TRUE;
+    
     // if both players are not subject to a red card (7), I can move them
     return (b->Text[0] != 7 && b2->Text[0] != 7);
 }

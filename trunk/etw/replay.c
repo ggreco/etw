@@ -554,16 +554,11 @@ void LoadReplay(uint8_t Set)
             p->team[i]->keepers.anim = a[i * SQ_PTR];
             p->team[i]->Marker = a[i * SQ_PTR + 12];
 
-            p->team[i]->keepers.anim->node.mpNext =
-                p->team[i]->keepers.anim->node.mpPrev = NULL;
-
             p->team[i]->keepers.team  = p->team[i];
             p->team[i]->keepers.name     = a[i * SQ_PTR + 34];
             p->team[i]->keepers.surname  = a[i * SQ_PTR + 35];
 
             p->team[i]->tactic = a[i * SQ_PTR + 11];
-            p->team[i]->Marker->node.mpNext =
-                p->team[i]->Marker->node.mpPrev = NULL;
 
             p->team[i]->NomeAttivo = a[i * SQ_PTR + 13];
 
@@ -599,9 +594,6 @@ void LoadReplay(uint8_t Set)
                 p->team[i]->players[j].anim = a[j + i * SQ_PTR + 1];
                 p->team[i]->players[j].name     = a[j + 14 + i * SQ_PTR];
                 p->team[i]->players[j].surname  = a[j + 24 + i * SQ_PTR];
-
-                p->team[i]->players[j].anim->node.mpNext = 
-                   p->team[i]->players[j].anim->node.mpPrev = NULL;
             }
         }
        
@@ -633,14 +625,6 @@ void LoadReplay(uint8_t Set)
         p->extras       = a[SQ_PTR * 2 + 3];
         p->team[0]      = a[SQ_PTR * 2 + 4];
         p->team[1]      = a[SQ_PTR * 2 + 5];
-    
-        if (p->referee.anim)
-            p->referee.anim->node.mpNext = p->referee.anim->node.mpPrev = NULL;
-        
-        p->ball.anim->node.mpNext =
-            p->ball.anim->node.mpPrev = NULL;
-        p->extras->node.mpNext =
-            p->extras->node.mpPrev = NULL;
 
         // setting serialized "match" pointers: possesso, player_injuried, sq_palla, gioc_palla
         p->possesso = p->team[(int32_t)p->possesso];
@@ -1097,8 +1081,6 @@ void LoadHighlight(void)
 
     for(i = 0; i < j; i++)
         SwapTeams();
-
-    lswaps = j;
 
     start_replay = TRUE;
 }

@@ -1,27 +1,29 @@
+extern "C" {
+    
 #include "eat.h"
 #include "files.h"
 
+}
 /* General purpose graphics engine.
  * Contains function to load and manage static and moving objects.
  */
 
-static void AddNode(struct MyList *l, APTR ptr, int8_t type);
 
 int ClipX = 0, ClipY = 0;
 
 /* Attributes handled by the system */
 BOOL use_window = FALSE, save_back = FALSE, use_scaling = FALSE, use_clipping = FALSE;
 
-/* Lists used in object handling */
-struct MyList GfxList, DrawList, TempList;
+#include <list>
+#include <algorithm>
+
+static std::list<anim_t *> DrawList;
+static std::list<std::pair<void *, int>> GfxList;
 
 
 BOOL InitAnimSystem(void)
 {
     D(bug("Start: InitAnimSystem!\n"));
-
-    MyNewList(&DrawList);
-    MyNewList(&GfxList);
 
     if (!use_window) {
         if (!ClipX || !ClipY) {
@@ -33,31 +35,10 @@ BOOL InitAnimSystem(void)
     return TRUE;
 }
 
-BOOL InList(struct MyList * l, APTR ptr)
-{
-    register struct MyNode *n;
-
-    for (n = l->pHead; n->pNext; n = n->pNext) {
-        if (n == ptr)
-            return TRUE;
-    }
-
-    return FALSE;
+template <typename T>
+bool InList(const std::list<T *> &l, T *ptr) {
+    return std::find(l.begin(), l.end(), ptr) != l.end();
 }
-
-struct MyNode *InAList(struct MyList *l, APTR ptr)
-{
-    register struct MyNode *n;
-
-    for (n = l->pHead; n->pNext; n = n->pNext) {
-        if (n->ln_Name == ptr)
-            return n;
-    }
-
-    return NULL;
-}
-
-
 
 /* Questa funzione si occupa di disegnare TUTTI i Bob, prima di disegnarli
     salva lo sfondo, ma solo se l'oggetto si e' spostato
@@ -65,12 +46,8 @@ struct MyNode *InAList(struct MyList *l, APTR ptr)
 
 void DrawAnimObj(void)
 {
-    register anim_t *obj;
-    register int16_t cf;
-
-    for (obj = (anim_t *) DrawList.pHead; obj->node.mpNext;
-         obj = (anim_t *) obj->node.mpNext) {
-        cf = obj->current_frame;
+    for (auto obj: DrawList) {
+        int16_t cf = obj->current_frame;
 
         if (!use_clipping) {
             if (save_back && obj->bg && obj->moved
@@ -151,18 +128,13 @@ void DrawAnimObj(void)
  * Find an anim object in the drawlist
  */
 
-BOOL InAnimList(anim_t *obj)
-{
-    struct MyNode *n;
-    
-    for (n = DrawList.pHead; n->pNext != NULL; n = n->pNext) {
-        if (n == (struct MyNode *)obj)
-            return TRUE;
-    }
-
-    return FALSE;
+BOOL InAnimList(anim_t *obj) {
+    return InList(DrawList, obj);
 }
 
+void RemAnimObj(anim_t *obj) {
+    DrawList.remove(obj);
+}
 /*
  *  Add an anim object to the drawlist and set its position
  *  and frame.
@@ -170,7 +142,7 @@ BOOL InAnimList(anim_t *obj)
 
 void AddAnimObj(anim_t * obj, int16_t x, int16_t y, int16_t frame)
 {
-    MyAddTail(&DrawList, (struct MyNode *) obj);
+    DrawList.push_back(obj);
 
     if (save_back) {
         obj->x_back = x;
@@ -195,21 +167,15 @@ void AddAnimObj(anim_t * obj, int16_t x, int16_t y, int16_t frame)
 
 void SortDrawList(void)
 {
-    register anim_t *o, *best;
-    register int16_t best_bottom;
+    anim_t *best;
+    int16_t best_bottom;
+    std::list<anim_t*> TempList;
 
-// Non uso NewList per la velocita'!
-
-    TempList.pTailPred = (struct MyNode *) &TempList;
-    TempList.pHead = (struct MyNode *) &TempList.pTail;
-    TempList.pTail = NULL;
-
-    while (DrawList.pTailPred != (struct MyNode *) &DrawList) {
+    while (!DrawList.empty()) {
         best = NULL;
         best_bottom = 30000;
 
-        for (o = (anim_t *) DrawList.pHead; o->node.mpNext;
-             o = (anim_t *) o->node.mpNext) {
+        for (auto o: DrawList) {
             if (o->Flags & AOBJ_BEHIND) {
                 best = o;
                 break;
@@ -222,67 +188,25 @@ void SortDrawList(void)
         if (best) {
 // Stacco il nodo dalla lista.
 
-            best->node.mpNext->mpPrev = best->node.mpPrev;
-            best->node.mpPrev->mpNext = best->node.mpNext;
+            DrawList.remove(best);
 
 // Lo attacco in coda alla templist
-
-#ifdef OLDCODE
-            best->node.mpPrev =
-                (struct MyMinNode *) TempList.pTailPred;
-            best->node.mpNext = (struct MyMinNode *) &TempList.pTail;
-            best->node.mpNext->mpPrev = best->node.mpPrev->mpNext =
-                (struct MyMinNode *) best;
-#else
-            best->node.mpNext = (struct MyMinNode *) &TempList.pTail;
-            best->node.mpPrev =
-                (struct MyMinNode *) TempList.pTailPred;
-            TempList.pTailPred->pNext = (struct MyNode *) best;
-            TempList.pTailPred = (struct MyNode *) best;
-#endif
+            TempList.push_back(best);
         } else {
 // Non c'e' best, quindi probabilmente sono finiti i nodi della lista o ci sono solo nodi OVER
 
-            while (DrawList.pTailPred != (struct MyNode *) &DrawList) {
-                best = (anim_t *) DrawList.pHead;
+            while (!DrawList.empty()) {
+                best = DrawList.front();
 
-// Stacco il nodo dalla list
-
-                best->node.mpNext->mpPrev = best->node.mpPrev;
-                best->node.mpPrev->mpNext = best->node.mpNext;
+                DrawList.pop_front();
 
 // Lo attacco in coda alla templist
-
-#ifdef OLDCODE
-                best->node.mpPrev =
-                    (struct MyMinNode *) TempList.pTailPred;
-                best->node.mpNext =
-                    (struct MyMinNode *) &TempList.pTail;
-                best->node.mpNext->mpPrev =
-                    best->node.mpPrev->mpNext =
-                    (struct MyMinNode *) best;
-#else
-                best->node.mpNext =
-                    (struct MyMinNode *) &TempList.pTail;
-                best->node.mpPrev =
-                    (struct MyMinNode *) TempList.pTailPred;
-                TempList.pTailPred->pNext = (struct MyNode *) best;
-                TempList.pTailPred = (struct MyNode *) best;
-#endif
+                TempList.push_back(best);
             }
             break;
         }
     }
-
-// Necessario perche' non e' possibile copiare una lista!
-
-    if (TempList.pTailPred != (struct MyNode *) &TempList) {
-        DrawList.pHead = TempList.pHead;
-        DrawList.pHead->pPrev = (struct MyNode *) &DrawList;
-        DrawList.pTailPred = TempList.pTailPred;
-        DrawList.pTailPred->pNext =
-            (struct MyNode *) &DrawList.pTail;
-    }
+    DrawList = TempList;
 }
 
 
@@ -291,12 +215,10 @@ void SortDrawList(void)
 /* Remove all anim_t from the display, use this only together with save_back */
 void ClearAnimObj(void)
 {
-    register anim_t *obj;
-
     /* Leggo la lista al contrario per cancellare correttamente tutto */
 
-    for (obj = (anim_t *) DrawList.pTailPred; obj->node.mpPrev;
-         obj = (anim_t *) obj->node.mpPrev) {
+    for (auto it = DrawList.rbegin(); it != DrawList.rend(); ++it) {
+        anim_t *obj = *it;
         if (obj->bg) {
             bltchunkybitmap(obj->bg, 0, 0, main_bitmap, obj->x_back,
                             obj->y_back, obj->max_width, obj->max_height,
@@ -305,10 +227,9 @@ void ClearAnimObj(void)
     }
 }
 
-gfx_t *LoadGfxObject(const char *_name, int32_t * pens, uint8_t * dest)
+gfx_t *LoadGfxObject(const char *_name, int32_t * pens)
 {
     char name[1024];
-    gfx_t *obj;
     FILE *fh;
     int i;
     uint8_t *planes[8];
@@ -318,7 +239,7 @@ gfx_t *LoadGfxObject(const char *_name, int32_t * pens, uint8_t * dest)
 
     D(bug("Loading %s...", name));
 
-    if ((obj = calloc(1, sizeof(gfx_t)))) {
+    if (gfx_t *obj = (gfx_t*)calloc(1, sizeof(gfx_t))) {
         if ((fh = fopen(name, "rb"))) {
             char buffer[4];
 
@@ -338,25 +259,21 @@ gfx_t *LoadGfxObject(const char *_name, int32_t * pens, uint8_t * dest)
             obj->pens = NULL;
             fseek(fh, (1 << obj->realdepth) * 3, SEEK_CUR);
 
-            if (dest) {
-                obj->bmap = dest;
-            } else {
-                if ((obj->bmap = malloc(obj->width * obj->height))) {
-                    int planesize = BITRASSIZE(obj->width, obj->height);
-                    if ((planes[0] = malloc(planesize * obj->realdepth))) {
-                        for (i = 1; i < obj->realdepth; i++) 
-                            planes[i] = (unsigned char *)planes[0] + i * planesize;
-                    }
-                    else {
-                        free(obj->bmap);
-                        ok = FALSE;
-                    }
-                } else {
-                    D(bug("No memory for main bitmap!\n"));
+
+            if ((obj->bmap = (uint8_t*)malloc(obj->width * obj->height))) {
+                int planesize = BITRASSIZE(obj->width, obj->height);
+                if ((planes[0] = (uint8_t *)malloc(planesize * obj->realdepth))) {
+                    for (i = 1; i < obj->realdepth; i++) 
+                        planes[i] = (unsigned char *)planes[0] + i * planesize;
+                }
+                else {
+                    free(obj->bmap);
                     ok = FALSE;
                 }
+            } else {
+                D(bug("No memory for main bitmap!\n"));
+                ok = FALSE;
             }
-
 
             if (ok) {
                 for (i = 0; i < obj->realdepth; i++)
@@ -376,7 +293,7 @@ gfx_t *LoadGfxObject(const char *_name, int32_t * pens, uint8_t * dest)
                   ("GfxObject %ld x %ld x %ld\n", obj->width, obj->height,
                    obj->realdepth));
 
-                AddNode(&GfxList, obj, TYPE_GFXOBJ);
+                GfxList.push_back(std::make_pair(obj, TYPE_GFXOBJ));
 
                 if (pens)
                     obj->pens = NULL;
@@ -404,7 +321,7 @@ anim_t *LoadAnimObject(const char *name, int32_t * pens)
     FILE *fh;
     int i;
 
-    obj = calloc(1, sizeof(anim_t));
+    obj = (anim_t*)calloc(1, sizeof(anim_t));
     if(!obj)
         return NULL;
 
@@ -432,7 +349,7 @@ anim_t *LoadAnimObject(const char *name, int32_t * pens)
     obj->bg = NULL;
 
     if (save_back) {
-        obj->bg = malloc(obj->max_width * obj->max_height);
+        obj->bg = (uint8_t*)malloc(obj->max_width * obj->max_height);
         if(!obj->bg)
         {
             D(bug("Unable to allocate object saveback...\n"));
@@ -445,12 +362,11 @@ anim_t *LoadAnimObject(const char *name, int32_t * pens)
     // we ignore the palette
     fseek(fh, (1 << obj->real_depth) * 3, SEEK_CUR);
 
-    if ((obj->Frames = calloc(obj->nframes, sizeof(APTR))))
+    if ((obj->Frames = (MChunky **)calloc(obj->nframes, sizeof(APTR))))
     {
-        if ((obj->Widths = malloc(obj->nframes * sizeof(int))))
+        if ((obj->Widths = (int*)malloc(obj->nframes * sizeof(int))))
         {
-            if ((obj->Heights =
-                malloc(obj->nframes * sizeof(int))))
+            if ((obj->Heights = (int*)malloc(obj->nframes * sizeof(int))))
             {
                 BOOL ok = TRUE;
 
@@ -490,7 +406,7 @@ anim_t *LoadAnimObject(const char *name, int32_t * pens)
                    name, obj->max_width, obj->max_height,
                    obj->real_depth, obj->nframes));
 
-                AddNode(&GfxList, obj, TYPE_ANIMOBJ);
+                GfxList.push_back(std::make_pair(obj, TYPE_ANIMOBJ));
 
                 return obj;
 
@@ -517,15 +433,15 @@ anim_t *LoadAnimObject(const char *name, int32_t * pens)
 
 void FreeGfxObj(gfx_t * obj)
 {
-    struct MyNode *n;
-
     D(bug("FreeGfxObj - width: %ld\n", obj->width));
 
-    if ((n = InAList(&GfxList, obj))) {
-        MyRemove(n);
-        free(n);
+    for (auto &itm: GfxList) {
+        if (itm.first == obj) {
+            GfxList.remove(itm);
+            break;
+        }
     }
-
+    
     if (obj->Palette) {
         free(obj->Palette);
 
@@ -540,19 +456,17 @@ void FreeGfxObj(gfx_t * obj)
 
 void FreeAnimObj(anim_t * obj)
 {
-    int i;
-    struct MyNode *n;
-
     D(bug
       ("FreeAnimObj - frames:%ld flags:%ld\n", obj->nframes,
        obj->Flags));
 
-    if (InList(&DrawList, obj))
-        MyRemove((struct MyNode *) obj);
+    DrawList.remove(obj);
 
-    if ((n = InAList(&GfxList, obj))) {
-        MyRemove(n);
-        free(n);
+    for (auto &itm: GfxList) {
+        if (itm.first == obj) {
+            GfxList.remove(itm);
+            break;
+        }
     }
 
     if (obj->bg)
@@ -561,7 +475,7 @@ void FreeAnimObj(anim_t * obj)
     if ((obj->Flags & AOBJ_CLONED) != 0)
         goto fine;
 
-    for (i = 0; i < obj->nframes; i++)
+    for (int i = 0; i < obj->nframes; i++)
         if (obj->Frames[i])
             free_mchunky(obj->Frames[i]);
 
@@ -591,28 +505,22 @@ void FreeAnimObj(anim_t * obj)
 
 void FreeGraphics(void)
 {
-    struct MyNode *n, *next;
-
     D(bug("Entering loop...\n"));
 
-    for (n = GfxList.pHead; n->pNext; n = next) {
-        next = n->pNext;
-
-        MyRemove(n);
-
-        switch (n->ln_Type) {
+    while (!GfxList.empty()) {
+        auto &itm = GfxList.front();
+        switch (itm.second) {
         case TYPE_GFXOBJ:
-            FreeGfxObj((gfx_t *) n->ln_Name);
+            FreeGfxObj((gfx_t *)itm.first);
             break;
         case TYPE_ANIMOBJ:
-            FreeAnimObj((anim_t *) n->ln_Name);
+            FreeAnimObj((anim_t *)itm.first);
             break;
         default:
             D(bug("WARNING Freeing unknown resource!\n"));
+            GfxList.pop_front();
             break;
         }
-
-        free(n);
     }
 }
 
@@ -634,27 +542,14 @@ void RemapAnimObjColor(anim_t * o, uint8_t source_color, uint8_t dest_color)
 
 void RemapMColor(struct MChunky *c, uint8_t source_color, uint8_t dest_color)
 {
-    register int k;
     uint8_t pens[256];
 
-    for (k = 0; k < 256; k++) {
+    for (int k = 0; k < 256; k++)
         pens[k] = k;
-    }
 
     pens[source_color] = dest_color;
 
     RemapMChunkyColors(c, pens);
-}
-
-void AddNode(struct MyList *l, APTR ptr, int8_t type)
-{
-    struct MyNode *n;
-
-    if ((n = malloc(sizeof(struct MyNode)))) {
-        n->ln_Type = type;
-        n->ln_Name = ptr;
-        MyAddHead(l, n);
-    }
 }
 
 BOOL LoadIFFPalette(char *filename)
@@ -665,7 +560,7 @@ BOOL LoadIFFPalette(char *filename)
     BOOL rc = FALSE;
 
     if ((fh = fopen(filename, "rb"))) {
-        uint32_t cmap_len;
+        int cmap_len;
         int i, j, c, colors = 256;
         long l;
 
@@ -691,7 +586,7 @@ BOOL LoadIFFPalette(char *filename)
                               ("Attenzione l'immagine ha piu' colori dello schermo!\n"));
                         }
 
-                        c = min(colors, cmap_len);
+                        c = std::min<int>(colors, cmap_len);
 
                         D(bug
                           ("Loading %ld colors from %s...\n", c, filename));
@@ -728,20 +623,17 @@ BOOL LoadIFFPalette(char *filename)
 
 anim_t *CloneAnimObj(anim_t * obj)
 {
-    anim_t *o;
-
-    if ((o = malloc(sizeof(anim_t)))) {
+    if (anim_t *o = (anim_t*)malloc(sizeof(anim_t))) {
         memcpy(o, obj, sizeof(anim_t));
         o->Flags |= AOBJ_CLONED;
-        o->node.mpNext = o->node.mpPrev = NULL;
 
         if (save_back)
-            if (!(o->bg = malloc(o->max_width * o->max_height))) {
+            if (!(o->bg = (uint8_t *)malloc(o->max_width * o->max_height))) {
                 free(o);
                 return NULL;
             }
 
-        AddNode(&GfxList, o, TYPE_ANIMOBJ);
+        GfxList.push_back(std::make_pair(o, TYPE_ANIMOBJ));
         return o;
     }
 
@@ -750,14 +642,10 @@ anim_t *CloneAnimObj(anim_t * obj)
 
 anim_t *CopyAnimObj(anim_t * obj)
 {
-    anim_t *o;
-
-    if ((o = malloc(sizeof(anim_t)))) {
+    if (anim_t *o = (anim_t *)malloc(sizeof(anim_t))) {
         BOOL ok = TRUE;
-        register int i;
 
         memcpy(o, obj, sizeof(anim_t));
-        o->node.mpNext = o->node.mpPrev = NULL;
 
 // XXX this is a problem on pocketpc, still have to understand why
         o->Flags = AOBJ_COPIED | AOBJ_SHAREPENS;
@@ -765,19 +653,19 @@ anim_t *CopyAnimObj(anim_t * obj)
         o->pens = NULL;
         o->Palette = NULL;
 
-        if (!(o->Frames = malloc(o->nframes * sizeof(struct MChunky *)))) {
+        if (!(o->Frames = (MChunky**)malloc(o->nframes * sizeof(struct MChunky *)))) {
             free(o);
             return NULL;
         }
 
         if (save_back)
-            if (!(o->bg = malloc(o->max_width * o->max_height))) {
+            if (!(o->bg = (uint8_t*)malloc(o->max_width * o->max_height))) {
                 free(o->Frames);
                 free(o);
                 return NULL;
             }
 
-        for (i = 0; i < o->nframes; i++) {
+        for (int i = 0; i < o->nframes; i++) {
             if (!(o->Frames[i] = CloneMChunky(obj->Frames[i])))
                 ok = FALSE;
 
@@ -792,7 +680,7 @@ anim_t *CopyAnimObj(anim_t * obj)
         }
 
         if (ok) {
-            AddNode(&GfxList, o, TYPE_ANIMOBJ);
+            GfxList.push_back(std::make_pair(o, TYPE_ANIMOBJ));
             return o;
         }
 
@@ -819,7 +707,7 @@ void LoadGfxObjPalette(const char *name)
         fread_u16(fh); /* ignored */
 
         temp = fread_u16(fh); /* real depth */
-        depth = 1 << min(8, temp);
+        depth = 1 << std::min<int16_t>(8, temp);
 
         for (i = 0; i < depth * 3; i++)
             palette[i + 1] = (uint32_t)fread_u8(fh) << 24;
@@ -834,12 +722,12 @@ void LoadGfxObjPalette(const char *name)
     }
 }
 
-void RemapColor(uint8_t *b, uint8_t old, uint8_t new, int size)
+void RemapColor(uint8_t *b, uint8_t old, uint8_t newv, int size)
 {
     while(size--)
     {
         if(*b == old)
-            *b = new;
+            *b = newv;
         b++;
     }
 }

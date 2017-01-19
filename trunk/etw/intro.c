@@ -256,8 +256,8 @@ void ShowCredits(void)
     
     // Serching in newgfx and then in menugfx...
     
-    if(!(o=LoadGfxObject("newgfx/credits.gfx"/*-*/,Pens,NULL)))
-        o=LoadGfxObject("menugfx/credits.gfx"/*-*/,Pens,NULL);
+    if(!(o=LoadGfxObject("newgfx/credits.gfx"/*-*/,Pens)))
+        o=LoadGfxObject("menugfx/credits.gfx"/*-*/,Pens);
     
     
     if(o) {

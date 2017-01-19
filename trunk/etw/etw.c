@@ -38,7 +38,7 @@ BOOL LoadBack(void)
     sprintf(buffer, "menugfx/back%d.gfx" /*-*/ ,
             RangeRand(NUMERO_SFONDI));
 
-    if ((background = LoadGfxObject(buffer, Pens, NULL))) {
+    if ((background = LoadGfxObject(buffer, Pens))) {
         if (background->width != WINDOW_WIDTH
             || background->height != WINDOW_HEIGHT)
             ScaleGfxObj(background, back);
@@ -61,7 +61,7 @@ void LoadArcadeGfx(void)
 
     for (i = 0; i < ARCADE_TEAMS + 1; i++) {
         sprintf(buffer, "menugfx/arcade%d.gfx", i);
-        arcade_gfx[i] = LoadGfxObject(buffer, Pens, NULL);
+        arcade_gfx[i] = LoadGfxObject(buffer, Pens);
     }
 }
 
@@ -71,7 +71,7 @@ BOOL LoadArcadeBack(void)
     gfx_t *background;
 
     if ((background =
-        LoadGfxObject("menugfx/worldmap.gfx" /*-*/ , Pens, NULL))) {
+        LoadGfxObject("menugfx/worldmap.gfx" /*-*/ , Pens))) {
         if (background->width != WINDOW_WIDTH
             || background->height != WINDOW_HEIGHT)
             ScaleGfxObj(background, back);

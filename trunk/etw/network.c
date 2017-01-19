@@ -334,6 +334,7 @@ player *connect_server(char *ip,int team)
                 SockClose(p->socket);
                 free(p);
                 request("Data read failed.");
+                return NULL;
             }
             else if(IsPacket(buffer,l,MSG_OK)) {
                 char buffer[120];
@@ -348,6 +349,8 @@ player *connect_server(char *ip,int team)
                 request(buffer);
             }
             else goto failedparams;
+            
+            return p;
         }
         else {
 failedparams:

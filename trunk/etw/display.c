@@ -24,7 +24,7 @@ void LoadMenuLogo(char *name)
         last_obj=NULL;
     }
 
-    o=LoadGfxObject(name,Pens,NULL);
+    o=LoadGfxObject(name,Pens);
 
     if(o)
     {
