@@ -1,0 +1,38 @@
+CROSSDIR = C:/mingw
+CC = gcc
+CXX = g++
+DEBUG = 
+CFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL2 \
+         -O2 -Wall -fsigned-char -Wno-char-subscripts
+CPPFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL2 \
+         -O2 -Wall -fsigned-char -Wno-char-subscripts
+LFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -mwindows -lwsock32 -lcomdlg32 
+DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER -DDEBUG_DISABLED
+
+OBJECTS = icon.o highdirent.o cpu.o human.o myiff.o specials.o \
+	anim.o crowd.o intro.o os_control.o teamsetup.o \
+	refree.o data.o league.o os_init.o	tables.o \
+	arcade.o speed_data.o lists.o os_video.o tactics.o \
+	chunkyblitting.o display.o loops.o ball.o teams.o \
+	commento.o etw.o main.o goalkeeper.o freq.o \
+	computer.o etw_locale.o	menu.o radar.o utility.o \
+	config.o font.o menu_config.o replay.o speed_tables.o \
+	connection.o generic_video.o menu_data.o sound.o wc.o \
+	control.o gfx.o menu_font.o special.o network.o \
+	highsocket.o tutorial.o vjoy.o touch.o \
+	stubs.o substitutions.o world.o
+
+.c.o: etw.h menu.h
+	$(CC) $(CFLAGS) $(DEFINES) -c $<
+
+.cpp.o: etw.h menu.h
+	$(CXX) $(CFLAGS) $(DEFINES) -c $<
+
+etw.exe: $(OBJECTS)
+	$(CXX) -o $@ $(OBJECTS) $(LFLAGS)
+
+icon.o: Script1.rc
+	windres $< $@
+   
+clean:
+	rm -rf *.o

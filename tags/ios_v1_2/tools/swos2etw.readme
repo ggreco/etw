@@ -1,0 +1,41 @@
+SWOS2ETW 1.3 by Gabriele Greco
+------------------------------
+
+This simple program is a converter from SWOS team files to ETW team files,
+the program is PD, feel free to use the ETW data structures to make yourself
+a team editor better than the MUI one I wrote.
+
+The source is written in ANSI C so it can be compiled and used also on other platforms,
+maybe with some alignment problem...
+
+swos2etw has to be launched from CLI with the syntax:
+
+swos2etw sourcefile destfile [league name]
+
+sourcefile has to be one of the team.xxx files you can find in Aminet, previously
+unpacked with RNCDepack (included in the archive).
+
+destfile will be created and will be a datafile usable with ETW (both CD and disk
+version). To load it simply go to the "TEAM" menu in ETW and LOAD the file you
+create :)
+
+Don't use swos2etw with the datafiles of the original game, it may be not legal
+(but I'm not sure about this).
+
+History:
+
+25-10-98	First version
+27-11-98	Added a check to skip teams of third division and more if there
+                are more than 64 teams (needed for the England SWOS file)
+29-12-98	Corrected a color remapping problem.
+                Added the possibility to specify as parameter the league name.
+                Added support for league conversion (to be able to play first
+                divisions with the new ETW 1.2 option).
+
+Bye,
+ Gabriele Greco
+ Hurricane Studios
+ gabry@promix.it
+
+Visit the *NEW* EatTheWhistle Website: http://surf.to/etw
+

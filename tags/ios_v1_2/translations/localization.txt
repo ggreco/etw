@@ -1,0 +1,31 @@
+Actually the tool find_strings may help to localize missing strings.
+
+Here are the steps:
+
+- Check etw_locale.c and find the last localized string ID.
+
+- Compile find_strings:
+  g++ -o find_strings find_strings.cpp
+
+- run find_strings on an empty directory (for instance the tool one) using the id
+  you find at step 1:
+  ./find_strings 182 ../etw/menu_data.c ../etw/menu.c ../etw/specials.c ../etw/tutorial.cpp 
+
+- This will create 4 files.
+  
+- Use the "patch_strings" tool on a COPY of your sources to apply the changes, this will
+  use the forth file, and will require a target directory:
+  ./patch_strings ../etw
+
+- Open the strings_delta.* files and copy & paste them inside:
+  etw_locale.cd, etw_locale.c, etw_locale.h
+
+- Use flexcat (flexcat.sourceforge.org) to create an empty catalog to translate ETW in
+  additional languages:
+  flexcat etw_locale.cd NEWCTFILE=francois.ct
+
+- Or use flexcat to update an existing catalog:
+  flexcat etw_locale.cd italiano.ct NEWCTFILE=italiano.ct
+
+- Compile the .ct file:
+  flexcat etw_locale.cd italiano.ct CATALOG=italian.catalog
