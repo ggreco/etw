@@ -101,10 +101,10 @@ BOOL InitFonts(void)
 {
     extern struct myfont *titlefont;
     
-    if (!(gsmallfont = LoadGfxObject("gfx/smallfont"/*-*/, Pens, NULL)))
+    if (!(gsmallfont = LoadGfxObject("gfx/smallfont"/*-*/, Pens)))
         return FALSE;
 
-    if (!(verysmallfont = LoadGfxObject("gfx/verysmallfont"/*-*/, Pens, NULL)))
+    if (!(verysmallfont = LoadGfxObject("gfx/verysmallfont"/*-*/, Pens)))
             return FALSE;
 
     if (titlefont) {
@@ -212,7 +212,7 @@ void LoadLogo(char *name)
         last_obj = NULL;
     }
 
-    o = LoadGfxObject(name, Pens, NULL);
+    o = LoadGfxObject(name, Pens);
 
     if (o) {
         if (o->width == WINDOW_WIDTH && o->height == WINDOW_HEIGHT) {
@@ -790,7 +790,7 @@ void ShowFinal(void)
             sprintf(buffer, "gfx/finis%lc%lc.gfx"/*-*/,
                     (current_field == 7 ? 's' : 'h'), cols[i][3]);
 
-            if ((o = LoadGfxObject(buffer, Pens, NULL))) {
+            if ((o = LoadGfxObject(buffer, Pens))) {
                 if (cols[i][0] != COLOR_STANDARD_MAGLIE)
                     RemapColor(o->bmap, Pens[COLOR_STANDARD_MAGLIE],
                                Pens[cols[i][0]], o->width * o->height);

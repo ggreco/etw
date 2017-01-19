@@ -6,7 +6,6 @@
 /* Tipi di oggetti grafici, vengono tutti liberati da FreeGraphics */
 
 #include "mytypes.h"
-#include "lists.h"
 #include "structs.h"
 #include "mydebug.h"
 
@@ -25,7 +24,6 @@
 
 struct anim
 {
-    struct MyMinNode node;    /* Per attaccarlo alla drawlist */
     struct MChunky **Frames;    /* Le bitmap dei vari frames */
     unsigned char *Palette;         /* Puntatore alla palette, organizzata come RGB */
     int *Widths, *Heights;        /* Dimensioni dei singoli frames */
@@ -71,7 +69,6 @@ typedef struct gfx gfx_t;
 
 // Macros
 
-#define RemAnimObj(a) MyRemove((struct MyNode *)a);
 #define BltGfxObj(s,xs,ys,d,xd,yd,w,h,dm) bltchunkybitmap(s->bmap,xs,ys,d,xd,yd,w,h,s->width,dm)
 #define BltAnimObj(obj,dest,frame,x,y,dmod) bltanimobj(obj->Frames[frame],dest,x,y,dmod)
 
@@ -88,6 +85,7 @@ extern BOOL use_remapping; /* Questa variabile gestisce il remapping, deve
                     le bitmap non vengono copiate, quindi l'occupazione
                     di memoria e' MOLTO maggiore
                  */
+extern void RemAnimObj(anim_t *);
 
 extern BOOL save_back;  /* Questa variabile regola la gestione degli anim_t, di
                 default e' TRUE, se e' false non funziona la ClearAnimObj(),
@@ -106,8 +104,6 @@ extern BOOL use_clipping; /* Abilita il clipping, disabilitato per default */
 
 extern int ClipX,ClipY;
 
-// extern struct MyList GfxList,DrawList;
-
 extern uint8_t *main_bitmap;
 extern int bitmap_width,bitmap_height;
 
@@ -116,7 +112,7 @@ extern int bitmap_width,bitmap_height;
 extern void FreeGfxObj(gfx_t *);
 extern void FreeGraphics(void);
 extern void DrawObject(gfx_t *, int16_t, int16_t);
-extern gfx_t *LoadGfxObject(const char *, int32_t *, uint8_t *);
+extern gfx_t *LoadGfxObject(const char *, int32_t *);
 extern anim_t *LoadAnimObject(const char *, int32_t *);
 extern void RemapAnimObjColor(anim_t *, uint8_t, uint8_t);
 extern void ClearAnimObj(void);

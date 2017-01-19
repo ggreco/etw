@@ -1361,7 +1361,6 @@ void BodyToBitMap(struct BitMap *f_bm,struct BitMapHeader *bmh,uint8_t *f_body,i
   short Depth;
   short Height;
   PTR_RING Ring[8+1];
-  PTR_RING *RingPtr;
 
   Height = f_bm->Rows;
   Depth  = f_bm->Depth;
@@ -1374,7 +1373,6 @@ void BodyToBitMap(struct BitMap *f_bm,struct BitMapHeader *bmh,uint8_t *f_body,i
     Ring[i].next = (APTR)&Ring[i+1];
   }
 
-  RingPtr = (PTR_RING *)&Ring[0];
   i = Height * Depth;  /* Zeilensumme aller Planes */
 
     /* take care of the extra stencilplane in the body chunk
@@ -1529,77 +1527,77 @@ void DeltaUnpack(struct BitMap *f_bm,void *f_dlta_adr,int32_t f_mode)
 
 void C_BdyUnpack( uint8_t *f_bdy, PTR_RING *f_ring_ptr,int32_t f_row,int32_t f_BytePerRow,int32_t f_compress)
 {
-  register uint8_t  *WrPtr;       /* WritePointer to destination in BitMap */
-  register short i, count;
-
-  int32_t ct_u, ct_r, sum_u, sum_r;
-
-
-  ct_u = ct_r = sum_u = sum_r = 0;
-
-
-  if (!f_compress)
-  {
-    /* do a 1:1 copy of each pixel Line */
-    while(f_row--)
+    register uint8_t  *WrPtr;       /* WritePointer to destination in BitMap */
+    register short i, count;
+    
+    int32_t ct_u, ct_r, sum_u, sum_r;
+    
+    
+    ct_u = ct_r = sum_u = sum_r = 0;
+    
+    
+    if (!f_compress)
     {
-      WrPtr = f_ring_ptr->PlanePtr;
-      for(i=0; i < f_BytePerRow; i++) *(WrPtr++)  =  *(f_bdy++);
-      f_ring_ptr->PlanePtr = WrPtr;
-      f_ring_ptr = (PTR_RING *)f_ring_ptr->next;
+        /* do a 1:1 copy of each pixel Line */
+        while(f_row--)
+        {
+            WrPtr = f_ring_ptr->PlanePtr;
+            for(i=0; i < f_BytePerRow; i++) *(WrPtr++)  =  *(f_bdy++);
+            f_ring_ptr->PlanePtr = WrPtr;
+            f_ring_ptr = (PTR_RING *)f_ring_ptr->next;
+        }
     }
-  }
-  else
-  {
-    /* unpack (byte run method) */
-    /* general loop for all pixel Lines (f_row) of all planes */
-    while(f_row--)
+    else
     {
-      WrPtr = f_ring_ptr->PlanePtr;
-      count = f_BytePerRow;
-      /* loop for all bytes in one pixelline (count) */
-      while(count > 0)
-      {
-    i = *(f_bdy++);
-    if(i > 127 )            /* next byte is repeated i times */
-    {
-      i =  257 - i;
-
-          ct_r++;
-          sum_r += i;
-//          printf("r%3d ", (long)i);
-
-      count -= i;
-      while(i--)   *(WrPtr++) = *f_bdy;
-      f_bdy++;
-    }
-    else                    /* transfer i uncompressed bytes */
-    {
-      i++;
-
-          ct_u++;
-          sum_u += i;
-//          D(bug("u%3ld ", (long)i));
-
-
-      count -= i;
-      while(i--)  *(WrPtr++) = *(f_bdy++);
-    }                               /* end if *f_bdy < 0 */
-      }                                 /* end while */
-
-//      D(bug("\n"));
-
-      f_ring_ptr->PlanePtr = WrPtr;        /* store WritePosition in ringlist */
-      f_ring_ptr = (PTR_RING *)f_ring_ptr->next;
-    }           /* end for f_row */
-
-
-          ct_u++;
-          sum_u += i;
-//   D(bug("\n\n u: %ld (%ld bytes)   r: %ld (%ld bytes)", ct_u, sum_u, ct_r, sum_r));
-
-
-  }             /* end if compress */
-
+        /* unpack (byte run method) */
+        /* general loop for all pixel Lines (f_row) of all planes */
+        while(f_row--)
+        {
+            WrPtr = f_ring_ptr->PlanePtr;
+            count = f_BytePerRow;
+            /* loop for all bytes in one pixelline (count) */
+            while(count > 0)
+            {
+                i = *(f_bdy++);
+                if(i > 127 )            /* next byte is repeated i times */
+                {
+                    i =  257 - i;
+                    
+                    ct_r++;
+                    sum_r += i;
+                    //          printf("r%3d ", (long)i);
+                    
+                    count -= i;
+                    while(i--)   *(WrPtr++) = *f_bdy;
+                    f_bdy++;
+                }
+                else                    /* transfer i uncompressed bytes */
+                {
+                    i++;
+                    
+                    ct_u++;
+                    sum_u += i;
+                    //          D(bug("u%3ld ", (long)i));
+                    
+                    
+                    count -= i;
+                    while(i--)  *(WrPtr++) = *(f_bdy++);
+                }                               /* end if *f_bdy < 0 */
+            }                                 /* end while */
+            
+            //      D(bug("\n"));
+            
+            f_ring_ptr->PlanePtr = WrPtr;        /* store WritePosition in ringlist */
+            f_ring_ptr = (PTR_RING *)f_ring_ptr->next;
+        }           /* end for f_row */
+        
+        
+        ct_u++;
+        // sum_u += i;
+        //   D(bug("\n\n u: %ld (%ld bytes)   r: %ld (%ld bytes)", ct_u, sum_u, ct_r, sum_r));
+        
+        
+    }             /* end if compress */
+    
 }               /* end C_BdyUnpack */
 
