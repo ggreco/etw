@@ -21,7 +21,7 @@ struct TutorialLine
         if (activation != BySpecialFunc)
             return false;
         
-        BOOL (*func)() = (BOOL(*)())data;
+        bool (*func)() = (bool(*)())data;
         return func();
     }
 };
