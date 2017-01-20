@@ -1738,7 +1738,9 @@ BOOL VideoPrefs(int16_t button)
             ChangeMenu(current_menu);
 
             break;
-
+       case 23:
+           tutorial = tutorial ? FALSE : TRUE;
+            break;
        default:
             D(bug("Unknown menu button clicked: %d\n", button));
             break;
@@ -1798,6 +1800,7 @@ void UpdatePrefs(int8_t set)
         m->Button[19].Text = use_gfx_scaling
                            ? scaling_resolutions[current_scaling] : NULL;
         m->Button[21].Text = resolutions[current_resolution];
+        m->Button[23].Text = tutorial ? enabled : disabled;
         break;
 
     case MENU_SYSTEM_PREFS:
