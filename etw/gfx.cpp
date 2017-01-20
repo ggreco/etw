@@ -18,7 +18,7 @@ BOOL use_window = FALSE, save_back = FALSE, use_scaling = FALSE, use_clipping = 
 #include <algorithm>
 
 static std::list<anim_t *> DrawList;
-static std::list<std::pair<void *, int>> GfxList;
+static std::list<std::pair<void *, int> > GfxList;
 
 
 BOOL InitAnimSystem(void)
@@ -46,7 +46,11 @@ bool InList(const std::list<T *> &l, T *ptr) {
 
 void DrawAnimObj(void)
 {
+#if defined(_MSC_VER) && _MSC_VER <= 1600
+    for each (auto obj in DrawList) {
+#else
     for (auto obj: DrawList) {
+#endif
         int16_t cf = obj->current_frame;
 
         if (!use_clipping) {
@@ -175,7 +179,11 @@ void SortDrawList(void)
         best = NULL;
         best_bottom = 30000;
 
+#if defined(_MSC_VER) && _MSC_VER <= 1600
+        for each (auto o in DrawList) {
+#else
         for (auto o: DrawList) {
+#endif
             if (o->Flags & AOBJ_BEHIND) {
                 best = o;
                 break;
@@ -435,7 +443,11 @@ void FreeGfxObj(gfx_t * obj)
 {
     D(bug("FreeGfxObj - width: %ld\n", obj->width));
 
+#if defined(_MSC_VER) && _MSC_VER <= 1600
+    for each( auto &itm in GfxList) {
+#else
     for (auto &itm: GfxList) {
+#endif
         if (itm.first == obj) {
             GfxList.remove(itm);
             break;
@@ -462,7 +474,11 @@ void FreeAnimObj(anim_t * obj)
 
     DrawList.remove(obj);
 
+#if defined(_MSC_VER) && _MSC_VER <= 1600
+    for each (auto &itm in GfxList) {
+#else
     for (auto &itm: GfxList) {
+#endif
         if (itm.first == obj) {
             GfxList.remove(itm);
             break;

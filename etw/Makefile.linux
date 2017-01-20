@@ -6,6 +6,8 @@ CFLAGS = -Wall -g -fsigned-char -Iinclude \
     -Waggregate-return  -Wsign-compare \
     `pkg-config --cflags sdl2` `pkg-config --cflags gtk+-2.0`
 
+CXXFLAGS = -std=c++11
+
 LDFLAGS = `pkg-config --libs SDL2_mixer` `pkg-config --libs gtk+-2.0` -lm -lpthread -lstdc++
 DEFINES = -DLINUX -DCD_VERSION -DENABLE_BINRELOC -DHAVE_STDINT_H
 
@@ -26,7 +28,7 @@ OBJECTS = highdirent.o cpu.o human.o myiff.o specials.o \
 	$(CC) $(CFLAGS) $(DEFINES) -c $<
 
 .cpp.o: etw.h menu.h
-	$(CXX) $(CFLAGS) $(DEFINES) -c $<
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(DEFINES) -c $<
 
 all: CHECKTOOLS etw
 
