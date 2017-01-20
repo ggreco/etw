@@ -15,7 +15,7 @@ typedef ULONG           uint32_t;
 #   include <stdint.h>
 #   include <stdio.h>
 typedef void *          APTR;
-typedef unsigned int    BOOL;
+typedef /*unsigned*/ int    BOOL;
 typedef uint8_t         BYTEBITS;
 typedef uint16_t        WORDBITS;
 typedef uint32_t        LONGBITS;
@@ -34,7 +34,9 @@ typedef char * STRPTR;
 #endif
 
 #ifdef _MSC_VER
+#if _MSC_VER <= 1600
 #define inline __inline
+#endif
 #define snprintf _snprintf
 
 typedef signed int ssize_t;

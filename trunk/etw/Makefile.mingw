@@ -4,8 +4,8 @@ CXX = g++
 DEBUG = 
 CFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL2 \
          -O2 -Wall -fsigned-char -Wno-char-subscripts
-CPPFLAGS = -Iinclude -I$(CROSSDIR)/include/SDL2 \
-         -O2 -Wall -fsigned-char -Wno-char-subscripts
+CXXFLAGS = -std=c++11
+
 LFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -mwindows -lwsock32 -lcomdlg32 
 DEFINES = -DWIN -DWIN32 -DCD_VERSION -DCROSSCOMPILER -DDEBUG_DISABLED
 
@@ -26,7 +26,7 @@ OBJECTS = icon.o highdirent.o cpu.o human.o myiff.o specials.o \
 	$(CC) $(CFLAGS) $(DEFINES) -c $<
 
 .cpp.o: etw.h menu.h
-	$(CXX) $(CFLAGS) $(DEFINES) -c $<
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(DEFINES) -c $<
 
 etw.exe: $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS) $(LFLAGS)

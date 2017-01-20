@@ -283,8 +283,6 @@ char *field_types[] =
     NULL,
 };
 
-void SetCurrentResolution(void);
-
 void SetCurrentResolution(void)
 {
 #ifdef OLD_RES
