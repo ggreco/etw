@@ -944,7 +944,7 @@ void CheckActive(void)
              * AC: Codeguard signals here a memory access overrun of 2 bytes
              * in a memory block of 480 bytes.
              */
-            g2=FindNearest(s,G2P_X(pl->world_x)+(velocita_x[3][9][Dir]<<3),G2P_Y(pl->world_y)+(velocita_y[3][9][Dir]<<3));
+            g2=FindNearest(s,G2P_X(pl->world_x)+(velocita_x[2][9][Dir]<<3),G2P_Y(pl->world_y)+(velocita_y[2][9][Dir]<<3));
         }
         else
             g2=FindNearest(s,G2P_X(pl->world_x),G2P_Y(pl->world_y));
