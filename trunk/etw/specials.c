@@ -1371,6 +1371,8 @@ BOOL AudioPrefs(int16_t button)
 
             /* If the sound is off, unload the sounds, else load them */
             if (no_sound) {
+                StopMenuMusic();
+                FreeMenuMusic();
                 LiberaSuoniMenu();
                 FreeSoundSystem();
             }
@@ -1378,6 +1380,7 @@ BOOL AudioPrefs(int16_t button)
                 /* AC: Surely some controls are needed */
                 InitSoundSystem();
                 CaricaSuoniMenu();
+                PlayMenuMusic();
             }
 
             /* AC: I think this func is needed. */
@@ -1528,26 +1531,29 @@ BOOL MobilePrefs(int16_t button)
 
                 actual_menu->Button[button].Text
                     = radar_options[radar_position];
-            }            
+            }
             break;
         case 3:
-            nointro = nointro ? FALSE : TRUE;            
+            nointro = nointro ? FALSE : TRUE;
             break;
         case 5:   
             no_sound = no_sound ? FALSE : TRUE;
 
             /* If the sound is off, unload the sounds, else load them */
             if (no_sound) {
+                StopMenuMusic();
+                FreeMenuMusic();
                 LiberaSuoniMenu();
                 FreeSoundSystem();
             } else {
                 /* AC: Surely some controls are needed */
                 InitSoundSystem();
                 CaricaSuoniMenu();
+                PlayMenuMusic();
             }
 
             /* AC: I think this func is needed. */
-            os_start_audio();            
+            os_start_audio();
             break;
         case 7:
             menu_music = menu_music ? FALSE : TRUE;
@@ -1555,7 +1561,7 @@ BOOL MobilePrefs(int16_t button)
             if (menu_music == FALSE)
                 StopMenuMusic();
             else
-                PlayMenuMusic();            
+                PlayMenuMusic();
             break;
         case 9:
             tutorial = tutorial ? FALSE : TRUE;
@@ -1568,8 +1574,8 @@ BOOL MobilePrefs(int16_t button)
     RedrawButton(&actual_menu->Button[button],
                  actual_menu->Button[1].Color);
 
-    return TRUE;   
-}       
+    return TRUE;
+}
 
 BOOL VideoPrefs(int16_t button)
 {
