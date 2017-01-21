@@ -144,10 +144,9 @@ void FreeMenuMusic()
    }
 }
 
-void
-StopMenuMusic(void)
+void StopMenuMusic(void)
 {
-    if (music_playing && !no_sound && mmusic) {
+    if (music_playing /*&& !no_sound*/ && mmusic) {
         Mix_PauseMusic();
         D(bug("Stopping menu music...(%lx)\n", mmusic));
         music_playing = FALSE;
