@@ -494,6 +494,7 @@ BOOL LoadStuff(void)
                         FIXED_SCALING_HEIGHT;
                     WINDOW_WIDTH = bitmap_width;
                     WINDOW_HEIGHT = bitmap_height;
+                    UpdateButtonList();
                     D(bug("Scaling correctly initialized!\n"));
                 } else {
                     free(scaling->XRef);
