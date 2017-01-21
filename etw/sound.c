@@ -124,9 +124,11 @@ void PlayMenuMusic(void)
             D(bug("Error loading menu music: %s\n", Mix_GetError()));
         }
     }
-    else 
+    else {
         Mix_PlayMusic(mmusic, -1);
-    
+        music_playing = TRUE;
+    }
+
 #ifndef ANDROID
     Mix_VolumeMusic(MIX_MAX_VOLUME/6);
 #else
