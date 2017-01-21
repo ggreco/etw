@@ -359,7 +359,7 @@ static BOOL not_red_card_substitution(int p1, int p2)
         return TRUE;
 
     // if both players do not have any "comment" I can move them
-    if ((b->Text == NULL || b->Text == empty) && (b2->Text == NULL | b2->Text == empty))
+    if ((b->Text == NULL || b->Text == empty) && (b2->Text == NULL || b2->Text == empty))
         return TRUE;
 
     if (!b->Text || !b2->Text)
