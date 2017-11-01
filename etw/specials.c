@@ -469,6 +469,7 @@ BOOL ChangeMRMenu(int16_t button)
     return TRUE;
 }
 
+#ifdef MOBILE_VERSION
 static BOOL has_human_selection()
 {
     int i;
@@ -494,6 +495,7 @@ static BOOL has_arcade_human_selection()
     }
     return FALSE;
 }
+#endif
 
 BOOL TeamSelection(int16_t button)
 {

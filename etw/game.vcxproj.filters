@@ -64,9 +64,6 @@
     <ClCompile Include="generic_video.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gfx.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Highdirent.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -184,6 +181,9 @@
     <ClCompile Include="substitutions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\8svx.h">
@@ -282,9 +282,6 @@
     <ClInclude Include="include\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SDLMain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -320,5 +317,10 @@
     <ResourceCompile Include="ETW.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
