@@ -22,7 +22,7 @@
     <ProjectName>ETW</ProjectName>
     <ProjectGuid>{B6E4413A-4D09-4572-9A04-A22DBC430E57}</ProjectGuid>
     <RootNamespace>game</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
