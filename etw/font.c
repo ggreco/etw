@@ -192,13 +192,14 @@ void PrintNames(void)
 {
     if (!training)
         bltchunkybitmap(p->team[1]->NomeAttivo, 0, 0, main_bitmap,
-                        0, WINDOW_HEIGHT - (CHAR_Y + 1),
+                        20,
+                        WINDOW_HEIGHT - (CHAR_Y + 5),
                         p->team[1]->attivo->NameLen * 6, CHAR_Y,
                         (CHAR_X * MAX_LEN), bitmap_width);
 
     bltchunkybitmap(p->team[0]->NomeAttivo, 0, 0, main_bitmap,
-                    WINDOW_WIDTH - p->team[0]->attivo->NameLen * 6 - 1,
-                    WINDOW_HEIGHT - (CHAR_Y + 1),
+                    WINDOW_WIDTH - p->team[0]->attivo->NameLen * 6 - 20,
+                    WINDOW_HEIGHT - (CHAR_Y + 5),
                     p->team[0]->attivo->NameLen * 6, CHAR_Y,
                     (CHAR_X * MAX_LEN), bitmap_width);
 }
@@ -735,9 +736,9 @@ void DrawR(void)
     if (draw_r) {
         if (replay) {
             if (!replay_onscreen) 
-                AddAnimObj(replay, 2, 2, 0);
+                AddAnimObj(replay, 20, 10, 0);
         } else { 
-            drawtext("R"/*-*/, 1, 2, font_height + 2, Pens[P_NERO]);
+            drawtext("R"/*-*/, 1, 20, font_height + 8, Pens[P_NERO]);
         }
     } else if (replay_onscreen) {
         RemAnimObj(replay);

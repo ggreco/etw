@@ -206,10 +206,12 @@ BOOL MyEasyRequest(struct EasyStruct *e)
         req_bottoni[0].X1 - 1, req_bottoni[0].Y1);
 */
     ScreenSwap();
-
+    
     reqqing = TRUE;
     
-    while (HandleMenuIDCMP());
+    do {
+        SDL_WaitEvent(NULL);
+    } while (HandleMenuIDCMP());
 
     linee = current_button;
     actual_menu = old_menu;
@@ -1764,7 +1766,7 @@ BOOL HandleMenuIDCMP(void)
 {
     SDL_Event e;
     BOOL returncode = TRUE;
-
+    SDL_PumpEvents();
     while (SDL_PollEvent(&e)) {
 
         switch (e.type) {

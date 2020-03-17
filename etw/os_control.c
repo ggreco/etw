@@ -146,6 +146,30 @@ int os_get_joy_button(int i)
     return -1;
 }
 
+void open_joystick(int joyid)
+{
+    if ((joy[joyid] = SDL_JoystickOpen(joyid))) {
+        num_joys++;
+        has_joystick=TRUE;
+
+        D(bug("Opened Joystick %ld for TOUCH\n",joyid));
+        D(bug("Name: %s\n", SDL_JoystickName(joy[joyid])));
+        D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[joyid])));
+        D(bug("Number of Hats: %ld\n", SDL_JoystickNumAxes(joy[joyid])));
+        D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[joyid])));
+        D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[joyid])));
+        D(bug("Joystick event manager: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
+
+        if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE)
+        {
+            D(bug("** Forcing deactivation of joystick event manager\n"));
+            SDL_JoystickEventState(SDL_DISABLE);
+        }
+
+        joybuttons[joyid]=SDL_JoystickNumButtons(joy[joyid]);
+    }
+}
+
 void set_controls(void)
 {
     use_touch = use_key0 = use_key1 = FALSE;
@@ -154,6 +178,7 @@ void set_controls(void)
 
     if (control[0] == CTRL_TOUCH) {
         use_touch = TRUE;
+        open_joystick(p->team[0]->Joystick);
     }
     else if(control[0]>=CTRL_KEY_1)
     {
@@ -690,10 +715,8 @@ SDL_Scancode query[]=
 
 void UpdatePortStatus(void)
 {
-    if (!use_touch) {
-        if(has_joystick)
-            SDL_JoystickUpdate();
-    
+    if (has_joystick) {
+        SDL_JoystickUpdate();
         SDL_PumpEvents();
     }
 }

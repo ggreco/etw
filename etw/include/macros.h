@@ -66,7 +66,7 @@ void Progress(void);
 
 // Era 100
 
-#define PrintResult() bltchunkybitmap(p->result,0,0,main_bitmap,0,4,p->result_len*VS_CHAR_X,VS_CHAR_Y+1,result_width,bitmap_width)
+#define PrintResult() bltchunkybitmap(p->result,0,0,main_bitmap,20,8,p->result_len*VS_CHAR_X,VS_CHAR_Y+1,result_width,bitmap_width)
 
 
 #define DoSpecialAnim(g,x) do { g->AnimType=(x);g->FrameLen=0;g->AnimFrame=-1;g->Special=TRUE; } while(0)

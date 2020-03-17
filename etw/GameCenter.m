@@ -19,6 +19,19 @@ static UIWindow *gWindow = NULL;
 UIView *gView = NULL;
 #endif
 
+double display_width_inches = 2, display_height_inches = 1;
+
+UIViewController *find_vc(UIView *root)
+{
+    id nextResponder = [root nextResponder];
+    if ([nextResponder isKindOfClass:[UIViewController class]])
+        return (UIViewController*)nextResponder;
+    for (UIView *v in [root subviews]) {
+        UIViewController *vc = find_vc(v);
+        if (vc) return vc;
+    }
+    return nil;
+}
 void init_controllers()
 {
 #ifdef MACOSX
@@ -31,12 +44,16 @@ void init_controllers()
     else
         NSLog(@"Unable to find viewcontroller!");*/
 #else
+    double scale = [[UIScreen mainScreen] scale];
+    double ppi = scale * ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 132 : 163);
+    display_width_inches = ([[UIScreen mainScreen] bounds].size.width * scale) / ppi;
+    display_height_inches = ([[UIScreen mainScreen] bounds].size.height * scale) / ppi;
     gWindow = [[UIApplication sharedApplication] keyWindow];
-    gView = [gWindow.subviews objectAtIndex:0];
-    id nextResponder = [gView nextResponder];
-    if ([nextResponder isKindOfClass:[UIViewController class]])
-        gViewColtroller = (UIViewController *) nextResponder;
-    else
+//    gView = [([(gWindow.subviews[0]) subviews][0]) subviews][0];
+////    id nextResponder = [gView nextResponder];
+//    if ([nextResponder isKindOfClass:[UIViewController class]])
+//        gViewColtroller = (UIViewController *) nextResponder;
+    if (!(gViewColtroller = find_vc(gWindow)))
         NSLog(@"Unable to find viewcontroller!");
 #endif
 }

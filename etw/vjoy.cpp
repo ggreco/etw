@@ -280,6 +280,11 @@ uint32_t MyReadTouchPort(uint32_t l)
         quit_game=TRUE;
     }
 
+    if (!mask) {
+        extern uint32_t MyReadJoyPort(uint32_t);
+        mask = MyReadJoyPort(l);
+    }
+    
     if(!network_game)
         return mask;
     else {

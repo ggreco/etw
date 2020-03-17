@@ -74,20 +74,7 @@ static void blitScreen32(uint8_t *src, uint32_t *dst, uint32_t width, uint32_t h
             *(dst++) = *((uint32_t*)&(SDL_palette[*src++]));
 }
 
-#ifdef IPHONE
-
-
-typedef struct ResInfo {
-    int w, h;
-} ResInfo;
-
-static ResInfo ressize[] = {
-    {480, 320},
-    {568, 320},
-    {667, 375},
-    {736, 414},
-    {1024,768}
-};
+#ifdef MOBILE_VERSION
 
 static void blitScreen32x2(uint32_t *dst)
 {
@@ -110,65 +97,24 @@ static void blitScreen32x2(uint32_t *dst)
 
 void set_resolution()
 {
-    int i, j, n = SDL_GetNumDisplayModes(0);
+    int i, n = SDL_GetNumDisplayModes(0);
 
     for (i = 0; i < n; ++i) {
         SDL_DisplayMode mode;
         SDL_GetDisplayMode(0, i, &mode);
         D(bug("Got resolution %dx%d\n", mode.w, mode.h));
-        for (j = 0; j < sizeof(ressize)/sizeof(ressize[0]); ++j) {
-            if (mode.w == ressize[j].w &&
-                mode.h == ressize[j].h) {
-                WINDOW_WIDTH = mode.w;
-                WINDOW_HEIGHT = mode.h;
+        if (mode.w > mode.h) {
+            WINDOW_WIDTH = mode.w;
+            WINDOW_HEIGHT = mode.h;
 
-                if (mode.w % 2)
-                    WINDOW_WIDTH++;
-                if (mode.h % 2)
-                    WINDOW_HEIGHT++;
-                return;
-            }
+            if (mode.w % 2)
+                WINDOW_WIDTH++;
+            if (mode.h % 2)
+                WINDOW_HEIGHT++;
+            return;
         }
     }
     D(bug("Unable to find a valid iOS resolution!\n"));
-}
-#elif defined(ANDROID)
-
-typedef struct ResInfo {
-    int wm, w, hm, h;
-} ResInfo;
-static ResInfo ressize[2] = {
-    {320, 568, 256, 320},
-    {800, 1280, 480, 768}
-};
-void set_resolution()
-{
-    int i, j, n = SDL_GetNumDisplayModes(0);
-
-    if (n > 1) {
-        for (i = 0; i < n; ++i) {
-            SDL_DisplayMode mode;
-            SDL_GetDisplayMode(0, i, &mode);
-            D(bug("%d) %dx%d\n", i, mode.w, mode.h));
-            for (j = 0; j < 2; ++j) {
-                if (mode.w <= ressize[j].w && mode.w >= ressize[j].wm &&
-                        mode.h <= ressize[j].h && mode.h >= ressize[j].hm) {
-                    D(bug("Android resolution set to: %dx%d\n", mode.w, mode.h));
-                    WINDOW_WIDTH = mode.w;
-                    WINDOW_HEIGHT = mode.h;
-                    return;
-                }
-            }
-        }
-        D(bug("Unable to find a valid Android resolution!\n"));
-    }
-    else {
-        SDL_DisplayMode mode;
-        SDL_GetDisplayMode(0, i, &mode);
-        D(bug("Android FIXED resolution set to: %dx%d\n", mode.w, mode.h));
-        WINDOW_WIDTH = mode.w;
-        WINDOW_HEIGHT = mode.h;
-    }
 }
 #endif
 
@@ -325,11 +271,10 @@ void OpenTheScreen(void)
     wb_game = FALSE;
     scaling = NULL;
 
-#ifdef ANDROID
     if (WINDOW_WIDTH > 640 ||
         WINDOW_HEIGHT > 480) {
         extern double display_width_inches, display_height_inches;
-        // we need linear on Android since we don't use a multiple of resolution
+        // we need linear since we don't use a multiple of resolution
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
         if (display_height_inches <= 3.5) {
             WINDOW_WIDTH = 320 * WINDOW_WIDTH / WINDOW_HEIGHT;
@@ -343,17 +288,6 @@ void OpenTheScreen(void)
         D(bug("Display size in inches: %gx%g, software destination size: %dx%d\n", 
                     display_width_inches, display_height_inches, WINDOW_WIDTH, WINDOW_HEIGHT));
     }
-#else
-// this is enough in iOS
-    if (WINDOW_WIDTH > 800 ||
-        WINDOW_HEIGHT > 480) {
-
-        D(bug("Too high display resolution, going to: %dx%d\n", WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
-        WINDOW_WIDTH /= 2;
-        WINDOW_HEIGHT /= 2;
-    }
-#endif
-
 #else
     if(wb_game) 
         screen = SDL_CreateWindow("ETW"/*-*/, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
@@ -484,12 +418,14 @@ void os_set_color(int i, int r, int g, int b)
 
 void ScreenSwap(void)
 {
+    extern BOOL reqqing;
     void *pixels;
     int pitch;
     uint8_t *src = main_bitmap;
     uint32_t width = bitmap_width, height = bitmap_height;
 
     if(!SDL_LockTexture(screen_texture, NULL, &pixels, &pitch)) {
+        SDL_RenderClear(renderer);
         if (scaling) {
             bitmapFastScale(scaling);
             src = scaling->Dest;
@@ -506,7 +442,6 @@ void ScreenSwap(void)
         }
 
         SDL_UnlockTexture(screen_texture);
-        // sdl_flip fall back in SDL_UpdateRect if we are single buffer
         SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
 
         if (use_touch)
@@ -515,7 +450,14 @@ void ScreenSwap(void)
             draw_touch();
 
         SDL_RenderPresent(renderer);
-    }
+        
+        if (!game_start || reqqing) {
+            SDL_Delay(40); // let's wait at least a frame
+            SDL_RenderPresent(renderer);
+        }
+    } else
+        D(bug("Failed texture locking!"));
+    
     SDL_PumpEvents();
 }
 

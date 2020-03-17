@@ -311,4 +311,5 @@ void check_tutorial();
 extern void draw_pause_menu();
 extern void draw_substitutions_menu();
 extern void SetTeamSubstitutions(team_t *s);
+extern void UpdateButtonList();
 #endif

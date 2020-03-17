@@ -197,10 +197,8 @@ BOOL credits_iteration()
         while (SDL_PollEvent(&e)) {
             
             switch(e.type) {
-                case SDL_FINGERDOWN:
                 case SDL_FINGERUP:
                 case SDL_MOUSEBUTTONUP:
-                case SDL_MOUSEBUTTONDOWN:
                 case SDL_KEYDOWN:
                     LoadBack();
                     ChangeMenu(current_menu);
