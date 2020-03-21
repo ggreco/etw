@@ -260,6 +260,8 @@ void SetTitle(const char *title)
 void OpenTheScreen(void)
 {
 #ifdef MOBILE_VERSION
+    extern void initialize_dpi();
+    initialize_dpi();
     // ios devices only permit touch controls
     control[0] = CTRL_TOUCH; 
     control[1] = CTRL_TOUCH;
@@ -272,21 +274,29 @@ void OpenTheScreen(void)
     scaling = NULL;
 
     if (WINDOW_WIDTH > 640 ||
-        WINDOW_HEIGHT > 480) {
+        WINDOW_HEIGHT > 320) {
         extern double display_width_inches, display_height_inches;
         // we need linear since we don't use a multiple of resolution
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-        if (display_height_inches <= 3.5) {
+        double dpi = sqrt(display_height_inches * display_height_inches + display_width_inches * display_width_inches);
+        if (dpi <= 4.1) {
+            WINDOW_WIDTH = 256 * WINDOW_WIDTH / WINDOW_HEIGHT;
+            WINDOW_HEIGHT = 256;
+        }
+        else if (dpi <= 5.5) {
             WINDOW_WIDTH = 320 * WINDOW_WIDTH / WINDOW_HEIGHT;
             WINDOW_HEIGHT = 320;
         }
-        else {
+        else if (dpi < 7.0 ){
             WINDOW_WIDTH = 480 * WINDOW_WIDTH / WINDOW_HEIGHT;
             WINDOW_HEIGHT = 480;
+        } else {
+            WINDOW_WIDTH = 512 * WINDOW_WIDTH / WINDOW_HEIGHT;
+            WINDOW_HEIGHT = 512;
         }
-        WINDOW_WIDTH -= (WINDOW_WIDTH % 4);
-        D(bug("Display size in inches: %gx%g, software destination size: %dx%d\n", 
-                    display_width_inches, display_height_inches, WINDOW_WIDTH, WINDOW_HEIGHT));
+        WINDOW_WIDTH -= (WINDOW_WIDTH % 2); // was % 4, check with different HW
+        D(bug("Display size in inches: %gx%g (%g), software destination size: %dx%d\n",
+                    display_width_inches, display_height_inches, dpi, WINDOW_WIDTH, WINDOW_HEIGHT));
     }
 #else
     if(wb_game) 

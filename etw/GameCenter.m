@@ -32,6 +32,14 @@ UIViewController *find_vc(UIView *root)
     }
     return nil;
 }
+
+void initialize_dpi() {
+    double scale = [[UIScreen mainScreen] scale];
+    double ppi = scale * ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 132 : 163);
+    display_width_inches = ([[UIScreen mainScreen] bounds].size.width * scale) / ppi;
+    display_height_inches = ([[UIScreen mainScreen] bounds].size.height * scale) / ppi;
+}
+
 void init_controllers()
 {
 #ifdef MACOSX
@@ -44,10 +52,6 @@ void init_controllers()
     else
         NSLog(@"Unable to find viewcontroller!");*/
 #else
-    double scale = [[UIScreen mainScreen] scale];
-    double ppi = scale * ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 132 : 163);
-    display_width_inches = ([[UIScreen mainScreen] bounds].size.width * scale) / ppi;
-    display_height_inches = ([[UIScreen mainScreen] bounds].size.height * scale) / ppi;
     gWindow = [[UIApplication sharedApplication] keyWindow];
 //    gView = [([(gWindow.subviews[0]) subviews][0]) subviews][0];
 ////    id nextResponder = [gView nextResponder];
@@ -241,62 +245,6 @@ NSString *const GAME_CENTER_DISABLED = @"Game Center Disabled";
     ];
 }
 
-#ifndef MACOSX
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    /*
-    if ([alertView.title isEqualToString: GAME_CENTER_DISABLED])
-    {
-        // Responding to game center disabled dialog
-        switch (buttonIndex)
-        {
-            case 1:
-            {
-                // Launch game center app
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"gamecenter:"]];
-                break;
-            }
-            default:
-                break;
-        }
-        return;
-    }
-    
-    
-    // Responding to rename local player
-    Str aliasCStr = [localPlayer.alias UTF8String];
-    
-	switch (buttonIndex) {
-		case 0:
-		{
-            // Create new
-            TBConfig::instance().getProfile(aliasCStr);
-            TBConfig::instance().setCurrentProfile(aliasCStr);
-			break;
-		}
-		case 1:
-		{
-            // Rename
-            TBConfig::instance().renameCurrentProfile(aliasCStr);
-			break;
-		}
-		default:
-			break;
-	}
-    
-    // Tell TB to use the new profile name
-    TumblebugsGuiManager::instance().mainmenuWindow->updateWelcomeText();
-     */
-}
-#endif
-
-/*
-- (void) getPlayerAlias: (char *)aliasBuf: (int) length
-{
-    const char *aliasPtr = [[localPlayer alias] UTF8String];
-    strncpy(aliasBuf, aliasPtr, length);
-}
- */
 
 - (BOOL) isAuthenticated
 {

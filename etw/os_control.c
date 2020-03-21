@@ -146,7 +146,7 @@ int os_get_joy_button(int i)
     return -1;
 }
 
-void open_joystick(int joyid)
+static BOOL open_joystick(int joyid)
 {
     if ((joy[joyid] = SDL_JoystickOpen(joyid))) {
         num_joys++;
@@ -167,7 +167,9 @@ void open_joystick(int joyid)
         }
 
         joybuttons[joyid]=SDL_JoystickNumButtons(joy[joyid]);
+        return TRUE;
     }
+    return FALSE;
 }
 
 void set_controls(void)
@@ -205,25 +207,8 @@ void set_controls(void)
 joy_try_again:
             D(bug("Opening joystick %ld\n",p->team[0]->Joystick));
 
-            if ((joy[p->team[0]->Joystick]=SDL_JoystickOpen(p->team[0]->Joystick))) {
-                num_joys++;
-                has_joystick=TRUE;
-
-                D(bug("Opened Joystick %ld\n",p->team[0]->Joystick));
-                D(bug("Name: %s\n", SDL_JoystickName(joy[p->team[0]->Joystick])));
-                D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->team[0]->Joystick])));
-                D(bug("Number of Hats: %ld\n", SDL_JoystickNumAxes(joy[p->team[0]->Joystick])));
-                D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->team[0]->Joystick])));
-                D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->team[0]->Joystick])));
-                D(bug("Joystick event manager: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
-
-                if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE)
-                {
-                    D(bug("** Forcing deactivation of joystick event manager\n"));
-                    SDL_JoystickEventState(SDL_DISABLE);
-                }
-
-                joybuttons[p->team[0]->Joystick]=SDL_JoystickNumButtons(joy[p->team[0]->Joystick]);
+            if (open_joystick(p->team[0]->Joystick)) {
+                D(bug("team 0 has a joystick!"));
             }
             else if (player_type[1] == TYPE_COMPUTER && player_type[0] == 1) {
                 // if we are playing single player and we have a single joystick installed
@@ -280,22 +265,8 @@ joy_try_again:
         if(control[p->team[1]->Joystick]<CTRL_KEY_1) {
             D(bug("Opening joystick %ld\n",p->team[1]->Joystick));
 
-            if ((joy[p->team[1]->Joystick]=SDL_JoystickOpen(p->team[1]->Joystick))) {
-                has_joystick=TRUE;
-                num_joys++;
-                D(bug("Opened Joystick %ld\n",p->team[1]->Joystick));
-                D(bug("Name: %ld\n", SDL_JoystickName(joy[p->team[1]->Joystick])));
-                D(bug("Number of Axes: %ld\n", SDL_JoystickNumAxes(joy[p->team[1]->Joystick])));
-                D(bug("Number of Buttons: %ld\n", SDL_JoystickNumButtons(joy[p->team[1]->Joystick])));
-                D(bug("Number of Balls: %ld\n", SDL_JoystickNumBalls(joy[p->team[1]->Joystick])));
-                D(bug("Joystick event manager: %ld\n",SDL_JoystickEventState(SDL_QUERY)));
-
-                if(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE) {
-                    D(bug("** Forcing deactivation of joystick event manager\n"));
-                    SDL_JoystickEventState(SDL_DISABLE);
-                }
- 
-                joybuttons[p->team[1]->Joystick]=SDL_JoystickNumButtons(joy[p->team[1]->Joystick]);
+            if (open_joystick(p->team[1]->Joystick)) {
+                D(bug("Team 1 has a joystick!"));
             }
             else {
                 D(bug(" ->Error opening joystick!\n"));
