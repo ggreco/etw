@@ -407,6 +407,75 @@ int16_t StartMatch(int8_t t1,int8_t t2)
     return restore_menus();
 }
 
+int16_t StartTrackingMatch(void *handle)
+{
+    int t, old_tl;
+    if( (daytime==0 && RangeRand(2)==0 ) || daytime==2 )
+            nightgame=TRUE;
+    leftteam_dk = get_left_team(handle);
+    rightteam_dk = get_right_team(handle);
+
+    use_offside = FALSE;
+    
+    sprintf(shirt[0],"gfx/play%lc%lc%lc.obj"/*-*/,
+            ( (nightgame||arcade) ? 'n' : 'e'),
+            ( (field==8&&!arcade) ? 's' : 'r'),
+            teamlist[team1].jerseys[0].type+'a');
+
+    sprintf(shirt[1],"gfx/play%lc%lc%lc.obj"/*-*/,
+            ( (nightgame||arcade) ? 'n' : 'e'),
+            ( (field==8&&!arcade) ? 's' : 'r'),
+            (training ? teamlist[team2].jerseys[1].type : teamlist[team2].jerseys[0].type)+'a');
+
+    if(!field)
+        t=RangeRand(6);
+    else
+        t=field-1;
+
+    current_field= (arcade ? 0 : t);
+
+    
+    char c=field_type-1;
+
+    if(!field_type)
+        c=RangeRand(NUMERO_CAMPI);
+
+    sprintf(fieldname,"newgfx/pitch%lc+.gfx"/*-*/,c+'a');
+    sprintf(palette,"newgfx/eat32%s.col"/*-*/,palettes[t]);
+
+    if(strictness==10) {
+        random_strict=TRUE;
+        strictness=RangeRand(10);
+    }
+
+    if(use_gfx_scaling)
+        use_scaling=TRUE;
+
+    old_tl = t_l;
+    t_l = 45;
+    time_length=t_l*60;
+
+    oldwidth=WINDOW_WIDTH;
+    oldheight=WINDOW_HEIGHT;
+
+    player_type[0]= -1;
+    player_type[1]= -1;
+    
+    if(!StartGame())
+    {
+        request(msg_84);
+        use_scaling=FALSE;
+        warp=FALSE;
+        final=FALSE;
+        friendly=FALSE;
+        ChangeMenu(0);
+        return 0;
+    }
+    t_l = old_tl;
+    
+    return restore_menus();
+}
+
 BOOL interrupted = FALSE;
 
 int16_t restore_menus()

@@ -1817,10 +1817,9 @@ BOOL HandleMenuIDCMP(void)
                 if (dropped) {
                     D(bug("Dropped file %s\n", dropped));
                     void *ip = open_insight_project(dropped);
-                    if (ip)
-                        close_insight_project(ip);
-                        
                     SDL_free((void*)dropped);
+                    if (ip)
+                        StartTrackingMatch(ip);
                 }
             }
             break;

@@ -61,7 +61,7 @@ void ReadTeam(FILE *fh, struct team_disk *s)
         s->players[i].nation = fread_u8(fh);
         s->players[i].creativity = fread_u8(fh);
         s->players[i].technique = fread_u8(fh);
-        s->players[i].Eta = fread_u8(fh);
+        s->players[i].age = fread_u8(fh);
         s->players[i].injury = fread_u8(fh);
         s->players[i].Ammonizioni = fread_u8(fh);
         s->players[i].Posizioni = fread_u8(fh);
@@ -125,7 +125,7 @@ void WriteTeam(FILE *fh, struct team_disk *s)
         fwrite_u8(s->players[i].nation, fh);
         fwrite_u8(s->players[i].creativity, fh);
         fwrite_u8(s->players[i].technique, fh);
-        fwrite_u8(s->players[i].Eta, fh);
+        fwrite_u8(s->players[i].age, fh);
         fwrite_u8(s->players[i].injury, fh);
         fwrite_u8(s->players[i].Ammonizioni, fh);
         fwrite_u8(s->players[i].Posizioni, fh);

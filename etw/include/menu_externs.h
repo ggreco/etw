@@ -65,6 +65,8 @@ extern BOOL KeyCfg(int16_t);
 extern void SetTeamSettings(int16_t, BOOL);
 extern void DisplayTactic(const char*, int, int, const char *n[], int);
 extern int16_t StartMatch(int8_t, int8_t);
+extern int16_t StartTrackingMatch(void*);
+
 extern int16_t LastMatchResult();
 extern void ScaleGfxObj(gfx_t *, uint8_t *);
 extern void UpdateButtonList(void);
@@ -182,3 +184,5 @@ void init_tutorial();
 // from insight support
 void *open_insight_project(const char *projectName);
 void close_insight_project(void *);
+struct team_disk get_left_team(void *);
+struct team_disk get_right_team(void *);

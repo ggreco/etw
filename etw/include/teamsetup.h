@@ -43,7 +43,7 @@ struct player_disk
     uint8_t number, speed, tackle, Tiro;
     uint8_t Durata, stamina, quickness, nation;
     uint8_t creativity, technique;
-    uint8_t Eta, injury, Ammonizioni, Posizioni;
+    uint8_t age, injury, Ammonizioni, Posizioni;
 };
 
 struct keeper_disk
@@ -99,7 +99,7 @@ struct manager_disk
 struct teamstats_disk
 {
     unsigned short Punti; // Punti della squadra, negativo significa TURNO.
-    BOOL Controllata; // Punteggio manager, solo se "Career"
+    int Controllata; // Punteggio manager, solo se "Career"
 // Classifica
     uint8_t GolFatti, GolSubiti, Giocate;
     uint8_t Vittorie, Pareggi, Sconfitte;

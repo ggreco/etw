@@ -2,6 +2,7 @@
 #include "cfile.h"
 #include "rapidjson/document.h"
 #include "../include/mydebug.h"
+#include "../include/teamsetup.h"
 
 void kprintf(const char *fmt, ...)
 {
@@ -13,12 +14,22 @@ void kprintf(const char *fmt, ...)
 
 extern "C" {
 void *open_insight_project(const char *projectName);
-void close_insight_project(void *);
+void close_insight_project(void *handle) { delete static_cast<Insight *>(handle); }
+
+team_disk get_left_team(void *handle) { 
+    const auto i = static_cast<Insight *>(handle);
+    team_disk team;
+    i->fillTeam(team, true);
+    return team;
 }
 
-void close_insight_project(void *project)
-{
-    delete static_cast<Insight *>(project);
+team_disk get_right_team(void *handle) { 
+    const auto i = static_cast<Insight *>(handle);
+    team_disk team;
+    i->fillTeam(team, true);
+    return team;
+}
+
 }
 
 void *open_insight_project(const char *projectName)
@@ -44,15 +55,21 @@ open(const std::string &project)
 
     // get the first game in the db
     std::string periods_data;
-    db_.get_fields("select id, homeTeamId, periods from game", game_id_, home_team_id_, periods_data);
+    db_.get_fields("select id, homeTeamId, periods, scheduledDate from game", game_id_, home_team_id_, periods_data, scheduled_date_);
     if (game_id_.empty())
         throw std::string("No game available");
+
     // parse the periods json
     rapidjson::Document periods;
     periods.Parse(periods_data.c_str());
 
     if (!periods.IsArray())
         throw std::string("Unable to parse periods");
+
+    for (const auto &per: periods.GetArray()) {
+        const auto &p = per.GetObject();
+        left_team_[p["id"].GetInt()] = p["leftTeamId"].GetString();
+    }
 
     // read the json index for player mapping
     std::string contents;
@@ -75,7 +92,7 @@ open(const std::string &project)
     D(bug("Got %ld players for match %s\n", player_map_.size(), game_id_.c_str()));
 
     // read the teams
-    db_.query("select id, knownName, shirtNumber, teamId, role from player", this, &Insight::get_players);
+    db_.query("select id, firstName, lastName, shirtNumber, teamId, role from player", this, &Insight::get_players);
  
     for (const auto &p: players_) {
         auto it = teams_.find(p.second.teamId);
@@ -106,7 +123,7 @@ open(const std::string &project)
 
     if (tid == teams_.end())
         throw std::string("Unable to find team " + home_team_id_);
-    D(bug("Home team is %s\n", tid->second.name.c_str()));
+    D(bug("Home team is %s (%s), left is %s\n", tid->second.name.c_str(), tid->second.id.c_str(), left_team_.begin()->second.c_str()));
 
     D(bug("Got %ld tracking states, starting 11:\n", tracking_.size()));
     const auto &gs = tracking_.begin()->second;
@@ -124,14 +141,61 @@ open(const std::string &project)
 }
 
 void Insight::
+fillTeam(team_disk &team, bool isLeft)
+{
+    std::string teamId;
+
+    if (isLeft)
+        teamId = left_team_.begin()->second;
+    else {
+        for (const auto &t: teams_) {
+            if (t.first != left_team_.begin()->second) {
+                teamId = t.first;
+                break;
+            }
+        }
+    }
+
+    auto tit = teams_.find(teamId);
+
+    if (tit == teams_.end()) {
+        D(bug("Unable to find team: ", isLeft ? "LEFT" : "RIGHT"));
+        return;
+    }
+    const auto &t = tit->second;
+
+    memset(&team, 0, sizeof(team));
+    strncpy(team.name, t.name.c_str(), sizeof(team.name));
+    for (const auto &pid: t.players) {
+        auto pit = players_.find(pid);
+        if (pit == players_.end()) continue;
+        const auto &p = pit->second;
+        if (p.role == "Goalkeeper") {
+            auto &gk = team.keepers[team.nkeepers];
+            strncpy(gk.name, p.name.c_str(), sizeof(gk.name));
+            strncpy(gk.surname, p.surname.c_str(), sizeof(gk.surname));
+            gk.number = atoi(p.shirtNumber.c_str());
+            team.nkeepers++;
+        } else {
+            auto &gk = team.players[team.nplayers];
+            strncpy(gk.name, p.name.c_str(), sizeof(gk.name));
+            strncpy(gk.surname, p.surname.c_str(), sizeof(gk.surname));
+            gk.number = atoi(p.shirtNumber.c_str());
+            team.nplayers++;
+        }
+    }
+}
+
+void Insight::
 get_players(int cols, char **vals, char **titles) {
     if (cols > 0) {
         Player p;
         p.id = vals[0];
         p.name = vals[1];
-        p.shirtNumber = vals[2];
-        p.teamId = vals[3];
-        p.role = vals[4];
+        p.surname = vals[2];
+        p.shirtNumber = vals[3];
+        p.teamId = vals[4];
+        p.role = vals[5];
         players_[p.id] = p;
     }
 }
