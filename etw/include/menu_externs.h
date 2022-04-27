@@ -178,3 +178,7 @@ void buy_full_version();
 // tutorial api
 void check_tutorial();
 void init_tutorial();
+
+// from insight support
+void *open_insight_project(const char *projectName);
+void close_insight_project(void *);

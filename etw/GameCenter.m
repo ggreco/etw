@@ -17,7 +17,6 @@ NSView *gView = NULL;
 UIViewController *gViewColtroller = NULL;
 static UIWindow *gWindow = NULL;
 UIView *gView = NULL;
-#endif
 
 double display_width_inches = 2, display_height_inches = 1;
 
@@ -39,6 +38,9 @@ void initialize_dpi() {
     display_width_inches = ([[UIScreen mainScreen] bounds].size.width * scale) / ppi;
     display_height_inches = ([[UIScreen mainScreen] bounds].size.height * scale) / ppi;
 }
+
+#endif
+
 
 void init_controllers()
 {

@@ -14,7 +14,7 @@ UIFLAGS=-F/Library/Frameworks \
 # Optimising -faltivec
 DEBUGCFLAGS=-O2 
 INSTALL=install
-CC = ./gcc-fat.sh
+CC = gcc -arch x86_64 -arch arm64
 DEBUG = 
 CFLAGS = $(UIFLAGS) -Wno-char-subscripts -O2  -Iinclude
 # -Wall -g

@@ -26,7 +26,7 @@ BOOL InitMenuFonts(void)
         return FALSE;
     }
 
-    D(bug("Font aperti correttamente\n"));
+    D(bug("Fonts correctly initialized\n"));
 
     return TRUE;
 }

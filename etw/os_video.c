@@ -329,6 +329,10 @@ void OpenTheScreen(void)
 
         alloc_bitmap();
     }
+
+    // enable drop of files on the game window
+    SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+
     D(bug("Opened window size %dx%d\n", WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 
@@ -463,6 +467,7 @@ void ScreenSwap(void)
         
         if (!game_start || reqqing) {
             SDL_Delay(40); // let's wait at least a frame
+            SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
             SDL_RenderPresent(renderer);
         }
     } else

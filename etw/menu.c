@@ -1811,6 +1811,19 @@ BOOL HandleMenuIDCMP(void)
                         break;
                 }
                 break;
+        case SDL_DROPFILE:
+            {
+                const char *dropped = e.drop.file;
+                if (dropped) {
+                    D(bug("Dropped file %s\n", dropped));
+                    void *ip = open_insight_project(dropped);
+                    if (ip)
+                        close_insight_project(ip);
+                        
+                    SDL_free((void*)dropped);
+                }
+            }
+            break;
         case SDL_QUIT:
             D(bug("SDL quit received!\n"));
             if (!reqqing)

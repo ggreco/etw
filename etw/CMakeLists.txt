@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.12)
 
 project(ETW)
 
@@ -8,6 +8,8 @@ pkg_check_modules (SDL2_MIXER REQUIRED SDL2_mixer)
 
 if (APPLE)
     add_definitions(-DMACOSX)
+    set(ADDITIONAL_SOURCES FileReq.m lang.m)
+    set(ADDITIONAL_LIBS "-framework Cocoa -framework Foundation")
 else(APPLE)
     if (WIN32)
         add_definitions(-DWIN)
@@ -18,6 +20,8 @@ else(APPLE)
         set(ADDITIONAL_HEADERS  ${GTK2_INCLUDE_DIRS})
     endif(WIN32)
 endif(APPLE)
+
+set (CMAKE_CXX_STANDARD 17)
 
 set(sources highdirent.c cpu.c human.c myiff.c specials.c 
          	anim.c crowd.c intro.c os_control.c teamsetup.c 
@@ -30,15 +34,17 @@ set(sources highdirent.c cpu.c human.c myiff.c specials.c
         	connection.c generic_video.c menu_data.c sound.c wc.c 
         	control.c gfx.cpp menu_font.c special.c network.c 
         	highsocket.c prefix.c vjoy.cpp touch.cpp world.c
-            tutorial.cpp substitutions.c stubs.c)
+            tutorial.cpp substitutions.c stubs.c 
+            ${ADDITIONAL_SOURCES})
 
 # comment this for release mode        
 set(CMAKE_BUILD_TYPE Debug)
 
+add_subdirectory(insight)
 link_directories(${SDL2_MIXER_LIBRARY_DIRS} ${SDL2_LIBRARY_DIRS})
 add_executable(etw ${sources})
 
 set(LIBS ${LIBS} ${SDL2_MIXER_LIBRARIES} ${SDL2_LIBRARIES} ${ADDITIONAL_LIBS})
-target_link_libraries(etw ${LIBS})
+target_link_libraries(etw insight ${LIBS})
 
 include_directories("include" ${SDL2_INCLUDE_DIRS} ${ADDITIONAL_HEADERS})
