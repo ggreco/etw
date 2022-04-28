@@ -202,7 +202,7 @@
 
 // Quota
 
-#define MAX_QUOTA 23
+#define MAX_QUOTA 35
 
 // posizioni palla per Corners, Goalkicks, rigori...
 

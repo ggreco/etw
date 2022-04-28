@@ -179,12 +179,13 @@ open(const std::string &project)
         for (size_t j = 0; j < 4; ++j)
             gs.ballPosition[j] = SDL_SwapBE16(gs.ballPosition[j]);
         gs.worldTime = SDL_SwapBE64(gs.worldTime);     
+        gs.ballPosition[1] = 25600 - gs.ballPosition[1];
         for (size_t j = 0; j < 11; ++j) {
             gs.homeTeam[j].x = SDL_SwapBE16(gs.homeTeam[j].x);
-            gs.homeTeam[j].y = SDL_SwapBE16(gs.homeTeam[j].y);
+            gs.homeTeam[j].y = 25600 - SDL_SwapBE16(gs.homeTeam[j].y);
             gs.homeTeam[j].speed = SDL_SwapBE16(gs.homeTeam[j].speed);
             gs.awayTeam[j].x = SDL_SwapBE16(gs.awayTeam[j].x);
-            gs.awayTeam[j].y = SDL_SwapBE16(gs.awayTeam[j].y);
+            gs.awayTeam[j].y = 25600 - SDL_SwapBE16(gs.awayTeam[j].y);
             gs.awayTeam[j].speed = SDL_SwapBE16(gs.awayTeam[j].speed);
         }
 
@@ -307,11 +308,11 @@ trackingFrame(game_t &game, int64_t timestamp) {
     double elapsed = gs1.gameTime == gs2.gameTime ? 0 : (double)(timestamp - gs1.gameTime) / (double)(gs2.gameTime - gs1.gameTime);
     if (elapsed > 1)
         elapsed = 1;
-    D(bug("Working with gamestate with ts %d to %d for %ld, elapsed %lf\n", gs1.gameTime, gs2.gameTime, timestamp, elapsed));
+    // D(bug("Working with gamestate with ts %d to %d for %ld, elapsed %lf quota %d\n", gs1.gameTime, gs2.gameTime, timestamp, elapsed, gs1.ballPosition[2]));
 
     game.ball.world_x = remapXcoordinate(gs1.ballPosition[0], gs2.ballPosition[0], elapsed);
     game.ball.world_y = remapYcoordinate(gs1.ballPosition[1], gs2.ballPosition[1], elapsed);
-
+    game.ball.quota = min(gs1.ballPosition[2] / 100, MAX_QUOTA - 1);
     if (home_is_left_) {
         positionPlayers(*game.team[0], gs1.homeTeam, gs2.homeTeam, elapsed);
         positionPlayers(*game.team[1], gs1.awayTeam, gs2.awayTeam, elapsed);
@@ -337,17 +338,46 @@ positionPlayers(team_t &team, const PlayerState *players1, const PlayerState *pl
 
         auto x = G2P_X(remapXcoordinate(ps1.x, ps2.x, elapsed)),
              y = G2P_Y(remapYcoordinate(ps1.y, ps2.y, elapsed));
+        int64_t delta = (ps2.x - ps1.x) * (ps2.x - ps1.x) + (ps2.y - ps1.y) * (ps2.y - ps1.y);
 
         if (team.keepers.number == ps1.shirtNumber) {
             team.keepers.world_x = x;
             team.keepers.world_y = y;
+            team.keepers.dir =  FindDirection(ps1.x, ps1.y, ps2.x, ps2.y);
+            if (delta > 10) {
+                if (!team.keepers.ActualSpeed)
+                    DoAnim((&team.keepers), PORTIERE_CORSA);
+                else
+                    team.keepers.ActualSpeed = 1;
+            } else if (team.keepers.ActualSpeed) {
+                team.keepers.ActualSpeed = 0;
+                DoAnim((&team.keepers), PORTIERE_FERMO);
+            }
         } else 
             for (size_t j = 0; j < 10; ++j) {
                 auto &pl = team.players[j];
                 if (pl.number == ps1.shirtNumber) {
                     pl.world_x = x;
                     pl.world_y = y;
-                    // MoveTo(&pl, x, y);
+
+                    //D(bug("Delta movement of %d is %ld", pl.number, delta));
+                    pl.dir =  FindDirection(ps1.x, ps1.y, ps2.x, ps2.y);
+
+                    if (delta > 50) {
+                        if (!pl.ActualSpeed) {
+                            int a = GIOCATORE_CORSA_VELOCE;
+                            if (delta < 100)
+                                a = GIOCATORE_CORSA_LENTA;
+                            else if (delta < 200)
+                                a = GIOCATORE_CORSA_MEDIA;
+
+                            DoAnim((&pl), a);
+                            pl.ActualSpeed = 1;
+                        }
+                    } else if (pl.ActualSpeed) {
+                        DoAnim((&pl),GIOCATORE_RESPIRA);
+                        pl.ActualSpeed=0;
+                    }
                     break;
                 }
             }
