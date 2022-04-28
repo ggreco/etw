@@ -39,6 +39,7 @@ set(sources highdirent.c cpu.c human.c myiff.c specials.c
 
 # comment this for release mode        
 set(CMAKE_BUILD_TYPE Debug)
+include_directories("include" ${SDL2_INCLUDE_DIRS} ${ADDITIONAL_HEADERS})
 
 add_subdirectory(insight)
 link_directories(${SDL2_MIXER_LIBRARY_DIRS} ${SDL2_LIBRARY_DIRS})
@@ -47,4 +48,3 @@ add_executable(etw ${sources})
 set(LIBS ${LIBS} ${SDL2_MIXER_LIBRARIES} ${SDL2_LIBRARIES} ${ADDITIONAL_LIBS})
 target_link_libraries(etw insight ${LIBS})
 
-include_directories("include" ${SDL2_INCLUDE_DIRS} ${ADDITIONAL_HEADERS})

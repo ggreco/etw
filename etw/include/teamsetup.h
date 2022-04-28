@@ -52,7 +52,7 @@ struct keeper_disk
     char surname[20];
     uint32_t value; /* unused? */
     uint8_t number, speed, Parata, Attenzione;
-    uint8_t nation, Eta, injury, Flags;
+    uint8_t nation, age, injury, Flags;
 };
 
 struct team_disk

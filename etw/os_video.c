@@ -12,6 +12,7 @@ static SDL_Renderer *renderer = NULL;
 
 SDL_Color SDL_palette[256];
 static uint16_t palette16[256];
+static BOOL texture32bit = FALSE;
 
 #include "anim.h"
 
@@ -128,6 +129,7 @@ BOOL ResizeWindow(int w, int h)
     SDL_SetWindowSize(screen, w, h);
     SDL_RenderSetLogicalSize(renderer, w, h);
 
+    texture32bit = FALSE;
     SDL_DestroyTexture(screen_texture);
     screen_texture = SDL_CreateTexture(renderer,
                                        SDL_PIXELFORMAT_RGB565,
@@ -318,6 +320,7 @@ void OpenTheScreen(void)
         SetTitle("Eat The Whistle " ETW_VERSION);
 #endif
 
+        texture32bit = FALSE;
         SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
         screen_texture = SDL_CreateTexture(renderer,
                 SDL_PIXELFORMAT_RGB565,
@@ -447,14 +450,11 @@ void ScreenSwap(void)
             width = scaling->DestWidth;
         }
 
-        if (pitch == width * 2)
-            blitScreen16(src, pixels, width, height);
-        else if (pitch == width * 4)
+        if (texture32bit)
             blitScreen32(src, pixels, width, height);
-        else {
-            D(bug("Unsupported pitch: %d (width %d)\n", pitch, width));
-        }
-
+        else
+            blitScreen16(src, pixels, width, height);
+    
         SDL_UnlockTexture(screen_texture);
         SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
 
@@ -487,13 +487,10 @@ void blit_anim(struct BitMap *src, SDL_Rect *dest)
     if(!SDL_LockTexture(anim_texture, NULL, &pixels, &pitch)) {
         int width = (src->BytesPerRow*8);
 
-        if (pitch == width * 2)
-            blitBitmap16(src, pixels);
-        else if (pitch == width * 4)
+        if (texture32bit)
             blitBitmap32(src, pixels);
-        else {
-            D(bug("Unsupported pitch: %d (width %d)\n", pitch,(src->BytesPerRow*8)));
-        }
+        else
+            blitBitmap16(src, pixels);
 
         SDL_UnlockTexture(anim_texture);
 

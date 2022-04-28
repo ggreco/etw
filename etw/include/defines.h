@@ -80,6 +80,11 @@
 
 // Palette pens of the GAME (not menus!)
 
+#define JERSEY_SINGLE_COLOR 0
+#define JERSEY_STRIPES 1
+#define JERSEY_TWO_COLORS 2
+#define JERSEY_STRANGE 3
+
 #define P_VERDE0 0
 #define P_BIANCO 1
 #define P_VERDE2 3

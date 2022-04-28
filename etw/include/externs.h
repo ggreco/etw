@@ -49,6 +49,7 @@ extern struct DOggetto peoples[];
 extern gfx_t *last_obj,*pause_gfx;
 extern mytimer StartGameTime,EndTime,ideal;
 extern anim_t *ports,*replay,*arcade_anim,*goal_banner, *logos;
+extern void *tracking_game;
 extern linesman_t *linesman;
 extern struct MyFastScaleArgs *scaling;
 extern int font_width,font_height,result_width,FIXED_SCALING_WIDTH,FIXED_SCALING_HEIGHT;
@@ -312,4 +313,7 @@ extern void draw_pause_menu();
 extern void draw_substitutions_menu();
 extern void SetTeamSubstitutions(team_t *s);
 extern void UpdateButtonList();
+
+// from insight tracking
+extern void tracking_frame(void *, game_t *game, int64_t msecs);
 #endif

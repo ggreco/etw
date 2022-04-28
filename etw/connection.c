@@ -407,9 +407,16 @@ int16_t StartMatch(int8_t t1,int8_t t2)
     return restore_menus();
 }
 
+extern void * tracking_game;
+
 int16_t StartTrackingMatch(void *handle)
 {
-    int t, old_tl;
+    int t, old_tl;    
+    match_result = -1;
+    team_swap=FALSE,control_swap=FALSE,nightgame=FALSE,random_strict=FALSE;
+    parent_menu=current_menu;
+    tracking_game = handle;
+
     if( (daytime==0 && RangeRand(2)==0 ) || daytime==2 )
             nightgame=TRUE;
     leftteam_dk = get_left_team(handle);
@@ -420,12 +427,12 @@ int16_t StartTrackingMatch(void *handle)
     sprintf(shirt[0],"gfx/play%lc%lc%lc.obj"/*-*/,
             ( (nightgame||arcade) ? 'n' : 'e'),
             ( (field==8&&!arcade) ? 's' : 'r'),
-            teamlist[team1].jerseys[0].type+'a');
+            leftteam_dk.jerseys[0].type+'a');
 
     sprintf(shirt[1],"gfx/play%lc%lc%lc.obj"/*-*/,
             ( (nightgame||arcade) ? 'n' : 'e'),
             ( (field==8&&!arcade) ? 's' : 'r'),
-            (training ? teamlist[team2].jerseys[1].type : teamlist[team2].jerseys[0].type)+'a');
+            rightteam_dk.jerseys[0].type+'a');
 
     if(!field)
         t=RangeRand(6);
@@ -469,6 +476,7 @@ int16_t StartTrackingMatch(void *handle)
         final=FALSE;
         friendly=FALSE;
         ChangeMenu(0);
+        tracking_game = NULL;
         return 0;
     }
     t_l = old_tl;

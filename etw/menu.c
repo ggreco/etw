@@ -1818,8 +1818,11 @@ BOOL HandleMenuIDCMP(void)
                     D(bug("Dropped file %s\n", dropped));
                     void *ip = open_insight_project(dropped);
                     SDL_free((void*)dropped);
-                    if (ip)
+                    if (ip) {
                         StartTrackingMatch(ip);
+                        D(bug("Tracking game terminated!"));
+                        close_insight_project(ip);
+                    }
                 }
             }
             break;

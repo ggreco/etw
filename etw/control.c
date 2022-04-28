@@ -394,7 +394,7 @@ skipchange:
                 }
             }
 
-            if(!g->Controlled)
+            if(!g->Controlled || tracking_game)
             {
                 g->Tick++;
 
@@ -402,7 +402,7 @@ skipchange:
                 {
                     HandleRealCPU(g);
                 }
-                else if(g->Tick>prontezza[g->quickness]&&!g->Special&&g->Comando==NESSUN_COMANDO)
+                else if(g->Tick>prontezza[g->quickness]&&!g->Special&&g->Comando==NESSUN_COMANDO && !tracking_game)
                 {
                     /*
                        if(s!=pl->sq_palla)

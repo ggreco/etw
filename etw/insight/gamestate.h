@@ -12,7 +12,7 @@ struct GameState {
     int16_t ballPosition[4]; // x, y, z, speed
     int8_t period;
     uint8_t flags; // 1 left possession, 2 right possession, 4 inGame
-    float gameTime;
+    uint32_t gameTime;
     PlayerState homeTeam[N];
     PlayerState awayTeam[N];
 };

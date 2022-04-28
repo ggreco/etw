@@ -346,9 +346,10 @@ void CheckKeys(void)
             break;
 
         case SDL_WINDOWEVENT:
-            if (e.window.event ==  SDL_WINDOWEVENT_RESIZED) 
-                ResizeWin(&e);
-            else if (e.window.event == SDL_WINDOWEVENT_MINIMIZED && !pause_mode)
+            if (e.window.event ==  SDL_WINDOWEVENT_RESIZED) {
+                D(bug("Ignoring window resize"));
+                // ResizeWin(&e);
+            } else if (e.window.event == SDL_WINDOWEVENT_MINIMIZED && !pause_mode)
                 DoPause();
             break;
         case SDL_KEYDOWN:           

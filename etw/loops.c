@@ -17,6 +17,7 @@ int32_t
 #endif
 
 mytimer StartGameTime, EndTime, ideal;
+static mytimer start;
 
 int16_t field_x, field_y, n_limit, o_limit, s_limit, e_limit;
 int16_t field_x_limit, field_y_limit, real_fx, real_fy;
@@ -24,6 +25,8 @@ void (*HandleTeam0) (int);
 void (*HandleTeam1) (int);
 void (*HandleRadar) (void);
 gfx_t *background;
+
+void *tracking_game = NULL;
 
 void HandleControl(void)
 {
@@ -333,14 +336,20 @@ void logic_frame(void)
         if (detail_level & USA_GUARDALINEE)
             HandleGuardalinee();
 
-        HandleTeam0(0);
-        HandleTeam1(1);
 
-        HandleKeeper(0);
-        HandleKeeper(1);
+        if (!tracking_game) {
+            HandleTeam0(0);
+            HandleTeam1(1);
+
+            HandleKeeper(0);
+            HandleKeeper(1);
+        } else
+            tracking_frame(tracking_game, p, ideal - start);
 
         HandleExtras();
+
         MoveNonControlled();
+        
         PostHandleBall();
         
         CheckEndGame();
@@ -408,7 +417,6 @@ void handle_pause_status()
 }
 
 static int f_skip = 0;
-static mytimer start;
 
 #if 0
 BOOL fast_mode = FALSE;
