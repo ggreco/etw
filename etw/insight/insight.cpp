@@ -345,10 +345,10 @@ positionPlayers(team_t &team, const PlayerState *players1, const PlayerState *pl
             team.keepers.world_y = y;
             team.keepers.dir =  FindDirection(ps1.x, ps1.y, ps2.x, ps2.y);
             if (delta > 10) {
-                if (!team.keepers.ActualSpeed)
+                if (!team.keepers.ActualSpeed) {
                     DoAnim((&team.keepers), PORTIERE_CORSA);
-                else
                     team.keepers.ActualSpeed = 1;
+                }
             } else if (team.keepers.ActualSpeed) {
                 team.keepers.ActualSpeed = 0;
                 DoAnim((&team.keepers), PORTIERE_FERMO);
