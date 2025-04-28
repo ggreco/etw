@@ -42,14 +42,14 @@ OBJECTS = SDLMain.o highdirent.o cpu.o human.o myiff.o specials.o \
 etw: $(OBJECTS)
 	$(CC) -o etw $(OBJECTS) $(LFLAGS)
 
-install: etw 
+install: 
 	mkdir -p $(BUNDLE_CONTENTS)/MacOS
 	mkdir -p $(BUNDLE_CONTENTS)/Resources
 	mkdir -p $(BUNDLE_CONTENTS)/Resources/dtd
 	echo "APPL????" > $(BUNDLE_CONTENTS)/PkgInfo
 	cp Info.plist $(BUNDLE_CONTENTS)
 	cp ETW.icns $(BUNDLE_CONTENTS)/Resources
-	$(INSTALL) $< $(BUNDLE_CONTENTS)/MacOS
+	$(INSTALL) build/etw $(BUNDLE_CONTENTS)/MacOS
 	strip $(BUNDLE_CONTENTS)/MacOS/etw
 
 clean:

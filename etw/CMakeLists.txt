@@ -1,15 +1,20 @@
-cmake_minimum_required (VERSION 2.8.12)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum OS X deployment version")
+cmake_minimum_required (VERSION 3.5)
 
 project(ETW)
 
-find_package (PkgConfig REQUIRED)
-pkg_check_modules (SDL2 REQUIRED sdl2)
-pkg_check_modules (SDL2_MIXER REQUIRED SDL2_mixer)
+# find_package (PkgConfig REQUIRED)
+# pkg_check_modules (SDL2 REQUIRED sdl2)
+# pkg_check_modules (SDL2_MIXER REQUIRED SDL2_mixer)
 
 if (APPLE)
     add_definitions(-DMACOSX)
     set(ADDITIONAL_SOURCES FileReq.m lang.m)
-    set(ADDITIONAL_LIBS "-framework Cocoa -framework Foundation")
+    set(SDL2_INCLUDE_DIRS /Users/gabry/projects/insight-video/devenv/ext_inc 
+                          /Users/gabry/projects/insight-video/devenv/ext_inc/SDL2
+                          /Users/gabry/projects/insight-video/devenv/ext_inc_mac/arm64)
+    set(SDL2_LIBRARY_DIRS /Users/gabry/projects/insight-video/devenv/extlib_darwin/arm64)
+    set(ADDITIONAL_LIBS "-lSDL2_mixer -lSDL2 -framework CoreAudio -framework AudioToolbox -framework CoreVideo -framework ForceFeedback -framework Cocoa -framework Foundation -liconv -framework Carbon -framework IOKit -weak_framework Metal -lobjc") 
 else(APPLE)
     if (WIN32)
         add_definitions(-DWIN)
@@ -45,6 +50,6 @@ add_subdirectory(insight)
 link_directories(${SDL2_MIXER_LIBRARY_DIRS} ${SDL2_LIBRARY_DIRS})
 add_executable(etw ${sources})
 
-set(LIBS ${LIBS} ${SDL2_MIXER_LIBRARIES} ${SDL2_LIBRARIES} ${ADDITIONAL_LIBS})
+set(LIBS ${LIBS}  ${ADDITIONAL_LIBS})
 target_link_libraries(etw insight ${LIBS})
 
