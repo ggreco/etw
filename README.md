@@ -10,3 +10,4 @@ The project is still maintained and it's part of the debian repositories.
 The game is written in C and uses SDL (www.libsdl.org) as video/input/audio module.
 
 It provides a "simulation" and an "arcade" game mode.
+
